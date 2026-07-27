@@ -8,6 +8,7 @@ import { buildParamsMap } from '../src/core/projectParams.js';
 import { buildElementsById } from '../src/core/elementReferences.js';
 import { studFlangeSpan } from '../src/core/trussLayout.js';
 import { generateCalculix } from '../src/core/exportCalculix.js';
+import { computeTakeoff } from '../src/core/takeoff.js';
 
 const casaL = JSON.parse(
   readFileSync(new URL('./fixtures/casa-L.json', import.meta.url), 'utf8')
@@ -231,6 +232,51 @@ test('R3-C: el kerf inicial del nesting es 5 mm y no lee osbDefaults.gap', () =>
 
   assert.match(source, /const \[kerf, setKerf\] = useState\(5\);/);
   assert.doesNotMatch(source, /osbDefaults\?\.gap/);
+});
+
+test('R3-D: el metrado agrega 1473 piezas por perfil y rol sin alterar las 11 filas heredadas', () => {
+  const regenerated = regenerateCasaL();
+  const withoutFraming = {
+    ...regenerated,
+    elements: regenerated.elements.map((element) => (
+      element.type === 'wall' ? { ...element, studs: [], headers: [] } : element
+    ))
+  };
+  const baselineRows = computeTakeoff(withoutFraming).rows;
+  const takeoff = computeTakeoff(regenerated);
+  const framingRows = takeoff.rows.filter((row) => row.type === 'framing');
+
+  assert.equal(baselineRows.length, 11);
+  assert.deepEqual(
+    takeoff.rows.filter((row) => row.type !== 'framing'),
+    baselineRows,
+    'la sección aditiva no cambia ninguna fila heredada'
+  );
+
+  const expected = new Map([
+    ['90CA085p — Montante respaldo', { count: 88, ml: 284.4 }],
+    ['90CA085p — Montante esquina/T', { count: 88, ml: 284.4 }],
+    ['90CA085p — Montante bajo antepecho', { count: 66, ml: 44.85 }],
+    ['90CA085p — Montante sobre dintel', { count: 189, ml: 224.15 }],
+    ['90CA085p — Montante extremo', { count: 2, ml: 6.2 }],
+    ['90CA085p — Montante bajo dintel', { count: 86, ml: 210.7 }],
+    ['90CA085p — Montante jamba', { count: 69, ml: 245.7 }],
+    ['90CA085p — Cadeneta', { count: 493, ml: 134.551 }],
+    ['90CA085p — Montante relleno', { count: 338, ml: 1161.3 }],
+    ['92C085 — Dintel', { count: 43, ml: 61.9 }],
+    ['92C085 — Antepecho', { count: 11, ml: 20.9 }]
+  ]);
+
+  assert.equal(framingRows.length, expected.size);
+  for (const row of framingRows) {
+    const target = expected.get(row.section);
+    assert.ok(target, `fila inesperada: ${row.section}`);
+    assert.equal(row.count, target.count, row.section);
+    assert.ok(Math.abs(row.ml - target.ml) < 1e-9, row.section);
+    assert.equal(row.warnings, 0, row.section);
+  }
+  assert.equal(takeoff.totalsByType.framing.count, 1473);
+  assert.ok(Math.abs(takeoff.totalsByType.framing.ml - 2679.051) < 1e-9);
 });
 
 test('R3-A: una puerta que cruza la junta conserva dos corridas y ninguna pieza atraviesa el vano', () => {

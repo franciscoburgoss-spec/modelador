@@ -724,9 +724,9 @@
       "bytes": 13710,
       "sha256": "beae19b5456e7440c7bf5889be2da2d218a4a00780f72f5d60c663ea972ad04a",
       "kind": "source",
-      "workspaceBytes": 14092,
-      "workspaceSha256": "4e207b33f184f9ab891d3ac608250bcc35f1135ea4bcf6b5e804d960f5b953c1",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 16461,
+      "workspaceSha256": "0080ee0f33afe56aba411fb59ee394402565b88e9fc67ad2015c94cbe4ca267c",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/trussChain.js",
@@ -1197,7 +1197,10 @@
       "path": "tests/takeoff.test.mjs",
       "bytes": 7404,
       "sha256": "b9a61d59322652702deca5d5f304465fe98e5132215abc28bd93ef5d266ff6eb",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 8500,
+      "workspaceSha256": "e31abcc9aabfa86ecabb4ddf701bee6b1f97abe4be28769fccd605094a67ae2f",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "tests/trussLayout.test.mjs",

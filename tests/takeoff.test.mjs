@@ -150,3 +150,31 @@ test('takeoff: un modelo sin despiece OSB no trae reporte de compra (nada cambia
   const model = { elements: [], grid: { xAxes: [], yAxes: [], zLevels: [] }, library: {}, projectParams: [] };
   assert.equal(computeTakeoff(model).osbPurchase, null);
 });
+
+test('takeoff: tabiquería conserva piezas con perfil o largo no resoluble y las advierte', () => {
+  const wall = {
+    id: 'w1',
+    type: 'wall',
+    framingStudProfileId: 'perfil-ausente',
+    framingTrackProfileId: 'solera-ausente',
+    studs: [
+      { role: 'stud', offset: 0, zMin: 0, zMax: 2400 },
+      { role: 'nogging', oMin: 100, oMax: Number.NaN, zMin: 1200, zMax: 1238 }
+    ],
+    headers: [{ role: 'header', oMin: 500, oMax: 1500, z: 2100 }]
+  };
+  const model = {
+    elements: [wall],
+    grid: { xAxes: [], yAxes: [], zLevels: [] },
+    library: { metalconProfiles: [] },
+    projectParams: []
+  };
+  const { rows, totalsByType } = computeTakeoff(model);
+  const framing = rows.filter((row) => row.type === 'framing');
+
+  assert.equal(totalsByType.framing.count, 3, 'ninguna pieza importada se descarta');
+  assert.equal(totalsByType.framing.ml, 3.4, 'sólo el largo inválido queda fuera de la suma');
+  assert.equal(totalsByType.framing.warnings, 3);
+  assert.equal(framing.length, 3);
+  assert.ok(framing.every((row) => row.section.startsWith('Personalizado — ')));
+});

@@ -21,8 +21,29 @@ const MM_TO_M = 1e-3;
 const MM2_TO_M2 = 1e-6;
 const MM3_TO_M3 = 1e-9;
 
-const TYPE_LABEL = { wall: 'Muro', column: 'Pilar', beam: 'Viga', foundation: 'Fundación', roof: 'Techumbre', osb: 'OSB' };
+const TYPE_LABEL = {
+  wall: 'Muro',
+  framing: 'Tabiquería',
+  column: 'Pilar',
+  beam: 'Viga',
+  foundation: 'Fundación',
+  roof: 'Techumbre',
+  osb: 'OSB'
+};
 const LIBRARY_KEY = { wall: 'wallSections', column: 'columnSections', beam: 'beamSections', foundation: 'foundationSections' };
+const FRAMING_ROLE_LABEL = {
+  edge: 'Montante extremo',
+  corner: 'Montante esquina/T',
+  backup: 'Montante respaldo',
+  stud: 'Montante relleno',
+  king: 'Montante jamba',
+  jack: 'Montante bajo dintel',
+  cripple: 'Montante bajo antepecho',
+  crippleTop: 'Montante sobre dintel',
+  header: 'Dintel',
+  sill: 'Antepecho',
+  nogging: 'Cadeneta'
+};
 
 function dist(p1, p2) {
   return Math.hypot(p2.x - p1.x, p2.y - p1.y);
@@ -55,6 +76,17 @@ function layerSectionLabel(el, layer, library) {
   if (!id) return 'Personalizado';
   const item = (library.foundationSections || []).find((i) => i.id === id);
   return item ? item.name : 'Personalizado';
+}
+
+/** Perfil real de una pieza persistida de tabiquería. Un id ausente o roto no elimina la pieza:
+ * se conserva bajo "Personalizado" y el acumulador la marca con advertencia. */
+function framingProfile(profileId, library) {
+  const profile = profileId == null
+    ? null
+    : (library.metalconProfiles || [])
+      .find((item) => String(item.id) === String(profileId));
+  const label = profile?.code || profile?.catalogDesignation || profile?.name;
+  return { label: label || 'Personalizado', resolved: Boolean(label) };
 }
 
 /**
@@ -160,6 +192,36 @@ export function computeTakeoff(model) {
         g.count += 1;
         g.ml += f.excavationLength * MM_TO_M;
       }
+    }
+  }
+
+  // Tabiquería por pieza, aditiva al metrado de muro por superficie. Se consume exactamente el
+  // despiece persistido: studs usa el perfil de montante; headers, el perfil de solera. Las
+  // cadenetas y headers son horizontales; el resto toma su largo vertical neto.
+  for (const wall of elements.filter((element) => element.type === 'wall')) {
+    const studProfile = framingProfile(wall.framingStudProfileId, library);
+    const trackProfile = framingProfile(wall.framingTrackProfileId, library);
+
+    const addPiece = (piece, profile, horizontal) => {
+      const roleLabel = FRAMING_ROLE_LABEL[piece.role] || piece.role || 'Sin rol';
+      const roleResolved = Boolean(FRAMING_ROLE_LABEL[piece.role]);
+      const section = `${profile.label} — ${roleLabel}`;
+      const g = getGroup('framing', section);
+      const start = Number(horizontal ? piece.oMin : piece.zMin);
+      const end = Number(horizontal ? piece.oMax : piece.zMax);
+      const length = Math.abs(end - start);
+      const lengthResolved = Number.isFinite(start) && Number.isFinite(end) && length > 0;
+
+      g.count += 1;
+      if (lengthResolved) g.ml += length * MM_TO_M;
+      if (!profile.resolved || !roleResolved || !lengthResolved) g.warnings += 1;
+    };
+
+    for (const piece of wall.studs || []) {
+      addPiece(piece, studProfile, piece.role === 'nogging');
+    }
+    for (const piece of wall.headers || []) {
+      addPiece(piece, trackProfile, true);
     }
   }
 
