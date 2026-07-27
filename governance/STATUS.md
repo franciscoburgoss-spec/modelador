@@ -11,13 +11,13 @@
 |---|---|
 | Etapa | Reglas de dominio — catálogo y findings |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R4-finding-catalog.md` — corte A |
-| Suite oficial | 578/578; laboratorio 35/35 |
+| Spec activa | `specs/domain/SPEC-R4-finding-catalog.md` — corte B |
+| Suite oficial | 590/590; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 632,32 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; el corte A puede implementar el contrato puro |
+| Bloqueo actual | Ninguno; el corte B puede adoptar el contrato en las cuatro fronteras |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -56,7 +56,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   sin alterar el despiece OSB ni los 1.529 nodos / 1.104 elementos del INP; kerf independiente.
   El metrado agrega 11 filas por perfil y rol, con 1.473 piezas y 2.679,051 m, y preserva
   `deepEqual` las 11 filas heredadas.
-- R4: spec gobernada en tres cortes; A (catálogo/shape), B (adopción) y C (presentación) pendientes.
+- R4: corte A cerrado con catálogo inmutable de tres reglas, límites puros y constructor canónico
+  compatible con findings legacy; B (adopción) y C (presentación) pendientes.
 - R5–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
@@ -79,5 +80,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-El corte A de `SPEC-R4` debe implementar el catálogo puro de tres reglas, la resolución de límites y
-el constructor canónico de findings, sin tocar React ni emitir checks geométricos.
+El corte B de `SPEC-R4` debe adoptar el constructor canónico en `modelValidation`,
+`analysisReadiness`, `validateRoofSystems` y `validateRoofPlanes`, preservando `deepEqual` sus
+findings legacy y sin tocar React ni emitir checks geométricos.
