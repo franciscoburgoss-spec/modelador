@@ -281,7 +281,8 @@ function collectWallFraming(wall, grid, paramsMap, elementsById, reg, metalconPr
   const geo = resolveWallGeometry(wall, grid, paramsMap, elementsById);
   if (!geo) { skippedWalls.push({ wallId: wall.id, reason: 'geometría no resuelta (ejes faltantes)' }); return; }
 
-  const studs = wall.studs;
+  // Las cadenetas son piezas constructivas horizontales, no barras del modelo de análisis.
+  const studs = wall.studs?.filter((piece) => piece.role !== 'nogging');
   if (!studs || !studs.length) {
     if (wall.framingStudProfileId || wall.framingTrackProfileId) {
       skippedWalls.push({ wallId: wall.id, reason: 'perfiles asignados pero sin despiece generado (studs vacío) — regenerar en Modulación de metalcon' });

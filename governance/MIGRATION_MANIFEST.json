@@ -270,7 +270,10 @@
       "path": "src/components/modals/OsbNestingModal.jsx",
       "bytes": 11898,
       "sha256": "a99166e845855c47a6697c8f4ee1bc64ccf7aad6139099eb5ff5441167ac81c7",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 11872,
+      "workspaceSha256": "571fdcc409364026efc6477464a1421db0cd18cbeb2bc65ecdebb8820d797e8b",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/components/modals/ProjectInfoModal.jsx",
@@ -436,9 +439,9 @@
       "bytes": 20075,
       "sha256": "855edc86e7795ff3c8eff6f229dfc3ceb345c96e88e2bc8e4386a8e5cd861fe7",
       "kind": "source",
-      "workspaceBytes": 20128,
-      "workspaceSha256": "9f4df4a930246bfa91d0a484e4f06da6e0c6d9621c125f17ca96421e3a489532",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 20266,
+      "workspaceSha256": "b587d868f8c1f47fd31626e3d59b34fba2ee02530bd1b548e8745322fd61aed7",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/exportCalculixFoundation.js",

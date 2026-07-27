@@ -7,6 +7,7 @@ import { computeCourseBreaks, computeOsbPanelLayout } from '../src/core/osbModul
 import { buildParamsMap } from '../src/core/projectParams.js';
 import { buildElementsById } from '../src/core/elementReferences.js';
 import { studFlangeSpan } from '../src/core/trussLayout.js';
+import { generateCalculix } from '../src/core/exportCalculix.js';
 
 const casaL = JSON.parse(
   readFileSync(new URL('./fixtures/casa-L.json', import.meta.url), 'utf8')
@@ -31,6 +32,42 @@ function uniqueVerticalStuds(studs) {
     if (!byOffset.has(stud.offset)) byOffset.set(stud.offset, stud);
   }
   return [...byOffset.values()].sort((a, b) => a.offset - b.offset);
+}
+
+function regenerateCasaL() {
+  const result = modulateAllWallsFull(casaL, {
+    metalcon: casaL.metalconDefaults || {},
+    osb: casaL.osbDefaults || {}
+  });
+  const patches = new Map(
+    result.patches.map(({ wallId, patch }) => [String(wallId), patch])
+  );
+  return {
+    ...casaL,
+    elements: casaL.elements.map((element) => (
+      patches.has(String(element.id))
+        ? { ...element, ...patches.get(String(element.id)) }
+        : element
+    ))
+  };
+}
+
+function countInpCards(inp) {
+  let section = '';
+  let nodes = 0;
+  let elements = 0;
+  for (const rawLine of inp.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (line.startsWith('*')) {
+      section = /^\*NODE\b/i.test(line)
+        ? 'node'
+        : /^\*ELEMENT\b/i.test(line) ? 'element' : '';
+    } else if (/^\d+\s*,/.test(line)) {
+      if (section === 'node') nodes += 1;
+      if (section === 'element') elements += 1;
+    }
+  }
+  return { nodes, elements };
 }
 
 test('R3-A: casa-L genera cadenetas reales en los mismos 40 muros y limpia el subproducto OSB', () => {
@@ -163,6 +200,37 @@ test('R3-A/D-021: computeOsbPanelLayout ignora explícitamente cualquier role no
     wall, grid, {}, {}, [...vertical, selfSupportingNogging], config
   );
   assert.deepEqual(guarded.courses, baseline.courses);
+});
+
+test('R3-C: casa-L conserva 1529 nodos y 1104 elementos al agregar cadenetas', () => {
+  const withNoggings = regenerateCasaL();
+  const beforeR3 = {
+    ...withNoggings,
+    elements: withNoggings.elements.map((element) => (
+      element.type === 'wall'
+        ? {
+            ...element,
+            studs: (element.studs || []).filter((piece) => piece.role !== 'nogging')
+          }
+        : element
+    ))
+  };
+  const baselineInp = generateCalculix(beforeR3);
+  const currentInp = generateCalculix(withNoggings);
+
+  assert.deepEqual(countInpCards(baselineInp), { nodes: 1529, elements: 1104 });
+  assert.deepEqual(countInpCards(currentInp), countInpCards(baselineInp));
+  assert.doesNotMatch(currentInp, /\b(?:NaN|Infinity)\b/);
+});
+
+test('R3-C: el kerf inicial del nesting es 5 mm y no lee osbDefaults.gap', () => {
+  const source = readFileSync(
+    new URL('../src/components/modals/OsbNestingModal.jsx', import.meta.url),
+    'utf8'
+  );
+
+  assert.match(source, /const \[kerf, setKerf\] = useState\(5\);/);
+  assert.doesNotMatch(source, /osbDefaults\?\.gap/);
 });
 
 test('R3-A: una puerta que cruza la junta conserva dos corridas y ninguna pieza atraviesa el vano', () => {

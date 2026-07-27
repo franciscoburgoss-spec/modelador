@@ -65,7 +65,7 @@ export default function OsbNestingModal({ open, onClose }) {
   const projectParams = useModelStore((s) => s.model.projectParams || []);
   const applyWallPatchesBatch = useModelStore((s) => s.applyWallPatchesBatch);
 
-  const [kerf, setKerf] = useState(model.osbDefaults?.gap ?? 5);
+  const [kerf, setKerf] = useState(5);
   const [minOffcutWidth, setMinOffcutWidth] = useState(300);
   const [minOffcutHeight, setMinOffcutHeight] = useState(300);
   const [applied, setApplied] = useState(null);
