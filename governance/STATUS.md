@@ -11,12 +11,12 @@
 |---|---|
 | Etapa | Reglas de dominio — cadenetas |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R3-cadenetas.md` |
-| Suite oficial | 558/558; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 629,04 kB |
+| Spec activa | `specs/domain/SPEC-R3-cadenetas.md` — corte B |
+| Suite oficial | 566/566; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 630,77 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | La cadeneta sigue siendo un subproducto OSB, fuera del metrado de tabiquería |
+| Bloqueo actual | La pieza real ya existe; faltan dibujo, exclusión INP, kerf independiente y metrado |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -41,7 +41,7 @@
 |---|---|---|
 | 0 | Repositorio y entorno reproducibles | Completada |
 | 1 | Seguridad, integridad e invalidación | Completada |
-| 2 | Reglas de dominio R3–R8 y formatos | En preparación |
+| 2 | Reglas de dominio R3–R8 y formatos | En ejecución |
 | 3 | Persistencia y recuperación nativas | No iniciada |
 | 4 | Aplicación Tauri y CalculiX integrado | No iniciada |
 | 5 | UX, rendimiento y observabilidad local | No iniciada |
@@ -51,19 +51,25 @@
 
 Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución vigente es:
 
-- R3: spec lista e implementación activa; cadeneta como pieza de tabiquería.
+- R3-A: cerrado; `casa-L` genera 493 piezas reales (134,551 m) en `wall.studs`, sin alterar el
+  despiece OSB.
+- R3-B–D: pendientes; dibujo/leyenda, guarda INP/kerf y metrado de tabiquería.
 - R4–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
+- R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
+  detectadas en `casa-L`; R3-A no inventa una regla de absorción.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
 ## Deudas técnicas del baseline
 
-- El store tiene 62,77 % de cobertura de líneas frente al objetivo de 85 %; seguimiento R-015 /
+- El store tiene 63,08 % de cobertura de líneas frente al objetivo de 85 %; seguimiento R-015 /
   `SPEC-003`.
 - Siete hallazgos heredados de dependencias de hooks quedan acotados a cinco archivos; seguimiento
   R-016 / `SPEC-005`.
+- `migration-manifest --record` sólo acepta identificadores `SPEC-NNN`; debe admitir las specs
+  gobernadas `SPEC-Rn` antes del siguiente registro de reglas de dominio.
 
 ## Próximo cierre
 
-El corte A de `SPEC-R3` debe crear cadenetas reales en `wall.studs`, preservar el despiece OSB y
-demostrar que ninguna pieza solapa un montante.
+El corte B de `SPEC-R3` debe dibujar la banda centrada con el B real, incorporar `ROLE_TAG.CD` y la
+leyenda, condicionar el rótulo a la existencia de piezas y auditar los DXF modificados con 0/0.

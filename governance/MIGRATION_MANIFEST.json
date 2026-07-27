@@ -253,9 +253,9 @@
       "bytes": 14190,
       "sha256": "610111641695c0ce44de57871c2509576c60b32a0b157ac4143559f90d9f0bc8",
       "kind": "source",
-      "workspaceBytes": 14232,
-      "workspaceSha256": "82c912a0bacc5df0ca8d530570399a4ae93219b78d567d4fa1b73c259e1cba73",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 15082,
+      "workspaceSha256": "e5599f518da4bb225d3d70cf9bbe25407a733d461d6b3b5018bf2c737adb9162",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/components/modals/OsbModulationModal.jsx",
@@ -363,7 +363,10 @@
       "path": "src/core/batchModulation.js",
       "bytes": 6932,
       "sha256": "a202c592131e2efc12fd371232fef8edf51fcb23ee1ac1d0306188c84f6aa334",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 8551,
+      "workspaceSha256": "39fa74df03eac6402ecf73c24720019a6875244a412eae05d862156077136ab0",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/build3d.js",
@@ -382,9 +385,9 @@
       "bytes": 6426,
       "sha256": "a19b525fdf5aa94dc63c0c4cbff7ec8f5ce4fc516036ad2a4bb57204958aec2e",
       "kind": "source",
-      "workspaceBytes": 12225,
-      "workspaceSha256": "4868b9321bd3235d83ea17a3fa90c402b1879b074d361961264cb1cd4fce3059",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 12240,
+      "workspaceSha256": "2f76122edf1fd589a6437ab83e376c7bd04464380ed5bd9746061de51214e327",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/dimensions.js",
@@ -567,7 +570,10 @@
       "path": "src/core/metalconModulation.js",
       "bytes": 10189,
       "sha256": "419c177f7477ce6ec0d877e1088a9677582aaeb8bab0ca07abafee1487c0557d",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 12564,
+      "workspaceSha256": "f48a04d204934bf2c1e6b1c9335b9f5ed9d2295aa9604e3f7bde65796b29b102",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/modelValidation.js",
@@ -585,7 +591,10 @@
       "path": "src/core/osbModulation.js",
       "bytes": 29973,
       "sha256": "802a08a52ade16727b849dae09cd23189b58442ece2a1f071c0fb5faf561e126",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 29355,
+      "workspaceSha256": "4131e753e874702cbe06946af7a46e619b94d9b6b8de33a458a2d65ba1ee5f56",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/osbNesting.js",
@@ -801,7 +810,10 @@
       "path": "src/render/metalconModulation.js",
       "bytes": 3285,
       "sha256": "978211b8a0af25542136eb6c03f275dbfe49b6e6063d942d79873dd0dd70cb08",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 3381,
+      "workspaceSha256": "e3a801ab7029e0b98e82f2e6d9fe8a0bff04cd270b2948ed9743c589dc23346d",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/render/osbModulation.js",
@@ -1005,7 +1017,10 @@
       "path": "tests/osbModulation.test.mjs",
       "bytes": 19083,
       "sha256": "bf6aef55c7cc3e2a31273fcfacbd11f6bac74b456deb3e878e0c12c81f0475ca",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 18842,
+      "workspaceSha256": "1b964e332e94a4d85051ebb9daed501391f4108f15f10a2dc47f477107fe1ab7",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "tests/osbNesting.test.mjs",

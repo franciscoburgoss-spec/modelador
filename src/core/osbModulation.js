@@ -34,8 +34,9 @@
 //     regla la junta horizontal queda a cota constante (múltiplo de panelHeight) en todos los
 //     muros. La junta no necesita snap horizontal — cualquier pie derecho de altura completa cruza
 //     continuo los dos cursos — pero SÍ exige CADENETA: el manual LP obliga a fijar el encuentro
-//     longitudinal de tableros a una pieza horizontal. Se emite en `noggings` (ver abajo) y se
-//     dibuja/cuenta en el DXF (exportFramingDxf.js).
+//     longitudinal de tableros a una pieza horizontal. Desde R3 la junta se expone en
+//     `computeCourseBreaks().jointZs` y el solver Metalcon genera las piezas `role:'nogging'`;
+//     este módulo sólo resuelve placas.
 //   - cursos consecutivos alternan el lado de anclaje de cada corredor (`stagger`, activado por
 //     defecto) para que las juntas no queden alineadas entre un curso y el siguiente ("trabar en
 //     forma escalonada", recomendación del manual LP).
@@ -263,7 +264,12 @@ function computeVanoFootprint(opening, edgeCandidates, interiorCandidates, panel
  * @returns { bounds: number[], warning: string|null }
  */
 export function computeCourseBreaks(wallHeight, panelHeight, minCourseHeight = MIN_COURSE_HEIGHT, enforceMinCourse = false) {
-  if (!(wallHeight > panelHeight + EPS)) return { bounds: [0, wallHeight], warning: null };
+  const result = (bounds, warning = null) => ({
+    bounds,
+    jointZs: bounds.slice(1, -1),
+    warning
+  });
+  if (!(wallHeight > panelHeight + EPS)) return result([0, wallHeight]);
 
   const full = Math.floor(wallHeight / panelHeight);
   const remainder = wallHeight - full * panelHeight;
@@ -272,7 +278,7 @@ export function computeCourseBreaks(wallHeight, panelHeight, minCourseHeight = M
 
   if (remainder <= EPS) { // altura múltiplo exacto: la última hilada completa cierra en el cielo
     bounds.push(wallHeight);
-    return { bounds, warning: null };
+    return result(bounds);
   }
 
   let lastBreak = full * panelHeight;
@@ -284,30 +290,7 @@ export function computeCourseBreaks(wallHeight, panelHeight, minCourseHeight = M
     if (enforceMinCourse) lastBreak = wallHeight - minCourseHeight;
   }
   bounds.push(lastBreak, wallHeight);
-  return { bounds, warning };
-}
-
-/**
- * Cadenetas: pieza horizontal obligatoria bajo cada junta entre hiladas (manual LP — el encuentro
- * longitudinal de tableros debe fijarse a una cadeneta). Se interrumpe donde la junta cruza el
- * VACÍO real de un vano (ahí no hay material que fijar; el dintel/antepecho hace de respaldo).
- */
-function computeNoggings(bounds, openings, length, round1) {
-  const noggings = [];
-  for (let i = 1; i < bounds.length - 1; i++) {
-    const z = bounds[i];
-    const voids = openings
-      .filter(o => o.sillRel < z - EPS && o.topRel > z + EPS)
-      .map(o => [o.oMin, o.oMax])
-      .sort((a, b) => a[0] - b[0]);
-    let cursor = 0;
-    for (const [a, b] of voids) {
-      if (a - cursor > EPS) noggings.push({ z: round1(z), oMin: round1(cursor), oMax: round1(a), role: 'nogging' });
-      cursor = Math.max(cursor, b);
-    }
-    if (length - cursor > EPS) noggings.push({ z: round1(z), oMin: round1(cursor), oMax: round1(length), role: 'nogging' });
-  }
-  return noggings;
+  return result(bounds, warning);
 }
 
 export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById = {}, studs = [], config = {}) {
@@ -381,7 +364,7 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
   // franja si alguno de sus studs la contiene completa (el cripple bajo antepecho y el
   // crippleTop sobre dintel son studs distintos en el mismo offset).
   const studsByOffset = new Map();
-  for (const s of studs) {
+  for (const s of studs.filter((piece) => piece.role !== 'nogging')) {
     if (!studsByOffset.has(s.offset)) studsByOffset.set(s.offset, []);
     studsByOffset.get(s.offset).push([s.zMin, s.zMax]);
   }
@@ -489,8 +472,19 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
   }
 
   const panels = courses.flatMap(c => c.panels);
-  const noggings = computeNoggings(bounds, openings, length, round1);
-  return { resolved: true, length, wallHeight, panelHeight, numCourses, courses, panels, noggings, warnings };
+  // Compatibilidad transitoria del shape: una regeneración OSB limpia el subproducto heredado.
+  // La fuente vigente de cadenetas es wall.studs (role:'nogging'), nunca este resultado.
+  return {
+    resolved: true,
+    length,
+    wallHeight,
+    panelHeight,
+    numCourses,
+    courses,
+    panels,
+    noggings: [],
+    warnings
+  };
 }
 
 // ---- código de pieza + tabla de despiece ------------------------------------------------------

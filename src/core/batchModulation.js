@@ -9,8 +9,8 @@
 // por parámetro (el que el usuario dejó seleccionado en el modal).
 
 import { computeStudLayout, detectWallCorners } from './metalconModulation.js';
-import { computeOsbPanelLayout } from './osbModulation.js';
-import { buildParamsMap } from './projectParams.js';
+import { computeCourseBreaks, computeOsbPanelLayout } from './osbModulation.js';
+import { buildParamsMap, resolveValue } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { getWallDisplayName } from './naming.js';
 
@@ -22,7 +22,13 @@ import { getWallDisplayName } from './naming.js';
  * @returns { patches: [{wallId, patch}], skipped: [{wallId, name, reason}] }
  */
 export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
-  const { spacing = 400, studProfileId = null, trackProfileId = null, materialId = null } = defaults;
+  const {
+    spacing = 400,
+    studProfileId = null,
+    trackProfileId = null,
+    materialId = null,
+    osb: osbDefaults = {}
+  } = defaults;
   const { skipExisting = false } = opts;
   const paramsMap = buildParamsMap(model.projectParams || []);
   const elementsById = buildElementsById(model.elements || []);
@@ -33,10 +39,6 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
   const skipped = [];
 
   for (const wall of allWalls) {
-    if (skipExisting && wall.studs?.length > 0) {
-      skipped.push({ wallId: wall.id, name: getWallDisplayName(wall, grid), reason: 'ya tiene despiece' });
-      continue;
-    }
     const wallStudProfileId = wall.framingStudProfileId ?? studProfileId;
     const wallTrackProfileId = wall.framingTrackProfileId ?? trackProfileId;
     if (!wallStudProfileId || !wallTrackProfileId) {
@@ -44,8 +46,56 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
       continue;
     }
     const wallSpacing = wall.studSpacing ?? spacing;
+    const bottom = grid.zLevels.find((level) => level.id === wall.bottomZ);
+    const top = grid.zLevels.find((level) => level.id === wall.topZ);
+    const wallHeight = bottom && top ? top.elevation - bottom.elevation : 0;
+    const panelHeight = resolveValue(
+      wall.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440,
+      paramsMap,
+      elementsById
+    );
+    const minCourseHeight = resolveValue(
+      osbDefaults.minCourseHeight ?? 300,
+      paramsMap,
+      elementsById
+    );
+    const jointZs = wallHeight > 0 && panelHeight > 0
+      ? computeCourseBreaks(
+        wallHeight,
+        panelHeight,
+        minCourseHeight,
+        osbDefaults.enforceMinCourse === true
+      ).jointZs
+      : [];
+    const hasCurrentNoggings = jointZs.length === 0
+      || wall.studs?.some((piece) => piece.role === 'nogging');
+    if (skipExisting && wall.studs?.length > 0 && hasCurrentNoggings) {
+      skipped.push({
+        wallId: wall.id,
+        name: getWallDisplayName(wall, grid),
+        reason: 'ya tiene despiece'
+      });
+      continue;
+    }
+    const studProfile = (model.library?.metalconProfiles || [])
+      .find((profile) => String(profile.id) === String(wallStudProfileId));
+    const trackProfile = (model.library?.metalconProfiles || [])
+      .find((profile) => String(profile.id) === String(wallTrackProfileId));
+    if (jointZs.length > 0 && !(studProfile?.B > 0)) {
+      skipped.push({
+        wallId: wall.id,
+        name: getWallDisplayName(wall, grid),
+        reason: 'perfil montante sin ancho B para cadenetas'
+      });
+      continue;
+    }
     const corners = detectWallCorners(wall, allWalls, grid, paramsMap, elementsById);
-    const layout = computeStudLayout(wall, grid, paramsMap, elementsById, { spacing: wallSpacing, corners });
+    const layout = computeStudLayout(wall, grid, paramsMap, elementsById, {
+      spacing: wallSpacing,
+      corners,
+      jointZs,
+      flangeWidth: studProfile?.B
+    });
     if (!layout.resolved) {
       skipped.push({ wallId: wall.id, name: getWallDisplayName(wall, grid), reason: 'geometría/nivel no resuelto' });
       continue;
@@ -53,8 +103,8 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
     patches.push({
       wallId: wall.id,
       patch: {
-        framingStudProfileId: wallStudProfileId,
-        framingTrackProfileId: wallTrackProfileId,
+        framingStudProfileId: studProfile?.id ?? wallStudProfileId,
+        framingTrackProfileId: trackProfile?.id ?? wallTrackProfileId,
         framingMaterialId: wall.framingMaterialId ?? (materialId ? Number(materialId) : null),
         studSpacing: wallSpacing,
         studs: layout.studs,
@@ -106,7 +156,7 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
         osbPanelHeight: wPanelHeight,
         osbMinPanelWidth: wMinPanelWidth,
         osbCourses: layout.courses,
-        osbNoggings: layout.noggings
+        osbNoggings: []
       }
     });
   }
@@ -128,7 +178,11 @@ export function modulateAllWallsFull(model, defaults = {}, opts = {}) {
   const { metalcon: metalconDefaults = {}, osb: osbDefaults = {} } = defaults;
   const { skipExisting = false } = opts;
 
-  const metalconResult = modulateAllWallsMetalcon(model, metalconDefaults, { skipExisting });
+  const metalconResult = modulateAllWallsMetalcon(
+    model,
+    { ...metalconDefaults, osb: osbDefaults },
+    { skipExisting }
+  );
 
   const metalconPatchMap = new Map(metalconResult.patches.map((p) => [p.wallId, p.patch]));
   const intermediateModel = {

@@ -14,5 +14,5 @@
 | `foundationGeometry` | `none` | ninguno (resolución en vivo) |
 | `roofSystemConfig` | `roofSystem` | roofTruss |
 | `roofPlaneConfig` | `none` | ninguno (resolución en vivo) |
-| `osbDefaults` | `all` | wallOsb |
+| `osbDefaults` | `all` | wallFraming, wallOsb |
 | `metalconDefaults` | `all` | wallFraming, wallOsb |

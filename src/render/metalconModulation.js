@@ -40,6 +40,7 @@ export function drawStudLayoutElevation(ctx, { studs, headers, length, wallHeigh
   ctx.beginPath(); ctx.moveTo(toX(0), toY(wallHeight)); ctx.lineTo(toX(length), toY(wallHeight)); ctx.stroke();
 
   for (const s of studs || []) {
+    if (s.role === 'nogging') continue; // R3-B integra su banda real en los emisores visuales.
     ctx.strokeStyle = ROLE_COLOR[s.role] || '#475569';
     ctx.lineWidth = ROLE_WIDTH[s.role] || 2;
     ctx.beginPath();

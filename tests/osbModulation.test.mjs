@@ -283,7 +283,7 @@ test('osbModulation: junta horizontal a cota constante (2440) sin importar la al
   }
 });
 
-test('osbModulation: cadeneta emitida en cada junta de hilada, cortada por el vacío del vano', () => {
+test('osbModulation: las cadenetas ya no se emiten como subproducto de las placas', () => {
   const grid = baseGrid(5000, 3000);
   const wall = baseWall(5000, 3000, [
     { id: 'p1', axisType: 'x', type: 'door', position: 2500, width: 900, height: 2600 } // cruza z=2440
@@ -292,10 +292,7 @@ test('osbModulation: cadeneta emitida en cada junta de hilada, cortada por el va
   const osb = computeOsbPanelLayout(wall, grid, {}, {}, studLayout.studs, { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200 });
 
   assert.equal(osb.courses.length, 2);
-  // la puerta va de 2050 a 2950 y su vacío cruza la junta → cadeneta en dos tramos
-  assert.equal(osb.noggings.length, 2);
-  assert.ok(osb.noggings.every(n => n.z === 2440));
-  assert.deepEqual(osb.noggings.map(n => [n.oMin, n.oMax]), [[0, 2050], [2950, 5000]]);
+  assert.deepEqual(osb.noggings, []);
 });
 
 test('osbModulation: muro de una sola hilada no lleva cadeneta', () => {

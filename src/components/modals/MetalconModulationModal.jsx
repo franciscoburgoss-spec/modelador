@@ -6,8 +6,9 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useModelStore } from '../../store/useModelStore.js';
 import { computeStudLayout, detectWallCorners } from '../../core/metalconModulation.js';
 import { modulateAllWallsMetalcon } from '../../core/batchModulation.js';
+import { computeCourseBreaks } from '../../core/osbModulation.js';
 import { drawStudLayoutElevation, METALCON_ROLE_LABELS } from '../../render/metalconModulation.js';
-import { buildParamsMap } from '../../core/projectParams.js';
+import { buildParamsMap, resolveValue } from '../../core/projectParams.js';
 import { buildElementsById } from '../../core/elementReferences.js';
 import { getElementShortLabel } from '../../core/naming.js';
 import Modal from '../ui/Modal.jsx';
@@ -26,6 +27,7 @@ export default function MetalconModulationModal({ open, onClose }) {
   const applyWallPatchesBatch = useModelStore((s) => s.applyWallPatchesBatch);
   const loadMetalconCatalog = useModelStore((s) => s.loadMetalconCatalog);
   const metalconDefaults = useModelStore((s) => s.model.metalconDefaults);
+  const osbDefaults = useModelStore((s) => s.model.osbDefaults || {});
   const setMetalconDefaults = useModelStore((s) => s.setMetalconDefaults);
   const model = useModelStore((s) => s.model);
 
@@ -81,10 +83,35 @@ export default function MetalconModulationModal({ open, onClose }) {
     return detectWallCorners(wall, elements, grid, paramsMap, elementsById);
   }, [wall, elements, grid, paramsMap, elementsById]);
 
+  const studProfile = studProfiles.find(p => String(p.id) === String(studProfileId));
+  const trackProfile = trackProfiles.find(p => String(p.id) === String(trackProfileId));
+
   const layout = useMemo(() => {
     if (!wall) return { resolved: false, length: null, wallHeight: null, studs: [] };
-    return computeStudLayout(wall, grid, paramsMap, elementsById, { spacing, corners });
-  }, [wall, grid, paramsMap, elementsById, spacing, corners]);
+    const base = computeStudLayout(wall, grid, paramsMap, elementsById, { spacing, corners });
+    if (!base.resolved) return base;
+    const panelHeight = resolveValue(
+      wall.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440,
+      paramsMap,
+      elementsById
+    );
+    const jointZs = computeCourseBreaks(base.wallHeight, panelHeight).jointZs;
+    return computeStudLayout(wall, grid, paramsMap, elementsById, {
+      spacing,
+      corners,
+      jointZs,
+      flangeWidth: studProfile?.B
+    });
+  }, [
+    wall,
+    grid,
+    paramsMap,
+    elementsById,
+    spacing,
+    corners,
+    osbDefaults.panelHeight,
+    studProfile?.B
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -99,14 +126,13 @@ export default function MetalconModulationModal({ open, onClose }) {
     drawStudLayoutElevation(ctx, layout, width, height);
   }, [layout]);
 
-  const studProfile = studProfiles.find(p => p.id === studProfileId);
-  const trackProfile = trackProfiles.find(p => p.id === trackProfileId);
-
   // Despiece: agrupa montantes por rol, más 2 filas fijas de solera (sup/inf) con el perfil de track.
   const despieceRows = useMemo(() => {
     const byRole = new Map();
     for (const s of layout.studs) {
-      const lenM = (s.zMax - s.zMin) / 1000;
+      const lenM = s.role === 'nogging'
+        ? (s.oMax - s.oMin) / 1000
+        : (s.zMax - s.zMin) / 1000;
       const key = s.role;
       const prev = byRole.get(key) || { role: key, count: 0, totalM: 0 };
       prev.count += 1;
@@ -132,8 +158,8 @@ export default function MetalconModulationModal({ open, onClose }) {
   const handleGenerate = () => {
     if (!canGenerate) return;
     commitWallRegeneration(wall.id, 'wallFraming', {
-      framingStudProfileId: studProfileId,
-      framingTrackProfileId: trackProfileId,
+      framingStudProfileId: studProfile?.id ?? studProfileId,
+      framingTrackProfileId: trackProfile?.id ?? trackProfileId,
       framingMaterialId: materialId ? Number(materialId) : null,
       studSpacing: spacing,
       studs: layout.studs,
@@ -154,7 +180,13 @@ export default function MetalconModulationModal({ open, onClose }) {
     }
     const { patches, skipped } = modulateAllWallsMetalcon(
       model,
-      { spacing, studProfileId, trackProfileId, materialId: materialId ? Number(materialId) : null },
+      {
+        spacing,
+        studProfileId,
+        trackProfileId,
+        materialId: materialId ? Number(materialId) : null,
+        osb: osbDefaults
+      },
       { skipExisting }
     );
     if (patches.length > 0) applyWallPatchesBatch(patches);
