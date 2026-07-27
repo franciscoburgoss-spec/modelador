@@ -1,0 +1,84 @@
+{
+  "projectParams": [],
+  "grid": {
+    "xAxes": [
+      { "id": "X0", "position": 0 },
+      { "id": "X1", "position": 2000 },
+      { "id": "X2", "position": 4000 }
+    ],
+    "yAxes": [
+      { "id": "Y0", "position": 0 },
+      { "id": "Y1", "position": 2000 },
+      { "id": "Y2", "position": 4000 },
+      { "id": "Y3", "position": 6000 }
+    ],
+    "zLevels": [
+      { "id": "Z0", "elevation": 0 },
+      { "id": "Z1", "elevation": 2400 }
+    ]
+  },
+  "elements": [
+    {
+      "id": 10,
+      "type": "wall",
+      "direction": "x",
+      "xStart": "X2",
+      "xEnd": "X0",
+      "yStart": "Y0",
+      "yEnd": "Y0",
+      "bottomZ": "Z0",
+      "topZ": "Z1",
+      "thickness": 90,
+      "openings": [
+        {
+          "id": "window-reverse",
+          "axisType": "x",
+          "type": "window",
+          "position": 2000,
+          "width": 800,
+          "height": 1000,
+          "sillHeight": 900
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "wall",
+      "direction": "y",
+      "xStart": "X0",
+      "xEnd": "X0",
+      "yStart": "Y0",
+      "yEnd": "Y1",
+      "bottomZ": "Z0",
+      "topZ": "Z1",
+      "thickness": 90,
+      "openings": []
+    },
+    {
+      "id": "host",
+      "type": "wall",
+      "direction": "x",
+      "xStart": "X0",
+      "xEnd": "X2",
+      "yStart": "Y2",
+      "yEnd": "Y2",
+      "bottomZ": "Z0",
+      "topZ": "Z1",
+      "thickness": 90,
+      "openings": []
+    },
+    {
+      "id": "branch",
+      "type": "wall",
+      "direction": "y",
+      "xStart": "X1",
+      "xEnd": "X1",
+      "yStart": "Y2",
+      "yEnd": "Y3",
+      "bottomZ": "Z0",
+      "topZ": "Z1",
+      "thickness": 90,
+      "openings": []
+    }
+  ]
+}

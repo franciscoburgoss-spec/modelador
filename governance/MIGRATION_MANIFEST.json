@@ -432,7 +432,10 @@
       "path": "src/core/elementGeometry.js",
       "bytes": 5609,
       "sha256": "6028ba5760d88073bc9bdf589dfb5287e677b2b498419c749a5c1ba0d2b7d07c",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 6496,
+      "workspaceSha256": "2c2c4cc34b49335e99fa5064d0e782e528a9eedc6afd829c2ea30145bb8f855f",
+      "changedBy": "SPEC-R6"
     },
     {
       "path": "src/core/elementReferences.js",

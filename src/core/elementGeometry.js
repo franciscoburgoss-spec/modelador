@@ -43,16 +43,41 @@ export function resolveWallGeometry(wall, grid, paramsMap = {}, elementsById = {
   };
 }
 
-/** Proyecta un offset (mm desde el extremo "start", a lo largo del eje de corrida — mismo
- * origen que usa computeStudLayout/openings) a un punto {x,y} real del muro. Reusa el mismo
- * criterio worldMin=p1 que ya usan render/wall.js y metalconModulation.js. */
-export function wallOffsetToWorldPoint(wall, geo, offset) {
-  const runX = isWallXRun(wall);
-  const span = runX ? (geo.p2.x - geo.p1.x) : (geo.p2.y - geo.p1.y);
-  const t = span === 0 ? 0 : offset / Math.abs(span);
+/**
+ * Frame local canónico del muro resuelto. `start` siempre es el extremo de menor coordenada
+ * sobre el eje de corrida, aunque la declaración xStart/xEnd o yStart/yEnd venga invertida.
+ * Devuelve null para geometría incompleta o no numérica.
+ */
+export function resolveWallLocalFrame(wall, geo) {
+  if (!geo?.p1 || !geo?.p2) return null;
+  const coordinates = [geo.p1.x, geo.p1.y, geo.p2.x, geo.p2.y];
+  if (!coordinates.every(Number.isFinite)) return null;
+
+  const runAxis = isWallXRun(wall) ? 'x' : 'y';
+  const declaredStartIsOrigin = geo.p1[runAxis] <= geo.p2[runAxis];
+  const origin = declaredStartIsOrigin ? geo.p1 : geo.p2;
+  const end = declaredStartIsOrigin ? geo.p2 : geo.p1;
+
   return {
-    x: geo.p1.x + t * (geo.p2.x - geo.p1.x),
-    y: geo.p1.y + t * (geo.p2.y - geo.p1.y)
+    runAxis,
+    origin: { x: origin.x, y: origin.y },
+    end: { x: end.x, y: end.y },
+    length: end[runAxis] - origin[runAxis],
+    declaredStartSide: declaredStartIsOrigin ? 'start' : 'end'
+  };
+}
+
+/** Proyecta un offset (mm desde el extremo local "start") a un punto {x,y} real del muro.
+ * Los offsets negativos o mayores al largo se conservan: OSB puede extender la envolvente. */
+export function wallOffsetToWorldPoint(wall, geo, offset) {
+  const frame = resolveWallLocalFrame(wall, geo);
+  if (!frame) return null;
+  const spanX = frame.end.x - frame.origin.x;
+  const spanY = frame.end.y - frame.origin.y;
+  const t = frame.length === 0 ? 0 : offset / frame.length;
+  return {
+    x: frame.origin.x + t * spanX,
+    y: frame.origin.y + t * spanY
   };
 }
 

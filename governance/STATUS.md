@@ -11,13 +11,13 @@
 |---|---|
 | Etapa | Reglas de dominio — encuentros L/T y traslape OSB |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R6-wall-junctions.md` — corte A |
-| Suite oficial | 625/625; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 656,06 kB |
+| Spec activa | `specs/domain/SPEC-R6-wall-junctions.md` — corte B |
+| Suite oficial | 637/637; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 656,38 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; el corte A puede implementar frame local y topología pura |
+| Bloqueo actual | Ninguno; el corte B puede adoptar la topología en Metalcon e invalidación |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -60,9 +60,10 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
 - R5-A/B/C: cerrados; contrato/migración, CRUD/asignación con historial, invalidación central,
   modulación efectiva, `osbGap` por muro, nesting por rol y coordinación UI completos.
-- R6: spec gobernada en tres cortes. La preparación midió 23 bandas L, 35 T, 24 coincidencias
-  paralelas falsas, 4 coincidencias sin traslape Z y 19 respaldos anfitriones ausentes en las 26 T
-  extremo-cuerpo de `casa-L`; A (topología), B (pilar/invalidation) y C (OSB) pendientes.
+- R6-A: cerrado; frame local normalizado y topología global pura reconocen en `casa-L` exactamente
+  80 nodos/bandas (23 L, 35 T, 18 rectas y 4 terminales), con prioridad L estable, candidatos
+  completos, host T interior, Z parcial/disjunto y ambigüedad explícita. B (pilar/invalidation) y
+  C (OSB) siguen pendientes; ningún generador consume aún la nueva autoridad.
 - R7–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
@@ -87,5 +88,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-El corte A de `SPEC-R6` debe implementar el frame local canónico, la topología global por bandas Z
-y la prioridad determinista de traslape, sin adoptar aún el resultado en Metalcon, store u OSB.
+El corte B de `SPEC-R6` debe adoptar una topología común en modulación individual/batch, eliminar
+`backup` de nueva generación, garantizar el `corner` anfitrión T, ampliar la invalidación vecinal,
+actualizar leyenda/metrado y demostrar el framing resultante con DXF 0/0 y smoke CalculiX real.
