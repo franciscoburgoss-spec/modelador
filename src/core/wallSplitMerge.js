@@ -231,6 +231,13 @@ export function planWallMerge(model, wallIds, options = {}) {
     }
     if (Math.abs(num(it.thickness) - num(ref.thickness)) > 0.5) return { ok: false, error: 'los muros tienen espesores distintos', warnings };
     if ((it.wall.libraryId ?? null) !== (ref.wall.libraryId ?? null)) return { ok: false, error: 'los muros usan secciones de librería distintas', warnings };
+    if ((it.wall.wallTypeId ?? null) !== (ref.wall.wallTypeId ?? null)) {
+      return {
+        ok: false,
+        error: 'los muros usan tipos de muro distintos — unirlos descartaría rol y defaults',
+        warnings
+      };
+    }
   }
 
   const sorted = [...items].sort((p, q) => p.min - q.min);
@@ -306,6 +313,7 @@ export function findMergeCandidates(model, wallId, options = {}) {
       if (Math.abs(fixedCoord(rr.runX, g) - fixed) > tolerance) return null;
       if (el.bottomZ !== wall.bottomZ || el.topZ !== wall.topZ) return null;
       if ((el.libraryId ?? null) !== (wall.libraryId ?? null)) return null;
+      if ((el.wallTypeId ?? null) !== (wall.wallTypeId ?? null)) return null;
       if (Math.abs(num(g.thickness) - num(geo.thickness)) > 0.5) return null;
       return { wall: el, min: rr.min, max: rr.max };
     })

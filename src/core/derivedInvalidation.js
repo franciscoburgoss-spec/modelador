@@ -59,6 +59,14 @@ export const MUTATION_DEPENDENCIES = Object.freeze({
     scope: 'removedWalls',
     derivatives: Object.freeze(['roofTruss'])
   }),
+  wallTypeConfig: Object.freeze({
+    scope: 'wallType',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb'])
+  }),
+  wallTypeAssignment: Object.freeze({
+    scope: 'wall',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb'])
+  }),
   foundationGeometry: Object.freeze({
     scope: 'none',
     derivatives: Object.freeze([])
@@ -197,12 +205,18 @@ export function invalidateForMutation(model, mutation, context = {}) {
   const wallIds = new Set(context.wallIds || []);
   if (context.wallId != null) wallIds.add(context.wallId);
   const all = dependency.scope === 'all';
-  const affectsWalls = all || dependency.scope === 'wall';
+  const byWallType = dependency.scope === 'wallType';
+  const affectsWalls = all || dependency.scope === 'wall' || byWallType;
   let touched = false;
 
   const elements = (model.elements || []).map((element) => {
     if (element.type !== 'wall' || !affectsWalls) return element;
-    if (!all && !wallIds.has(element.id)) return element;
+    if (
+      !all
+      && (byWallType
+        ? element.wallTypeId !== context.wallTypeId
+        : !wallIds.has(element.id))
+    ) return element;
     const next = markWall(element, dependency.derivatives);
     if (next !== element) touched = true;
     return next;

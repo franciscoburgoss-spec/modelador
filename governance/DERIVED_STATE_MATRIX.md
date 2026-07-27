@@ -11,6 +11,8 @@
 | `wallOpenings` | `wall` | wallFraming, wallOsb, roofTruss |
 | `wallRemoval` | `dependentRoof` | roofTruss |
 | `wallTopology` | `removedWalls` | roofTruss |
+| `wallTypeConfig` | `wallType` | wallFraming, wallOsb |
+| `wallTypeAssignment` | `wall` | wallFraming, wallOsb |
 | `foundationGeometry` | `none` | ninguno (resolución en vivo) |
 | `roofSystemConfig` | `roofSystem` | roofTruss |
 | `roofPlaneConfig` | `none` | ninguno (resolución en vivo) |

@@ -394,9 +394,9 @@
       "bytes": 6426,
       "sha256": "a19b525fdf5aa94dc63c0c4cbff7ec8f5ce4fc516036ad2a4bb57204958aec2e",
       "kind": "source",
-      "workspaceBytes": 12240,
-      "workspaceSha256": "2f76122edf1fd589a6437ab83e376c7bd04464380ed5bd9746061de51214e327",
-      "changedBy": "SPEC-R3"
+      "workspaceBytes": 12645,
+      "workspaceSha256": "b2088d1a86e427947bd18cb501510ab0fb6f6052aca015ecaa556dc7f921d800",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/core/dimensions.js",
@@ -783,7 +783,10 @@
       "path": "src/core/wallSplitMerge.js",
       "bytes": 15450,
       "sha256": "fd1011a796c7bd798100e9440455f7c4200be635d5448432206a4ef881110e74",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 15765,
+      "workspaceSha256": "bf63eb4b161dd3ebe04ee6a712f9f5305891a7e4c150921efe65133bfa6c92f7",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/index.css",
@@ -877,8 +880,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 45721,
-      "workspaceSha256": "d0eb2ef4645bef31ce8f4834e330e5bd6ac31d429241c8c9e1a9774683ab4dce",
+      "workspaceBytes": 50123,
+      "workspaceSha256": "a58aab13f9c364bd556b0a388b4e4276c668f91004c83d355c0ac75055626984",
       "changedBy": "SPEC-R5"
     },
     {
@@ -1227,7 +1230,10 @@
       "path": "tests/wallSplitMerge.test.mjs",
       "bytes": 9400,
       "sha256": "87e8e05b585ee890d652f6dd38d07584c8f3e80a82b72d2699c0c101c6880906",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 11355,
+      "workspaceSha256": "c645e71751064ff5ed565df5115c959b5ce4f10ee2273fad48a39e14772609c9",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "vite.config.js",

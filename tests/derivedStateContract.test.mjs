@@ -96,6 +96,8 @@ test('la matriz central registra derivados y cubre todos los dominios mutables d
     'wallGeometry',
     'wallOpenings',
     'wallRemoval',
+    'wallTypeAssignment',
+    'wallTypeConfig',
     'foundationGeometry',
     'roofSystemConfig',
     'roofPlaneConfig'

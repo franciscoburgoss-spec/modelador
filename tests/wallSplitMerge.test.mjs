@@ -64,6 +64,14 @@ test('divide por un eje intermedio: dos tramos, vanos repartidos, derivados desc
   }
 });
 
+test('R5-B: dividir conserva wallTypeId en ambos tramos', () => {
+  const typed = { ...wall, wallTypeId: 'T90' };
+  const p = planWallSplit({ ...model, elements: [typed] }, 50, { atAxisId: 2 });
+
+  assert.equal(p.ok, true);
+  assert.deepEqual(p.walls.map((item) => item.wallTypeId), ['T90', 'T90']);
+});
+
 test('divide por distancia sin eje existente: propone eje auxiliar con etiqueta libre', () => {
   const p = planWallSplit(model, 50, { atOffset: 2000 });
   assert.equal(p.ok, true);
@@ -153,6 +161,34 @@ test('unir rechaza: hueco entre tramos, niveles distintos, sección distinta', (
   assert.equal(far.id, 62); // fixture sin usar, evita lint de variable muerta
 });
 
+test('R5-B: unir rechaza tipos distintos y acepta igualdad, incluido tipo ausente/null', () => {
+  const typedA = {
+    ...wall, id: 60, xStart: 1, xEnd: 2, openings: [], wallTypeId: 'T90'
+  };
+  const typedB = {
+    ...wall, id: 61, xStart: 2, xEnd: 3, openings: [], wallTypeId: 'T60'
+  };
+  let p = planWallMerge({ ...model, elements: [typedA, typedB] }, [60, 61]);
+  assert.equal(p.ok, false);
+  assert.match(p.error, /tipos de muro distintos/i);
+
+  p = planWallMerge({
+    ...model,
+    elements: [typedA, { ...typedB, wallTypeId: 'T90' }]
+  }, [60, 61]);
+  assert.equal(p.ok, true);
+  assert.equal(p.wall.wallTypeId, 'T90');
+
+  const legacyA = { ...typedA };
+  delete legacyA.wallTypeId;
+  p = planWallMerge({
+    ...model,
+    elements: [legacyA, { ...typedB, wallTypeId: null }]
+  }, [60, 61]);
+  assert.equal(p.ok, true);
+  assert.equal(p.wall.wallTypeId ?? null, null);
+});
+
 test('unir avisa cuando se pierden parámetros de despiece del tramo más corto', () => {
   const a = { ...wall, id: 60, xStart: 1, xEnd: 2, openings: [], studSpacing: 600 };
   const b = { ...wall, id: 61, xStart: 2, xEnd: 3, openings: [], studSpacing: 400 };
@@ -169,6 +205,31 @@ test('findMergeCandidates encadena solo muros compatibles y contiguos', () => {
   const m = { ...model, elements: [a, b, otroNivel, otroEje] };
   assert.deepEqual(findMergeCandidates(m, 60).map((w) => w.id), [61]);
   assert.deepEqual(findMergeCandidates(m, 63).map((w) => w.id), []);
+});
+
+test('R5-B: candidatos de unión exigen el mismo wallTypeId', () => {
+  const base = {
+    ...wall, id: 60, xStart: 1, xEnd: 2, openings: [], wallTypeId: 'T90'
+  };
+  const same = {
+    ...wall, id: 61, xStart: 2, xEnd: 3, openings: [], wallTypeId: 'T90'
+  };
+  const different = {
+    ...wall, id: 62, xStart: 2, xEnd: 3, openings: [], wallTypeId: 'T60'
+  };
+  const absent = { ...wall, id: 63, xStart: 2, xEnd: 3, openings: [] };
+  assert.deepEqual(
+    findMergeCandidates({ ...model, elements: [base, same] }, 60).map((item) => item.id),
+    [61]
+  );
+  assert.deepEqual(
+    findMergeCandidates({ ...model, elements: [base, different] }, 60),
+    []
+  );
+  assert.deepEqual(
+    findMergeCandidates({ ...model, elements: [base, absent] }, 60),
+    []
+  );
 });
 
 test('dividir y volver a unir devuelve el muro original', () => {

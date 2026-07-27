@@ -14,6 +14,7 @@ import { createProjectInfo, normalizeProjectInfo, nextRevisionLetter } from '../
 import {
   CURRENT_MODEL_VERSION, ModelImportError, prepareModelImport, prepareModelJsonImport
 } from '../core/modelSchema.js';
+import { assertValidWallTypes, getWallType } from '../core/wallTypes.js';
 import {
   invalidateForMutation,
   applyWallRegeneration,
@@ -181,6 +182,44 @@ function emptyModel() {
 let _idCounter = 1;
 function generateId() {
   return Date.now() + (_idCounter++);
+}
+
+function cloneWallType(wallType) {
+  return {
+    ...wallType,
+    metalconDefaults: wallType?.metalconDefaults
+      && typeof wallType.metalconDefaults === 'object'
+      && !Array.isArray(wallType.metalconDefaults)
+      ? { ...wallType.metalconDefaults }
+      : wallType?.metalconDefaults,
+    osbDefaults: wallType?.osbDefaults
+      && typeof wallType.osbDefaults === 'object'
+      && !Array.isArray(wallType.osbDefaults)
+      ? { ...wallType.osbDefaults }
+      : wallType?.osbDefaults
+  };
+}
+
+function mergeWallTypePatch(wallType, patch) {
+  const next = { ...wallType, ...patch };
+  for (const field of ['metalconDefaults', 'osbDefaults']) {
+    if (!Object.hasOwn(patch, field)) {
+      next[field] = { ...wallType[field] };
+    } else if (
+      patch[field] !== null
+      && typeof patch[field] === 'object'
+      && !Array.isArray(patch[field])
+    ) {
+      next[field] = { ...wallType[field], ...patch[field] };
+    }
+  }
+  return cloneWallType(next);
+}
+
+function wallTypeChangeInvalidates(before, after) {
+  return ['role', 'metalconDefaults', 'osbDefaults'].some((field) => (
+    JSON.stringify(before[field]) !== JSON.stringify(after[field])
+  ));
 }
 
 function getCanvasSizeFallback() {
@@ -405,6 +444,90 @@ export const useModelStore = create((set, get) => ({
     const next = { ...(s.model.metalconDefaults || {}), ...patch };
     return withHistory(s, invalidateForMutation({ ...s.model, metalconDefaults: next }, 'metalconDefaults'));
   }),
+
+  // ---- tipos y roles de muro (R5-B) ----
+  addWallType: (input) => {
+    const wallType = cloneWallType({ ...input, id: generateId() });
+    const current = get().model;
+    const wallTypes = [...(current.wallTypes || []), wallType];
+    assertValidWallTypes(wallTypes, current.library);
+    set((s) => withHistory(s, { ...s.model, wallTypes }));
+    return { ok: true, wallTypeId: wallType.id };
+  },
+  updateWallType: (id, patch) => {
+    if (Object.hasOwn(patch || {}, 'id')) {
+      throw new TypeError('El id de un tipo de muro es inmutable.');
+    }
+    const current = get().model;
+    const index = (current.wallTypes || []).findIndex((item) => item.id === id);
+    if (index < 0) throw new TypeError(`El tipo de muro ${id} no existe.`);
+    const before = current.wallTypes[index];
+    const updated = mergeWallTypePatch(before, patch || {});
+    const wallTypes = current.wallTypes.map((item, itemIndex) => (
+      itemIndex === index ? updated : item
+    ));
+    assertValidWallTypes(wallTypes, current.library);
+    const invalidates = wallTypeChangeInvalidates(before, updated);
+    set((s) => {
+      const next = { ...s.model, wallTypes };
+      return withHistory(
+        s,
+        invalidates
+          ? invalidateForMutation(next, 'wallTypeConfig', { wallTypeId: id })
+          : next
+      );
+    });
+    return { ok: true, wallTypeId: id, invalidated: invalidates };
+  },
+  removeWallType: (id) => {
+    const current = get().model;
+    if (!(current.wallTypes || []).some((item) => item.id === id)) {
+      return { ok: false, error: `El tipo ${id} no existe.`, wallIds: [] };
+    }
+    const wallIds = (current.elements || [])
+      .filter((element) => element.type === 'wall' && element.wallTypeId === id)
+      .map((element) => element.id);
+    if (wallIds.length > 0) {
+      return {
+        ok: false,
+        error: `El tipo ${id} está asignado a ${wallIds.length} muro(s).`,
+        wallIds
+      };
+    }
+    set((s) => withHistory(s, {
+      ...s.model,
+      wallTypes: (s.model.wallTypes || []).filter((item) => item.id !== id)
+    }));
+    return { ok: true, wallTypeId: id };
+  },
+  assignWallType: (wallId, wallTypeId) => {
+    const current = get().model;
+    const wall = (current.elements || []).find((element) => element.id === wallId);
+    if (!wall || wall.type !== 'wall') {
+      throw new TypeError(`El muro ${wallId} no existe.`);
+    }
+    const requested = wallTypeId ?? null;
+    if (requested !== null && !getWallType(current, requested)) {
+      throw new TypeError(`El tipo de muro ${requested} no existe.`);
+    }
+    if ((wall.wallTypeId ?? null) === requested) return { ok: true, changed: false };
+
+    set((s) => {
+      const elements = s.model.elements.map((element) => {
+        if (element.id !== wallId) return element;
+        const next = { ...element };
+        if (requested === null) delete next.wallTypeId;
+        else next.wallTypeId = requested;
+        return next;
+      });
+      return withHistory(s, invalidateForMutation(
+        { ...s.model, elements },
+        'wallTypeAssignment',
+        { wallId }
+      ));
+    });
+    return { ok: true, changed: true };
+  },
 
   // ---- datos de proyecto del cajetín (sesión 22) ----
   // Entran al historial: son datos del modelo y un cambio de mandante/obra debe poder deshacerse
