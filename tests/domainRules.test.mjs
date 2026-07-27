@@ -4,6 +4,7 @@ import {
   DOMAIN_RULES,
   assertValidDomainRules,
   getDomainRule,
+  ruleAppliesToRole,
   resolveRuleLimit
 } from '../src/core/domainRules.js';
 
@@ -71,12 +72,28 @@ test('R4-A: catálogo, reglas, fuentes y dependencias son inmutables', () => {
   assert.equal(Object.isFrozen(manual), true);
   assert.equal(Object.isFrozen(manual.fuente), true);
   assert.equal(Object.isFrozen(derived.dependsOn), true);
+  assert.equal(Object.isFrozen(derived.aplicaA), true);
   assert.throws(() => {
     manual.titulo = 'mutado';
   }, TypeError);
   assert.throws(() => {
     derived.dependsOn.push('otra.regla.falsa');
   }, TypeError);
+});
+
+test('R5-A: aplicaA es explícito y no hereda reglas entre roles', () => {
+  assert.deepEqual(DOMAIN_RULES['osb.tornillo.borde'].aplicaA, ['MP1']);
+  assert.deepEqual(DOMAIN_RULES['osb.cadeneta.ala'].aplicaA, ['MP1']);
+  assert.deepEqual(
+    DOMAIN_RULES['muro.vano.holguraManilla'].aplicaA,
+    ['MP1', 'MP2', 'MP3', 'tabique']
+  );
+  assert.equal(ruleAppliesToRole('osb.tornillo.borde', 'MP1'), true);
+  assert.equal(ruleAppliesToRole('osb.tornillo.borde', 'MP2'), false);
+  assert.equal(ruleAppliesToRole('osb.tornillo.borde', null), false);
+  assert.equal(ruleAppliesToRole('muro.vano.holguraManilla', 'tabique'), true);
+  assert.throws(() => ruleAppliesToRole('regla.ausente', 'MP1'), /inexistente/i);
+  assert.throws(() => ruleAppliesToRole('osb.tornillo.borde', 'mp1'), /role/i);
 });
 
 test('R4-A: límites resuelven gap efectivo sin default oculto', () => {
@@ -109,6 +126,7 @@ test('R4-A: el catálogo rechaza ids, taxonomías, fuentes y dependencias invál
         url: 'https://example.com/manual.pdf',
         consultado: '2026-07-27'
       },
+      aplicaA: ['MP1'],
       dependsOn: [],
       resolveLimit: () => ({ min: 1, unit: 'mm' })
     }
@@ -142,6 +160,26 @@ test('R4-A: el catálogo rechaza ids, taxonomías, fuentes y dependencias invál
       }
     }),
     /dependencia/i
+  );
+  assert.throws(
+    () => assertValidDomainRules({
+      ...valid,
+      'dominio.pieza.propiedad': {
+        ...valid['dominio.pieza.propiedad'],
+        aplicaA: ['MP1', 'MP1']
+      }
+    }),
+    /aplicaA/i
+  );
+  assert.throws(
+    () => assertValidDomainRules({
+      ...valid,
+      'dominio.pieza.propiedad': {
+        ...valid['dominio.pieza.propiedad'],
+        aplicaA: ['todos']
+      }
+    }),
+    /aplicaA/i
   );
 });
 

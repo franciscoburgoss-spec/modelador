@@ -1,6 +1,7 @@
 import { isValidParamName } from './projectParams.js';
+import { assertValidWallTypes } from './wallTypes.js';
 
-export const CURRENT_MODEL_VERSION = 1;
+export const CURRENT_MODEL_VERSION = 2;
 export const LEGACY_MODEL_VERSION = 0;
 
 export class ModelImportError extends Error {
@@ -64,8 +65,17 @@ function migrateV0ToV1(model) {
   };
 }
 
+function migrateV1ToV2(model) {
+  return {
+    ...model,
+    modelVersion: 2,
+    wallTypes: Object.hasOwn(model, 'wallTypes') ? model.wallTypes : []
+  };
+}
+
 const MIGRATIONS = new Map([
-  [0, migrateV0ToV1]
+  [0, migrateV0ToV1],
+  [1, migrateV1ToV2]
 ]);
 
 function declaredVersion(model) {
@@ -184,11 +194,58 @@ export function validateModel(model) {
     validateAxes(model.grid.yAxes, 'grid.yAxes', 'position', issues);
     validateAxes(model.grid.zLevels, 'grid.zLevels', 'elevation', issues);
   }
-  if (requireArray(model.elements, 'elements', issues)) {
+  const validElements = requireArray(model.elements, 'elements', issues);
+  if (validElements) {
     validateUniqueIds(model.elements, 'elements', issues);
     model.elements.forEach((element, index) => {
       if (isRecord(element) && (typeof element.type !== 'string' || element.type === '')) {
         addIssue(issues, `elements[${index}].type`, 'MISSING_ELEMENT_TYPE', 'El elemento debe declarar type.');
+      }
+    });
+  }
+
+  const validWallTypes = requireArray(model.wallTypes, 'wallTypes', issues);
+  if (validWallTypes) {
+    validateUniqueIds(model.wallTypes, 'wallTypes', issues);
+    try {
+      assertValidWallTypes(model.wallTypes, isRecord(model.library) ? model.library : {});
+    } catch (error) {
+      addIssue(
+        issues,
+        'wallTypes',
+        'INVALID_WALL_TYPE',
+        error instanceof Error ? error.message : 'wallTypes contiene un tipo inválido.'
+      );
+    }
+  }
+  if (validElements) {
+    const wallTypeIds = new Set(
+      validWallTypes
+        ? model.wallTypes.filter(isRecord).map((wallType) => (
+            `${typeof wallType.id}:${String(wallType.id)}`
+          ))
+        : []
+    );
+    model.elements.forEach((element, index) => {
+      if (!isRecord(element) || element.type !== 'wall') return;
+      if (Object.hasOwn(element, 'role')) {
+        addIssue(
+          issues,
+          `elements[${index}].role`,
+          'FORBIDDEN_WALL_ROLE',
+          'El rol vive en wallTypes; un muro no puede declarar role.'
+        );
+      }
+      if (element.wallTypeId != null) {
+        const key = `${typeof element.wallTypeId}:${String(element.wallTypeId)}`;
+        if (!wallTypeIds.has(key)) {
+          addIssue(
+            issues,
+            `elements[${index}].wallTypeId`,
+            'BROKEN_WALL_TYPE_REFERENCE',
+            `wallTypeId ${element.wallTypeId} no referencia un tipo existente.`
+          );
+        }
       }
     });
   }

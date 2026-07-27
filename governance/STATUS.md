@@ -11,13 +11,13 @@
 |---|---|
 | Etapa | Reglas de dominio — roles de muro y `wallTypes` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R5-wall-types.md` — corte A |
-| Suite oficial | 598/598; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 639,73 kB |
+| Spec activa | `specs/domain/SPEC-R5-wall-types.md` — corte B |
+| Suite oficial | 608/608; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 643,54 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; el corte A puede implementar contrato puro y migración |
+| Bloqueo actual | Ninguno; el corte B puede implementar store, invalidación y split/merge |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -58,8 +58,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual` las 11 filas heredadas.
 - R4-A/B/C: cerrados; catálogo inmutable, constructor canónico, cuatro fronteras públicas
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
-- R5: spec gobernada en tres cortes; A (contrato/migración), B (store/invalidation) y
-  C (consumidores/UI) pendientes.
+- R5-A: cerrado; roles exactos, tipos validados, `aplicaA`, resolución efectiva y migración
+  `0→1→2` preservan los modelos legacy. B (store/invalidation) y C (consumidores/UI) pendientes.
 - R6–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
@@ -82,5 +82,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-El corte A de `SPEC-R5` debe implementar el contrato puro de roles/tipos, `aplicaA`, resolución
-efectiva y migración a `modelVersion` 2, sin tocar store, React ni consumidores.
+El corte B de `SPEC-R5` debe implementar CRUD/asignación con historial, invalidación central de
+framing+OSB y compatibilidad estricta de `wallTypeId` al dividir/unir, sin adoptar todavía los
+tipos en modulación, nesting, DXF ni React.

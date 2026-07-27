@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
+import { CURRENT_MODEL_VERSION, prepareModelImport } from '../src/core/modelSchema.js';
 import { useModelStore } from '../src/store/useModelStore.js';
 
 const casaL = JSON.parse(fs.readFileSync(
@@ -61,11 +62,21 @@ test('importación: casa-L migra desde v0 y conserva sus dos roofSystems', () =>
   const loaded = useModelStore.getState().model;
 
   assert.equal(result.ok, true);
-  assert.equal(loaded.modelVersion, 1);
+  assert.equal(loaded.modelVersion, CURRENT_MODEL_VERSION);
+  assert.deepEqual(loaded.wallTypes, []);
   assert.equal(loaded.roofSystems.length, 2);
   assert.equal(loaded.roofPlanes.length, 0);
   assert.equal(JSON.stringify(casaL), original, 'abrir/migrar no muta el objeto original');
   assert.equal(useModelStore.getState().modelImportFeedback.severity, 'warning');
+});
+
+test('R5-A: un modelo nuevo v2 inicializa wallTypes y sobrevive validación inmediata', () => {
+  useModelStore.getState().newModel();
+  const model = useModelStore.getState().model;
+
+  assert.equal(model.modelVersion, CURRENT_MODEL_VERSION);
+  assert.deepEqual(model.wallTypes, []);
+  assert.doesNotThrow(() => prepareModelImport(model));
 });
 
 test('importación: roofPlanes tiene precedencia sin destruir roofSystems', () => {

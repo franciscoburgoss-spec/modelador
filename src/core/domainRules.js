@@ -1,6 +1,8 @@
 // Catálogo puro de reglas constructivas. No lee el modelo ni emite findings: declara metadata y
 // resuelve límites a partir del contexto explícito que entregue un check futuro.
 
+import { isWallRole } from './wallRoles.js';
+
 export const RULE_SCOPES = Object.freeze(['sistema', 'proyecto', 'oficina', 'elemento']);
 export const RULE_ORIGINS = Object.freeze(['manual', 'derivado', 'obra']);
 export const FINDING_SEVERITIES = Object.freeze(['error', 'warning', 'info']);
@@ -84,6 +86,14 @@ export function assertValidDomainRules(catalog) {
       throw new TypeError(`La regla ${rule.id} tiene severity inválido.`);
     }
     if (!nonEmptyString(rule.unidad)) throw new TypeError(`La regla ${rule.id} requiere unidad.`);
+    if (
+      !Array.isArray(rule.aplicaA)
+      || rule.aplicaA.length === 0
+      || rule.aplicaA.some((role) => !isWallRole(role))
+      || new Set(rule.aplicaA).size !== rule.aplicaA.length
+    ) {
+      throw new TypeError(`La regla ${rule.id} requiere aplicaA con roles válidos y únicos.`);
+    }
     if (!Array.isArray(rule.dependsOn) || rule.dependsOn.some((id) => !nonEmptyString(id))) {
       throw new TypeError(`La regla ${rule.id} requiere dependsOn como array de ids.`);
     }
@@ -126,6 +136,7 @@ const catalog = {
       url: 'https://lpchile.cl/wp-content/uploads/2017/08/03_ANEXO_METALCON-253_268.pdf',
       consultado: '2026-07-27'
     },
+    aplicaA: ['MP1'],
     dependsOn: [],
     resolveLimit: () => ({ min: EDGE_DISTANCE_MM, unit: 'mm' })
   },
@@ -138,6 +149,7 @@ const catalog = {
     severity: 'error',
     unidad: 'mm',
     fuente: null,
+    aplicaA: ['MP1'],
     dependsOn: ['osb.tornillo.borde'],
     resolveLimit: ({ gap } = {}) => (
       Number.isFinite(gap) && gap >= 0
@@ -154,6 +166,7 @@ const catalog = {
     severity: 'info',
     unidad: 'mm',
     fuente: null,
+    aplicaA: ['MP1', 'MP2', 'MP3', 'tabique'],
     dependsOn: [],
     resolveLimit: () => ({ min: 50, max: 60, unit: 'mm' })
   }
@@ -165,6 +178,15 @@ export const DOMAIN_RULES = deepFreeze(catalog);
 /** Devuelve la regla inmutable o null si el id no está declarado. */
 export function getDomainRule(ruleId) {
   return Object.hasOwn(DOMAIN_RULES, ruleId) ? DOMAIN_RULES[ruleId] : null;
+}
+
+/** Comprueba aplicación exacta; un rol ausente nunca satisface una regla condicionada. */
+export function ruleAppliesToRole(ruleId, role) {
+  const rule = getDomainRule(ruleId);
+  if (!rule) throw new TypeError(`Regla inexistente: ${ruleId}.`);
+  if (role == null) return false;
+  if (!isWallRole(role)) throw new TypeError(`Role de muro inválido: ${role}.`);
+  return rule.aplicaA.includes(role);
 }
 
 function normalizedLimit(limit, ruleId) {

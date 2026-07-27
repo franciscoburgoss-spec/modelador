@@ -1,0 +1,81 @@
+{
+  "modelVersion": 1,
+  "grid": {
+    "xAxes": [],
+    "yAxes": [],
+    "zLevels": []
+  },
+  "elements": [
+    {
+      "id": "wall-90",
+      "type": "wall",
+      "framingStudProfileId": "C90",
+      "framingTrackProfileId": "U90",
+      "framingMaterialId": 1,
+      "studSpacing": 600,
+      "osbPanelWidth": 1220,
+      "osbPanelHeight": 2440,
+      "osbMinPanelWidth": 200,
+      "studs": [
+        {
+          "offset": 0,
+          "zMin": 0,
+          "zMax": 2400,
+          "role": "stud"
+        }
+      ],
+      "osbCourses": []
+    },
+    {
+      "id": "wall-60",
+      "type": "wall",
+      "framingStudProfileId": "C60",
+      "framingTrackProfileId": "U60",
+      "framingMaterialId": 1,
+      "studSpacing": 400,
+      "osbPanelWidth": 1200,
+      "osbPanelHeight": 2400,
+      "osbMinPanelWidth": 250,
+      "studs": [],
+      "osbCourses": []
+    }
+  ],
+  "library": {
+    "metalconProfiles": [
+      {
+        "id": "C90",
+        "shape": "C",
+        "catalogDesignation": "90CA085"
+      },
+      {
+        "id": "U90",
+        "shape": "U",
+        "catalogDesignation": "92C085"
+      },
+      {
+        "id": "C60",
+        "shape": "C",
+        "catalogDesignation": "60CA085"
+      },
+      {
+        "id": "U60",
+        "shape": "U",
+        "catalogDesignation": "62C085"
+      }
+    ]
+  },
+  "metalconDefaults": {
+    "spacing": 400,
+    "studProfileId": "C60",
+    "trackProfileId": "U60",
+    "materialId": 1
+  },
+  "osbDefaults": {
+    "panelWidth": 1220,
+    "panelHeight": 2440,
+    "minPanelWidth": 200,
+    "gap": 3
+  },
+  "roofSystems": [],
+  "roofPlanes": []
+}

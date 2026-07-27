@@ -877,9 +877,9 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 45683,
-      "workspaceSha256": "e5370dec0e10f4d24a43a50fa9fce8ef0bd2cc3e4d01df6fc56cc205bc3e6a51",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 45721,
+      "workspaceSha256": "d0eb2ef4645bef31ce8f4834e330e5bd6ac31d429241c8c9e1a9774683ab4dce",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "tailwind.config.js",

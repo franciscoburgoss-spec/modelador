@@ -40,6 +40,7 @@ function mergeLoadedModel(data) {
     dimensions: [],
     roofSystems: [],
     roofPlanes: [],
+    wallTypes: [],
     osbDefaults: { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 5 },
     // ★ default de proyecto para modulación metalcon (sesión 20b — habilita "Generar todos"
     // combinado desde el menú sin abrir el modal). null hasta que el usuario guarde uno.
@@ -152,6 +153,7 @@ function emptyModel() {
     library: getDefaultLibrary(),
     projectParams: [],
     dimensions: [],
+    wallTypes: [],
     // ★ default de proyecto para modulación OSB (core/osbModulation.js). minPanelWidth tiene
     // piso duro de 200mm (ver setOsbDefaults) — por debajo no hay dónde atornillar borde+interior.
     osbDefaults: { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 5 },
