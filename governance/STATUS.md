@@ -11,12 +11,13 @@
 |---|---|
 | Etapa | Reglas de dominio — cadenetas |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R3-cadenetas.md` — corte B |
-| Suite oficial | 566/566; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 630,77 kB |
+| Spec activa | `specs/domain/SPEC-R3-cadenetas.md` — corte C |
+| Suite oficial | 574/574; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 631,30 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
+| DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | La pieza real ya existe; faltan dibujo, exclusión INP, kerf independiente y metrado |
+| Bloqueo actual | La pieza ya existe y se dibuja; faltan exclusión INP, kerf independiente y metrado |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -51,9 +52,9 @@
 
 Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución vigente es:
 
-- R3-A: cerrado; `casa-L` genera 493 piezas reales (134,551 m) en `wall.studs`, sin alterar el
-  despiece OSB.
-- R3-B–D: pendientes; dibujo/leyenda, guarda INP/kerf y metrado de tabiquería.
+- R3-A/B: cerrados; `casa-L` genera y dibuja 493 piezas reales (134,551 m) con rótulo `CD`, sin
+  alterar el despiece OSB.
+- R3-C/D: pendientes; guarda INP/kerf y metrado de tabiquería.
 - R4–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
@@ -71,5 +72,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-El corte B de `SPEC-R3` debe dibujar la banda centrada con el B real, incorporar `ROLE_TAG.CD` y la
-leyenda, condicionar el rótulo a la existencia de piezas y auditar los DXF modificados con 0/0.
+El corte C de `SPEC-R3` debe excluir explícitamente `role:'nogging'` del INP y desacoplar el kerf
+del gap OSB, con comparación numérica del modelo CalculiX y smoke real.

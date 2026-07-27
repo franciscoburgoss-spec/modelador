@@ -13,7 +13,8 @@ export const ROLE_COLOR = {
   cripple: '#94a3b8',
   crippleTop: '#c4b5a8',
   header: '#7c3aed',
-  sill: '#0e7490'
+  sill: '#0e7490',
+  nogging: '#6b7b8c'
 };
 
 const ROLE_WIDTH = { edge: 3, corner: 4, backup: 2, stud: 2, king: 4, jack: 2, cripple: 2, crippleTop: 2 };
@@ -40,7 +41,16 @@ export function drawStudLayoutElevation(ctx, { studs, headers, length, wallHeigh
   ctx.beginPath(); ctx.moveTo(toX(0), toY(wallHeight)); ctx.lineTo(toX(length), toY(wallHeight)); ctx.stroke();
 
   for (const s of studs || []) {
-    if (s.role === 'nogging') continue; // R3-B integra su banda real en los emisores visuales.
+    if (s.role === 'nogging') {
+      ctx.fillStyle = ROLE_COLOR.nogging;
+      ctx.fillRect(
+        toX(s.oMin),
+        toY(s.zMax),
+        toX(s.oMax) - toX(s.oMin),
+        toY(s.zMin) - toY(s.zMax)
+      );
+      continue;
+    }
     ctx.strokeStyle = ROLE_COLOR[s.role] || '#475569';
     ctx.lineWidth = ROLE_WIDTH[s.role] || 2;
     ctx.beginPath();
@@ -70,14 +80,18 @@ export const METALCON_ROLE_LABELS = {
   cripple: 'Montante bajo antepecho (cripple)',
   crippleTop: 'Montante sobre dintel (cripple)',
   header: 'Dintel',
-  sill: 'Antepecho'
+  sill: 'Antepecho',
+  nogging: 'Cadeneta'
 };
 
 /** Leyenda de colores por rol de montante, para la vista de Elevación principal (Canvas.jsx)
  * cuando el toggle "mostrar montantes" está activo — mismo estilo que la leyenda de categorías
  * que reemplaza (ver render/elevationGrid.js), en la esquina superior izquierda del canvas. */
 export function drawMetalconLegend(ctx) {
-  const order = ['edge', 'corner', 'backup', 'king', 'jack', 'cripple', 'crippleTop', 'stud', 'header', 'sill'];
+  const order = [
+    'edge', 'corner', 'backup', 'king', 'jack', 'cripple', 'crippleTop',
+    'stud', 'header', 'sill', 'nogging'
+  ];
   let legendY = 38;
   ctx.font = '12px system-ui';
   ctx.textBaseline = 'top';

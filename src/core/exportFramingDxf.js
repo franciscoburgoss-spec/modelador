@@ -168,7 +168,8 @@ export function isoCenterPattern(scale) {
 export const ROLE_TAG = {
   edge: 'E', corner: 'T', backup: 'R',
   king: 'K', jack: 'J', cripple: 'C', crippleTop: 'CS',
-  header: 'D', sill: 'A'   // ★ R1 — dintel / alfeizar (viven en headers, no en studs)
+  header: 'D', sill: 'A',  // ★ R1 — dintel / alfeizar (viven en headers, no en studs)
+  nogging: 'CD'
 };
 
 // DXF (R12/ASCII) no garantiza un charset consistente entre lectores CAD para acentos y
@@ -400,14 +401,17 @@ export function levelEntities(xOffset, length, wallHeight, wallBottomElevation, 
 /** Texto de una pieza especial (todo menos 'stud' de relleno regular, que se agrupa aparte).
  * `headers` (dintel/antepecho) es una colección aparte de `studs` — ver diagnóstico R1 §1.2 —
  * por eso se rotula con la misma geometría vertical que usa el dibujo (`trackHeight`), no con
- * `zMin/zMax` de un stud. `nogging` (cadeneta) queda fuera: todavía no es pieza de tabiquería (R3). */
+ * `zMin/zMax` de un stud. */
 function pieceLabelEntities(xOffset, studs, headers = [], trackHeight = 0) {
   const entities = [];
   for (const s of studs) {
     const tag = ROLE_TAG[s.role];
     if (!tag) continue; // 'stud' de relleno regular: ver groupedFillLabel
     const midZ = (s.zMin + s.zMax) / 2;
-    entities.push(text('ETIQUETAS', xOffset + s.offset + 60, midZ - 90, TEXT_HEIGHT_TEXT, tag));
+    const labelX = s.role === 'nogging'
+      ? xOffset + (s.oMin + s.oMax) / 2 - 60
+      : xOffset + s.offset + 60;
+    entities.push(text('ETIQUETAS', labelX, midZ - 90, TEXT_HEIGHT_TEXT, tag));
   }
   for (const h of headers) {
     const tag = ROLE_TAG[h.role];
@@ -471,11 +475,12 @@ export function drawTable(lineLayer, textLayer, x, yTop, columns, rows, rowHeigh
   return { entities, width: totalWidth, height: nRows * rowHeight };
 }
 
-export function osbEntities(xOffset, length, wallHeight, osbCourses, gap = 5, osbNoggings = []) {
+export function osbEntities(xOffset, length, wallHeight, osbCourses, gap = 5, studs = []) {
   if (!osbCourses?.length) return [];
   const entities = [];
   const halfGap = gap / 2;
   const codes = assignOsbPieceCodes(osbCourses);
+  const noggingPieces = (studs || []).filter((piece) => piece.role === 'nogging');
 
   for (const course of osbCourses) {
     for (const p of course.panels) {
@@ -511,20 +516,29 @@ export function osbEntities(xOffset, length, wallHeight, osbCourses, gap = 5, os
   for (let i = 0; i < osbCourses.length - 1; i++) {
     const z = osbCourses[i].zMax;
     entities.push(line('OSB', xOffset, z, xOffset + length, z));
-    entities.push(text('OSB', xOffset + length + NIVEL_LABEL_MARGIN, z - 90, TEXT_HEIGHT_SUBTITLE,
-      `CADENETA + HUINCHA (junta horizontal @z=${Math.round(z)})`));
+    const piecesAtJoint = noggingPieces.filter((piece) => (
+      Math.abs((piece.zMin + piece.zMax) / 2 - z) <= 1
+    ));
+    if (piecesAtJoint.length > 0) {
+      entities.push(text('OSB', xOffset + length + NIVEL_LABEL_MARGIN, z - 90, TEXT_HEIGHT_SUBTITLE,
+        `CADENETA + HUINCHA (junta horizontal @z=${Math.round(z)})`));
+    }
   }
 
-  // Cadeneta real: pieza horizontal bajo la junta, en los tramos donde hay material que fijar
-  // (ver computeNoggings). Se dibuja como un rectángulo delgado para distinguirla de la junta.
-  const NOGGING_H = 60; // mm, solo representación gráfica — el perfil real sale del catálogo
-  for (const n of osbNoggings || []) {
-    entities.push(rectPolyline('OSB', xOffset + n.oMin, n.z - NOGGING_H, xOffset + n.oMax, n.z));
+  // Pieza real de tabiquería: conserva la banda persistida y la capa estructural MONTANTES.
+  for (const piece of noggingPieces) {
+    entities.push(rectPolyline(
+      'MONTANTES',
+      xOffset + piece.oMin,
+      piece.zMin,
+      xOffset + piece.oMax,
+      piece.zMax
+    ));
   }
 
   const totalPanels = osbCourses.reduce((a, c) => a + c.panels.length, 0);
   const summary = osbCourses.length > 1
-    ? `REVESTIMIENTO OSB — ${osbCourses.length} hiladas, ${totalPanels} placas, ${(osbNoggings || []).length} cadenetas`
+    ? `REVESTIMIENTO OSB — ${osbCourses.length} hiladas, ${totalPanels} placas, ${noggingPieces.length} cadenetas`
     : `REVESTIMIENTO OSB — ${totalPanels} placas`;
   entities.push(text('OSB', xOffset, wallHeight + LABEL_OFFSET_Y + 500, TEXT_HEIGHT_TEXT, summary));
 
@@ -593,7 +607,9 @@ export function wallFramingEntities(wall, grid, layout, studProfile, trackProfil
   };
 
   for (const s of studs) {
-    const { xMin, xMax } = studFlangeSpan(s, flangeCtx, studWidth);
+    const { xMin, xMax } = s.role === 'nogging'
+      ? { xMin: s.oMin, xMax: s.oMax }
+      : studFlangeSpan(s, flangeCtx, studWidth);
     entities.push(rectPolyline('MONTANTES', xOffset + xMin, s.zMin, xOffset + xMax, s.zMax));
   }
   // Dintel: afuera del vano hacia ARRIBA (cara inferior en h.z). Antepecho: afuera hacia ABAJO

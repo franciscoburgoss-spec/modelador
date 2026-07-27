@@ -57,9 +57,9 @@ reporta desde ahora para que su ausencia nunca sea silenciosa.
 
 ## Baselines visibles
 
-- Suite: 566/566; laboratorio: 35/35.
-- Cobertura de líneas: core 90,76 %; store 63,08 %.
-- Bundle inicial: 630,77 kB raw / 194,75 kB gzip.
+- Suite: 574/574; laboratorio: 35/35.
+- Cobertura de líneas: core 91,06 %; store 63,08 %.
+- Bundle inicial: 631,30 kB raw / 194,87 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

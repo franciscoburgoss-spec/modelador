@@ -262,9 +262,9 @@
       "bytes": 10027,
       "sha256": "e8541be6cac99009f0e59d5e6e301c2def19df5e6f2c4c5fa5c8869e676a82f2",
       "kind": "source",
-      "workspaceBytes": 10065,
-      "workspaceSha256": "459020098e4a9d12889134700d2a4169e640dcd6216fce07cce92a94b0a7284f",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 10190,
+      "workspaceSha256": "c2d4b1849942b6ce66fa559dcb6a5068a03e0dd444a59a73c5b0492c96a2bb96",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/components/modals/OsbNestingModal.jsx",
@@ -481,18 +481,18 @@
       "bytes": 44393,
       "sha256": "e1cde465298beb02ae6110c29881f384211bbfd7cc9529270df85658b0c16289",
       "kind": "source",
-      "workspaceBytes": 44444,
-      "workspaceSha256": "7b135ce9ba1fc318831c68fdea6482e9c0a5d320508503e0829423ffc499cb3b",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 44648,
+      "workspaceSha256": "f4c63b9032f4f8c91b6cb5c8b3968a051355b9a2f2f8b7d41492ec45c89ad85a",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/exportOsbDxf.js",
       "bytes": 7114,
       "sha256": "6581868d5aa1735b1a479c68ee1f727c21aaf3d06632d86d2e642573923e2fc0",
       "kind": "source",
-      "workspaceBytes": 7165,
-      "workspaceSha256": "90c048c71e212af76555f643dbf9c1b1a1e6d8a77d53503b195ca44b26c84fdb",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 7141,
+      "workspaceSha256": "4742bb33deb59d8ebb31eb9c2ec0529fbf573e9075fe1af66686f7f9dc0348aa",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/exportSheetsDxf.js",
@@ -693,7 +693,10 @@
       "path": "src/core/sheetLegend.js",
       "bytes": 6293,
       "sha256": "d8e8abfb0ab83d806eef5e3bdcbadcaf1a049cca0aaaff8da85404b063d43f93",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 6313,
+      "workspaceSha256": "0ac576438d6990e8fcfbe95a7b35f0826499ab6fa45128eabea1644dab4e91b1",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/core/sheetTitleBlock.js",
@@ -811,15 +814,18 @@
       "bytes": 3285,
       "sha256": "978211b8a0af25542136eb6c03f275dbfe49b6e6063d942d79873dd0dd70cb08",
       "kind": "source",
-      "workspaceBytes": 3381,
-      "workspaceSha256": "e3a801ab7029e0b98e82f2e6d9fe8a0bff04cd270b2948ed9743c589dc23346d",
+      "workspaceBytes": 3589,
+      "workspaceSha256": "987989587891fc6ecf2a02f93050bc34e63b6ab5a6b551184b5de69203841d3b",
       "changedBy": "SPEC-R3"
     },
     {
       "path": "src/render/osbModulation.js",
       "bytes": 3026,
       "sha256": "16c0005bf566c8b81c98c1a74fa18d73c55e6ddfd16837bf480971c2c801d891",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 3059,
+      "workspaceSha256": "94b9a1976c870f75fb1b7a42525342b26d9d1f95fd1917ff2808d7b91731b202",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/render/roofPlaneDraft.js",
@@ -843,7 +849,10 @@
       "path": "src/render/wall.js",
       "bytes": 18895,
       "sha256": "d4037c43cae6ee4cf34b8e3f0e997bf2f7a49ca3a3a7b16e6757bc2c50018ca5",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 18963,
+      "workspaceSha256": "a1be630316d284296069db46d8b677a41e7660e8bf20439fd641323eefa87206",
+      "changedBy": "SPEC-R3"
     },
     {
       "path": "src/store/useModelStore.js",

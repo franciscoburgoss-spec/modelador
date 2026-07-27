@@ -334,7 +334,9 @@ export function drawWallStudsElevation(ctx, wall, grid, mode, view, canvasH, stu
   for (const s of wall.studs) {
     // el span viene en offsets locales: se lleva a mundo por los DOS extremos (no por el centro
     // + ancho) para que valga también si el muro corre de p1 a p2 en sentido decreciente.
-    const span = studFlangeSpan(s, flangeCtx, studWidth);
+    const span = s.role === 'nogging'
+      ? { xMin: s.oMin, xMax: s.oMax }
+      : studFlangeSpan(s, flangeCtx, studWidth);
     const a = wallOffsetToWorldPoint(wall, geo, span.xMin);
     const b = wallOffsetToWorldPoint(wall, geo, span.xMax);
     const ha = project1D(a.x, a.y), hb = project1D(b.x, b.y);

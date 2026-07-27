@@ -8,7 +8,7 @@ const PANEL_STROKE = '#8a6d3b';
 const WARNING_STROKE = '#b5502a';
 const NOGGING_FILL = '#6b7b8c'; // acero: la cadeneta es pieza de metalcon, no placa
 
-export function drawOsbLayoutElevation(ctx, { courses, length, wallHeight, noggings }, width, height, config = {}, padding = 28) {
+export function drawOsbLayoutElevation(ctx, { courses, length, wallHeight, studs }, width, height, config = {}, padding = 28) {
   ctx.clearRect(0, 0, width, height);
   if (!length || !wallHeight) {
     ctx.fillStyle = '#8a8a85';
@@ -55,10 +55,14 @@ export function drawOsbLayoutElevation(ctx, { courses, length, wallHeight, noggi
   }
   ctx.setLineDash([]);
 
-  // cadeneta bajo cada junta (solo donde hay material que fijar — ver computeNoggings)
+  // Cadeneta real, centrada en la junta y con el B persistido por el solver Metalcon.
   ctx.fillStyle = NOGGING_FILL;
-  for (const n of noggings || []) {
-    const h = Math.max(2, 60 * scale); // 60mm de representación, con mínimo visible
-    ctx.fillRect(toX(n.oMin), toY(n.z), toX(n.oMax) - toX(n.oMin), h);
+  for (const piece of (studs || []).filter((item) => item.role === 'nogging')) {
+    ctx.fillRect(
+      toX(piece.oMin),
+      toY(piece.zMax),
+      toX(piece.oMax) - toX(piece.oMin),
+      toY(piece.zMin) - toY(piece.zMax)
+    );
   }
 }
