@@ -1,0 +1,27 @@
+# Bitácora de decisiones
+
+> Append-only. Una decisión no se edita. Para corregirla se agrega otra que la deroga.
+
+Estados: `vigente`, `derogada por D-xxx`, `descartada`.
+
+| ID | Fecha | Estado | Decisión | Razón |
+|---|---|---|---|---|
+| D-001 | 27-jul-2026 | vigente | El objetivo es una aplicación local, offline y de un usuario | Reduce superficie operativa y corresponde al uso real |
+| D-002 | 27-jul-2026 | vigente | React/Vite y el core actual se conservan; Tauri 2 será el runtime nativo | Minimiza reescritura y elimina el servidor en runtime |
+| D-003 | 27-jul-2026 | vigente | Desarrollo y build usan Node 22 LTS fijado por `.nvmrc` | Node 20 está EOL y Node 22 admite el Mac Intel objetivo |
+| D-004 | 27-jul-2026 | vigente | No se actualizan majors de React, Vite o Three durante la estabilización | Primero se corrigen integridad y cobertura con menor variación |
+| D-005 | 27-jul-2026 | vigente | Las fórmulas usan AST y una lista cerrada; queda prohibido evaluar JavaScript | El modelo es entrada no confiable |
+| D-006 | 27-jul-2026 | vigente | Todo proyecto tiene `modelVersion`, validación previa y migraciones secuenciales | Importar nunca debe mutar parcialmente ni perder datos |
+| D-007 | 27-jul-2026 | vigente | `roofPlanes` manda en cálculo, pero `roofSystems` heredados se preservan | Precedencia no significa destrucción de datos |
+| D-008 | 27-jul-2026 | vigente | La invalidación de derivados se resuelve en un registro central de dependencias | Las acciones aisladas ya demostraron dejar datos falsamente vigentes |
+| D-009 | 27-jul-2026 | vigente | Los entregables estructurales con datos stale se bloquean | Un warning opcional no protege una salida de cálculo |
+| D-010 | 27-jul-2026 | vigente | Guardado principal por archivos nativos, no `localStorage` | Permite atomicidad, backups y propiedad explícita del usuario |
+| D-011 | 27-jul-2026 | vigente | CalculiX se invoca mediante un comando Tauri estrecho, sin shell genérico | Limita inyección y permite timeout, cancelación y logs |
+| D-012 | 27-jul-2026 | vigente | La aplicación instalada no realiza conexiones de red | No hay requisito funcional que justifique esa superficie |
+| D-013 | 27-jul-2026 | vigente | Firma ad hoc para uso personal; notarización fuera de v1 local | No existe distribución pública en el alcance |
+| D-014 | 27-jul-2026 | vigente | Playwright actual corre fuera de este Mac; localmente se usan unitarias, integración y smoke Tauri | La versión actual exige un macOS no soportado por el equipo |
+| D-015 | 27-jul-2026 | vigente | Los documentos heredados se archivan y no son fuente del estado nuevo | Evita que cierres históricos reabran deudas ya resueltas |
+| D-016 | 27-jul-2026 | vigente | Cobertura bloquea en 90 % para core y 50 % como piso heredado del store; el objetivo del store sigue en 85 % | Mantiene el objetivo de dominio y evita fingir cobertura del store durante una migración sin cambios funcionales |
+
+Las decisiones constructivas D-001 a D-033 del proyecto anterior se preservan como historia en
+`archive/LEGACY_DECISIONS.md`. Las reglas vigentes derivadas viven en `domain/DOMAIN_RULES.md`.

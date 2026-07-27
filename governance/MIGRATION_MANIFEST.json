@@ -1,0 +1,1137 @@
+{
+  "schemaVersion": 1,
+  "baseline": "modelador-v49-R2",
+  "policy": "Sólo fuentes, pruebas, fixtures y configuración reproducible; sin outputs generados.",
+  "excluded": [
+    ".DS_Store",
+    ".vite/",
+    "dist/",
+    "lab/roofPlane/ejeA-planta.svg",
+    "node_modules/",
+    "test-results/"
+  ],
+  "files": [
+    {
+      "path": "index.html",
+      "bytes": 231,
+      "sha256": "30311356554e7ead0f54d1db28cc7abcc4c5fd20bb7ea444229523081cd148cb",
+      "kind": "config"
+    },
+    {
+      "path": "lab/roofPlane/core/polygonClip.js",
+      "bytes": 6241,
+      "sha256": "da41e583e6c924bfa8f89c24bbb3676222eb7d65d311876eb357ca383099831e",
+      "kind": "source"
+    },
+    {
+      "path": "lab/roofPlane/core/roofPlane.js",
+      "bytes": 17367,
+      "sha256": "e3239fdeb4f4fff8cb1599e77bbe58c2a220099f51367c9f6ce0983d4d9cb669",
+      "kind": "source"
+    },
+    {
+      "path": "lab/roofPlane/core/roofPurlins.js",
+      "bytes": 6453,
+      "sha256": "2490aa7d2c83e48a60270ea2ba05a27949f51f4525c17394b7d59773fb2f7b51",
+      "kind": "source"
+    },
+    {
+      "path": "lab/roofPlane/core/supportLine.js",
+      "bytes": 8162,
+      "sha256": "c5253c90312dede974228e32a217948fb1d316bfd72ab01870d1e1a6b3339ab9",
+      "kind": "source"
+    },
+    {
+      "path": "lab/roofPlane/core/trussChain.js",
+      "bytes": 7470,
+      "sha256": "a7fbe14c8da313d1a927b5d7875e377767feaeab223d07646d05470fffa14816",
+      "kind": "source"
+    },
+    {
+      "path": "lab/roofPlane/fixtures/modelo-26.json",
+      "bytes": 493711,
+      "sha256": "54799be85e76c472ff10de216403118620853e074e6871abeb7a61b19e3b9ba9",
+      "kind": "fixture"
+    },
+    {
+      "path": "lab/roofPlane/harness-batch.mjs",
+      "bytes": 3291,
+      "sha256": "3319e2a7b684a94d068e0769c62e0205a976a09c5b3ce2c0a2d1346518c93a7a",
+      "kind": "config"
+    },
+    {
+      "path": "lab/roofPlane/harness.mjs",
+      "bytes": 3558,
+      "sha256": "0a092383e827c1fd0894793f92f52a48ff2b2a56ca565d6c9fbbc9da4a2c074f",
+      "kind": "config"
+    },
+    {
+      "path": "lab/roofPlane/tests/polygonClip.test.mjs",
+      "bytes": 2364,
+      "sha256": "7287f27e5f7d8df868f6b8b4df0beab3dd321404ae89efe2aba3e5198fe79a1c",
+      "kind": "test"
+    },
+    {
+      "path": "lab/roofPlane/tests/polygonDetect.test.mjs",
+      "bytes": 1638,
+      "sha256": "4f96985812d1b2c1ef0a16adbf381d3f840a59a477be1aab31d00c2e9d1d4345",
+      "kind": "test"
+    },
+    {
+      "path": "lab/roofPlane/tests/roofPlane.test.mjs",
+      "bytes": 5106,
+      "sha256": "d89d0d687cb89b3baf66d4d500ccae28b7754503673493581093e7359fdbfb6d",
+      "kind": "test"
+    },
+    {
+      "path": "lab/roofPlane/tests/roofPurlins.test.mjs",
+      "bytes": 3279,
+      "sha256": "da65bce7bdeb74654a5b0a27823a0cb36b13746494b47da0b808a73b5955f4d0",
+      "kind": "test"
+    },
+    {
+      "path": "lab/roofPlane/tests/supportLine.test.mjs",
+      "bytes": 3916,
+      "sha256": "43989e0080744869df1d2eadf18ee445986f187f2742821a6f7a4c36e004251f",
+      "kind": "test"
+    },
+    {
+      "path": "lab/roofPlane/tests/trussChain.test.mjs",
+      "bytes": 3148,
+      "sha256": "bd6f3768c46115ccc64d1018054f11d8e6c94b21388f8f2eba71a44e0f4d32be",
+      "kind": "test"
+    },
+    {
+      "path": "postcss.config.js",
+      "bytes": 79,
+      "sha256": "082f9a07aae22ae329bfc652d405ba5a704cba1ee86f4b78c7c70f98d628a610",
+      "kind": "config"
+    },
+    {
+      "path": "src/App.jsx",
+      "bytes": 11359,
+      "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/AutosaveBanner.jsx",
+      "bytes": 837,
+      "sha256": "410868ab6b44ae3700e0381b18447627037f8c73f2f53ee4dbd0c9dcf146e944",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/Canvas.jsx",
+      "bytes": 44163,
+      "sha256": "132345a288e3113ffbb18da0a8b09f143ac9f8c2379223e69852cca8149fec78",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/FilterPanel.jsx",
+      "bytes": 4419,
+      "sha256": "70e05829a57fb2105f4de58c737029a7b6522885d48e01b1958a09870b5163ba",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/MenuBar.jsx",
+      "bytes": 16614,
+      "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/PropertiesPanel.jsx",
+      "bytes": 18006,
+      "sha256": "ad3b5719fe6102e410422fe9d2df661cf6bf53575e4b890aa0605a0f9ce8de42",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/Sidebar.jsx",
+      "bytes": 2984,
+      "sha256": "c98583b238bd439db4a80b8c4db0c675893c6ae15e4fff33d6e8f9ad0f8681f3",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/Viewer3D.jsx",
+      "bytes": 8814,
+      "sha256": "509739f40e6f34457a652bcc01382cf5d54e0424ffcf1068e89715d4c5b0fea4",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/Viewer3DLazy.jsx",
+      "bytes": 588,
+      "sha256": "86af94caa6861d32729a4b9ad057442c1c8de65ad096c43f6973867f68b61361",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddAuxAxisModal.jsx",
+      "bytes": 2737,
+      "sha256": "8dc57e096b886e249a4bf508166600636e104445f22f7874c7d8a55a8197408a",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddBeamModal.jsx",
+      "bytes": 7270,
+      "sha256": "0f37834eea62961b32f7229434879eb913b06dc974dc9cddee57a490b1a7e3a3",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddColumnModal.jsx",
+      "bytes": 6225,
+      "sha256": "a59f571ca81fccd51507234d5bd9e9304c0d292640e5b2f0ac8fc27905aaacdd",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddDimensionModal.jsx",
+      "bytes": 11904,
+      "sha256": "6bc077c7f8644ab9a7f22657b3f4049b88cbabfc020c2d0abe10b08e39244422",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddFoundationModal.jsx",
+      "bytes": 13452,
+      "sha256": "fd87d54f4741c91f9efd4f993d7aa6d60979e7fa7e08a951ed3cf491da9e588b",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddOpeningModal.jsx",
+      "bytes": 11775,
+      "sha256": "899e4bd82a55dd0d54cadb4a829f716ef03fe9ad094227f7f5f51165314ad3fa",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AddWallModal.jsx",
+      "bytes": 7689,
+      "sha256": "5d213ae6c534d2cac54d2111853c993012de7492a13b7dc144d0f7f6570e8d7d",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AnalysisReadinessModal.jsx",
+      "bytes": 3373,
+      "sha256": "f34313ef3e2b240617563e31a0fedb6091d83ec1334ee057debcb016492e3ec1",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/AuditModal.jsx",
+      "bytes": 5308,
+      "sha256": "65febb03a750692e8bbc9926acb4912ce717ec04f408880959606a2113b02554",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/FoundationAnalysisModal.jsx",
+      "bytes": 7604,
+      "sha256": "496c98af3f35ad7cdda9606a2bb4dd8e1d5fc02526f73a6c08844ccb0dcfb5e4",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/GenerateFoundationsModal.jsx",
+      "bytes": 7034,
+      "sha256": "39a9eb5a71177fcd72b314faa3512c00dcf1cfd0f3ff6d500b63f7fc3bd9f421",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/GenerativePlacementModal.jsx",
+      "bytes": 11603,
+      "sha256": "0461a70d937c3fb9ab749b757978b8e9001c59b3b2117a86ce5d1c1688422869",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/GridDefinitionModal.jsx",
+      "bytes": 6530,
+      "sha256": "6ca6fff46a87f354a0976242efb53f2513691b629e70bbd5272b1ec4080522be",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/LibraryModal.jsx",
+      "bytes": 26323,
+      "sha256": "ef89585484281edd59e026243e63223dc250cee01ed2972a0eaf4749c6eabb71",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/MetalconModulationModal.jsx",
+      "bytes": 14190,
+      "sha256": "610111641695c0ce44de57871c2509576c60b32a0b157ac4143559f90d9f0bc8",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/OsbModulationModal.jsx",
+      "bytes": 10027,
+      "sha256": "e8541be6cac99009f0e59d5e6e301c2def19df5e6f2c4c5fa5c8869e676a82f2",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/OsbNestingModal.jsx",
+      "bytes": 11898,
+      "sha256": "a99166e845855c47a6697c8f4ee1bc64ccf7aad6139099eb5ff5441167ac81c7",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/ProjectInfoModal.jsx",
+      "bytes": 5360,
+      "sha256": "32df77f239332e8c46bd55ba20bbb5341d33a3e3c71e3507f63b4037ee0e46aa",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/ProjectParamsModal.jsx",
+      "bytes": 4392,
+      "sha256": "63bb8c84b50697a41d397157934eae3240bfa01801cb2bd70bd1136b89ce3fbf",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/RoofPlaneModal.jsx",
+      "bytes": 12043,
+      "sha256": "c2e6f235ebc08c2f9af5f089b96563ea590ea061114007eb3ccdf845a3301d7d",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/RoofTrussModal.jsx",
+      "bytes": 25559,
+      "sha256": "5dd3ca3f75661f3f8536daadb36ee01886add485e9f0662bded39e3b2e82e3d7",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/TakeoffModal.jsx",
+      "bytes": 5811,
+      "sha256": "762fc3811096a8541888ac35d7da7d82592f5581e2716920be822fe4b048fffb",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/ValidationModal.jsx",
+      "bytes": 7152,
+      "sha256": "1abf3f5fa62b2b5124347f6cf329f5d76f6810acd39cc18c6d5e0f849a25abe4",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/Viewer3DModal.jsx",
+      "bytes": 905,
+      "sha256": "5781921bed4a42d1511d236ef631de64ef9afd2a694ceb3c2f946917cb3ce620",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/modals/WallSplitMergeModal.jsx",
+      "bytes": 9983,
+      "sha256": "18e98a67618f9941fa70b00a4d743eb45167b6277b10dcc24b1134d4965aee7e",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/ui/Button.jsx",
+      "bytes": 574,
+      "sha256": "f487483777a345f3ff7afad1d716c5873df4a44d8ab74bb6c85115541ca2da15",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/ui/Field.jsx",
+      "bytes": 9378,
+      "sha256": "147f15edc3076ea4fc1f9ca898c3caa596c7bcd1d3cce3c97928a078d3d1ac34",
+      "kind": "source"
+    },
+    {
+      "path": "src/components/ui/Modal.jsx",
+      "bytes": 4207,
+      "sha256": "52116a6e3887908050c6e81da1f3663a5ae45e06fe66970da8002593f5cbadf9",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/analysisReadiness.js",
+      "bytes": 5361,
+      "sha256": "365443c0159919468aa14cfd02007660408a1f2ef463242c3e4ce9406dfb5065",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/attributeFilter.js",
+      "bytes": 1124,
+      "sha256": "b0fffe3431c889a08923f82b3233375b53a4b5f08384bf04576843b5b6981605",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/autosave.js",
+      "bytes": 3163,
+      "sha256": "707664504f8ef0c4b75857ba4f3c963190ce46970bfd88d71bd6e3200678fb9a",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/batchModulation.js",
+      "bytes": 6932,
+      "sha256": "a202c592131e2efc12fd371232fef8edf51fcb23ee1ac1d0306188c84f6aa334",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/build3d.js",
+      "bytes": 15086,
+      "sha256": "cdbd6bf7918fc2b5e8b3995c450a31a8a4589cb90bf263bffe3877f624b2f693",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/calculixCommon.js",
+      "bytes": 1122,
+      "sha256": "a43745b5844360d776e6d8e2c228129601da18fc3d2b18b7c3c6a82eab12d2e5",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/derivedInvalidation.js",
+      "bytes": 6426,
+      "sha256": "a19b525fdf5aa94dc63c0c4cbff7ec8f5ce4fc516036ad2a4bb57204958aec2e",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/dimensions.js",
+      "bytes": 5833,
+      "sha256": "eaf263b70b0c3bb4675bef3fc286dcf1b774c37b5d68a78edec34aa7d3859efa",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/dxfPlanTransform.js",
+      "bytes": 660,
+      "sha256": "afec2cc1f06b0be5a6e3a2cf5dbc6f44247fddd10174bee95843419f00fe794a",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/dxfTemplateAC1015.js",
+      "bytes": 13296,
+      "sha256": "ef3b717c8de1c7bcafea63cac42b161b2f4e005db84013b75296de2670eb9d2e",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/elementBounds.js",
+      "bytes": 3860,
+      "sha256": "1ad1fd260981f18c6e408f8b0ee30bc47549d106107ba554d483635a6ed5ff6b",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/elementGeometry.js",
+      "bytes": 5609,
+      "sha256": "6028ba5760d88073bc9bdf589dfb5287e677b2b498419c749a5c1ba0d2b7d07c",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/elementReferences.js",
+      "bytes": 4552,
+      "sha256": "7e12d4d32db3e1e67c17c6e4bedb7182161150ad0d5a3d5df55babe9a138915a",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/elevation.js",
+      "bytes": 10565,
+      "sha256": "be5a15d45d04c8de5373fe72dda05a84687876d9a32211d9df869e94f39cb959",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportCalculix.js",
+      "bytes": 20075,
+      "sha256": "855edc86e7795ff3c8eff6f229dfc3ceb345c96e88e2bc8e4386a8e5cd861fe7",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportCalculixFoundation.js",
+      "bytes": 17227,
+      "sha256": "304eb8321859039568dfafd26e6eb12bfda93685920ab5baff2de43326e3f0b1",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportCalculixTruss.js",
+      "bytes": 18752,
+      "sha256": "bf310045332ff0f489414837ed75780d6c5c4bb890be0fb78183d9b1f96206c6",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportDxf.js",
+      "bytes": 8313,
+      "sha256": "952d787b4fca818537a546076c9448d881a95c2b34f7c1768d4f84e65042b56a",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportFoundationsDxf.js",
+      "bytes": 20226,
+      "sha256": "c252fd22276ef29da9510c53ac7d548d5de61d1a826d0c881322b056f20a6c19",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportFramingDxf.js",
+      "bytes": 44393,
+      "sha256": "e1cde465298beb02ae6110c29881f384211bbfd7cc9529270df85658b0c16289",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportOsbDxf.js",
+      "bytes": 7114,
+      "sha256": "6581868d5aa1735b1a479c68ee1f727c21aaf3d06632d86d2e642573923e2fc0",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportSheetsDxf.js",
+      "bytes": 21862,
+      "sha256": "b1c0c222eae9a0318ea4a70a6540711495e22ff638e0d0e66fba10d6d035d1b8",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/exportTrussDxf.js",
+      "bytes": 15738,
+      "sha256": "e22dcaa441eb974efa8d18e0c54fbc3b1b0626920c0b88137c50f84f2f776b16",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/foundationGeneration.js",
+      "bytes": 11886,
+      "sha256": "7cb37c64533c45f3ad82f2840eded2ac5ded767d1e0288cc7d84b1a625786846",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/foundationGeometry.js",
+      "bytes": 11804,
+      "sha256": "090e09c107a1d8c5948e128d2b35b3e53023b01ee2ecf5b36755cbb38c57339f",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/generativePlacement.js",
+      "bytes": 10635,
+      "sha256": "5e84837fb3ebc6dca8375fb37063c0b9ab28186a04cf469f7f7dad01fc95a353",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/geometry.js",
+      "bytes": 2420,
+      "sha256": "121ced67fec694b82b42fceecb3d167fabae031648ce57f314680608edda5963",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/hitTest.js",
+      "bytes": 2396,
+      "sha256": "ec0d035086918e4becab349667cf4cce05cff9ce747d32a9190f31cde791d85b",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/levelTypes.js",
+      "bytes": 1020,
+      "sha256": "5cb4d823d916c333d592cf7bb78d7996237e32bb6974809fa260129a56e1b194",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/levelVisibility.js",
+      "bytes": 2898,
+      "sha256": "1a097163dbbe2768b7d818fc5b71e15e19f5b154b2482df60a10eef34a4fe9a2",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/libraryFields.js",
+      "bytes": 1524,
+      "sha256": "c4f5db6897c4503baf1f9a502777dcb7470989f407952dd3fed9f56a95bc4f57",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/metalconCatalog.js",
+      "bytes": 6106,
+      "sha256": "7f444d29f6341317f8630969b36296d991dcac218270ff94c95ad12c071832bd",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/metalconModulation.js",
+      "bytes": 10189,
+      "sha256": "419c177f7477ce6ec0d877e1088a9677582aaeb8bab0ca07abafee1487c0557d",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/modelValidation.js",
+      "bytes": 25815,
+      "sha256": "ceaa2286722e57b342bc5a70a26bc4c7518f8ce03b734103d641e0df786f848f",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/naming.js",
+      "bytes": 3456,
+      "sha256": "0824ccf355fb2cea3272bf05c750772968d179422f12e6f3f25e1a7368dec469",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/osbModulation.js",
+      "bytes": 29973,
+      "sha256": "802a08a52ade16727b849dae09cd23189b58442ece2a1f071c0fb5faf561e126",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/osbNesting.js",
+      "bytes": 17238,
+      "sha256": "a6dccf588aeeb99d3ebe8c0bafde83e60229039bec094257e320a995bffed38c",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/polygonClip.js",
+      "bytes": 6241,
+      "sha256": "da41e583e6c924bfa8f89c24bbb3676222eb7d65d311876eb357ca383099831e",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/projectInfo.js",
+      "bytes": 1936,
+      "sha256": "d4b8a3f61dbf0c914ab8b6b1ef20557a31fc4f288e4d1d683826ba7be3f7c7a1",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/projectParams.js",
+      "bytes": 4534,
+      "sha256": "95e4c804f5a73605eaa39a3f2ce65c7014b14077e94ff6a7072048b2b322de59",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/projection.js",
+      "bytes": 1904,
+      "sha256": "86788348bf3973cabc6d2837ef6eff1619a61158f66d7e686fb865d7b5664ab7",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofObstructions.js",
+      "bytes": 6964,
+      "sha256": "46176d123f82a260fad9db2420ca388fbadac55cd5a132453a957b7386c2ea58",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofPlane.js",
+      "bytes": 19918,
+      "sha256": "35a6673903174fc168d8425c0efb386f4f9cd4e275ade2375b7e2f49840e072b",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofPlaneAdapter.js",
+      "bytes": 8867,
+      "sha256": "558a21a3d4925648578ed02071322aeda35122dc592a5f9ca195d801fca04738",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofPlaneEdge.js",
+      "bytes": 3062,
+      "sha256": "d6fe94d54b088f9b8516c2003168c0185173c7f5c74dc5406e0fb1ef4baa8063",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofPlaneOutputs.js",
+      "bytes": 8758,
+      "sha256": "f38f06e00d61eb6c08c4840c87bed6708c773031d145ce23a5b1051315749505",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofPlaneValidation.js",
+      "bytes": 2067,
+      "sha256": "8b478ab6bc6a2a06592bedb51d61c630f9430940ca96a585384a3f2aabf8d32f",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofPurlins.js",
+      "bytes": 6453,
+      "sha256": "2490aa7d2c83e48a60270ea2ba05a27949f51f4525c17394b7d59773fb2f7b51",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofSegments.js",
+      "bytes": 1697,
+      "sha256": "b62e8b3e2cccf8ac3710d9d7303d223795f1e62e1be768626adb3154bd763e8a",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/roofZoneGenerator.js",
+      "bytes": 10515,
+      "sha256": "638a75335f6cb624a6e7683f7495cf4e94179f19dcbc73eb91d9647544b02e57",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/sheetFormats.js",
+      "bytes": 3648,
+      "sha256": "6ba9bba73e91fb99b14f3245c467fbe15662ef2e13787ae3692a349a60b4e498",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/sheetLegend.js",
+      "bytes": 6293,
+      "sha256": "d8e8abfb0ab83d806eef5e3bdcbadcaf1a049cca0aaaff8da85404b063d43f93",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/sheetTitleBlock.js",
+      "bytes": 9751,
+      "sha256": "e983222c6f88061a9612399e80035b82943ecb3b385be19438adf9c09ec92e8c",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/snapEngine.js",
+      "bytes": 10620,
+      "sha256": "1d33b51e5eb7406cce236ce8e1d7fa5f2fe7653fd60e0a3750a88636c7d8eb2f",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/supportLine.js",
+      "bytes": 8146,
+      "sha256": "a455681d9c534fc86c6f4f8c65880d4cc539c251d5fe139567d21b94236b4587",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/takeoff.js",
+      "bytes": 13710,
+      "sha256": "beae19b5456e7440c7bf5889be2da2d218a4a00780f72f5d60c663ea972ad04a",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/trussChain.js",
+      "bytes": 7470,
+      "sha256": "a7fbe14c8da313d1a927b5d7875e377767feaeab223d07646d05470fffa14816",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/trussLayout.js",
+      "bytes": 52186,
+      "sha256": "a60dccedf51c21cd476619279a66838d51425b5322d4b274b531b14c7fcec8e8",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/trussTemplates.js",
+      "bytes": 5420,
+      "sha256": "5149bcf5f6e81660aca2115e0f0259d360449ff35704571a18a9695176fc4686",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/useAutosave.js",
+      "bytes": 1857,
+      "sha256": "14bd0f64d16db4a8175701e1292d2aa182c48847297dee93221893fa005e45a2",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/useKeyboardShortcuts.js",
+      "bytes": 1656,
+      "sha256": "d863c6a34330e32a10cd27a4cde9814935ec6fba117afb317c9a9b25c1363e2c",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/viewMode.js",
+      "bytes": 717,
+      "sha256": "c54b0f8d0b74d5603ea4b01dd829a56ad9460f43ddd2f5ba84c7555dcd294980",
+      "kind": "source"
+    },
+    {
+      "path": "src/core/wallSplitMerge.js",
+      "bytes": 15450,
+      "sha256": "fd1011a796c7bd798100e9440455f7c4200be635d5448432206a4ef881110e74",
+      "kind": "source"
+    },
+    {
+      "path": "src/index.css",
+      "bytes": 350,
+      "sha256": "cb7ad397957de963552945e21a709f236f10c87e4783fa69f0f33d172b00999f",
+      "kind": "source"
+    },
+    {
+      "path": "src/main.jsx",
+      "bytes": 233,
+      "sha256": "26c739b131ac4cd9501d988c6057eab42f3f72879ecc18a4fddabcc80a9dc526",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/dimensions.js",
+      "bytes": 9282,
+      "sha256": "d7c2728fe56471cb9c6d439ddfe03f73749925e245361c64a34ba6064d1ba667",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/draw.js",
+      "bytes": 1443,
+      "sha256": "1e31ceafc324181543edf856afa786fa5ee949ed5b092ae23247762143378682",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/elevationGrid.js",
+      "bytes": 4109,
+      "sha256": "fcd0d91eefb87771e9572a667b62bf3241312a285433c20a3efd5ba8370f7cb9",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/foundation.js",
+      "bytes": 2907,
+      "sha256": "ad66f73a68fdd1722962bbb70b34affe2934a754b6f2be02a15e1be93c323471",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/grid.js",
+      "bytes": 2203,
+      "sha256": "9f8f713bc682445b308766177d3cbfcdf165e710f92fa1076af102a94428ea26",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/metalconModulation.js",
+      "bytes": 3285,
+      "sha256": "978211b8a0af25542136eb6c03f275dbfe49b6e6063d942d79873dd0dd70cb08",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/osbModulation.js",
+      "bytes": 3026,
+      "sha256": "16c0005bf566c8b81c98c1a74fa18d73c55e6ddfd16837bf480971c2c801d891",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/roofPlaneDraft.js",
+      "bytes": 4138,
+      "sha256": "0cd4d45aa97f86e230f59743efb9f3f307f7e04e942e44d9507f3c1eb3d14ef6",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/roofZonePreview.js",
+      "bytes": 3958,
+      "sha256": "b0e1d58c4e7e5acb4e87a5b40d5eeddd77563e96852c9537b5e1c5ba47183375",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/trussLayout.js",
+      "bytes": 9492,
+      "sha256": "13e909713548a286559b2f6511cf76fb4162188b7a626e68ec2dfaa7c1a4eae1",
+      "kind": "source"
+    },
+    {
+      "path": "src/render/wall.js",
+      "bytes": 18895,
+      "sha256": "d4037c43cae6ee4cf34b8e3f0e997bf2f7a49ca3a3a7b16e6757bc2c50018ca5",
+      "kind": "source"
+    },
+    {
+      "path": "src/store/useModelStore.js",
+      "bytes": 42481,
+      "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
+      "kind": "source"
+    },
+    {
+      "path": "tailwind.config.js",
+      "bytes": 155,
+      "sha256": "636ee06c71e4a543132b3e54771188a6ac4299f3d73d43475159f009be6d86fd",
+      "kind": "config"
+    },
+    {
+      "path": "tests/analysisReadiness.test.mjs",
+      "bytes": 4416,
+      "sha256": "6b78c38e4827bf3420c50691ed7c32e5db6c881af46b38d8d04f960780fb14f1",
+      "kind": "test"
+    },
+    {
+      "path": "tests/autosave.test.mjs",
+      "bytes": 3889,
+      "sha256": "5e93e97f61627cfef1e58428e8118af9156f2cbd1690df690f0e857c2ff64ba3",
+      "kind": "test"
+    },
+    {
+      "path": "tests/batchModulation.test.mjs",
+      "bytes": 7321,
+      "sha256": "0866ecab9320a6810c5216540ebe9756cfb07206395752e823e0df463e05a854",
+      "kind": "test"
+    },
+    {
+      "path": "tests/build3dMemberOffset.test.mjs",
+      "bytes": 14408,
+      "sha256": "f9109aedcfec18c6e101206fc4fac32fb66f61467dcb92a6e7ef2410bde86bf4",
+      "kind": "test"
+    },
+    {
+      "path": "tests/derivedInvalidation.test.mjs",
+      "bytes": 5048,
+      "sha256": "c6694ba7dc79df52f691ad5424a773e266ef5ffb3830631a4143104b4bd0e9b9",
+      "kind": "test"
+    },
+    {
+      "path": "tests/elementBounds.test.mjs",
+      "bytes": 2134,
+      "sha256": "4c0d8d7037e3ad23b2e747fad8628aae0934b53f14e0f02a56991e8a77eb5bb1",
+      "kind": "test"
+    },
+    {
+      "path": "tests/elevationAxisGroups.test.mjs",
+      "bytes": 7370,
+      "sha256": "a980a15670e51c75c1b3ff8a1cbfa4eb1d305b6c76a1c23b6274f3ecf6aac81c",
+      "kind": "test"
+    },
+    {
+      "path": "tests/elevationAxisSelection.test.mjs",
+      "bytes": 3213,
+      "sha256": "b242ba559ecdf98f730b4bd1fe571cb41c22a77e44a004781e2041689da68678",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportCalculix.test.mjs",
+      "bytes": 7878,
+      "sha256": "f063b605e2267803e4e160bc711458a5ccbdefbddba9a9babf5f797fac0293d1",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportCalculixFoundation.test.mjs",
+      "bytes": 8177,
+      "sha256": "a732e75df85139839f99efe87aaed30fff4ca4d89117bdd25e717091e671839b",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportCalculixTruss.test.mjs",
+      "bytes": 10635,
+      "sha256": "e370ecf1e3bad240530362d6e912abaaae874c37a7119b4979b8cbfaa3efd8bb",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportDxf.test.mjs",
+      "bytes": 2304,
+      "sha256": "4a66869dc024e4f586cd2f3d2d462195f0c17a220d7324339b746417a9b4f929",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportFoundationsDxf.test.mjs",
+      "bytes": 6406,
+      "sha256": "8614f3acfee8fc3b9ee89e5cebf67ccbdf7d3a7e6cc08e2ccd2ce3eb60f077b0",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportFramingDxf.test.mjs",
+      "bytes": 15092,
+      "sha256": "3dd87dfa576d700ef095185a0f26cc635989ef773bd03bce7b50ca5cda98c32e",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportSheetsDxf.test.mjs",
+      "bytes": 5609,
+      "sha256": "141c45742e2c7a0887f41fe3bed0c258051689d6e3299be6948fa72db4d75e08",
+      "kind": "test"
+    },
+    {
+      "path": "tests/exportTrussSheetsDxf.test.mjs",
+      "bytes": 3584,
+      "sha256": "4739fb906f051e034492e8bbf4d3915f412b8df14b493dfbe2e04672791630d1",
+      "kind": "test"
+    },
+    {
+      "path": "tests/fixtures/casa-L.json",
+      "bytes": 341994,
+      "sha256": "94c801d33a76cd4560011e7c1e3fbd3940e944934c2f986f78f61018adaaeafc",
+      "kind": "fixture"
+    },
+    {
+      "path": "tests/foundationBaseLevel.test.mjs",
+      "bytes": 4113,
+      "sha256": "bb6690dc81f744af89917819290d1790ad1bd6ae3f3839772aedfd5c2a3b9c1e",
+      "kind": "test"
+    },
+    {
+      "path": "tests/foundationGeneration.test.mjs",
+      "bytes": 4726,
+      "sha256": "24cade04a53f09e66823973ff2f011e9a680f89c2167117aa8df0c42b17d19fe",
+      "kind": "test"
+    },
+    {
+      "path": "tests/foundations.test.mjs",
+      "bytes": 9028,
+      "sha256": "167a927e99bf2ac4c9024ccb4365f7767543eac9f982371f5a9caccefe770546",
+      "kind": "test"
+    },
+    {
+      "path": "tests/goToElevationFromPlan.test.mjs",
+      "bytes": 4492,
+      "sha256": "9a62097323e92c2837d9fc99ea67b8c829484ac366a92406c6f307acd41c10de",
+      "kind": "test"
+    },
+    {
+      "path": "tests/levelTypes.test.mjs",
+      "bytes": 2234,
+      "sha256": "6f8012f8f4add8c0208652a6d6a7aca0280b2e824e61aa98b26c71e4f9004430",
+      "kind": "test"
+    },
+    {
+      "path": "tests/levelVisibilityCut.test.mjs",
+      "bytes": 6874,
+      "sha256": "fc18a6474c3713496e6f06b9d1362354ead7687fb2ed9f098cef1215308f37e8",
+      "kind": "test"
+    },
+    {
+      "path": "tests/libraryTrussTemplates.test.mjs",
+      "bytes": 4531,
+      "sha256": "25262cb9cd868eff43bb7fd54556c252b2fc1fd529a84debe708cbb27658a81e",
+      "kind": "test"
+    },
+    {
+      "path": "tests/metalconModulation.test.mjs",
+      "bytes": 11688,
+      "sha256": "a9f0633464cc79eeb24dca10ebfa9bf713abc516a2750c1e458eb8f61194ed1d",
+      "kind": "test"
+    },
+    {
+      "path": "tests/osbModulation.test.mjs",
+      "bytes": 19083,
+      "sha256": "bf6aef55c7cc3e2a31273fcfacbd11f6bac74b456deb3e878e0c12c81f0475ca",
+      "kind": "test"
+    },
+    {
+      "path": "tests/osbNesting.test.mjs",
+      "bytes": 10743,
+      "sha256": "7a2e49458d9ea4e8be108eb057807a0f9bbd872b74dc0f225f5ffd16c1fdeb76",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofObstructions.test.mjs",
+      "bytes": 12300,
+      "sha256": "691c873045950aba2ea9481aaaa5233206234dc77711b26f121a01c9f52d2f21",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneAdapter.test.mjs",
+      "bytes": 7594,
+      "sha256": "dc9312c9fe4ecea0c413ebcb8f1020a36ad5b65baa80a5e9f2542e6812da8637",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneDraft.test.mjs",
+      "bytes": 3765,
+      "sha256": "8e982882303fea5208eb0f4cfcd1f17ee7a01a146d1b43483469092c6ba6058d",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneEdge.test.mjs",
+      "bytes": 3396,
+      "sha256": "c870b7c4fa1ed397a1e6528243fe9caa60d606d91cfd77a09d69ea17bff87a5e",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneHitTest.test.mjs",
+      "bytes": 2307,
+      "sha256": "b7834bdf90c948985e8158e8c88d1c45d8c09e1f482b6fe72db23193f88b6997",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneInnerFace.test.mjs",
+      "bytes": 8782,
+      "sha256": "0c0a578743b99f376f187252b184bd8d224c2ae2157ef7c8cd451dc48975e707",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneOutputs.test.mjs",
+      "bytes": 5014,
+      "sha256": "bee648018fb06f37d8d10dc0c013571f1492721bffd8177223cfda4f2c5fbba1",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneStore.test.mjs",
+      "bytes": 4188,
+      "sha256": "d8e9d073b69d07ad13a0ffcfffa1aa86b37cbcab1d82978e99e8c7d8b4876d2a",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneSupportLedger.test.mjs",
+      "bytes": 13437,
+      "sha256": "56232a3e73565756f775fe8925a405fdca89f658d480c8aecc21a0cbba7e76ec",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneTemplate.test.mjs",
+      "bytes": 4449,
+      "sha256": "39e77ce27fd856d1acd35d41ab4438dce5f88d56ea658b6da34eef4f77e7fa58",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlaneValidation.test.mjs",
+      "bytes": 3055,
+      "sha256": "e5774f6f3b185b852c636987e8fd5c75a0a7dd634336d8abe5de3aa1c110b97a",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlane_polygonClip.test.mjs",
+      "bytes": 2368,
+      "sha256": "1a866d544116c9b2ca56153e0b6eb5a636ab11287e57b3bd9091e95a79463acb",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlane_polygonDetect.test.mjs",
+      "bytes": 1642,
+      "sha256": "49dbaf996b43a7f171594111cc91a1bbb314c8363f4b41a23965564f1d2ac76d",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlane_roofPlane.test.mjs",
+      "bytes": 5118,
+      "sha256": "0a0040c56b9595f5d001c4f67a82c4277f2cfa0c5dfd6197884f8b6208abd57a",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlane_roofPurlins.test.mjs",
+      "bytes": 3283,
+      "sha256": "c83785906f780353405874bd09412d6b22ef7b942d401da679b804c889f24215",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlane_supportLine.test.mjs",
+      "bytes": 3928,
+      "sha256": "064192fbd35d9db4357585475405dfb7dd87e0769befe94200d5706489f178d2",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofPlane_trussChain.test.mjs",
+      "bytes": 3152,
+      "sha256": "70f9b7c2d555e2da33374d117f72c2fad5d82cfe9b666f4bd14cbe28399744f5",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofSourceUnification.test.mjs",
+      "bytes": 9053,
+      "sha256": "1a0adceb31362c6502b224fed66f81fb317bcbbeb33cbbc5b674f3ed09e6f483",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofSystemHitTest.test.mjs",
+      "bytes": 2086,
+      "sha256": "ef7067a2af5aba5a1637f572d20369d014cd5ad6ae7932206543a8b2e16bda4f",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofZoneGenerator.test.mjs",
+      "bytes": 5424,
+      "sha256": "82457f28c1e7676f7cd796ca2b0eb1bee7a7ae0817968b71fa0b559aac3ff480",
+      "kind": "test"
+    },
+    {
+      "path": "tests/roofZones.test.mjs",
+      "bytes": 8194,
+      "sha256": "fe3fbd6bf2f62b4823fb3af9b45f01c5e2ff94cd45a9537f72c07e5c700d7988",
+      "kind": "test"
+    },
+    {
+      "path": "tests/sheetLayout.test.mjs",
+      "bytes": 9212,
+      "sha256": "1e1162ad988d8f361490c903e439ea7d3678de740811efc1524c2c49bccf52a2",
+      "kind": "test"
+    },
+    {
+      "path": "tests/snapEngine.test.mjs",
+      "bytes": 8567,
+      "sha256": "e8e4f9809fef8f32cd5abce60c6c804ca2e254b6d1a7f98d7b126d562afb4566",
+      "kind": "test"
+    },
+    {
+      "path": "tests/studFlangeSpan.test.mjs",
+      "bytes": 10739,
+      "sha256": "5dc7b16abb84a5ef4b8e00b39171026b5b8e1fb3850747a16ae602b0e057a623",
+      "kind": "test"
+    },
+    {
+      "path": "tests/supportLedgerDxfS5.test.mjs",
+      "bytes": 19683,
+      "sha256": "7d92a86fb6ad186c9fb0e10f41a977e96180ae951896f7eb2563161f1ad92a60",
+      "kind": "test"
+    },
+    {
+      "path": "tests/takeoff.test.mjs",
+      "bytes": 7404,
+      "sha256": "b9a61d59322652702deca5d5f304465fe98e5132215abc28bd93ef5d266ff6eb",
+      "kind": "test"
+    },
+    {
+      "path": "tests/trussLayout.test.mjs",
+      "bytes": 35113,
+      "sha256": "21dc4150f6c05ae8a2647160f59e95aceef7602df770b4b5286865de8cbac218",
+      "kind": "test"
+    },
+    {
+      "path": "tests/wallSplitMerge.test.mjs",
+      "bytes": 9400,
+      "sha256": "87e8e05b585ee890d652f6dd38d07584c8f3e80a82b72d2699c0c101c6880906",
+      "kind": "test"
+    },
+    {
+      "path": "vite.config.js",
+      "bytes": 713,
+      "sha256": "25668e0bf173bcaa53bfd5765ad76ef0b99afac40f60c0fd90daf8e08db30282",
+      "kind": "config"
+    }
+  ]
+}
