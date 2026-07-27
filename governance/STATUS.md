@@ -9,15 +9,15 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — R4 cerrada; preparar roles de muro R5 |
+| Etapa | Reglas de dominio — roles de muro y `wallTypes` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; la siguiente unidad R5 requiere spec gobernada |
+| Spec activa | `specs/domain/SPEC-R5-wall-types.md` — corte A |
 | Suite oficial | 598/598; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 639,73 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; antes de implementar R5 corresponde emitir su spec |
+| Bloqueo actual | Ninguno; el corte A puede implementar contrato puro y migración |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -58,7 +58,9 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual` las 11 filas heredadas.
 - R4-A/B/C: cerrados; catálogo inmutable, constructor canónico, cuatro fronteras públicas
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
-- R5–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
+- R5: spec gobernada en tres cortes; A (contrato/migración), B (store/invalidation) y
+  C (consumidores/UI) pendientes.
+- R6–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
@@ -80,6 +82,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Emitir y gobernar `SPEC-R5` para roles MP1 / MP2 / MP3 / tabique, `wallTypes`, `aplicaA`, defaults
-por tipo y migración sin inferencia geométrica. La implementación no comienza hasta confirmar
-diagnóstico, decisión, alcance, exclusiones y aceptación verificable.
+El corte A de `SPEC-R5` debe implementar el contrato puro de roles/tipos, `aplicaA`, resolución
+efectiva y migración a `modelVersion` 2, sin tocar store, React ni consumidores.

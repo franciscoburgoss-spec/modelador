@@ -24,6 +24,8 @@ Estados: `vigente`, `derogada por D-xxx`, `descartada`.
 | D-016 | 27-jul-2026 | vigente | Cobertura bloquea en 90 % para core y 50 % como piso heredado del store; el objetivo del store sigue en 85 % | Mantiene el objetivo de dominio y evita fingir cobertura del store durante una migración sin cambios funcionales |
 | D-017 | 27-jul-2026 | vigente | El manifiesto conserva el hash del origen y registra por spec un hash de workspace para cada archivo modificado después del bootstrap | Permite evolucionar el código sin destruir la evidencia byte a byte de la migración |
 | D-018 | 27-jul-2026 | vigente | Una fuente oficial sin edición declarada registra literalmente esa ausencia y fija URL y fecha de consulta; la fecha del archivo no se presenta como edición | Mantiene trazabilidad verificable sin fabricar metadata documental |
+| D-019 | 27-jul-2026 | vigente | `modelVersion` 2 agrega `wallTypes`; la migración deja los muros sin tipo, conserva defaults/overrides y nunca infiere rol desde geometría o derivados | Los datos existentes no demuestran una función estructural y no pueden descartarse para acomodar el formato nuevo |
+| D-020 | 27-jul-2026 | vigente | La rotación de placas se deriva del rol: sólo `tabique` puede rotar; MP1/MP2/MP3 y muros sin rol permanecen sin rotación | La chapa MP1 exige hebra vertical, MP2 no usa OSB como corte, MP3 sigue siendo estructural y sólo tabique declara inequívocamente uso no estructural |
 
 Las decisiones constructivas D-001 a D-033 del proyecto anterior se preservan como historia en
 `archive/LEGACY_DECISIONS.md`. Las reglas vigentes derivadas viven en `domain/DOMAIN_RULES.md`.
