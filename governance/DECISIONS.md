@@ -23,6 +23,7 @@ Estados: `vigente`, `derogada por D-xxx`, `descartada`.
 | D-015 | 27-jul-2026 | vigente | Los documentos heredados se archivan y no son fuente del estado nuevo | Evita que cierres históricos reabran deudas ya resueltas |
 | D-016 | 27-jul-2026 | vigente | Cobertura bloquea en 90 % para core y 50 % como piso heredado del store; el objetivo del store sigue en 85 % | Mantiene el objetivo de dominio y evita fingir cobertura del store durante una migración sin cambios funcionales |
 | D-017 | 27-jul-2026 | vigente | El manifiesto conserva el hash del origen y registra por spec un hash de workspace para cada archivo modificado después del bootstrap | Permite evolucionar el código sin destruir la evidencia byte a byte de la migración |
+| D-018 | 27-jul-2026 | vigente | Una fuente oficial sin edición declarada registra literalmente esa ausencia y fija URL y fecha de consulta; la fecha del archivo no se presenta como edición | Mantiene trazabilidad verificable sin fabricar metadata documental |
 
 Las decisiones constructivas D-001 a D-033 del proyecto anterior se preservan como historia en
 `archive/LEGACY_DECISIONS.md`. Las reglas vigentes derivadas viven en `domain/DOMAIN_RULES.md`.
