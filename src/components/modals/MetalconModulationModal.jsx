@@ -11,6 +11,7 @@ import { drawStudLayoutElevation, METALCON_ROLE_LABELS } from '../../render/meta
 import { buildParamsMap, resolveValue } from '../../core/projectParams.js';
 import { buildElementsById } from '../../core/elementReferences.js';
 import { getElementShortLabel } from '../../core/naming.js';
+import { resolveWallTypeConfig } from '../../core/wallTypes.js';
 import Modal from '../ui/Modal.jsx';
 import { Field, SelectInput, FormulaInput } from '../ui/Field.jsx';
 import { Button } from '../ui/Button.jsx';
@@ -67,37 +68,51 @@ export default function MetalconModulationModal({ open, onClose }) {
   }, [open, studProfiles.length, trackProfiles.length]);
 
   const wall = walls.find(w => w.id === Number(wallId) || w.id === wallId);
+  const effective = useMemo(
+    () => (wall ? resolveWallTypeConfig(model, wall) : null),
+    [model, wall]
+  );
+  const typed = effective?.source === 'wallType';
 
-  // Cambiar de muro recarga sus valores guardados (si los tiene) sin perder la selección de perfiles ya elegida a mano.
+  // El resolvedor compartido es la única autoridad para muros tipados; legacy conserva su flujo.
   useEffect(() => {
-    if (!wall) return;
-    if (wall.framingStudProfileId != null) setStudProfileId(wall.framingStudProfileId);
-    if (wall.framingTrackProfileId != null) setTrackProfileId(wall.framingTrackProfileId);
-    if (wall.framingMaterialId != null) setMaterialId(wall.framingMaterialId);
-    if (wall.studSpacing != null) setSpacing(wall.studSpacing);
+    if (!effective) return;
+    setStudProfileId(effective.metalconDefaults.studProfileId ?? '');
+    setTrackProfileId(effective.metalconDefaults.trackProfileId ?? '');
+    setMaterialId(effective.metalconDefaults.materialId ?? '');
+    setSpacing(effective.metalconDefaults.spacing);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallId]);
+  }, [wallId, effective?.wallType?.id]);
+
+  const activeStudProfileId = typed ? effective.metalconDefaults.studProfileId : studProfileId;
+  const activeTrackProfileId = typed ? effective.metalconDefaults.trackProfileId : trackProfileId;
+  const activeMaterialId = typed ? effective.metalconDefaults.materialId : (materialId || null);
+  const activeSpacing = typed ? effective.metalconDefaults.spacing : spacing;
+  const activeOsb = typed ? effective.osbDefaults : {
+    panelHeight: wall?.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440,
+    gap: wall?.osbGap ?? osbDefaults.gap ?? 5
+  };
 
   const corners = useMemo(() => {
     if (!wall) return { start: false, end: false };
     return detectWallCorners(wall, elements, grid, paramsMap, elementsById);
   }, [wall, elements, grid, paramsMap, elementsById]);
 
-  const studProfile = studProfiles.find(p => String(p.id) === String(studProfileId));
-  const trackProfile = trackProfiles.find(p => String(p.id) === String(trackProfileId));
+  const studProfile = studProfiles.find(p => String(p.id) === String(activeStudProfileId));
+  const trackProfile = trackProfiles.find(p => String(p.id) === String(activeTrackProfileId));
 
   const layout = useMemo(() => {
     if (!wall) return { resolved: false, length: null, wallHeight: null, studs: [] };
-    const base = computeStudLayout(wall, grid, paramsMap, elementsById, { spacing, corners });
+    const base = computeStudLayout(wall, grid, paramsMap, elementsById, { spacing: activeSpacing, corners });
     if (!base.resolved) return base;
     const panelHeight = resolveValue(
-      wall.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440,
+      activeOsb.panelHeight,
       paramsMap,
       elementsById
     );
     const jointZs = computeCourseBreaks(base.wallHeight, panelHeight).jointZs;
     return computeStudLayout(wall, grid, paramsMap, elementsById, {
-      spacing,
+      spacing: activeSpacing,
       corners,
       jointZs,
       flangeWidth: studProfile?.B
@@ -107,9 +122,9 @@ export default function MetalconModulationModal({ open, onClose }) {
     grid,
     paramsMap,
     elementsById,
-    spacing,
+    activeSpacing,
     corners,
-    osbDefaults.panelHeight,
+    activeOsb.panelHeight,
     studProfile?.B
   ]);
 
@@ -153,15 +168,23 @@ export default function MetalconModulationModal({ open, onClose }) {
     return rows;
   }, [layout, trackProfile]);
 
-  const canGenerate = wall && studProfileId && trackProfileId && layout.resolved;
+  const canGenerate = wall && activeStudProfileId && activeTrackProfileId && layout.resolved;
+  const canGenerateAll = walls.some((candidate) => {
+    const config = resolveWallTypeConfig(model, candidate);
+    return !!(
+      config.metalconDefaults.studProfileId
+      && config.metalconDefaults.trackProfileId
+    );
+  });
 
   const handleGenerate = () => {
     if (!canGenerate) return;
     commitWallRegeneration(wall.id, 'wallFraming', {
-      framingStudProfileId: studProfile?.id ?? studProfileId,
-      framingTrackProfileId: trackProfile?.id ?? trackProfileId,
-      framingMaterialId: materialId ? Number(materialId) : null,
-      studSpacing: spacing,
+      framingStudProfileId: studProfile?.id ?? activeStudProfileId,
+      framingTrackProfileId: trackProfile?.id ?? activeTrackProfileId,
+      framingMaterialId: activeMaterialId,
+      studSpacing: activeSpacing,
+      osbGap: activeOsb.gap,
       studs: layout.studs,
       headers: layout.headers
     });
@@ -170,7 +193,6 @@ export default function MetalconModulationModal({ open, onClose }) {
   const existingCount = walls.filter(w => w.studs?.length > 0).length;
 
   const handleGenerateAll = () => {
-    if (!studProfileId || !trackProfileId) return;
     let skipExisting = false;
     if (existingCount > 0) {
       const overwrite = confirm(
@@ -203,7 +225,7 @@ export default function MetalconModulationModal({ open, onClose }) {
       width="max-w-2xl"
       footer={
         <>
-          <Button variant="secondary" onClick={handleGenerateAll} disabled={!studProfileId || !trackProfileId || walls.length === 0}>
+          <Button variant="secondary" onClick={handleGenerateAll} disabled={!canGenerateAll}>
             Generar todos
           </Button>
           <Button variant="primary" onClick={handleGenerate} disabled={!canGenerate}>
@@ -239,6 +261,13 @@ export default function MetalconModulationModal({ open, onClose }) {
               Despiece desactualizado: el modelo cambió después de generarlo. Regenerar.
             </div>
           )}
+          {effective && (
+            <div className="rounded border border-sky-200 bg-sky-50 px-2 py-1 text-xs text-sky-800">
+              {typed
+                ? `Tipo efectivo: ${effective.wallType.name} · rol ${effective.role}. La configuración se edita en Librería → Tipos y roles de muro.`
+                : 'Sin tipo/rol: flujo de compatibilidad legacy con configuración por muro/proyecto.'}
+            </div>
+          )}
           {batchSummary && (
             <div className="rounded border border-emerald-400 bg-emerald-50 px-2 py-1 text-xs text-emerald-800">
               {batchSummary}
@@ -247,13 +276,13 @@ export default function MetalconModulationModal({ open, onClose }) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Perfil montante (C)">
-              <SelectInput value={studProfileId} onChange={(e) => setStudProfileId(e.target.value)}>
+              <SelectInput value={studProfileId} onChange={(e) => setStudProfileId(e.target.value)} disabled={typed}>
                 <option value="" disabled>Seleccionar…</option>
                 {studProfiles.map(p => <option key={p.id} value={p.id}>{p.catalogDesignation}</option>)}
               </SelectInput>
             </Field>
             <Field label="Perfil solera (U)">
-              <SelectInput value={trackProfileId} onChange={(e) => setTrackProfileId(e.target.value)}>
+              <SelectInput value={trackProfileId} onChange={(e) => setTrackProfileId(e.target.value)} disabled={typed}>
                 <option value="" disabled>Seleccionar…</option>
                 {trackProfiles.map(p => <option key={p.id} value={p.id}>{p.catalogDesignation}</option>)}
               </SelectInput>
@@ -261,14 +290,14 @@ export default function MetalconModulationModal({ open, onClose }) {
           </div>
 
           <Field label="Material" hint={metalconMaterials.length === 0 ? '— crea uno en Librería > Materiales (categoría metalcon) para usar propiedades reales en CalculiX' : undefined}>
-            <SelectInput value={materialId} onChange={(e) => setMaterialId(e.target.value)}>
+            <SelectInput value={materialId} onChange={(e) => setMaterialId(e.target.value)} disabled={typed}>
               <option value="">Sin material asignado (genérico al exportar)</option>
               {metalconMaterials.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
             </SelectInput>
           </Field>
 
           <Field label="Espaciamiento entre montantes (mm)" hint="Manual Metalcon: 400-600mm">
-            <FormulaInput value={spacing} onChange={setSpacing} paramsMap={paramsMap} projectParams={projectParams} />
+            <FormulaInput value={spacing} onChange={setSpacing} paramsMap={paramsMap} projectParams={projectParams} disabled={typed} />
           </Field>
 
           {(corners.start || corners.end) && (
@@ -287,7 +316,7 @@ export default function MetalconModulationModal({ open, onClose }) {
             <Button
               variant="secondary"
               onClick={() => setMetalconDefaults({ spacing, studProfileId, trackProfileId, materialId: materialId ? Number(materialId) : null })}
-              disabled={!studProfileId || !trackProfileId}
+              disabled={typed || !studProfileId || !trackProfileId}
             >
               Guardar como default de proyecto
             </Button>

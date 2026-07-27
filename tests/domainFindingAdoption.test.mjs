@@ -102,3 +102,40 @@ test('R4-B: las cuatro fronteras delegan la construcción al contrato compartido
     );
   }
 });
+
+test('R5-C: validación común adopta findings wallRole y wallType con navegación al muro', () => {
+  const base = {
+    elements: [
+      { id: 'legacy', type: 'wall' },
+      {
+        id: 'typed',
+        type: 'wall',
+        wallTypeId: 'T1',
+        studSpacing: 600
+      }
+    ],
+    wallTypes: [{
+      id: 'T1',
+      name: 'Exterior',
+      role: 'MP1',
+      metalconDefaults: {
+        spacing: 400, studProfileId: 'C90', trackProfileId: 'U90', materialId: null
+      },
+      osbDefaults: {
+        panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 5
+      }
+    }],
+    library: {
+      metalconProfiles: [{ id: 'C90', shape: 'C' }, { id: 'U90', shape: 'U' }]
+    },
+    grid: { xAxes: [], yAxes: [], zLevels: [] },
+    projectParams: []
+  };
+  const findings = validateModel(base);
+  assert.ok(findings.some((finding) => (
+    finding.category === 'wallRole' && finding.wallIds?.includes('legacy')
+  )));
+  assert.ok(findings.some((finding) => (
+    finding.category === 'wallType' && finding.wallIds?.includes('typed')
+  )));
+});

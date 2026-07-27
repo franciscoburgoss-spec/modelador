@@ -5,9 +5,16 @@ import { resolveValue, buildParamsMap } from './projectParams.js';
 import { resolveAxisRef, isElementRef, buildElementsById } from './elementReferences.js';
 import { resolveFoundation, foundationVerticalRange } from './foundationGeometry.js';
 import { createFinding } from './domainFindings.js';
+import { resolveWallTypeConfig } from './wallTypes.js';
 
 function issue(severity, category, message, elementIds = []) {
   return createFinding({ severity, category, message, elementIds });
+}
+
+function checkWallTypeConfiguration(model) {
+  return (model.elements || [])
+    .filter((element) => element.type === 'wall')
+    .flatMap((wall) => resolveWallTypeConfig(model, wall).findings);
 }
 
 function levelRange(el, grid, paramsMap, elementsById = {}) {
@@ -439,6 +446,7 @@ export function validateModel(model, extraMargin = 0) {
   const paramsMap = buildParamsMap(model.projectParams);
   const elementsById = buildElementsById(elements);
   return [
+    ...checkWallTypeConfiguration(model),
     ...checkDanglingReferences(elements, grid, paramsMap, elementsById),
     ...checkZeroLength(elements, grid, paramsMap, elementsById),
     ...checkOpeningsOutsideWall(elements, grid, paramsMap, elementsById),

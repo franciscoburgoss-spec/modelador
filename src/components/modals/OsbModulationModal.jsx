@@ -11,6 +11,7 @@ import { drawOsbLayoutElevation } from '../../render/osbModulation.js';
 import { buildParamsMap } from '../../core/projectParams.js';
 import { buildElementsById } from '../../core/elementReferences.js';
 import { getElementShortLabel } from '../../core/naming.js';
+import { resolveWallTypeConfig } from '../../core/wallTypes.js';
 import Modal from '../ui/Modal.jsx';
 import { Field, SelectInput, FormulaInput } from '../ui/Field.jsx';
 import { Button } from '../ui/Button.jsx';
@@ -49,15 +50,21 @@ export default function OsbModulationModal({ open, onClose }) {
   }, [open]);
 
   const wall = walls.find(w => w.id === Number(wallId) || w.id === wallId);
+  const effective = useMemo(
+    () => (wall ? resolveWallTypeConfig(model, wall) : null),
+    [model, wall]
+  );
+  const typed = effective?.source === 'wallType';
 
-  // Cambiar de muro recarga su override guardado (si tiene) o vuelve al default de proyecto.
+  // Configuración efectiva compartida con batch/Generate All.
   useEffect(() => {
-    if (!wall) return;
-    setPanelWidth(wall.osbPanelWidth ?? osbDefaults.panelWidth);
-    setPanelHeight(wall.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440);
-    setMinPanelWidth(wall.osbMinPanelWidth ?? osbDefaults.minPanelWidth);
+    if (!effective) return;
+    setPanelWidth(effective.osbDefaults.panelWidth);
+    setPanelHeight(effective.osbDefaults.panelHeight);
+    setMinPanelWidth(effective.osbDefaults.minPanelWidth);
+    setGap(effective.osbDefaults.gap);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallId]);
+  }, [wallId, effective?.wallType?.id]);
 
   const layout = useMemo(() => {
     if (!wall) return { resolved: false, length: null, wallHeight: null, courses: [], warnings: [] };
@@ -91,6 +98,7 @@ export default function OsbModulationModal({ open, onClose }) {
       osbPanelWidth: panelWidth,
       osbPanelHeight: panelHeight,
       osbMinPanelWidth: minPanelWidth,
+      osbGap: gap,
       osbCourses: layout.courses,
       osbNoggings: layout.noggings
     });
@@ -106,7 +114,9 @@ export default function OsbModulationModal({ open, onClose }) {
       );
       skipExisting = !overwrite;
     }
-    const { patches, skipped } = modulateAllWallsOsb(model, { panelWidth, panelHeight, minPanelWidth }, { skipExisting });
+    const { patches, skipped } = modulateAllWallsOsb(model, {
+      panelWidth, panelHeight, minPanelWidth, gap
+    }, { skipExisting });
     if (patches.length > 0) applyWallPatchesBatch(patches);
     setBatchSummary(
       `${patches.length} generado(s)` + (skipped.length > 0 ? `, ${skipped.length} omitido(s) (${skipped.map(s => s.reason).join('; ')})` : '')
@@ -153,6 +163,13 @@ export default function OsbModulationModal({ open, onClose }) {
               Despiece desactualizado: el modelo cambió después de generarlo. Regenerar.
             </div>
           )}
+          {effective && (
+            <div className="rounded border border-sky-200 bg-sky-50 px-2 py-1 text-xs text-sky-800">
+              {typed
+                ? `Tipo efectivo: ${effective.wallType.name} · rol ${effective.role}. La configuración se edita en Librería → Tipos y roles de muro.`
+                : 'Sin tipo/rol: flujo de compatibilidad legacy con configuración por muro/proyecto.'}
+            </div>
+          )}
           {batchSummary && (
             <div className="rounded border border-emerald-400 bg-emerald-50 px-2 py-1 text-xs text-emerald-800">
               {batchSummary}
@@ -161,10 +178,10 @@ export default function OsbModulationModal({ open, onClose }) {
 
           <div className="grid grid-cols-2 gap-3">
             <Field label="Ancho de placa (mm)" hint="LP OSB: 1220mm de fábrica">
-              <FormulaInput value={panelWidth} onChange={setPanelWidth} paramsMap={paramsMap} projectParams={projectParams} />
+              <FormulaInput value={panelWidth} onChange={setPanelWidth} paramsMap={paramsMap} projectParams={projectParams} disabled={typed} />
             </Field>
             <Field label="Alto de placa (mm)" hint="LP OSB: 2440mm de fábrica — muros más altos se reparten en cursos">
-              <FormulaInput value={panelHeight} onChange={setPanelHeight} paramsMap={paramsMap} projectParams={projectParams} />
+              <FormulaInput value={panelHeight} onChange={setPanelHeight} paramsMap={paramsMap} projectParams={projectParams} disabled={typed} />
             </Field>
           </div>
 
@@ -175,6 +192,7 @@ export default function OsbModulationModal({ open, onClose }) {
                 onChange={(v) => setMinPanelWidth(Math.max(200, Number(v) || 200))}
                 paramsMap={paramsMap}
                 projectParams={projectParams}
+                disabled={typed}
               />
             </Field>
             <Field label="Dilatación entre placas (mm)" hint="Manual Práctico LP, cap. Muros: 5mm">
@@ -183,6 +201,7 @@ export default function OsbModulationModal({ open, onClose }) {
                 onChange={(v) => setGap(Math.max(0, Number(v) || 0))}
                 paramsMap={paramsMap}
                 projectParams={projectParams}
+                disabled={typed}
               />
             </Field>
           </div>
@@ -194,6 +213,7 @@ export default function OsbModulationModal({ open, onClose }) {
             <Button
               variant="secondary"
               onClick={() => setOsbDefaults({ panelWidth, panelHeight, minPanelWidth, gap })}
+              disabled={typed}
             >
               Guardar como default de proyecto
             </Button>

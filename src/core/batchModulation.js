@@ -13,6 +13,44 @@ import { computeCourseBreaks, computeOsbPanelLayout } from './osbModulation.js';
 import { buildParamsMap, resolveValue } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { getWallDisplayName } from './naming.js';
+import { resolveWallTypeConfig } from './wallTypes.js';
+
+function resolveModulationConfig(model, wall, metalconFallback = {}, osbFallback = {}) {
+  const resolved = resolveWallTypeConfig(model, wall);
+  if (resolved.source === 'wallType') return resolved;
+
+  return {
+    ...resolved,
+    metalconDefaults: {
+      spacing: wall.studSpacing
+        ?? metalconFallback.spacing
+        ?? resolved.metalconDefaults.spacing,
+      studProfileId: wall.framingStudProfileId
+        ?? metalconFallback.studProfileId
+        ?? resolved.metalconDefaults.studProfileId,
+      trackProfileId: wall.framingTrackProfileId
+        ?? metalconFallback.trackProfileId
+        ?? resolved.metalconDefaults.trackProfileId,
+      materialId: wall.framingMaterialId
+        ?? metalconFallback.materialId
+        ?? resolved.metalconDefaults.materialId
+    },
+    osbDefaults: {
+      panelWidth: wall.osbPanelWidth
+        ?? osbFallback.panelWidth
+        ?? resolved.osbDefaults.panelWidth,
+      panelHeight: wall.osbPanelHeight
+        ?? osbFallback.panelHeight
+        ?? resolved.osbDefaults.panelHeight,
+      minPanelWidth: wall.osbMinPanelWidth
+        ?? osbFallback.minPanelWidth
+        ?? resolved.osbDefaults.minPanelWidth,
+      gap: wall.osbGap
+        ?? osbFallback.gap
+        ?? resolved.osbDefaults.gap
+    }
+  };
+}
 
 /**
  * Modula metalcon (montantes/dinteles) para todos los muros elegibles del modelo.
@@ -22,13 +60,7 @@ import { getWallDisplayName } from './naming.js';
  * @returns { patches: [{wallId, patch}], skipped: [{wallId, name, reason}] }
  */
 export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
-  const {
-    spacing = 400,
-    studProfileId = null,
-    trackProfileId = null,
-    materialId = null,
-    osb: osbDefaults = {}
-  } = defaults;
+  const { osb: osbFallback = {}, ...metalconFallback } = defaults;
   const { skipExisting = false } = opts;
   const paramsMap = buildParamsMap(model.projectParams || []);
   const elementsById = buildElementsById(model.elements || []);
@@ -39,23 +71,33 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
   const skipped = [];
 
   for (const wall of allWalls) {
-    const wallStudProfileId = wall.framingStudProfileId ?? studProfileId;
-    const wallTrackProfileId = wall.framingTrackProfileId ?? trackProfileId;
+    const effective = resolveModulationConfig(
+      model,
+      wall,
+      metalconFallback,
+      osbFallback
+    );
+    const {
+      spacing: wallSpacing,
+      studProfileId: wallStudProfileId,
+      trackProfileId: wallTrackProfileId,
+      materialId: wallMaterialId
+    } = effective.metalconDefaults;
+    const effectiveOsb = effective.osbDefaults;
     if (!wallStudProfileId || !wallTrackProfileId) {
       skipped.push({ wallId: wall.id, name: getWallDisplayName(wall, grid), reason: 'sin perfil montante/solera' });
       continue;
     }
-    const wallSpacing = wall.studSpacing ?? spacing;
     const bottom = grid.zLevels.find((level) => level.id === wall.bottomZ);
     const top = grid.zLevels.find((level) => level.id === wall.topZ);
     const wallHeight = bottom && top ? top.elevation - bottom.elevation : 0;
     const panelHeight = resolveValue(
-      wall.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440,
+      effectiveOsb.panelHeight,
       paramsMap,
       elementsById
     );
     const minCourseHeight = resolveValue(
-      osbDefaults.minCourseHeight ?? 300,
+      model.osbDefaults?.minCourseHeight ?? 300,
       paramsMap,
       elementsById
     );
@@ -64,7 +106,7 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
         wallHeight,
         panelHeight,
         minCourseHeight,
-        osbDefaults.enforceMinCourse === true
+        model.osbDefaults?.enforceMinCourse === true
       ).jointZs
       : [];
     const hasCurrentNoggings = jointZs.length === 0
@@ -105,8 +147,9 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
       patch: {
         framingStudProfileId: studProfile?.id ?? wallStudProfileId,
         framingTrackProfileId: trackProfile?.id ?? wallTrackProfileId,
-        framingMaterialId: wall.framingMaterialId ?? (materialId ? Number(materialId) : null),
+        framingMaterialId: wallMaterialId,
         studSpacing: wallSpacing,
+        osbGap: effectiveOsb.gap,
         studs: layout.studs,
         headers: layout.headers
       }
@@ -124,7 +167,6 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
  * @returns { patches: [{wallId, patch}], skipped: [{wallId, name, reason}] }
  */
 export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
-  const { panelWidth = 1220, panelHeight = 2440, minPanelWidth = 200 } = defaults;
   const { skipExisting = false } = opts;
   const paramsMap = buildParamsMap(model.projectParams || []);
   const elementsById = buildElementsById(model.elements || []);
@@ -139,9 +181,13 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
       skipped.push({ wallId: wall.id, name: getWallDisplayName(wall, grid), reason: 'ya tiene despiece OSB' });
       continue;
     }
-    const wPanelWidth = wall.osbPanelWidth ?? panelWidth;
-    const wPanelHeight = wall.osbPanelHeight ?? panelHeight;
-    const wMinPanelWidth = wall.osbMinPanelWidth ?? minPanelWidth;
+    const effective = resolveModulationConfig(model, wall, {}, defaults);
+    const {
+      panelWidth: wPanelWidth,
+      panelHeight: wPanelHeight,
+      minPanelWidth: wMinPanelWidth,
+      gap: wGap
+    } = effective.osbDefaults;
     const layout = computeOsbPanelLayout(wall, grid, paramsMap, elementsById, wall.studs, {
       panelWidth: wPanelWidth, panelHeight: wPanelHeight, minPanelWidth: wMinPanelWidth
     });
@@ -155,6 +201,7 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
         osbPanelWidth: wPanelWidth,
         osbPanelHeight: wPanelHeight,
         osbMinPanelWidth: wMinPanelWidth,
+        osbGap: wGap,
         osbCourses: layout.courses,
         osbNoggings: []
       }

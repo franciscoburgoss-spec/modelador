@@ -19,6 +19,21 @@ const wallDegenerate = (id) => ({
   bottomZ: 'Z0', topZ: 'Z1', thickness: 90, openings: []
 });
 
+const profiles = [
+  { id: 'C90', shape: 'C', B: 40 },
+  { id: 'U90', shape: 'U' },
+  { id: 'C60', shape: 'C', B: 35 },
+  { id: 'U60', shape: 'U' }
+];
+
+const wallType = (id, role, studProfileId, trackProfileId, spacing, gap) => ({
+  id,
+  name: id,
+  role,
+  metalconDefaults: { spacing, studProfileId, trackProfileId, materialId: null },
+  osbDefaults: { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap }
+});
+
 test('modulateAllWallsMetalcon: genera patch para cada muro elegible con defaults', () => {
   const model = { grid, projectParams: [], elements: [wallX(1), wallX(2)] };
   const { patches, skipped } = modulateAllWallsMetalcon(model, {
@@ -148,4 +163,64 @@ test('modulateAllWallsFull: skipExisting respeta ambos subsistemas por separado'
   assert.ok(patchByWall.get(3)?.studs?.length > 0 && patchByWall.get(3)?.osbCourses?.length > 0, 'muro 3 recibe ambos, de cero');
   assert.equal(skippedMetalcon.find(s => s.wallId === 1)?.reason, 'ya tiene despiece');
   assert.equal(skippedOsb.find(s => s.wallId === 1)?.reason, 'ya tiene despiece OSB');
+});
+
+test('R5-C: batch/full resuelven dos tipos 90/60 sin overrides y persisten configuración efectiva', () => {
+  const model = {
+    grid,
+    projectParams: [],
+    library: { metalconProfiles: profiles },
+    wallTypes: [
+      wallType('exterior-90', 'MP1', 'C90', 'U90', 400, 5),
+      wallType('tabique-60', 'tabique', 'C60', 'U60', 600, 3)
+    ],
+    elements: [
+      wallX('W90', { wallTypeId: 'exterior-90' }),
+      wallX('W60', { wallTypeId: 'tabique-60' })
+    ]
+  };
+
+  const result = modulateAllWallsFull(model);
+  const patches = new Map(result.patches.map(({ wallId, patch }) => [wallId, patch]));
+  assert.equal(result.skippedMetalcon.length, 0);
+  assert.equal(result.skippedOsb.length, 0);
+  assert.deepEqual(
+    {
+      stud: patches.get('W90').framingStudProfileId,
+      track: patches.get('W90').framingTrackProfileId,
+      spacing: patches.get('W90').studSpacing,
+      gap: patches.get('W90').osbGap
+    },
+    { stud: 'C90', track: 'U90', spacing: 400, gap: 5 }
+  );
+  assert.deepEqual(
+    {
+      stud: patches.get('W60').framingStudProfileId,
+      track: patches.get('W60').framingTrackProfileId,
+      spacing: patches.get('W60').studSpacing,
+      gap: patches.get('W60').osbGap
+    },
+    { stud: 'C60', track: 'U60', spacing: 600, gap: 3 }
+  );
+});
+
+test('R5-C: un tipo gana sobre overrides divergentes al regenerar', () => {
+  const model = {
+    grid,
+    projectParams: [],
+    library: { metalconProfiles: profiles },
+    wallTypes: [wallType('exterior-90', 'MP1', 'C90', 'U90', 400, 5)],
+    elements: [wallX('W1', {
+      wallTypeId: 'exterior-90',
+      framingStudProfileId: 'C60',
+      framingTrackProfileId: 'U60',
+      studSpacing: 600,
+      osbGap: 3
+    })]
+  };
+  const [{ patch }] = modulateAllWallsMetalcon(model).patches;
+  assert.equal(patch.framingStudProfileId, 'C90');
+  assert.equal(patch.framingTrackProfileId, 'U90');
+  assert.equal(patch.studSpacing, 400);
+  assert.equal(patch.osbGap, 5);
 });

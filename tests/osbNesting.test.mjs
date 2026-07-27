@@ -17,7 +17,7 @@ const wall = (id, courses, extra = {}) => ({
 
 const modelOf = (...walls) => ({ grid: null, elements: walls, osbDefaults: { panelWidth: 1220, panelHeight: 2440 } });
 
-const piece = (id, width, height) => ({ id, width, height, wallId: 1, code: id, wallLabel: 'Muro 1', course: 1, cutoutArea: 0 });
+const piece = (id, width, height, role = null) => ({ id, width, height, role, wallId: 1, code: id, wallLabel: 'Muro 1', course: 1, cutoutArea: 0 });
 
 test('nestPieces: caso con óptimo conocido a mano — 4 piezas de 610x1220 llenan exactamente 1 placa de 1220x2440', () => {
   const pieces = [1, 2, 3, 4].map(i => piece(`P${i}`, 610, 1220));
@@ -87,12 +87,39 @@ test('nestPieces: una pieza más grande que la placa se reporta sin asignar, no 
   assert.equal(boards.length, 1, 'la pieza válida igual se coloca');
 });
 
-test('nestPieces: sin rotación por defecto (hebra vertical, manual Metalcon) y con allowRotation sí gira', () => {
-  const p = [piece('A', 2000, 1000)];
-  assert.equal(nestPieces(p, 1220, 2440, {}).unplaced.length, 1, 'sin rotación no cabe');
-  const rot = nestPieces(p, 1220, 2440, { allowRotation: true });
-  assert.equal(rot.unplaced.length, 0);
-  assert.equal(rot.boards[0].placements[0].rotated, true);
+test('R5-C: sólo tabique rota; MP1/MP2/MP3/sin rol ignoran el antiguo allowRotation', () => {
+  for (const role of ['MP1', 'MP2', 'MP3', null]) {
+    const result = nestPieces([piece(`A-${role}`, 2000, 1000, role)], 1220, 2440, {
+      allowRotation: true
+    });
+    assert.equal(result.unplaced.length, 1, `${role ?? 'sin rol'} no debe rotar`);
+    assert.equal(Object.hasOwn(result.config, 'allowRotation'), false);
+  }
+  const tabique = nestPieces([piece('T', 2000, 1000, 'tabique')], 1220, 2440);
+  assert.equal(tabique.unplaced.length, 0);
+  assert.equal(tabique.boards[0].placements[0].rotated, true);
+});
+
+test('R5-C: collectOsbPieces propaga el rol resuelto del tipo a cada pieza', () => {
+  const model = modelOf(wall(1, [{ height: 1000, widths: [2000] }], {
+    wallTypeId: 'tabique-60'
+  }));
+  model.library = {
+    metalconProfiles: [{ id: 'C60', shape: 'C' }, { id: 'U60', shape: 'U' }]
+  };
+  model.wallTypes = [{
+    id: 'tabique-60',
+    name: 'Tabique 60',
+    role: 'tabique',
+    metalconDefaults: {
+      spacing: 600, studProfileId: 'C60', trackProfileId: 'U60', materialId: null
+    },
+    osbDefaults: {
+      panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 3
+    }
+  }];
+  assert.equal(collectOsbPieces(model).groups[0].pieces[0].role, 'tabique');
+  assert.equal(computeOsbNesting(model).unplaced.length, 0);
 });
 
 test('nestPieces: los despuntes bajo el mínimo configurable se marcan como no reutilizables', () => {

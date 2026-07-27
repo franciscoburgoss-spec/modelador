@@ -100,12 +100,11 @@ export function generateOsbFramingDxf(model) {
   const entities = [];
   let cursorX = 0;
   let count = 0;
-  const gap = model.osbDefaults?.gap ?? 5;
-
   for (const wall of elements) {
     if (wall.type !== 'wall' || !wall.osbCourses?.length) continue;
     const layout = resolveWallLayout(wall, grid, paramsMap, elementsById);
     if (!layout) continue;
+    const gap = wall.osbGap ?? model.osbDefaults?.gap ?? 5;
 
     const axesInfo = interveningAxes(grid, layout.isXRun, layout.worldMin, layout.worldMax);
     const extent = computeOsbViewExtent(wall, layout, grid, axesInfo, gap);

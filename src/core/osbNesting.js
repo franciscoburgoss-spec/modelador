@@ -13,10 +13,8 @@
 // el instalador tiene que poder seguir el plan de corte placa por placa.
 //
 // Decisiones tomadas (no reabrir sin motivo):
-//   - SIN ROTACIÓN de piezas. El OSB tiene dirección de hebra y el manual Metalcon (Anexo IV) es
-//     explícito: "la chapa estructural de muros se dispondrá en forma vertical". Rotar 90° una
-//     pieza cambia la orientación estructural de la placa. Configurable (`allowRotation`) para
-//     revestimientos no estructurales, pero el default es false.
+//   - La rotación depende exclusivamente del rol: sólo `tabique` puede rotar. MP1/MP2/MP3 y los
+//     muros legacy sin rol conservan hebra vertical; ningún parámetro del caller puede forzarla.
 //   - La pieza se corta al ANCHO NOMINAL del despiece (`panel.width`), sin descontar la dilatación
 //     de 5mm de la junta. Es conservador a propósito: el gap se reparte medio a cada lado de la
 //     junta (ver osbEntities en exportFramingDxf.js) y descontarlo daría piezas 5mm más chicas de
@@ -30,6 +28,10 @@
 
 import { assignOsbPieceCodes } from './osbModulation.js';
 import { getElementShortLabel } from './naming.js';
+import {
+  resolveWallTypeConfig,
+  wallRoleAllowsOsbRotation
+} from './wallTypes.js';
 
 const EPS = 0.5; // mm
 const MM2_TO_M2 = 1e-6;
@@ -37,8 +39,7 @@ const MM2_TO_M2 = 1e-6;
 const DEFAULTS = {
   kerf: 5,              // mm de sierra por corte (= dilatación LP)
   minOffcutWidth: 300,  // mm — bajo esto el despunte se descarta como merma
-  minOffcutHeight: 300,
-  allowRotation: false
+  minOffcutHeight: 300
 };
 
 /**
@@ -57,8 +58,17 @@ export function collectOsbPieces(model, defaults = {}) {
 
   for (const el of model.elements || []) {
     if (el.type !== 'wall' || !el.osbCourses?.length) continue;
-    const boardWidth = Number(el.osbPanelWidth ?? defW);
-    const boardHeight = Number(el.osbPanelHeight ?? defH);
+    const effective = resolveWallTypeConfig(model, el);
+    const boardWidth = Number(
+      effective.source === 'wallType'
+        ? effective.osbDefaults.panelWidth
+        : el.osbPanelWidth ?? defW
+    );
+    const boardHeight = Number(
+      effective.source === 'wallType'
+        ? effective.osbDefaults.panelHeight
+        : el.osbPanelHeight ?? defH
+    );
     if (!(boardWidth > 0) || !(boardHeight > 0)) continue;
 
     const codes = assignOsbPieceCodes(el.osbCourses);
@@ -79,6 +89,7 @@ export function collectOsbPieces(model, defaults = {}) {
           wallLabel,
           code: codes.get(p),
           course: ci + 1,
+          role: effective.role,
           width: Math.round(width * 10) / 10,
           height: Math.round(height * 10) / 10,
           cutoutArea
@@ -133,11 +144,15 @@ function newBoard(index, boardWidth, boardHeight) {
  *
  * @param pieces  [{id, width, height, ...}] — no se mutan
  * @param boardWidth,boardHeight  mm
- * @param config  { kerf, minOffcutWidth, minOffcutHeight, allowRotation }
+ * @param config  { kerf, minOffcutWidth, minOffcutHeight }
  * @returns { boards, unplaced, config }
  */
 export function nestPieces(pieces, boardWidth, boardHeight, config = {}) {
-  const cfg = { ...DEFAULTS, ...config };
+  const cfg = {
+    kerf: config.kerf ?? DEFAULTS.kerf,
+    minOffcutWidth: config.minOffcutWidth ?? DEFAULTS.minOffcutWidth,
+    minOffcutHeight: config.minOffcutHeight ?? DEFAULTS.minOffcutHeight
+  };
   if (!(boardWidth > 0) || !(boardHeight > 0)) {
     return { boards: [], unplaced: [...pieces], config: cfg };
   }
@@ -155,6 +170,7 @@ export function nestPieces(pieces, boardWidth, boardHeight, config = {}) {
 
   for (const piece of sorted) {
     let placed = false;
+    const canRotate = wallRoleAllowsOsbRotation(piece.role ?? null);
 
     for (const board of boards) {
       // Dentro de la placa se elige el hueco que deja MENOS sobrante (best area fit): first-fit
@@ -165,7 +181,7 @@ export function nestPieces(pieces, boardWidth, boardHeight, config = {}) {
           const waste = f.w * f.h - piece.width * piece.height;
           if (waste < bestWaste - EPS) { bestWaste = waste; bestIdx = i; bestRot = false; }
         }
-        if (cfg.allowRotation && fits(f, piece.height, piece.width)) {
+        if (canRotate && fits(f, piece.height, piece.width)) {
           const waste = f.w * f.h - piece.width * piece.height;
           if (waste < bestWaste - EPS) { bestWaste = waste; bestIdx = i; bestRot = true; }
         }
@@ -185,7 +201,7 @@ export function nestPieces(pieces, boardWidth, boardHeight, config = {}) {
 
     // Placa nueva. Si ni siquiera en una placa virgen cabe, la pieza es inviable (mal despiece).
     const board = newBoard(boards.length + 1, boardWidth, boardHeight);
-    const rot = cfg.allowRotation && !fits(board.free[0], piece.width, piece.height)
+    const rot = canRotate && !fits(board.free[0], piece.width, piece.height)
       && fits(board.free[0], piece.height, piece.width);
     const w = rot ? piece.height : piece.width;
     const h = rot ? piece.width : piece.height;

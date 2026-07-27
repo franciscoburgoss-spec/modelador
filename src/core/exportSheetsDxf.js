@@ -371,16 +371,15 @@ function resolveOsbEntriesForSheets(model) {
   const { grid, elements } = model;
   const paramsMap = buildParamsMap(model.projectParams);
   const elementsById = buildElementsById(elements);
-  const gap = model.osbDefaults?.gap ?? 5;
-
   const entries = [];
   for (const wall of elements) {
     if (wall.type !== 'wall' || !wall.osbCourses?.length) continue;
     const layout = resolveWallLayout(wall, grid, paramsMap, elementsById);
     if (!layout) continue;
+    const gap = wall.osbGap ?? model.osbDefaults?.gap ?? 5;
     const axesInfo = interveningAxes(grid, layout.isXRun, layout.worldMin, layout.worldMax);
     const extent = computeOsbViewExtent(wall, layout, grid, axesInfo, gap);
-    entries.push({ wall, layout, axesInfo, extent });
+    entries.push({ wall, layout, axesInfo, extent, gap });
   }
   return entries;
 }
@@ -392,11 +391,17 @@ export function generateOsbFramingSheets(model, opts = {}) {
   const entries = resolveOsbEntriesForSheets(model);
   if (!entries.length) return [];
   const setup = resolveSheetSetup(model, opts);
-  const gap = model.osbDefaults?.gap ?? 5;
   return buildSheets(model, entries, {
     filePrefix: 'osb', variant: 'osb', setup,
     options: {
-      entitiesBuilder: (entry, cursorX) => wallOsbElevationEntities(entry.wall, model.grid, entry.layout, cursorX, entry.axesInfo, gap),
+      entitiesBuilder: (entry, cursorX) => wallOsbElevationEntities(
+        entry.wall,
+        model.grid,
+        entry.layout,
+        cursorX,
+        entry.axesInfo,
+        entry.gap
+      ),
       title: 'REVESTIMIENTO OSB - MODULACION DE PLACAS',
       labelBuilder: (entry) => getWallDisplayName(entry.wall, model.grid)
     }

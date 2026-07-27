@@ -11,6 +11,7 @@ import { downloadCalculix } from '../core/exportCalculix.js';
 import { downloadCalculixTruss } from '../core/exportCalculixTruss.js';
 import { downloadCalculixFoundation } from '../core/exportCalculixFoundation.js';
 import { modulateAllWallsFull } from '../core/batchModulation.js';
+import { resolveWallTypeConfig } from '../core/wallTypes.js';
 import { FORMAT_KEYS, PAPER_FORMATS } from '../core/sheetFormats.js';
 
 function Dropdown({ label, children }) {
@@ -142,12 +143,21 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
   const fileInputRef = useRef(null);
   const importModelFromFile = useModelStore((s) => s.importModelFromFile);
   const startRoofPlaneDraft = useModelStore((s) => s.startRoofPlaneDraft);
-  const metalconDefaults = useModelStore((s) => s.model.metalconDefaults);
-  const wallCount = useModelStore((s) => s.model.elements.filter((el) => el.type === 'wall').length);
+  const model = useModelStore((s) => s.model);
   const applyWallPatchesBatch = useModelStore((s) => s.applyWallPatchesBatch);
   const sheetFormat = useModelStore((s) => s.model.projectInfo?.formato) || 'A1';
 
-  const canGenerateAllModulation = !!(metalconDefaults?.studProfileId && metalconDefaults?.trackProfileId) && wallCount > 0;
+  const canGenerateAllModulation = model.elements
+    .filter((element) => element.type === 'wall')
+    .some((wall) => {
+      const effective = resolveWallTypeConfig(model, wall);
+      return !!(
+        effective.metalconDefaults.studProfileId
+        && effective.metalconDefaults.trackProfileId
+        && effective.osbDefaults.panelWidth > 0
+        && effective.osbDefaults.panelHeight > 0
+      );
+    });
 
   const handleGenerateAllModulation = () => {
     const state = useModelStore.getState();
@@ -214,6 +224,8 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
       </Dropdown>
 
       <Dropdown label="Librería">
+        <Item onClick={() => onOpenModal('wallTypes')}>Tipos y roles de muro…</Item>
+        <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={() => onOpenModal({ name: 'library', type: 'material' })}>Materiales…</Item>
         <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={() => onOpenModal({ name: 'library', type: 'wall' })}>Sección de muro…</Item>
@@ -270,7 +282,7 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
           <Item
             onClick={handleGenerateAllModulation}
             disabled={!canGenerateAllModulation}
-            title={canGenerateAllModulation ? undefined : 'Guarda un default de metalcon en "Modulación > Metalcon…" primero'}
+            title={canGenerateAllModulation ? undefined : 'Ningún muro tiene una configuración efectiva completa'}
           >
             Generar todos
           </Item>

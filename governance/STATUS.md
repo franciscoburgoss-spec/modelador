@@ -9,15 +9,15 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — roles de muro y `wallTypes` |
+| Etapa | Reglas de dominio — encuentros entre muros |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R5-wall-types.md` — corte C |
-| Suite oficial | 616/616; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 646,38 kB |
+| Spec activa | Ninguna; siguiente unidad a gobernar: R6 |
+| Suite oficial | 625/625; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 656,06 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; el corte C puede adoptar tipos en consumidores, DXF, nesting y UI |
+| Bloqueo actual | Ninguno; corresponde diagnosticar y redactar la spec R6 antes de implementar |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -58,8 +58,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual` las 11 filas heredadas.
 - R4-A/B/C: cerrados; catálogo inmutable, constructor canónico, cuatro fronteras públicas
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
-- R5-A/B: cerrados; contrato/migración, CRUD/asignación con historial, invalidación central y
-  split/merge compatible con `wallTypeId`. C (consumidores/UI) pendiente.
+- R5-A/B/C: cerrados; contrato/migración, CRUD/asignación con historial, invalidación central,
+  modulación efectiva, `osbGap` por muro, nesting por rol y coordinación UI completos.
 - R6–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
@@ -84,6 +84,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-El corte C de `SPEC-R5` debe adoptar la resolución efectiva en modulación individual/batch,
-persistir y consumir `osbGap`, derivar rotación de nesting por rol y coordinar CRUD/asignación en
-React, preservando byte a byte el camino legacy.
+Preparar y gobernar R6 desde `domain/ROADMAP-R1-R8.md`: diagnóstico reproducible de encuentros
+L/T, alcance, exclusiones y aceptación verificable antes de modificar código.

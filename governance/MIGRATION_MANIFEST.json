@@ -112,9 +112,9 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 11689,
-      "workspaceSha256": "2a7a2ca00dc79ec2609d15bbfce2f4a29ada7b5e9af78a0e0f43c58660f860cf",
-      "changedBy": "SPEC-001"
+      "workspaceBytes": 11855,
+      "workspaceSha256": "00968f3257fc6b26a78008cc146014332099fe66bd32692a2d079055c6dceadb",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/AutosaveBanner.jsx",
@@ -138,7 +138,10 @@
       "path": "src/components/MenuBar.jsx",
       "bytes": 16614,
       "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 16969,
+      "workspaceSha256": "0111edf5365ba24eb9314339737a3996f4963c2978650b723fad5fa67781a87f",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/PropertiesPanel.jsx",
@@ -204,7 +207,10 @@
       "path": "src/components/modals/AddWallModal.jsx",
       "bytes": 7689,
       "sha256": "5d213ae6c534d2cac54d2111853c993012de7492a13b7dc144d0f7f6570e8d7d",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 8842,
+      "workspaceSha256": "b2bbfb92fae7a98579b27717abbcae9ab4901044832ac79823b45673844e87c0",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/modals/AnalysisReadinessModal.jsx",
@@ -253,18 +259,18 @@
       "bytes": 14190,
       "sha256": "610111641695c0ce44de57871c2509576c60b32a0b157ac4143559f90d9f0bc8",
       "kind": "source",
-      "workspaceBytes": 15082,
-      "workspaceSha256": "e5599f518da4bb225d3d70cf9bbe25407a733d461d6b3b5018bf2c737adb9162",
-      "changedBy": "SPEC-R3"
+      "workspaceBytes": 16512,
+      "workspaceSha256": "022cfb6c5d2e2167f3a6efb92d1b5126facb79e86b5955d29ff8c29df0042154",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/modals/OsbModulationModal.jsx",
       "bytes": 10027,
       "sha256": "e8541be6cac99009f0e59d5e6e301c2def19df5e6f2c4c5fa5c8869e676a82f2",
       "kind": "source",
-      "workspaceBytes": 10190,
-      "workspaceSha256": "c2d4b1849942b6ce66fa559dcb6a5068a03e0dd444a59a73c5b0492c96a2bb96",
-      "changedBy": "SPEC-R3"
+      "workspaceBytes": 11014,
+      "workspaceSha256": "f40dfa913b8506a240c55d711d5d9453604f9b9e13fac8d3fdcf60173f74732b",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/modals/OsbNestingModal.jsx",
@@ -373,9 +379,9 @@
       "bytes": 6932,
       "sha256": "a202c592131e2efc12fd371232fef8edf51fcb23ee1ac1d0306188c84f6aa334",
       "kind": "source",
-      "workspaceBytes": 8551,
-      "workspaceSha256": "39fa74df03eac6402ecf73c24720019a6875244a412eae05d862156077136ab0",
-      "changedBy": "SPEC-R3"
+      "workspaceBytes": 9903,
+      "workspaceSha256": "bfc605b67f69d77b69213c8cc3325b785fc67350b7b310c5dc66b9025185c5aa",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/core/build3d.js",
@@ -499,18 +505,18 @@
       "bytes": 7114,
       "sha256": "6581868d5aa1735b1a479c68ee1f727c21aaf3d06632d86d2e642573923e2fc0",
       "kind": "source",
-      "workspaceBytes": 7141,
-      "workspaceSha256": "4742bb33deb59d8ebb31eb9c2ec0529fbf573e9075fe1af66686f7f9dc0348aa",
-      "changedBy": "SPEC-R3"
+      "workspaceBytes": 7157,
+      "workspaceSha256": "735c922a125574c4e05bab3a884762814e72c09bb5e2205157cf7d39406f2243",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/core/exportSheetsDxf.js",
       "bytes": 21862,
       "sha256": "b1c0c222eae9a0318ea4a70a6540711495e22ff638e0d0e66fba10d6d035d1b8",
       "kind": "source",
-      "workspaceBytes": 22055,
-      "workspaceSha256": "ebaf506944e325b9bb8dcff6b45d3b994ef9c126b779aad72a986ae378b0307c",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 22095,
+      "workspaceSha256": "651875b647fcc6e9732e6ae6359c033c4f19b9cbc3e9464a3c86ff0e484c0ac3",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/core/exportTrussDxf.js",
@@ -589,9 +595,9 @@
       "bytes": 25815,
       "sha256": "ceaa2286722e57b342bc5a70a26bc4c7518f8ce03b734103d641e0df786f848f",
       "kind": "source",
-      "workspaceBytes": 25883,
-      "workspaceSha256": "83b34b000b592f841064b0d0f401884ebc376ad94cf7f9545bc70f2ca765fc46",
-      "changedBy": "SPEC-R4"
+      "workspaceBytes": 26180,
+      "workspaceSha256": "8cae070e3563e444792d0f9feb59db6682105f5e2f1edb39db2fe53b433e00dd",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/core/naming.js",
@@ -612,7 +618,10 @@
       "path": "src/core/osbNesting.js",
       "bytes": 17238,
       "sha256": "a6dccf588aeeb99d3ebe8c0bafde83e60229039bec094257e320a995bffed38c",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 17620,
+      "workspaceSha256": "288605bab813ee41a191c7087c758bd017d1d43a1b605c0e2442d55ec50b0372",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/core/polygonClip.js",
@@ -906,7 +915,10 @@
       "path": "tests/batchModulation.test.mjs",
       "bytes": 7321,
       "sha256": "0866ecab9320a6810c5216540ebe9756cfb07206395752e823e0df463e05a854",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 9702,
+      "workspaceSha256": "b3d79e125259c806577d9211a62b3a61ccd34bb22b98234803f1611900182f2c",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "tests/build3dMemberOffset.test.mjs",
@@ -1056,7 +1068,10 @@
       "path": "tests/osbNesting.test.mjs",
       "bytes": 10743,
       "sha256": "7a2e49458d9ea4e8be108eb057807a0f9bbd872b74dc0f225f5ffd16c1fdeb76",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 11701,
+      "workspaceSha256": "346fdd52aeaaf23977da484819f7965736a08cd7c66b4d34bc3dd12ab6b817e7",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "tests/roofObstructions.test.mjs",

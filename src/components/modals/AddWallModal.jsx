@@ -8,7 +8,7 @@ import { resolveValue, buildParamsMap, isFormula } from '../../core/projectParam
 import { isElementRef, axisFieldsEqual, buildElementsById } from '../../core/elementReferences.js';
 import { isWallXRun } from '../../core/elementGeometry.js';
 
-const DEFAULTS = { direction: 'x', fixedAxisId: '', startAxisId: '', endAxisId: '', bottomZ: '', topZ: '', libraryId: '', thickness: 140 };
+const DEFAULTS = { direction: 'x', fixedAxisId: '', startAxisId: '', endAxisId: '', bottomZ: '', topZ: '', libraryId: '', wallTypeId: '', thickness: 140 };
 
 function normalizeAxisField(raw) {
   return isElementRef(raw) ? raw : Number(raw);
@@ -21,11 +21,13 @@ export default function AddWallModal({ open, editingId = null, onClose }) {
   const grid = useModelStore((s) => s.model.grid);
   const elements = useModelStore((s) => s.model.elements);
   const wallSections = useModelStore((s) => s.model.library.wallSections);
+  const wallTypes = useModelStore((s) => s.model.wallTypes || []);
   const projectParams = useModelStore((s) => s.model.projectParams || []);
   const paramsMap = buildParamsMap(projectParams);
   const elementsById = buildElementsById(elements);
   const addElement = useModelStore((s) => s.addElement);
   const updateElement = useModelStore((s) => s.updateElement);
+  const assignWallType = useModelStore((s) => s.assignWallType);
 
   const [direction, setDirection] = useState(DEFAULTS.direction);
   const [fixedAxisId, setFixedAxisId] = useState(DEFAULTS.fixedAxisId);
@@ -34,6 +36,7 @@ export default function AddWallModal({ open, editingId = null, onClose }) {
   const [bottomZ, setBottomZ] = useState(DEFAULTS.bottomZ);
   const [topZ, setTopZ] = useState(DEFAULTS.topZ);
   const [libraryId, setLibraryId] = useState(DEFAULTS.libraryId);
+  const [wallTypeId, setWallTypeId] = useState(DEFAULTS.wallTypeId);
   const [thickness, setThickness] = useState(DEFAULTS.thickness);
   const [error, setError] = useState('');
 
@@ -51,6 +54,7 @@ export default function AddWallModal({ open, editingId = null, onClose }) {
       setBottomZ(el.bottomZ ?? '');
       setTopZ(el.topZ ?? '');
       setLibraryId(el.libraryId ?? '');
+      setWallTypeId(el.wallTypeId ?? '');
       setThickness(el.thickness);
     } else {
       setDirection(DEFAULTS.direction);
@@ -60,6 +64,7 @@ export default function AddWallModal({ open, editingId = null, onClose }) {
       setBottomZ(DEFAULTS.bottomZ);
       setTopZ(DEFAULTS.topZ);
       setLibraryId(DEFAULTS.libraryId);
+      setWallTypeId(DEFAULTS.wallTypeId);
       setThickness(DEFAULTS.thickness);
     }
   }, [open, editingId]);
@@ -96,9 +101,21 @@ export default function AddWallModal({ open, editingId = null, onClose }) {
       thickness: isFormula(thickness) ? thickness : Number(thickness),
       libraryId: libraryId ? Number(libraryId) : null
     };
+    const selectedWallTypeId = wallTypeId === ''
+      ? null
+      : wallTypes.find((type) => String(type.id) === String(wallTypeId))?.id;
 
-    if (editingId) updateElement(editingId, patch);
-    else addElement({ type: 'wall', ...patch, openings: [] });
+    if (editingId) {
+      updateElement(editingId, patch);
+      assignWallType(editingId, selectedWallTypeId);
+    } else {
+      addElement({
+        type: 'wall',
+        ...patch,
+        ...(selectedWallTypeId != null ? { wallTypeId: selectedWallTypeId } : {}),
+        openings: []
+      });
+    }
     onClose();
   };
 
@@ -161,6 +178,18 @@ export default function AddWallModal({ open, editingId = null, onClose }) {
         <SelectInput value={libraryId} onChange={(e) => handleSectionChange(e.target.value)}>
           <option value="">-- Personalizado --</option>
           {wallSections.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+        </SelectInput>
+      </Field>
+
+      <Field
+        label="Tipo y rol de muro"
+        hint={wallTypeId ? 'la configuración de modulación vive en el tipo' : 'compatibilidad legacy: usa defaults/overrides históricos'}
+      >
+        <SelectInput value={wallTypeId} onChange={(e) => setWallTypeId(e.target.value)}>
+          <option value="">Sin tipo / rol (legacy)</option>
+          {wallTypes.map((type) => (
+            <option key={type.id} value={type.id}>{type.name} · {type.role}</option>
+          ))}
         </SelectInput>
       </Field>
 
