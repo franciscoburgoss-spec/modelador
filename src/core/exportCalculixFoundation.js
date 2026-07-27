@@ -24,6 +24,7 @@ import { resolveFoundation } from './foundationGeometry.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { makeNodeRegistry, safeName, KGF_TO_N } from './calculixCommon.js';
+import { guardExport } from './exportPolicy.js';
 
 const KGF_M_TO_N_MM = KGF_TO_N / 1000;      // 1 kgf/m  = 9.80665 N / 1000 mm
 export const KGF_CM3_TO_N_MM3 = KGF_TO_N / 1000; // 1 kgf/cm3 = 9.80665 N / 1000 mm3
@@ -374,6 +375,8 @@ export function computeFoundationPressures(support, displacements, options = {})
 }
 
 export function downloadCalculixFoundation(model, options = {}) {
+  const policy = guardExport(model, 'calculix-foundation');
+  if (!policy.allowed) return false;
   const content = generateCalculixFoundation(model, options);
   const blob = new Blob([content], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
@@ -382,4 +385,5 @@ export function downloadCalculixFoundation(model, options = {}) {
   a.download = 'fundaciones.inp';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

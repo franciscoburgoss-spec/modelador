@@ -29,6 +29,7 @@
 import { makeNodeRegistry, cm2ToMm2, cm4ToMm4, safeName, KGF_TO_N } from './calculixCommon.js';
 import { findMetalconProfile } from './metalconCatalog.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
+import { guardExport } from './exportPolicy.js';
 
 const TOL = 1.0; // mm — tolerancia para considerar un punto "sobre" la cuerda
 
@@ -368,6 +369,8 @@ export function generateCalculixTruss(model, options = {}) {
 }
 
 export function downloadCalculixTruss(model, options = {}) {
+  const policy = guardExport(model, 'calculix-truss');
+  if (!policy.allowed) return false;
   const content = generateCalculixTruss(model, options);
   const blob = new Blob([content], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
@@ -376,4 +379,5 @@ export function downloadCalculixTruss(model, options = {}) {
   a.download = 'cercha.inp';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

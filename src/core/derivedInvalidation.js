@@ -6,13 +6,113 @@
 
 import { getWallDisplayName } from './naming.js';
 
-// Campos de un muro cuyo cambio invalida cualquier despiece derivado de él.
-// `openings` entra porque los vanos definen dinteles, jambas y huecos del OSB.
-export const WALL_GEOMETRY_FIELDS = [
+export const DERIVED_REGISTRY = Object.freeze({
+  wallFraming: Object.freeze({
+    entity: 'wall',
+    staleField: 'studsStale',
+    dataFields: Object.freeze(['studs', 'headers']),
+    label: 'modulación Metalcon'
+  }),
+  wallOsb: Object.freeze({
+    entity: 'wall',
+    staleField: 'osbStale',
+    dataFields: Object.freeze(['osbCourses', 'osbNoggings']),
+    dependsOn: Object.freeze(['wallFraming']),
+    label: 'despiece OSB'
+  }),
+  roofTruss: Object.freeze({
+    entity: 'roofSystem',
+    staleField: 'stale',
+    dataFields: Object.freeze(['trussGeometry', 'trussPositions']),
+    label: 'geometría de cerchas'
+  })
+});
+
+// Matriz revisable de comandos persistentes. Un dominio con `derivatives: []` declara
+// explícitamente que sus salidas se resuelven en vivo y que no tiene caché que invalidar.
+export const MUTATION_DEPENDENCIES = Object.freeze({
+  projectParams: Object.freeze({
+    scope: 'all',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb', 'roofTruss'])
+  }),
+  library: Object.freeze({
+    scope: 'all',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb', 'roofTruss'])
+  }),
+  gridGeometry: Object.freeze({
+    scope: 'all',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb', 'roofTruss'])
+  }),
+  wallGeometry: Object.freeze({
+    scope: 'wall',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb', 'roofTruss'])
+  }),
+  wallOpenings: Object.freeze({
+    scope: 'wall',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb', 'roofTruss'])
+  }),
+  wallRemoval: Object.freeze({
+    scope: 'dependentRoof',
+    derivatives: Object.freeze(['roofTruss'])
+  }),
+  wallTopology: Object.freeze({
+    scope: 'removedWalls',
+    derivatives: Object.freeze(['roofTruss'])
+  }),
+  foundationGeometry: Object.freeze({
+    scope: 'none',
+    derivatives: Object.freeze([])
+  }),
+  roofSystemConfig: Object.freeze({
+    scope: 'roofSystem',
+    derivatives: Object.freeze(['roofTruss'])
+  }),
+  roofPlaneConfig: Object.freeze({
+    scope: 'none',
+    derivatives: Object.freeze([])
+  }),
+  osbDefaults: Object.freeze({
+    scope: 'all',
+    derivatives: Object.freeze(['wallOsb'])
+  }),
+  metalconDefaults: Object.freeze({
+    scope: 'all',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb'])
+  })
+});
+
+export function renderMutationMatrixMarkdown() {
+  const rows = Object.entries(MUTATION_DEPENDENCIES).map(([mutation, dependency]) => {
+    const derivatives = dependency.derivatives.length > 0
+      ? dependency.derivatives.join(', ')
+      : 'ninguno (resolución en vivo)';
+    return `| \`${mutation}\` | \`${dependency.scope}\` | ${derivatives} |`;
+  });
+  return [
+    '# Matriz de mutadores y derivados',
+    '',
+    '> Generada desde `MUTATION_DEPENDENCIES` en `src/core/derivedInvalidation.js`.',
+    '',
+    '| Mutador | Alcance | Derivados invalidados |',
+    '|---|---|---|',
+    ...rows,
+    ''
+  ].join('\n');
+}
+
+// Campos geométricos de muro que también cambian los sistemas de cerchas que lo usan de apoyo.
+export const WALL_SYSTEM_GEOMETRY_FIELDS = [
   'xStart', 'xEnd', 'yStart', 'yEnd',
   'bottomZ', 'topZ',
   'thickness', 'direction',
   'sectionId', 'openings'
+];
+
+// Campos de configuración cuyo cambio vuelve obsoleto al menos un resultado del muro.
+export const WALL_GEOMETRY_FIELDS = [
+  ...WALL_SYSTEM_GEOMETRY_FIELDS,
+  'framingStudProfileId', 'framingTrackProfileId', 'framingMaterialId', 'studSpacing',
+  'osbPanelWidth', 'osbPanelHeight', 'osbMinPanelWidth', 'osbGap'
 ];
 
 /** ¿El patch de updateElement toca geometría relevante? */
@@ -21,28 +121,109 @@ export function patchInvalidatesWall(patch) {
   return WALL_GEOMETRY_FIELDS.some((f) => Object.hasOwn(patch, f));
 }
 
+export function patchInvalidatesRoofSystemsForWall(patch) {
+  if (!patch) return false;
+  return WALL_SYSTEM_GEOMETRY_FIELDS.some((field) => Object.hasOwn(patch, field));
+}
+
+export const DERIVED_WRITE_FIELDS = Object.freeze(
+  [...new Set(Object.values(DERIVED_REGISTRY).flatMap(
+    (entry) => [...entry.dataFields, entry.staleField]
+  ))]
+);
+
+export function assertNoDerivedWrites(patch) {
+  const fields = DERIVED_WRITE_FIELDS.filter((field) => Object.hasOwn(patch || {}, field));
+  if (fields.length > 0) {
+    throw new Error(
+      `Los resultados derivados (${fields.join(', ')}) sólo pueden escribirse mediante un comando de regeneración.`
+    );
+  }
+}
+
 /**
  * ¿El patch es una regeneración de despiece? Devuelve qué se regeneró.
  * Regenerar la modulación metalcon vuelve stale el OSB (depende de wall.studs).
  */
 export function patchRegenerates(patch) {
   return {
-    studs: Boolean(patch) && Object.hasOwn(patch, 'studs'),
-    osb: Boolean(patch) && Object.hasOwn(patch, 'osbCourses')
+    studs: Boolean(patch)
+      && (Object.hasOwn(patch, 'studs') || Object.hasOwn(patch, 'headers')),
+    osb: Boolean(patch)
+      && (Object.hasOwn(patch, 'osbCourses') || Object.hasOwn(patch, 'osbNoggings'))
   };
 }
 
-function markWall(wall, { studs = false, osb = false } = {}) {
+function wallHasDerived(wall, kind) {
+  return DERIVED_REGISTRY[kind].dataFields.some((field) => wall[field] != null);
+}
+
+function markWall(wall, derivatives) {
   const next = { ...wall };
   let changed = false;
-  if (studs && wall.studs && wall.studsStale !== true) { next.studsStale = true; changed = true; }
-  if (osb && wall.osbCourses && wall.osbStale !== true) { next.osbStale = true; changed = true; }
+  if (
+    derivatives.includes('wallFraming')
+    && wallHasDerived(wall, 'wallFraming')
+    && wall.studsStale !== true
+  ) {
+    next.studsStale = true;
+    changed = true;
+  }
+  if (
+    derivatives.includes('wallOsb')
+    && wallHasDerived(wall, 'wallOsb')
+    && wall.osbStale !== true
+  ) {
+    next.osbStale = true;
+    changed = true;
+  }
   return changed ? next : wall;
 }
 
-function markSystem(system) {
-  if (!system.trussGeometry || system.stale === true) return system;
+function markSystem(system, derivatives) {
+  if (
+    !derivatives.includes('roofTruss')
+    || system.trussGeometry == null
+    || system.stale === true
+  ) return system;
   return { ...system, stale: true };
+}
+
+export function invalidateForMutation(model, mutation, context = {}) {
+  const dependency = MUTATION_DEPENDENCIES[mutation];
+  if (!dependency) throw new Error(`Comando de mutación no registrado: ${mutation}`);
+  if (dependency.scope === 'none' || dependency.derivatives.length === 0) return model;
+
+  const wallIds = new Set(context.wallIds || []);
+  if (context.wallId != null) wallIds.add(context.wallId);
+  const all = dependency.scope === 'all';
+  const affectsWalls = all || dependency.scope === 'wall';
+  let touched = false;
+
+  const elements = (model.elements || []).map((element) => {
+    if (element.type !== 'wall' || !affectsWalls) return element;
+    if (!all && !wallIds.has(element.id)) return element;
+    const next = markWall(element, dependency.derivatives);
+    if (next !== element) touched = true;
+    return next;
+  });
+
+  const roofSystems = (model.roofSystems || []).map((system) => {
+    let selected = all;
+    if (dependency.scope === 'wall' || dependency.scope === 'dependentRoof') {
+      selected = wallIds.has(system.wallLowId) || wallIds.has(system.wallHighId);
+    } else if (dependency.scope === 'removedWalls') {
+      selected = wallIds.has(system.wallLowId) || wallIds.has(system.wallHighId);
+    } else if (dependency.scope === 'roofSystem') {
+      selected = system.id === context.roofSystemId;
+    }
+    if (!selected) return system;
+    const next = markSystem(system, dependency.derivatives);
+    if (next !== system) touched = true;
+    return next;
+  });
+
+  return touched ? { ...model, elements, roofSystems } : model;
 }
 
 /**
@@ -52,39 +233,53 @@ function markSystem(system) {
  * @returns {object} modelo nuevo si hubo cambios, o el mismo por referencia si no.
  */
 export function invalidateDerived(model, target) {
-  const all = target === 'all';
-  let touched = false;
-
-  const elements = (model.elements || []).map((el) => {
-    if (el.type !== 'wall') return el;
-    if (!all && el.id !== target) return el;
-    const next = markWall(el, { studs: true, osb: true });
-    if (next !== el) touched = true;
-    return next;
-  });
-
-  const roofSystems = (model.roofSystems || []).map((sys) => {
-    const refs = all || sys.wallLowId === target || sys.wallHighId === target;
-    if (!refs) return sys;
-    const next = markSystem(sys);
-    if (next !== sys) touched = true;
-    return next;
-  });
-
-  if (!touched) return model;
-  return { ...model, elements, roofSystems };
+  return invalidateForMutation(
+    model,
+    target === 'all' ? 'gridGeometry' : 'wallGeometry',
+    target === 'all' ? {} : { wallId: target }
+  );
 }
 
 /** Marca stale sólo los roofSystems que referencian al muro (el muro ya se trató aparte). */
 export function invalidateSystemsForWall(model, wallId) {
-  let touched = false;
-  const roofSystems = (model.roofSystems || []).map((sys) => {
-    if (sys.wallLowId !== wallId && sys.wallHighId !== wallId) return sys;
-    const next = markSystem(sys);
-    if (next !== sys) touched = true;
+  return invalidateForMutation(model, 'wallRemoval', { wallId });
+}
+
+function requireArrays(result, fields, kind) {
+  const missing = fields.filter((field) => !Array.isArray(result?.[field]));
+  if (missing.length > 0) {
+    throw new Error(
+      `Regeneración ${kind} incompleta: faltan resultados válidos para ${missing.join(', ')}.`
+    );
+  }
+}
+
+export function applyWallRegeneration(wall, kind, result) {
+  if (kind === 'wallFraming') {
+    requireArrays(result, DERIVED_REGISTRY.wallFraming.dataFields, kind);
+    const next = { ...wall, ...result, studsStale: false };
+    if (wallHasDerived(next, 'wallOsb')) next.osbStale = true;
     return next;
-  });
-  return touched ? { ...model, roofSystems } : model;
+  }
+  if (kind === 'wallOsb') {
+    if (wall.studsStale === true) {
+      throw new Error('Regeneración wallOsb bloqueada: wallFraming sigue desactualizado.');
+    }
+    requireArrays(result, DERIVED_REGISTRY.wallOsb.dataFields, kind);
+    return { ...wall, ...result, osbStale: false };
+  }
+  throw new Error(`Derivado de muro no registrado: ${kind}`);
+}
+
+export function applyWallRegenerationPatch(wall, patch) {
+  const regen = patchRegenerates(patch);
+  if (!regen.studs && !regen.osb) {
+    throw new Error('El comando de regeneración no contiene resultados derivados.');
+  }
+  let next = wall;
+  if (regen.studs) next = applyWallRegeneration(next, 'wallFraming', patch);
+  if (regen.osb) next = applyWallRegeneration(next, 'wallOsb', patch);
+  return next;
 }
 
 /**
@@ -93,14 +288,9 @@ export function invalidateSystemsForWall(model, wallId) {
  */
 export function applyWallPatchFlags(wall, patch) {
   const regen = patchRegenerates(patch);
-  const next = { ...wall, ...patch };
-
-  if (regen.studs) {
-    next.studsStale = false;
-    // el OSB se apoya en la modulación: si existía, queda desactualizado
-    if (next.osbCourses) next.osbStale = true;
-  }
-  if (regen.osb) next.osbStale = false;
+  let next = regen.studs || regen.osb
+    ? applyWallRegenerationPatch(wall, patch)
+    : { ...wall, ...patch };
 
   if (patchInvalidatesWall(patch)) {
     if (next.studs && !regen.studs) next.studsStale = true;
@@ -155,19 +345,7 @@ export function formatStaleWarning(model, scope = 'all') {
     'Hay despieces desactualizados (el modelo cambió después de generarlos):',
     ...lines,
     '',
-    'Se exportarán los datos guardados, que pueden no corresponder al modelo actual.',
-    '¿Continuar de todas formas?'
+    'Los datos guardados pueden no corresponder al modelo actual.',
+    'Regenera los despieces indicados antes de usarlos como vigentes.'
   ].join('\n');
-}
-
-/**
- * Guard para los `download*`. Devuelve true si se puede continuar.
- * Inyectable para tests (por defecto usa window.confirm).
- */
-export function confirmIfStale(model, scope = 'all', confirmFn) {
-  const msg = formatStaleWarning(model, scope);
-  if (!msg) return true;
-  const ask = confirmFn || (typeof globalThis.confirm === 'function' ? globalThis.confirm : null);
-  if (!ask) return true; // entorno sin UI (tests/node): no bloquear
-  return Boolean(ask(msg));
 }

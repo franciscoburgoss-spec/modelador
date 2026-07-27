@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   invalidateDerived, invalidateSystemsForWall, applyWallPatchFlags,
-  patchInvalidatesWall, collectStale, formatStaleWarning, confirmIfStale
+  patchInvalidatesWall, collectStale, formatStaleWarning
 } from '../src/core/derivedInvalidation.js';
 
 const grid = {
@@ -77,7 +77,7 @@ test('regenerar la modulación limpia studsStale pero deja el OSB stale', () => 
 
 test('regenerar el OSB limpia osbStale', () => {
   const w = { ...wallById(makeModel(), 'w1'), osbStale: true };
-  const next = applyWallPatchFlags(w, { osbCourses: [{ panels: [] }] });
+  const next = applyWallPatchFlags(w, { osbCourses: [{ panels: [] }], osbNoggings: [] });
   assert.equal(next.osbStale, false);
 });
 
@@ -105,15 +105,4 @@ test('formatStaleWarning se acota al alcance del exportador', () => {
   assert.match(formatStaleWarning(m, 'truss'), /Cercha P1/);
   assert.equal(formatStaleWarning(m, 'truss').includes('Cercha P2'), false);
   assert.equal(formatStaleWarning(makeModel(), 'all'), null);
-});
-
-test('confirmIfStale: sin stale no pregunta; con stale respeta la respuesta', () => {
-  let asked = 0;
-  const yes = () => { asked++; return true; };
-  assert.equal(confirmIfStale(makeModel(), 'all', yes), true);
-  assert.equal(asked, 0);
-  const m = invalidateDerived(makeModel(), 'all');
-  assert.equal(confirmIfStale(m, 'all', yes), true);
-  assert.equal(asked, 1);
-  assert.equal(confirmIfStale(m, 'all', () => false), false);
 });

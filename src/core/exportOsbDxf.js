@@ -14,7 +14,7 @@ import {
   interveningAxes, axisEntities, levelEntities, osbEntities,
   resolveWallLayout, unionEntitiesExtent
 } from './exportFramingDxf.js';
-import { confirmIfStale } from './derivedInvalidation.js';
+import { guardExport } from './exportPolicy.js';
 
 const SCHEDULE_ROW_H = 170;
 const SCHEDULE_COLUMNS = [
@@ -130,11 +130,12 @@ export function generateOsbFramingDxf(model) {
 }
 
 export function downloadOsbFramingDxf(model) {
-  if (!confirmIfStale(model, 'osb')) return;
+  const policy = guardExport(model, 'dxf-osb');
+  if (!policy.allowed) return false;
   const content = generateOsbFramingDxf(model);
   if (!content) {
     alert('No hay muros con modulación de placas OSB generada (Modulación de placas OSB → Generar).');
-    return;
+    return false;
   }
   const blob = new Blob([content], { type: 'application/dxf' });
   const url = URL.createObjectURL(blob);
@@ -143,4 +144,5 @@ export function downloadOsbFramingDxf(model) {
   a.download = 'osb.dxf';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

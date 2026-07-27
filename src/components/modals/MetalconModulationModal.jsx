@@ -22,7 +22,7 @@ export default function MetalconModulationModal({ open, onClose }) {
   const projectParams = useModelStore((s) => s.model.projectParams || []);
   const metalconProfiles = useModelStore((s) => s.model.library.metalconProfiles || []);
   const materials = useModelStore((s) => s.model.library.materials || []);
-  const updateElement = useModelStore((s) => s.updateElement);
+  const commitWallRegeneration = useModelStore((s) => s.commitWallRegeneration);
   const applyWallPatchesBatch = useModelStore((s) => s.applyWallPatchesBatch);
   const loadMetalconCatalog = useModelStore((s) => s.loadMetalconCatalog);
   const metalconDefaults = useModelStore((s) => s.model.metalconDefaults);
@@ -131,7 +131,7 @@ export default function MetalconModulationModal({ open, onClose }) {
 
   const handleGenerate = () => {
     if (!canGenerate) return;
-    updateElement(wall.id, {
+    commitWallRegeneration(wall.id, 'wallFraming', {
       framingStudProfileId: studProfileId,
       framingTrackProfileId: trackProfileId,
       framingMaterialId: materialId ? Number(materialId) : null,

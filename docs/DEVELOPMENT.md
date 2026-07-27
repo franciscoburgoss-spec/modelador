@@ -34,6 +34,7 @@ ni reportes. `npm run validate` no abre interfaces ni depende de rutas personale
 | `npm run build` | bundle Vite de producción |
 | `npm run verify:migration` | hashes originales y cambios posteriores registrados por spec |
 | `npm run verify:artifacts` | ausencia de artefactos generados en el inventario |
+| `npm run verify:derived` | matriz de mutadores e inventario de guardas de exportación |
 | `npm run validate` | todas las puertas anteriores y gobernanza |
 
 ## Toolchain verificada el 27-jul-2026
@@ -56,9 +57,9 @@ reporta desde ahora para que su ausencia nunca sea silenciosa.
 
 ## Baselines visibles
 
-- Suite: 533/533; laboratorio: 35/35.
-- Cobertura de líneas: core 90,48 %; store 57,80 %.
-- Bundle inicial: 621,69 kB raw / 192,29 kB gzip.
+- Suite: 558/558; laboratorio: 35/35.
+- Cobertura de líneas: core 90,65 %; store 62,77 %.
+- Bundle inicial: 629,04 kB raw / 193,99 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

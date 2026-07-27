@@ -24,7 +24,7 @@ export default function RoofTrussModal({ open, onClose, initialSystemId = null }
   const library = useModelStore((s) => s.model.library);
   const roofSystems = useModelStore((s) => s.model.roofSystems || []);
   const addRoofSystem = useModelStore((s) => s.addRoofSystem);
-  const updateRoofSystem = useModelStore((s) => s.updateRoofSystem);
+  const commitRoofSystemRegeneration = useModelStore((s) => s.commitRoofSystemRegeneration);
   const removeRoofSystem = useModelStore((s) => s.removeRoofSystem);
   const duplicateRoofSystem = useModelStore((s) => s.duplicateRoofSystem);
   const loadSeedTrussTemplates = useModelStore((s) => s.loadSeedTrussTemplates);
@@ -186,7 +186,7 @@ export default function RoofTrussModal({ open, onClose, initialSystemId = null }
       trussPositions: layout.trussPositions,
       trussGeometry: layout.trussGeometry
     };
-    if (system) updateRoofSystem(system.id, payload);
+    if (system) commitRoofSystemRegeneration(system.id, payload);
     else addRoofSystem(payload);
   };
 

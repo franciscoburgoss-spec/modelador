@@ -15,7 +15,7 @@ import {
   resolveTrussProfileDims, memberRectCorners, purlinRectCorners, memberOffsetMode,
   assignTrussPieceCodes, computeTrussCutSpec, buildTrussPieceScheduleRows
 } from './trussLayout.js';
-import { confirmIfStale } from './derivedInvalidation.js';
+import { guardExport } from './exportPolicy.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
 import { countFullTrusses } from './roofObstructions.js';
 
@@ -276,11 +276,12 @@ export function generateTrussDxf(model) {
 }
 
 export function downloadTrussDxf(model) {
-  if (!confirmIfStale(model, 'truss')) return;
+  const policy = guardExport(model, 'dxf-truss');
+  if (!policy.allowed) return false;
   const content = generateTrussDxf(model);
   if (!content) {
     alert('No hay sistemas de techumbre generados (Techumbre — cerchas de un agua → Generar).');
-    return;
+    return false;
   }
   const blob = new Blob([content], { type: 'application/dxf' });
   const url = URL.createObjectURL(blob);
@@ -289,4 +290,5 @@ export function downloadTrussDxf(model) {
   a.download = 'cerchas.dxf';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

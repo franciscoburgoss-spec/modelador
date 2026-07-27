@@ -6,7 +6,7 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 |---|---|---:|---:|---:|---|---|
 | R-001 | Ejecución de código desde fórmulas | 5 | 5 | 25 | Parser AST cerrado; corpus adversario y reversión; G2 | Mitigado |
 | R-002 | Pérdida de techumbre al importar legacy | 5 | 5 | 25 | Esquema, migración y roundtrip `casa-L`; G2 | Mitigado |
-| R-003 | Exportar derivados obsoletos como válidos | 4 | 5 | 20 | Registro central de invalidación y hard gate; G3 | Abierto |
+| R-003 | Exportar derivados obsoletos como válidos | 4 | 5 | 20 | Registro central de invalidación y hard gate; G3 | Mitigado |
 | R-004 | Corrupción por guardado interrumpido | 3 | 5 | 15 | Escritura atómica, backups y ensayo de kill; G6 | Abierto |
 | R-005 | Reglas constructivas incompletas producen planos incorrectos | 4 | 4 | 16 | R3–R8, catálogo y fixtures independientes; G4 | Abierto |
 | R-006 | Fixture duplicado oculta regresiones geométricas | 5 | 4 | 20 | Fixture con planta y perfiles distintos; G4 | Abierto |

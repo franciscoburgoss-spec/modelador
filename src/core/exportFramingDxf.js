@@ -10,7 +10,7 @@ import { findProjectMetalconProfile } from './exportCalculix.js';
 import { getWallDisplayName } from './naming.js';
 import { LEVEL_TYPES } from './levelTypes.js';
 import { assignOsbPieceCodes } from './osbModulation.js';
-import { confirmIfStale } from './derivedInvalidation.js';
+import { guardExport } from './exportPolicy.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
 import { studFlangeSpan } from './trussLayout.js';
 
@@ -834,11 +834,12 @@ export function generateFramingDxf(model) {
 }
 
 export function downloadFramingDxf(model) {
-  if (!confirmIfStale(model, 'framing')) return;
+  const policy = guardExport(model, 'dxf-framing');
+  if (!policy.allowed) return false;
   const content = generateFramingDxf(model);
   if (!content) {
     alert('No hay muros con despiece de metalcon generado (Modulación de metalcon → Generar despiece).');
-    return;
+    return false;
   }
   const blob = new Blob([content], { type: 'application/dxf' });
   const url = URL.createObjectURL(blob);
@@ -847,4 +848,5 @@ export function downloadFramingDxf(model) {
   a.download = 'tabiqueria.dxf';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }
