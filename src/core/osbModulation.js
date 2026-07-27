@@ -293,6 +293,102 @@ export function computeCourseBreaks(wallHeight, panelHeight, minCourseHeight = M
   return result(bounds, warning);
 }
 
+/**
+ * Resuelve la envolvente longitudinal de OSB de un muro desde su vista topológica.
+ * El largo nominal sigue siendo estructural; sólo los extremos L reciben inset:
+ * `lap` prolonga media cara del muro vecino y `butt` se retranquea media cara.
+ */
+export function resolveWallOsbEnvelope(
+  wall,
+  length,
+  junctions = null,
+  paramsMap = {},
+  elementsById = {}
+) {
+  const errors = [];
+  const sideInset = (side) => {
+    const endpoint = junctions?.[side];
+    const lMatches = (endpoint?.matches || []).filter((match) => match.tipo === 'L');
+    if (lMatches.length === 0) return 0;
+
+    const ownThickness = resolveValue(wall.thickness, paramsMap, elementsById);
+    if (!(Number.isFinite(ownThickness) && ownThickness > 0)) {
+      errors.push({
+        reason: 'unresolved-l-wall-thickness',
+        wallIds: [wall.id, ...lMatches.map((match) => match.wallId)],
+        nodeIds: lMatches.map((match) => match.nodeId)
+      });
+      return 0;
+    }
+    if (endpoint.lapState === 'ambiguous') {
+      errors.push({
+        reason: 'ambiguous-lap',
+        wallIds: [wall.id, ...lMatches.map((match) => match.wallId)],
+        nodeIds: lMatches.map((match) => match.nodeId)
+      });
+      return 0;
+    }
+    if (endpoint.lapState !== 'lap' && endpoint.lapState !== 'butt') {
+      errors.push({
+        reason: 'unresolved-lap-state',
+        wallIds: [wall.id, ...lMatches.map((match) => match.wallId)],
+        nodeIds: lMatches.map((match) => match.nodeId)
+      });
+      return 0;
+    }
+
+    const thicknesses = [];
+    for (const match of lMatches) {
+      const other = elementsById[match.wallId];
+      const thickness = resolveValue(other?.thickness, paramsMap, elementsById);
+      if (!(Number.isFinite(thickness) && thickness > 0)) {
+        errors.push({
+          reason: 'unresolved-l-wall-thickness',
+          wallIds: [wall.id, match.wallId],
+          nodeIds: [match.nodeId]
+        });
+        continue;
+      }
+      thicknesses.push(thickness);
+    }
+    if (thicknesses.length !== lMatches.length) return 0;
+
+    const first = thicknesses[0];
+    if (thicknesses.some((thickness) => Math.abs(thickness - first) > EPS)) {
+      errors.push({
+        reason: 'conflicting-l-wall-thickness',
+        wallIds: [wall.id, ...lMatches.map((match) => match.wallId)],
+        nodeIds: lMatches.map((match) => match.nodeId)
+      });
+      return 0;
+    }
+    return (endpoint.lapState === 'lap' ? -1 : 1) * first / 2;
+  };
+
+  const startInset = sideInset('start');
+  const endInset = sideInset('end');
+  const osbStart = startInset;
+  const osbEnd = length - endInset;
+  const osbLength = osbEnd - osbStart;
+  if (errors.length === 0 && !(osbLength > EPS)) {
+    errors.push({
+      reason: 'invalid-osb-envelope',
+      wallIds: [wall.id],
+      nodeIds: []
+    });
+  }
+
+  return {
+    resolved: errors.length === 0,
+    startInset,
+    endInset,
+    osbStart,
+    osbEnd,
+    osbLength,
+    errors
+  };
+}
+
 export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById = {}, studs = [], config = {}) {
   const geo = resolveWallGeometry(wall, grid, paramsMap, elementsById);
   if (!geo) return { resolved: false, length: null, wallHeight: null, courses: [], panels: [], warnings: [] };
@@ -312,6 +408,26 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
   if (!studs || studs.length === 0) {
     return { resolved: false, length, wallHeight, courses: [], panels: [], warnings: ['el muro no tiene modulación de metalcon (wall.studs) — generarla primero'] };
   }
+
+  const envelope = resolveWallOsbEnvelope(
+    wall,
+    length,
+    config.junctions,
+    paramsMap,
+    elementsById
+  );
+  if (!envelope.resolved) {
+    return {
+      resolved: false,
+      length,
+      wallHeight,
+      ...envelope,
+      courses: [],
+      panels: [],
+      warnings: envelope.errors.map((error) => error.reason)
+    };
+  }
+  const { osbStart, osbEnd, osbLength } = envelope;
 
   const panelWidth = resolveValue(config.panelWidth ?? 1220, paramsMap, elementsById);
   const panelHeight = resolveValue(config.panelHeight ?? 2440, paramsMap, elementsById);
@@ -339,8 +455,8 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
       const sill = o.type === 'window' ? resolveValue(o.sillHeight ?? 0, paramsMap, elementsById) : 0;
       const centerOffset = o.position - worldMin;
       return {
-        oMin: clamp(centerOffset - w / 2, 0, length),
-        oMax: clamp(centerOffset + w / 2, 0, length),
+        oMin: clamp(centerOffset - w / 2, osbStart, osbEnd) - osbStart,
+        oMax: clamp(centerOffset + w / 2, osbStart, osbEnd) - osbStart,
         sillRel: clamp(sill, 0, wallHeight),
         topRel: clamp(sill + h, 0, wallHeight)
       };
@@ -365,8 +481,9 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
   // crippleTop sobre dintel son studs distintos en el mismo offset).
   const studsByOffset = new Map();
   for (const s of studs.filter((piece) => piece.role !== 'nogging')) {
-    if (!studsByOffset.has(s.offset)) studsByOffset.set(s.offset, []);
-    studsByOffset.get(s.offset).push([s.zMin, s.zMax]);
+    const envelopeOffset = s.offset - osbStart;
+    if (!studsByOffset.has(envelopeOffset)) studsByOffset.set(envelopeOffset, []);
+    studsByOffset.get(envelopeOffset).push([s.zMin, s.zMax]);
   }
   const offsetsCoveringStrips = (strips) => [...studsByOffset.entries()]
     .filter(([, ranges]) => strips.every(([lo, hi]) => ranges.some(([a, b]) => a <= lo + EPS && b >= hi - EPS)))
@@ -417,7 +534,14 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
       // franjas sólidas de esta columna (cripple abajo + crippleTop arriba en el mismo offset).
       const interiorCandidates = offsetsCoveringStrips(strips);
 
-      const fp = computeVanoFootprint(o, courseOffsets, interiorCandidates, panelWidth, minPanelWidth, length);
+      const fp = computeVanoFootprint(
+        o,
+        courseOffsets,
+        interiorCandidates,
+        panelWidth,
+        minPanelWidth,
+        osbLength
+      );
       if (fp.warning) warnings.push(`curso ${c + 1}: ${fp.warning}`);
 
       const panels = fp.spans.map(s => {
@@ -446,7 +570,7 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
     let cursor = 0;
     for (let i = 0; i <= obstacles.length; i++) {
       const segStart = cursor;
-      const segEnd = i < obstacles.length ? obstacles[i].left : length;
+      const segEnd = i < obstacles.length ? obstacles[i].left : osbLength;
       const hasLeftAnchor = i > 0;
       const hasRightAnchor = i < obstacles.length;
       const mode = hasLeftAnchor && hasRightAnchor ? 'both' : hasLeftAnchor ? 'left' : hasRightAnchor ? 'right' : 'left';
@@ -461,10 +585,15 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
 
     panels.sort((a, b) => a.start - b.start);
     const roundedPanels = panels.map(s => ({
-      start: round1(s.start), end: round1(s.end), width: round1(s.end - s.start),
+      start: round1(s.start + osbStart),
+      end: round1(s.end + osbStart),
+      width: round1(s.end - s.start),
       ...(s.cutouts ? {
         cutouts: s.cutouts.map(ct => ({
-          start: round1(ct.start), end: round1(ct.end), zMin: round1(ct.zMin), zMax: round1(ct.zMax)
+          start: round1(ct.start + osbStart),
+          end: round1(ct.end + osbStart),
+          zMin: round1(ct.zMin),
+          zMax: round1(ct.zMax)
         }))
       } : {})
     }));
@@ -478,6 +607,7 @@ export function computeOsbPanelLayout(wall, grid, paramsMap = {}, elementsById =
     resolved: true,
     length,
     wallHeight,
+    ...envelope,
     panelHeight,
     numCourses,
     courses,

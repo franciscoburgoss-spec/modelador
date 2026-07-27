@@ -9,6 +9,7 @@ import { buildElementsById } from '../src/core/elementReferences.js';
 import { studFlangeSpan } from '../src/core/trussLayout.js';
 import { generateCalculix } from '../src/core/exportCalculix.js';
 import { computeTakeoff } from '../src/core/takeoff.js';
+import { getWallJunctionView } from '../src/core/wallJunctions.js';
 
 const casaL = JSON.parse(
   readFileSync(new URL('./fixtures/casa-L.json', import.meta.url), 'utf8')
@@ -149,7 +150,10 @@ test('R3-A/D-021: las cadenetas no alteran una sola placa del baseline de casa-L
 
   for (const { wallId, patch } of result.patches) {
     const wall = wallById.get(wallId);
-    const config = wallConfig(wall);
+    const config = {
+      ...wallConfig(wall),
+      junctions: getWallJunctionView(result.topology, wallId)
+    };
     const verticalStuds = patch.studs.filter((piece) => piece.role !== 'nogging');
     const baseline = computeOsbPanelLayout(
       wall, casaL.grid, paramsMap, elementsById, verticalStuds, config

@@ -8,7 +8,14 @@ const PANEL_STROKE = '#8a6d3b';
 const WARNING_STROKE = '#b5502a';
 const NOGGING_FILL = '#6b7b8c'; // acero: la cadeneta es pieza de metalcon, no placa
 
-export function drawOsbLayoutElevation(ctx, { courses, length, wallHeight, studs }, width, height, config = {}, padding = 28) {
+export function drawOsbLayoutElevation(
+  ctx,
+  { courses, length, osbStart: suppliedStart, osbEnd: suppliedEnd, wallHeight, studs },
+  width,
+  height,
+  config = {},
+  padding = 28
+) {
   ctx.clearRect(0, 0, width, height);
   if (!length || !wallHeight) {
     ctx.fillStyle = '#8a8a85';
@@ -17,9 +24,22 @@ export function drawOsbLayoutElevation(ctx, { courses, length, wallHeight, studs
     return;
   }
 
+  const panels = (courses || []).flatMap((course) => course.panels || []);
+  const panelStart = panels.length > 0
+    ? Math.min(...panels.map((panel) => panel.start))
+    : 0;
+  const panelEnd = panels.length > 0
+    ? Math.max(...panels.map((panel) => panel.end))
+    : length;
+  const osbStart = Number.isFinite(suppliedStart) ? suppliedStart : panelStart;
+  const osbEnd = Number.isFinite(suppliedEnd) ? suppliedEnd : panelEnd;
+  const drawingLength = osbEnd - osbStart;
   const gap = config.gap ?? 5; // mm, solo visual — no cambia la posición de la junta calculada
-  const scale = Math.min((width - padding * 2) / length, (height - padding * 2) / wallHeight);
-  const originX = padding;
+  const scale = Math.min(
+    (width - padding * 2) / drawingLength,
+    (height - padding * 2) / wallHeight
+  );
+  const originX = padding - osbStart * scale;
   const originY = height - padding;
   const toX = (o) => originX + o * scale;
   const toY = (z) => originY - z * scale;
@@ -51,7 +71,7 @@ export function drawOsbLayoutElevation(ctx, { courses, length, wallHeight, studs
   ctx.lineWidth = 1.5;
   for (let i = 0; i < (courses || []).length - 1; i++) {
     const y = toY(courses[i].zMax);
-    ctx.beginPath(); ctx.moveTo(toX(0), y); ctx.lineTo(toX(length), y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(toX(osbStart), y); ctx.lineTo(toX(osbEnd), y); ctx.stroke();
   }
   ctx.setLineDash([]);
 

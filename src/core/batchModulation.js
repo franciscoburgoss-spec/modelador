@@ -204,8 +204,8 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
  * Modula placas OSB para todos los muros elegibles (deben tener wall.studs ya generado).
  * @param model
  * @param defaults { panelWidth, panelHeight, minPanelWidth }
- * @param opts { skipExisting }
- * @returns { patches: [{wallId, patch}], skipped: [{wallId, name, reason}] }
+ * @param opts { skipExisting, topology? }
+ * @returns { patches, skipped, blocked, topology }
  */
 export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
   const { skipExisting = false } = opts;
@@ -213,9 +213,21 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
   const elementsById = buildElementsById(model.elements || []);
   const grid = model.grid;
   const eligible = (model.elements || []).filter((el) => el.type === 'wall' && el.studs?.length > 0);
+  const topology = opts.topology || analyzeWallJunctions(model, { paramsMap, elementsById });
 
   const patches = [];
   const skipped = [];
+  const blocked = uniqueBlockers(
+    (topology.issues || []).filter((issue) => (
+      (issue.type === 'ambiguous-geometry' || issue.type === 'ambiguous-lap')
+      && (issue.wallIds || [issue.wallId]).some((wallId) => (
+        eligible.some((wall) => Object.is(wall.id, wallId))
+      ))
+    ))
+  );
+  if (blocked.length > 0) {
+    return { patches: [], skipped, blocked, topology };
+  }
 
   for (const wall of eligible) {
     if (skipExisting && wall.osbCourses?.length > 0) {
@@ -230,8 +242,15 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
       gap: wGap
     } = effective.osbDefaults;
     const layout = computeOsbPanelLayout(wall, grid, paramsMap, elementsById, wall.studs, {
-      panelWidth: wPanelWidth, panelHeight: wPanelHeight, minPanelWidth: wMinPanelWidth
+      panelWidth: wPanelWidth,
+      panelHeight: wPanelHeight,
+      minPanelWidth: wMinPanelWidth,
+      junctions: getWallJunctionView(topology, wall.id)
     });
+    if (layout.errors?.length > 0) {
+      blocked.push(...layout.errors);
+      continue;
+    }
     if (!layout.resolved) {
       skipped.push({ wallId: wall.id, name: getWallDisplayName(wall, grid), reason: layout.warnings?.[0] || 'geometría/nivel no resuelto' });
       continue;
@@ -249,7 +268,13 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
     });
   }
 
-  return { patches, skipped };
+  const finalBlocked = uniqueBlockers(blocked);
+  return {
+    patches: finalBlocked.length > 0 ? [] : patches,
+    skipped,
+    blocked: finalBlocked,
+    topology
+  };
 }
 
 /**
@@ -288,7 +313,20 @@ export function modulateAllWallsFull(model, defaults = {}, opts = {}) {
     elements: model.elements.map((el) => (metalconPatchMap.has(el.id) ? { ...el, ...metalconPatchMap.get(el.id) } : el))
   };
 
-  const osbResult = modulateAllWallsOsb(intermediateModel, osbDefaults, { skipExisting });
+  const osbResult = modulateAllWallsOsb(
+    intermediateModel,
+    osbDefaults,
+    { skipExisting, topology }
+  );
+  if (osbResult.blocked.length > 0) {
+    return {
+      patches: [],
+      skippedMetalcon: metalconResult.skipped,
+      skippedOsb: osbResult.skipped,
+      blocked: osbResult.blocked,
+      topology
+    };
+  }
 
   // Un muro puede recibir patch de metalcon y de OSB a la vez: se fusionan por wallId para que
   // salga un solo applyWallPatchesBatch (un solo undo para todo el batch combinado).

@@ -12,6 +12,10 @@ import { buildParamsMap } from '../../core/projectParams.js';
 import { buildElementsById } from '../../core/elementReferences.js';
 import { getElementShortLabel } from '../../core/naming.js';
 import { resolveWallTypeConfig } from '../../core/wallTypes.js';
+import {
+  analyzeWallJunctions,
+  getWallJunctionView
+} from '../../core/wallJunctions.js';
 import Modal from '../ui/Modal.jsx';
 import { Field, SelectInput, FormulaInput } from '../ui/Field.jsx';
 import { Button } from '../ui/Button.jsx';
@@ -28,6 +32,10 @@ export default function OsbModulationModal({ open, onClose }) {
 
   const paramsMap = useMemo(() => buildParamsMap(projectParams), [projectParams]);
   const elementsById = useMemo(() => buildElementsById(elements), [elements]);
+  const topology = useMemo(
+    () => analyzeWallJunctions(model, { paramsMap, elementsById }),
+    [model, paramsMap, elementsById]
+  );
   // Solo muros con modulación de metalcon ya generada — es el input obligatorio del algoritmo.
   const walls = useMemo(() => elements.filter(el => el.type === 'wall' && el.studs?.length > 0), [elements]);
 
@@ -37,6 +45,7 @@ export default function OsbModulationModal({ open, onClose }) {
   const [minPanelWidth, setMinPanelWidth] = useState(osbDefaults.minPanelWidth);
   const [gap, setGap] = useState(osbDefaults.gap ?? 5);
   const [batchSummary, setBatchSummary] = useState(null);
+  const [batchBlocked, setBatchBlocked] = useState(false);
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -46,6 +55,8 @@ export default function OsbModulationModal({ open, onClose }) {
     setPanelWidth(firstWall?.osbPanelWidth ?? osbDefaults.panelWidth);
     setPanelHeight(firstWall?.osbPanelHeight ?? osbDefaults.panelHeight ?? 2440);
     setMinPanelWidth(firstWall?.osbMinPanelWidth ?? osbDefaults.minPanelWidth);
+    setBatchSummary(null);
+    setBatchBlocked(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -71,9 +82,19 @@ export default function OsbModulationModal({ open, onClose }) {
     return computeOsbPanelLayout(wall, grid, paramsMap, elementsById, wall.studs, {
       panelWidth,
       panelHeight,
-      minPanelWidth
+      minPanelWidth,
+      junctions: getWallJunctionView(topology, wall.id)
     });
-  }, [wall, grid, paramsMap, elementsById, panelWidth, panelHeight, minPanelWidth]);
+  }, [
+    wall,
+    grid,
+    paramsMap,
+    elementsById,
+    panelWidth,
+    panelHeight,
+    minPanelWidth,
+    topology
+  ]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -114,10 +135,21 @@ export default function OsbModulationModal({ open, onClose }) {
       );
       skipExisting = !overwrite;
     }
-    const { patches, skipped } = modulateAllWallsOsb(model, {
+    const { patches, skipped, blocked } = modulateAllWallsOsb(model, {
       panelWidth, panelHeight, minPanelWidth, gap
-    }, { skipExisting });
+    }, { skipExisting, topology });
+    if (blocked.length > 0) {
+      setBatchBlocked(true);
+      setBatchSummary(
+        'Generación bloqueada; no se aplicaron cambios. '
+        + blocked.map((item) => (
+          `${item.reason}: muros ${item.wallIds.join(', ')}`
+        )).join('; ')
+      );
+      return;
+    }
     if (patches.length > 0) applyWallPatchesBatch(patches);
+    setBatchBlocked(false);
     setBatchSummary(
       `${patches.length} generado(s)` + (skipped.length > 0 ? `, ${skipped.length} omitido(s) (${skipped.map(s => s.reason).join('; ')})` : '')
     );
@@ -171,7 +203,11 @@ export default function OsbModulationModal({ open, onClose }) {
             </div>
           )}
           {batchSummary && (
-            <div className="rounded border border-emerald-400 bg-emerald-50 px-2 py-1 text-xs text-emerald-800">
+            <div className={`rounded border px-2 py-1 text-xs ${
+              batchBlocked
+                ? 'border-red-400 bg-red-50 text-red-800'
+                : 'border-emerald-400 bg-emerald-50 text-emerald-800'
+            }`}>
               {batchSummary}
             </div>
           )}
@@ -227,7 +263,10 @@ export default function OsbModulationModal({ open, onClose }) {
 
           {layout.resolved && (
             <p className="text-xs text-[#5a5a55]">
-              {layout.numCourses} curso(s) · {totalPanels} placas · ancho total {(layout.length / 1000).toFixed(2)}m
+              {layout.numCourses} curso(s) · {totalPanels} placas · envolvente {(layout.osbLength / 1000).toFixed(2)}m
+              {Math.abs(layout.osbStart) > 0.01 || Math.abs(layout.osbEnd - layout.length) > 0.01
+                ? ` [${layout.osbStart.toFixed(1)}, ${layout.osbEnd.toFixed(1)}] mm`
+                : ''}
               {layout.numCourses > 1 ? ` · ${totalNoggings} cadeneta(s) en la junta horizontal` : ''}
             </p>
           )}

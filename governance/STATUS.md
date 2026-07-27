@@ -9,17 +9,18 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — encuentros L/T y traslape OSB |
+| Etapa | Reglas de dominio — preparar checks R7 |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R6-wall-junctions.md` — corte C |
-| Suite oficial | 651/651; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 668,64 kB |
+| Spec activa | Ninguna; el siguiente trabajo debe redactar y aprobar `SPEC-R7-checks.md` |
+| Suite oficial | 657/657; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 671,56 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
+| DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; el corte C puede adoptar la envolvente OSB de las esquinas L |
+| Bloqueo actual | R7 no puede implementarse hasta emitir una spec con diagnóstico y aceptación verificable |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -62,12 +63,14 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
 - R5-A/B/C: cerrados; contrato/migración, CRUD/asignación con historial, invalidación central,
   modulación efectiva, `osbGap` por muro, nesting por rol y coordinación UI completos.
-- R6-A/B: cerrados; frame local normalizado y topología global pura reconocen en `casa-L` exactamente
+- R6-A/B/C: cerrados; frame local normalizado y topología global pura reconocen en `casa-L` exactamente
   80 nodos/bandas (23 L, 35 T, 18 rectas y 4 terminales), con prioridad L estable, candidatos
   completos, host T interior, Z parcial/disjunto y ambigüedad explícita. Metalcon consume esa
   autoridad de forma coordinada/atómica: genera 109 `corner`, cero `backup`, respalda las 26 T
   directas y rebasa `casa-L` a 439 cadenetas, 1.361 piezas y 2.500,147 m. La topología de muro
-  invalida framing+OSB globalmente sin ampliar cerchas ajenas. C (envolvente OSB) sigue pendiente.
+  invalida framing+OSB globalmente sin ampliar cerchas ajenas. OSB aplica la media cara firmada
+  sólo en L: 408 piezas, 284 placas de compra y 845,4112 m²; 16 muros se prolongan y 18 se
+  retranquean hasta −50,5/+50,6 mm, sin cambiar el largo estructural.
 - R7–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
@@ -82,8 +85,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   referencia inválida; gobernar bloqueo/resultado explícito antes de cerrar G4, sin ampliar R5-B.
 - Siete hallazgos heredados de dependencias de hooks quedan acotados a cinco archivos; seguimiento
   R-016 / `SPEC-005`.
-- `migration-manifest --record` sólo acepta identificadores `SPEC-NNN`; debe admitir las specs
-  gobernadas `SPEC-Rn` antes del siguiente registro de reglas de dominio.
+- `migration-manifest --record` ya acepta identificadores `SPEC-NNN` y `SPEC-Rn`; sigue faltando
+  una prueba automatizada del CLI bajo el alcance de herramientas.
 - `validate-governance` sólo inspecciona specs en el primer nivel de `specs/`; las specs de
   `specs/domain/` requieren revisión manual hasta ampliar el validador bajo R-011.
 - El INP global usa IDs persistidos dentro de nombres `ELSET`; en `casa-L` superan los 20
@@ -92,6 +95,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-El corte C de `SPEC-R6` debe aplicar la envolvente OSB firmada sólo en L, conservar T y tipos no L,
-coordinar vanos/corredores/márgenes con ese origen y demostrar offsets extendidos en preview,
-R12 y AC1015 con auditoría 0/0.
+Redactar `SPEC-R7-checks.md` desde el roadmap, resolviendo explícitamente alcance y aceptación de
+montante–jamba, holgura de manilla, apoyo de cercha en dintel, descarte `MIN_TRAMO`, largo MP2/MP3
+y capacidad de corte. No modificar código R7 antes de aprobar esa spec.

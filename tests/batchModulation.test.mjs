@@ -101,7 +101,7 @@ test('modulateAllWallsOsb: solo considera muros con studs ya generados', () => {
     grid, projectParams: [],
     elements: [
       wallX(1, { studs: [{ offset: 0, zMin: 0, zMax: 2400, role: 'edge' }, { offset: 4000, zMin: 0, zMax: 2400, role: 'edge' }] }),
-      wallX(2) // sin studs → no elegible
+      wallX(2, { yStart: 'Y2', yEnd: 'Y2' }) // sin studs → no elegible
     ]
   };
   const { patches, skipped } = modulateAllWallsOsb(model, { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200 });
@@ -117,7 +117,7 @@ test('modulateAllWallsOsb: skipExisting omite muros que ya tienen osbCourses', (
     grid, projectParams: [],
     elements: [
       wallX(1, { studs, osbCourses: [{ panels: [] }] }),
-      wallX(2, { studs })
+      wallX(2, { studs, yStart: 'Y2', yEnd: 'Y2' })
     ]
   };
   const { patches, skipped } = modulateAllWallsOsb(model, { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200 }, { skipExisting: true });

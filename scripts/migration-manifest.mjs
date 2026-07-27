@@ -127,9 +127,9 @@ async function verifyCurrent({ compareSource = null } = {}) {
 }
 
 async function recordWorkspaceChanges(specId, paths) {
-  if (!specId || !/^SPEC-\d{3}$/.test(specId) || paths.length === 0) {
+  if (!specId || !/^SPEC-(?:\d{3}|R\d+)$/.test(specId) || paths.length === 0) {
     throw new Error(
-      'Uso: node scripts/migration-manifest.mjs --record SPEC-xxx <ruta> [ruta...]'
+      'Uso: node scripts/migration-manifest.mjs --record SPEC-xxx|SPEC-Rn <ruta> [ruta...]'
     );
   }
   const manifest = await loadManifest();

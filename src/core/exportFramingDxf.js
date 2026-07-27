@@ -481,6 +481,23 @@ export function osbEntities(xOffset, length, wallHeight, osbCourses, gap = 5, st
   const halfGap = gap / 2;
   const codes = assignOsbPieceCodes(osbCourses);
   const noggingPieces = (studs || []).filter((piece) => piece.role === 'nogging');
+  const panels = osbCourses.flatMap((course) => course.panels || []);
+  const osbStart = panels.length > 0
+    ? Math.min(...panels.map((panel) => panel.start))
+    : 0;
+  const osbEnd = panels.length > 0
+    ? Math.max(...panels.map((panel) => panel.end))
+    : length;
+
+  // El contorno nominal del muro vive en MURO-REF. Este contorno representa la envolvente real
+  // de placa y puede prolongarse/retranquearse respecto de [0, length].
+  entities.push(rectPolyline(
+    'OSB',
+    xOffset + osbStart,
+    0,
+    xOffset + osbEnd,
+    wallHeight
+  ));
 
   for (const course of osbCourses) {
     for (const p of course.panels) {
@@ -489,7 +506,7 @@ export function osbEntities(xOffset, length, wallHeight, osbCourses, gap = 5, st
       // toca la junta, la línea se parte: solo se dibuja donde hay material. El gap real entre
       // placas (config.gap, default 3mm) se dibuja como dos líneas paralelas que delimitan el
       // canal de junta — antes solo era visual en el preview canvas, no aparecía en el DXF.
-      if (p.start > 1) {
+      if (p.start > osbStart + 1) {
         const cuts = (p.cutouts || []).filter(ct => ct.start - 1 <= p.start && p.start <= ct.end + 1);
         let segs = [[course.zMin, course.zMax]];
         for (const ct of cuts) {
@@ -515,7 +532,7 @@ export function osbEntities(xOffset, length, wallHeight, osbCourses, gap = 5, st
   // ya cubiertos por la solera inferior/superior.
   for (let i = 0; i < osbCourses.length - 1; i++) {
     const z = osbCourses[i].zMax;
-    entities.push(line('OSB', xOffset, z, xOffset + length, z));
+    entities.push(line('OSB', xOffset + osbStart, z, xOffset + osbEnd, z));
     const piecesAtJoint = noggingPieces.filter((piece) => (
       Math.abs((piece.zMin + piece.zMax) / 2 - z) <= 1
     ));
