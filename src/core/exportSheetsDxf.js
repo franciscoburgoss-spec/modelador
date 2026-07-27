@@ -36,7 +36,7 @@ import { buildElementsById } from './elementReferences.js';
 import { getWallDisplayName } from './naming.js';
 import { wallOsbElevationEntities, computeOsbViewExtent } from './exportOsbDxf.js';
 import { trussElevationEntities, computeTrussViewExtent } from './exportTrussDxf.js';
-import { confirmIfStale } from './derivedInvalidation.js';
+import { guardExport } from './exportPolicy.js';
 
 // --- formato de lámina -------------------------------------------------------------------------
 // ★ Sesión 22: la geometría del papel (marco, cajetín, leyenda, área de dibujo) ya no vive acá
@@ -342,11 +342,12 @@ export function generateFramingSheets(model, opts = {}) {
 }
 
 export function downloadFramingSheets(model, opts = {}) {
-  if (!confirmIfStale(model, 'framing')) return;
+  const policy = guardExport(model, 'dxf-framing-sheets');
+  if (!policy.allowed) return false;
   const sheets = generateFramingSheets(model, opts);
   if (!sheets.length) {
     alert('No hay muros con despiece de metalcon generado (Modulación de metalcon → Generar despiece).');
-    return;
+    return false;
   }
   sheets.forEach((sheet, i) => {
     setTimeout(() => {
@@ -359,6 +360,7 @@ export function downloadFramingSheets(model, opts = {}) {
       URL.revokeObjectURL(url);
     }, i * 400); // pequeño delay entre descargas para que el navegador no las bloquee
   });
+  return true;
 }
 
 /** Resuelve entries para las láminas de revestimiento OSB — mismo empaquetado (packWallsIntoSheets)
@@ -402,11 +404,12 @@ export function generateOsbFramingSheets(model, opts = {}) {
 }
 
 export function downloadOsbFramingSheets(model, opts = {}) {
-  if (!confirmIfStale(model, 'osb')) return;
+  const policy = guardExport(model, 'dxf-osb-sheets');
+  if (!policy.allowed) return false;
   const sheets = generateOsbFramingSheets(model, opts);
   if (!sheets.length) {
     alert('No hay muros con modulación de placas OSB generada (Modulación de placas OSB → Generar).');
-    return;
+    return false;
   }
   sheets.forEach((sheet, i) => {
     setTimeout(() => {
@@ -419,6 +422,7 @@ export function downloadOsbFramingSheets(model, opts = {}) {
       URL.revokeObjectURL(url);
     }, i * 400);
   });
+  return true;
 }
 
 /** Resuelve entries para las láminas de cerchas — mismo empaquetado (packWallsIntoSheets) y
@@ -451,11 +455,12 @@ export function generateTrussSheets(model, opts = {}) {
 }
 
 export function downloadTrussSheets(model, opts = {}) {
-  if (!confirmIfStale(model, 'truss')) return;
+  const policy = guardExport(model, 'dxf-truss-sheets');
+  if (!policy.allowed) return false;
   const sheets = generateTrussSheets(model, opts);
   if (!sheets.length) {
     alert('No hay sistemas de techumbre generados (Techumbre — cerchas de un agua → Generar).');
-    return;
+    return false;
   }
   sheets.forEach((sheet, i) => {
     setTimeout(() => {
@@ -468,5 +473,5 @@ export function downloadTrussSheets(model, opts = {}) {
       URL.revokeObjectURL(url);
     }, i * 400);
   });
+  return true;
 }
-

@@ -252,13 +252,19 @@
       "path": "src/components/modals/MetalconModulationModal.jsx",
       "bytes": 14190,
       "sha256": "610111641695c0ce44de57871c2509576c60b32a0b157ac4143559f90d9f0bc8",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 14232,
+      "workspaceSha256": "82c912a0bacc5df0ca8d530570399a4ae93219b78d567d4fa1b73c259e1cba73",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/components/modals/OsbModulationModal.jsx",
       "bytes": 10027,
       "sha256": "e8541be6cac99009f0e59d5e6e301c2def19df5e6f2c4c5fa5c8869e676a82f2",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 10065,
+      "workspaceSha256": "459020098e4a9d12889134700d2a4169e640dcd6216fce07cce92a94b0a7284f",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/components/modals/OsbNestingModal.jsx",
@@ -288,7 +294,10 @@
       "path": "src/components/modals/RoofTrussModal.jsx",
       "bytes": 25559,
       "sha256": "5dd3ca3f75661f3f8536daadb36ee01886add485e9f0662bded39e3b2e82e3d7",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 25595,
+      "workspaceSha256": "c43413d69b1d7943d9ee8b5cba01435a8ad4a1a989d47411d223e61fc175239c",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/components/modals/TakeoffModal.jsx",
@@ -372,7 +381,10 @@
       "path": "src/core/derivedInvalidation.js",
       "bytes": 6426,
       "sha256": "a19b525fdf5aa94dc63c0c4cbff7ec8f5ce4fc516036ad2a4bb57204958aec2e",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 12225,
+      "workspaceSha256": "4868b9321bd3235d83ea17a3fa90c402b1879b074d361961264cb1cd4fce3059",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/dimensions.js",
@@ -420,55 +432,82 @@
       "path": "src/core/exportCalculix.js",
       "bytes": 20075,
       "sha256": "855edc86e7795ff3c8eff6f229dfc3ceb345c96e88e2bc8e4386a8e5cd861fe7",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 20128,
+      "workspaceSha256": "9f4df4a930246bfa91d0a484e4f06da6e0c6d9621c125f17ca96421e3a489532",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportCalculixFoundation.js",
       "bytes": 17227,
       "sha256": "304eb8321859039568dfafd26e6eb12bfda93685920ab5baff2de43326e3f0b1",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 17388,
+      "workspaceSha256": "b369c4b39844d07a2d497d12308ea9e4c546318fb1fdb38c28e5205445fad220",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportCalculixTruss.js",
       "bytes": 18752,
       "sha256": "bf310045332ff0f489414837ed75780d6c5c4bb890be0fb78183d9b1f96206c6",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 18908,
+      "workspaceSha256": "082d8b73c068fd89e088f41444285589d805d614e1a8bc55f964c18b925a632f",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportDxf.js",
       "bytes": 8313,
       "sha256": "952d787b4fca818537a546076c9448d881a95c2b34f7c1768d4f84e65042b56a",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 8463,
+      "workspaceSha256": "eae089157ce57dcb417e409caff4948e79b1492bd99cd9df006dbde5afd75443",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportFoundationsDxf.js",
       "bytes": 20226,
       "sha256": "c252fd22276ef29da9510c53ac7d548d5de61d1a826d0c881322b056f20a6c19",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 20388,
+      "workspaceSha256": "3ec9920cc71680c853f57f483a6d33c9913b4213cdbfcd7b9e847634b4d0e27c",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportFramingDxf.js",
       "bytes": 44393,
       "sha256": "e1cde465298beb02ae6110c29881f384211bbfd7cc9529270df85658b0c16289",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 44444,
+      "workspaceSha256": "7b135ce9ba1fc318831c68fdea6482e9c0a5d320508503e0829423ffc499cb3b",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportOsbDxf.js",
       "bytes": 7114,
       "sha256": "6581868d5aa1735b1a479c68ee1f727c21aaf3d06632d86d2e642573923e2fc0",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 7165,
+      "workspaceSha256": "90c048c71e212af76555f643dbf9c1b1a1e6d8a77d53503b195ca44b26c84fdb",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportSheetsDxf.js",
       "bytes": 21862,
       "sha256": "b1c0c222eae9a0318ea4a70a6540711495e22ff638e0d0e66fba10d6d035d1b8",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 22055,
+      "workspaceSha256": "ebaf506944e325b9bb8dcff6b45d3b994ef9c126b779aad72a986ae378b0307c",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/exportTrussDxf.js",
       "bytes": 15738,
       "sha256": "e22dcaa441eb974efa8d18e0c54fbc3b1b0626920c0b88137c50f84f2f776b16",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 15789,
+      "workspaceSha256": "a87dfef5d9547f4f28db3632bd1f1431ad9435f05bf7eab9114c6a1a071bd4c1",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/foundationGeneration.js",
@@ -669,7 +708,10 @@
       "path": "src/core/takeoff.js",
       "bytes": 13710,
       "sha256": "beae19b5456e7440c7bf5889be2da2d218a4a00780f72f5d60c663ea972ad04a",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 14092,
+      "workspaceSha256": "4e207b33f184f9ab891d3ac608250bcc35f1135ea4bcf6b5e804d960f5b953c1",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "src/core/trussChain.js",
@@ -796,9 +838,9 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 43042,
-      "workspaceSha256": "32f22730b8429f15ca872b12b690a677e0c369c02a036d6fa14d23db0f4adf6f",
-      "changedBy": "SPEC-001"
+      "workspaceBytes": 45683,
+      "workspaceSha256": "e5370dec0e10f4d24a43a50fa9fce8ef0bd2cc3e4d01df6fc56cc205bc3e6a51",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "tailwind.config.js",
@@ -834,7 +876,10 @@
       "path": "tests/derivedInvalidation.test.mjs",
       "bytes": 5048,
       "sha256": "c6694ba7dc79df52f691ad5424a773e266ef5ffb3830631a4143104b4bd0e9b9",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 4613,
+      "workspaceSha256": "4383f8c5ebe0097a6656f9cbcf42d8a0a4b923afdc1552bac3574c4c64a99204",
+      "changedBy": "SPEC-002"
     },
     {
       "path": "tests/elementBounds.test.mjs",

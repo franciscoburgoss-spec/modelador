@@ -12,9 +12,9 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-DATA-001 | Modelo inválido no modifica el estado activo | R-002 | D-006 | SPEC-001 | `{}`, JSON truncado y versión futura transaccionales | G2 | Verificado |
 | REQ-DATA-002 | Modelos declaran versión y migran secuencialmente | R-002 | D-006 | SPEC-001 | fixtures v0/v1 + idempotencia | G2 | Verificado |
 | REQ-DATA-003 | `roofSystems` heredados se preservan | R-002 | D-007 | SPEC-001 | roundtrip `casa-L` conserva 2 y precedencia visible | G2 | Verificado |
-| REQ-DER-001 | Parámetros invalidan todos sus derivados | R-003 | D-008 | SPEC-002 | contrato de mutadores | G3 | Pendiente |
-| REQ-DER-002 | Biblioteca y vanos invalidan derivados relacionados | R-003 | D-008 | SPEC-002 | pruebas store por acción | G3 | Pendiente |
-| REQ-EXP-001 | Ningún INP se exporta con datos stale | R-003/R-007 | D-009 | SPEC-002 | matriz de exportadores | G3 | Pendiente |
+| REQ-DER-001 | Parámetros invalidan todos sus derivados | R-003 | D-008 | SPEC-002 | `DERIVED_STATE_MATRIX.md` + 45 muros | G3 | Verificado |
+| REQ-DER-002 | Biblioteca y vanos invalidan derivados relacionados | R-003 | D-008 | SPEC-002 | `derivedStateContract.test.mjs` | G3 | Verificado |
+| REQ-EXP-001 | Ningún INP se exporta con datos stale | R-003/R-007 | D-009 | SPEC-002 | `exportPolicy.test.mjs` + smoke CCX | G3 | Verificado |
 | REQ-DOM-001 | Cadenetas son piezas reales y se metran | R-005 | legado D-020 | SPEC-R3 | criterios de spec R3 | G4 | Pendiente |
 | REQ-DOM-002 | R4–R8 completan catálogo, roles, encuentros y checks | R-005 | legado D-016–033 | ROADMAP-R1-R8 | cierres R4–R8 | G4 | Pendiente |
 | REQ-TST-001 | Existe fixture con planta y perfiles distintos | R-006 | — | SPEC-003 | fixture independiente auditado | G4 | Pendiente |

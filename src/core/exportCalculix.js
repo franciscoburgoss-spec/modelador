@@ -3,7 +3,7 @@ import { resolveColumnGeometry, resolveBeamGeometry, resolveWallGeometry, wallOf
 import { resolveFoundation } from './foundationGeometry.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
-import { confirmIfStale } from './derivedInvalidation.js';
+import { guardExport } from './exportPolicy.js';
 import { makeNodeRegistry, cm2ToMm2, cm4ToMm4, safeName } from './calculixCommon.js';
 import { collectTypicalTruss } from './exportCalculixTruss.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
@@ -349,7 +349,8 @@ function collectWallFraming(wall, grid, paramsMap, elementsById, reg, metalconPr
 }
 
 export function downloadCalculix(model) {
-  if (!confirmIfStale(model, 'all')) return;
+  const policy = guardExport(model, 'calculix-global');
+  if (!policy.allowed) return false;
   const content = generateCalculix(model);
   const blob = new Blob([content], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
@@ -358,4 +359,5 @@ export function downloadCalculix(model) {
   a.download = 'modelo.inp';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

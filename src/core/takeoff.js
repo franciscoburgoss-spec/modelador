@@ -11,7 +11,7 @@
 import { resolveWallGeometry, resolveColumnGeometry, resolveBeamGeometry } from './elementGeometry.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
-import { confirmIfStale } from './derivedInvalidation.js';
+import { exportStatusLabel, guardExport } from './exportPolicy.js';
 import { resolveFoundation } from './foundationGeometry.js';
 import { computeOsbNesting } from './osbNesting.js';
 import { edgeChordMembers } from './roofObstructions.js';
@@ -267,16 +267,19 @@ function csvEscape(v) {
   return /[,"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-/** Exporta el metrado a CSV (separador coma, decimales con punto) para abrir en Excel/Sheets. */
-export function downloadTakeoffCsv(model) {
-  if (!confirmIfStale(model, 'all')) return;
+/** Genera el CSV informativo declarando vigencia en cada fila. */
+export function generateTakeoffCsv(model) {
   const { rows, osbPurchase } = computeTakeoff(model);
-  const header = ['Tipo', 'Sección', 'Cantidad', 'ml', 'm2', 'm3', 'Advertencias'];
-  const lines = [header.join(',')];
+  const status = exportStatusLabel(model, 'takeoff-csv');
+  const header = ['Tipo', 'Sección', 'Cantidad', 'ml', 'm2', 'm3', 'Advertencias', 'Estado derivados'];
+  const lines = [
+    ['Estado general de derivados', status].map(csvEscape).join(','),
+    header.join(',')
+  ];
   for (const r of rows) {
     lines.push([
       r.typeLabel, r.section, r.count,
-      r.ml.toFixed(3), r.m2.toFixed(3), r.m3.toFixed(3), r.warnings
+      r.ml.toFixed(3), r.m2.toFixed(3), r.m3.toFixed(3), r.warnings, status
     ].map(csvEscape).join(','));
   }
 
@@ -295,11 +298,19 @@ export function downloadTakeoffCsv(model) {
     lines.push(['Placas sin optimizar (muro por muro)', p.baseline.perWallBoards].map(csvEscape).join(','));
     lines.push(['Ahorro (placas)', p.savings.boards, `${p.savings.pct.toFixed(1)}%`].map(csvEscape).join(','));
   }
-  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+  return lines.join('\n');
+}
+
+/** Exporta el metrado a CSV (separador coma, decimales con punto) para abrir en Excel/Sheets. */
+export function downloadTakeoffCsv(model) {
+  const policy = guardExport(model, 'takeoff-csv');
+  if (!policy.allowed) return false;
+  const blob = new Blob([generateTakeoffCsv(model)], { type: 'text/csv;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
   a.download = 'metrado.csv';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

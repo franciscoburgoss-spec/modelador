@@ -4,6 +4,7 @@ import { buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { computeDimensionChain, resolveDimensionAnchor } from './dimensions.js';
 import { makePlanToPaper } from './dxfPlanTransform.js';
+import { guardExport } from './exportPolicy.js';
 
 function line(layer, x1, y1, x2, y2) {
   return [
@@ -180,6 +181,8 @@ export function generateDxf(model) {
 }
 
 export function downloadDxf(model) {
+  const policy = guardExport(model, 'dxf-plan');
+  if (!policy.allowed) return false;
   const content = generateDxf(model);
   const blob = new Blob([content], { type: 'application/dxf' });
   const url = URL.createObjectURL(blob);
@@ -188,4 +191,5 @@ export function downloadDxf(model) {
   a.download = 'modelo.dxf';
   a.click();
   URL.revokeObjectURL(url);
+  return true;
 }

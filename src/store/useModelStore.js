@@ -15,12 +15,20 @@ import {
   CURRENT_MODEL_VERSION, ModelImportError, prepareModelImport, prepareModelJsonImport
 } from '../core/modelSchema.js';
 import {
-  invalidateDerived, applyWallPatchFlags, patchInvalidatesWall, invalidateSystemsForWall
+  invalidateForMutation,
+  applyWallRegeneration,
+  applyWallRegenerationPatch,
+  patchInvalidatesWall,
+  assertNoDerivedWrites,
+  DERIVED_WRITE_FIELDS
 } from '../core/derivedInvalidation.js';
+import { guardExport } from '../core/exportPolicy.js';
 
 // Sólo un cambio de posición/elevación reubica geometría; renombrar un eje no invalida nada.
 function maybeGlobalInvalidate(model, patch, field) {
-  return patch && Object.hasOwn(patch, field) ? invalidateDerived(model, 'all') : model;
+  return patch && Object.hasOwn(patch, field)
+    ? invalidateForMutation(model, 'gridGeometry')
+    : model;
 }
 
 // Normalización posterior a la validación/migración pura de core/modelSchema.js.
@@ -371,15 +379,15 @@ export const useModelStore = create((set, get) => ({
   fitToContent: (canvasW, canvasH) => set((s) => ({ view: computeFitView(s.view, s.model.grid, canvasW, canvasH, s.model.viewMode) })),
 
   // ---- parámetros de proyecto ----
-  addProjectParam: (param) => set((s) => withHistory(s, {
+  addProjectParam: (param) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, projectParams: [...(s.model.projectParams || []), { ...param, id: generateId() }]
-  })),
-  updateProjectParam: (id, patch) => set((s) => withHistory(s, {
+  }, 'projectParams'))),
+  updateProjectParam: (id, patch) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, projectParams: (s.model.projectParams || []).map(p => p.id === id ? { ...p, ...patch } : p)
-  })),
-  removeProjectParam: (id) => set((s) => withHistory(s, {
+  }, 'projectParams'))),
+  removeProjectParam: (id) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, projectParams: (s.model.projectParams || []).filter(p => p.id !== id)
-  })),
+  }, 'projectParams'))),
 
   // ---- default de proyecto para modulación OSB ----
   // minPanelWidth siempre se clampea a un piso duro de 200mm, sin importar lo que llegue en
@@ -387,13 +395,13 @@ export const useModelStore = create((set, get) => ({
   setOsbDefaults: (patch) => set((s) => {
     const next = { ...(s.model.osbDefaults || {}), ...patch };
     if (next.minPanelWidth != null) next.minPanelWidth = Math.max(200, Number(next.minPanelWidth));
-    return withHistory(s, { ...s.model, osbDefaults: next });
+    return withHistory(s, invalidateForMutation({ ...s.model, osbDefaults: next }, 'osbDefaults'));
   }),
 
   // ---- default de proyecto para modulación metalcon (sesión 20b) ----
   setMetalconDefaults: (patch) => set((s) => {
     const next = { ...(s.model.metalconDefaults || {}), ...patch };
-    return withHistory(s, { ...s.model, metalconDefaults: next });
+    return withHistory(s, invalidateForMutation({ ...s.model, metalconDefaults: next }, 'metalconDefaults'));
   }),
 
   // ---- datos de proyecto del cajetín (sesión 22) ----
@@ -423,40 +431,61 @@ export const useModelStore = create((set, get) => ({
   }),
 
   // ---- librería ----
-  addLibraryItem: (key, item) => set((s) => withHistory(s, {
+  addLibraryItem: (key, item) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, library: { ...s.model.library, [key]: [...s.model.library[key], { ...item, id: generateId() }] }
-  })),
+  }, 'library'))),
   updateLibraryItem: (key, id, patch) => set((s) => {
     const nextSection = s.model.library[key].map(i => i.id === id ? { ...i, ...patch } : i);
     const updatedItem = nextSection.find(i => i.id === id);
     const nextElements = cascadeLibrarySubstitution(s.model.elements, key, id, updatedItem);
-    return withHistory(s, { ...s.model, library: { ...s.model.library, [key]: nextSection }, elements: nextElements });
+    return withHistory(s, invalidateForMutation({
+      ...s.model,
+      library: { ...s.model.library, [key]: nextSection },
+      elements: nextElements
+    }, 'library'));
   }),
-  removeLibraryItem: (key, id) => set((s) => withHistory(s, {
+  removeLibraryItem: (key, id) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, library: { ...s.model.library, [key]: s.model.library[key].filter(i => i.id !== id) }
-  })),
+  }, 'library'))),
   // ★ Carga (una vez) el catálogo de perfiles Metalcon Cintac en library.metalconProfiles.
   // No duplica: si un `code` ya existe en la librería, se omite. Un solo paso de historial.
   loadMetalconCatalog: () => set((s) => {
     const existingCodes = new Set((s.model.library.metalconProfiles || []).map(p => p.code));
     const toAdd = METALCON_PROFILES.filter(p => !existingCodes.has(p.code)).map(p => ({ ...p, id: generateId() }));
     if (toAdd.length === 0) return s;
-    return withHistory(s, {
+    return withHistory(s, invalidateForMutation({
       ...s.model,
       library: { ...s.model.library, metalconProfiles: [...(s.model.library.metalconProfiles || []), ...toAdd] }
-    });
+    }, 'library'));
   }),
 
   // ---- techumbre: sistemas de cerchas + plantillas de entramado ----
   addRoofSystem: (system) => set((s) => withHistory(s, {
     ...s.model, roofSystems: [...(s.model.roofSystems || []), { ...system, id: generateId() }]
   })),
-  updateRoofSystem: (id, patch) => set((s) => withHistory(s, {
-    ...s.model,
-    roofSystems: (s.model.roofSystems || []).map(r => r.id === id
-      ? { ...r, ...patch, ...(Object.hasOwn(patch, 'trussGeometry') ? { stale: false } : {}) }
-      : r)
-  })),
+  updateRoofSystem: (id, patch) => {
+    const derivedFields = DERIVED_WRITE_FIELDS.filter((field) => Object.hasOwn(patch || {}, field));
+    if (derivedFields.length > 0) {
+      throw new Error(
+        `Los resultados derivados (${derivedFields.join(', ')}) sólo pueden escribirse mediante un comando de regeneración.`
+      );
+    }
+    set((s) => withHistory(s, invalidateForMutation({
+      ...s.model,
+      roofSystems: (s.model.roofSystems || []).map(r => r.id === id ? { ...r, ...patch } : r)
+    }, 'roofSystemConfig', { roofSystemId: id })));
+  },
+  commitRoofSystemRegeneration: (id, result) => {
+    if (!result?.trussGeometry || !Array.isArray(result?.trussPositions)) {
+      throw new Error('Regeneración roofTruss incompleta: faltan trussGeometry o trussPositions.');
+    }
+    set((s) => withHistory(s, {
+      ...s.model,
+      roofSystems: (s.model.roofSystems || []).map((system) => (
+        system.id === id ? { ...system, ...result, stale: false } : system
+      ))
+    }));
+  },
   removeRoofSystem: (id) => set((s) => withHistory(s, {
     ...s.model,
     roofSystems: (s.model.roofSystems || []).filter(r => r.id !== id),
@@ -488,7 +517,10 @@ export const useModelStore = create((set, get) => ({
   loadSeedTrussTemplates: () => set((s) => {
     const merged = mergeSeedTemplates(s.model.library.trussTemplates || []);
     if (merged.length === (s.model.library.trussTemplates || []).length) return s;
-    return withHistory(s, { ...s.model, library: { ...s.model.library, trussTemplates: merged } });
+    return withHistory(s, invalidateForMutation({
+      ...s.model,
+      library: { ...s.model.library, trussTemplates: merged }
+    }, 'library'));
   }),
 
   // ---- B4.7: faldones de techumbre (roofPlanes) ----
@@ -551,16 +583,19 @@ export const useModelStore = create((set, get) => ({
   updateZLevel: (id, patch) => set((s) => withHistory(s, maybeGlobalInvalidate({
     ...s.model, grid: { ...s.model.grid, zLevels: s.model.grid.zLevels.map(z => z.id === id ? { ...z, ...patch } : z) }
   }, patch, 'elevation'))),
-  removeXAxis: (id) => set((s) => withHistory(s, invalidateDerived({
+  removeXAxis: (id) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, grid: { ...s.model.grid, xAxes: s.model.grid.xAxes.filter(a => a.id !== id) }
-  }, 'all'))),
-  removeYAxis: (id) => set((s) => withHistory(s, invalidateDerived({
+  }, 'gridGeometry'))),
+  removeYAxis: (id) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model, grid: { ...s.model.grid, yAxes: s.model.grid.yAxes.filter(a => a.id !== id) }
-  }, 'all'))),
+  }, 'gridGeometry'))),
   removeZLevel: (id) => set((s) => {
     const zLevels = s.model.grid.zLevels.filter(z => z.id !== id);
     const currentZLevelId = s.model.currentZLevelId === id ? (zLevels[0]?.id ?? null) : s.model.currentZLevelId;
-    return withHistory(s, invalidateDerived({ ...s.model, grid: { ...s.model.grid, zLevels }, currentZLevelId }, 'all'));
+    return withHistory(s, invalidateForMutation(
+      { ...s.model, grid: { ...s.model.grid, zLevels }, currentZLevelId },
+      'gridGeometry'
+    ));
   }),
 
   // ---- cotas vivas ----
@@ -625,12 +660,12 @@ export const useModelStore = create((set, get) => ({
       const idx = s.model.elements.findIndex((el) => el.id === wallId);
       const elements = [...s.model.elements];
       elements.splice(idx, 1, ...segments);
-      return withHistory(s, {
+      return withHistory(s, invalidateForMutation({
         ...s.model,
         grid: { ...s.model.grid, xAxes, yAxes },
         elements,
         selectedElementId: segments[0].id
-      });
+      }, 'wallTopology', { wallIds: [wallId] }));
     });
     return plan;
   },
@@ -643,24 +678,43 @@ export const useModelStore = create((set, get) => ({
       const idx = s.model.elements.findIndex((el) => plan.removedIds.includes(el.id));
       const elements = s.model.elements.filter((el) => !plan.removedIds.includes(el.id));
       elements.splice(Math.max(0, idx), 0, merged);
-      return withHistory(s, { ...s.model, elements, selectedElementId: merged.id });
+      return withHistory(s, invalidateForMutation(
+        { ...s.model, elements, selectedElementId: merged.id },
+        'wallTopology',
+        { wallIds: plan.removedIds }
+      ));
     });
     return plan;
   },
   // Editar geometría de un muro deja obsoletos sus despieces persistidos: se marcan stale
   // (ver core/derivedInvalidation.js). Los roofSystems que lo referencian también.
-  updateElement: (id, patch) => set((s) => {
+  updateElement: (id, patch) => {
+    assertNoDerivedWrites(patch);
+    set((s) => {
     const target = s.model.elements.find(el => el.id === id);
-    const isWall = target?.type === 'wall';
     const next = {
       ...s.model,
       elements: s.model.elements.map(el =>
-        el.id !== id ? el : (isWall ? applyWallPatchFlags(el, patch) : { ...el, ...patch })
+        el.id !== id ? el : { ...el, ...patch }
       )
     };
-    const affectsSystems = isWall && patchInvalidatesWall(patch);
-    return withHistory(s, affectsSystems ? invalidateSystemsForWall(next, id) : next);
-  }),
+    if (target?.type === 'wall' && patchInvalidatesWall(patch)) {
+      return withHistory(s, invalidateForMutation(next, 'wallGeometry', { wallId: id }));
+    }
+    if (target?.type === 'foundation') {
+      return withHistory(s, invalidateForMutation(next, 'foundationGeometry', { foundationId: id }));
+    }
+    return withHistory(s, next);
+    });
+  },
+  commitWallRegeneration: (wallId, kind, result) => set((s) => withHistory(s, {
+    ...s.model,
+    elements: s.model.elements.map((element) => (
+      element.id === wallId && element.type === 'wall'
+        ? applyWallRegeneration(element, kind, result)
+        : element
+    ))
+  })),
   // ★ "Generar todos" (sesión 09): aplica N patches de despiece (metalcon u OSB) en UNA sola
   // entrada de historial — un solo undo revierte el batch completo. patches: [{wallId, patch}].
   applyWallPatchesBatch: (patches) => set((s) => {
@@ -669,34 +723,34 @@ export const useModelStore = create((set, get) => ({
     const elements = s.model.elements.map((el) => {
       const patch = patchMap.get(el.id);
       if (!patch) return el;
-      return el.type === 'wall' ? applyWallPatchFlags(el, patch) : { ...el, ...patch };
+      return el.type === 'wall' ? applyWallRegenerationPatch(el, patch) : el;
     });
     return withHistory(s, { ...s.model, elements });
   }),
-  addOpeningToWall: (wallId, opening) => set((s) => withHistory(s, invalidateDerived({
+  addOpeningToWall: (wallId, opening) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model,
     elements: s.model.elements.map(el =>
       el.id === wallId
         ? { ...el, openings: [...(el.openings || []), { ...opening, id: generateId() }] }
         : el
     )
-  }, wallId))),
-  updateOpening: (wallId, openingId, patch) => set((s) => withHistory(s, invalidateDerived({
+  }, 'wallOpenings', { wallId }))),
+  updateOpening: (wallId, openingId, patch) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model,
     elements: s.model.elements.map(el =>
       el.id === wallId
         ? { ...el, openings: (el.openings || []).map(o => o.id === openingId ? { ...o, ...patch } : o) }
         : el
     )
-  }, wallId))),
-  removeOpening: (wallId, openingId) => set((s) => withHistory(s, invalidateDerived({
+  }, 'wallOpenings', { wallId }))),
+  removeOpening: (wallId, openingId) => set((s) => withHistory(s, invalidateForMutation({
     ...s.model,
     elements: s.model.elements.map(el =>
       el.id === wallId
         ? { ...el, openings: (el.openings || []).filter(o => o.id !== openingId) }
         : el
     )
-  }, wallId))),
+  }, 'wallOpenings', { wallId }))),
   centerOnElement: (id, canvasW, canvasH) => set((s) => {
     const { grid, elements } = s.model;
     let el = elements.find(e => e.id === id);
@@ -822,13 +876,26 @@ export const useModelStore = create((set, get) => ({
       return withHistory(s, { ...s.model, dimensions: s.model.dimensions.filter(d => d.id !== id), selectedElementId: null });
     }
 
-    const isTopLevel = s.model.elements.some(el => el.id === id);
-    if (isTopLevel) {
-      return withHistory(s, { ...s.model, elements: s.model.elements.filter(el => el.id !== id), selectedElementId: null });
+    const topLevel = s.model.elements.find(el => el.id === id);
+    if (topLevel) {
+      const next = {
+        ...s.model,
+        elements: s.model.elements.filter(el => el.id !== id),
+        selectedElementId: null
+      };
+      return withHistory(
+        s,
+        topLevel.type === 'wall'
+          ? invalidateForMutation(next, 'wallRemoval', { wallId: id })
+          : next
+      );
     }
 
     // Puede ser un vano anidado dentro de un muro.
-    return withHistory(s, {
+    const parentWall = s.model.elements.find((element) => (
+      element.type === 'wall' && (element.openings || []).some((opening) => opening.id === id)
+    ));
+    const next = {
       ...s.model,
       elements: s.model.elements.map(el =>
         el.type === 'wall' && (el.openings || []).some(o => o.id === id)
@@ -836,7 +903,13 @@ export const useModelStore = create((set, get) => ({
           : el
       ),
       selectedElementId: null
-    });
+    };
+    return withHistory(
+      s,
+      parentWall
+        ? invalidateForMutation(next, 'wallOpenings', { wallId: parentWall.id })
+        : next
+    );
   }),
 
   // ---- ciclo de vida del modelo ----
@@ -876,13 +949,17 @@ export const useModelStore = create((set, get) => ({
     }
   },
   exportModelToFile: () => {
-    const blob = new Blob([JSON.stringify(get().model, null, 2)], { type: 'application/json' });
+    const model = get().model;
+    const policy = guardExport(model, 'model-json');
+    if (!policy.allowed) return false;
+    const blob = new Blob([JSON.stringify(model, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = 'modelo.json';
     a.click();
     URL.revokeObjectURL(url);
+    return true;
   },
   importModelFromFile: (file) => {
     const reader = new FileReader();

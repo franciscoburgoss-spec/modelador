@@ -20,7 +20,7 @@ export default function OsbModulationModal({ open, onClose }) {
   const elements = useModelStore((s) => s.model.elements);
   const projectParams = useModelStore((s) => s.model.projectParams || []);
   const osbDefaults = useModelStore((s) => s.model.osbDefaults || { panelWidth: 1220, minPanelWidth: 200, gap: 5 });
-  const updateElement = useModelStore((s) => s.updateElement);
+  const commitWallRegeneration = useModelStore((s) => s.commitWallRegeneration);
   const setOsbDefaults = useModelStore((s) => s.setOsbDefaults);
   const applyWallPatchesBatch = useModelStore((s) => s.applyWallPatchesBatch);
   const model = useModelStore((s) => s.model);
@@ -86,7 +86,7 @@ export default function OsbModulationModal({ open, onClose }) {
 
   const handleGenerate = () => {
     if (!canGenerate) return;
-    updateElement(wall.id, {
+    commitWallRegeneration(wall.id, 'wallOsb', {
       osbPanelWidth: panelWidth,
       osbPanelHeight: panelHeight,
       osbMinPanelWidth: minPanelWidth,

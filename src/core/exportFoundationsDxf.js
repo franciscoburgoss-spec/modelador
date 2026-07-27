@@ -22,6 +22,7 @@ import { resolveFoundation } from './foundationGeometry.js';
 import { buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { generateSheetDxf, packWallsIntoSheets, resolveSheetSetup } from './exportSheetsDxf.js';
+import { guardExport } from './exportPolicy.js';
 
 // --- constantes de dibujo (mm, espacio modelo) ------------------------------------------------
 const AXIS_EXT = 900;        // cuánto sobresale la línea de eje del contorno de las fundaciones
@@ -462,10 +463,12 @@ export function generateFoundationSheets(model, opts = {}) {
 }
 
 export function downloadFoundationSheets(model, opts = {}) {
+  const policy = guardExport(model, 'dxf-foundation');
+  if (!policy.allowed) return false;
   const sheets = generateFoundationSheets(model, opts);
   if (!sheets.length) {
     alert('No hay fundaciones en el modelo (Agregar fundacion o Herramientas -> Generar fundaciones desde muros).');
-    return;
+    return false;
   }
   sheets.forEach((sheet, i) => {
     setTimeout(() => {
@@ -478,4 +481,5 @@ export function downloadFoundationSheets(model, opts = {}) {
       URL.revokeObjectURL(url);
     }, i * 400); // mismo delay entre descargas que las demás láminas (bloqueo del navegador)
   });
+  return true;
 }

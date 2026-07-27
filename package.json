@@ -19,7 +19,8 @@
     "build": "vite build",
     "verify:migration": "node scripts/migration-manifest.mjs",
     "verify:artifacts": "node scripts/check-artifacts.mjs",
-    "validate": "npm run format:check && npm run lint && npm test && npm run test:lab && npm run test:coverage && npm run build && npm run verify:migration && npm run verify:artifacts && make governance"
+    "verify:derived": "node scripts/check-derived-contract.mjs",
+    "validate": "npm run format:check && npm run lint && npm test && npm run test:lab && npm run test:coverage && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
   },
   "dependencies": {
     "react": "^18.3.1",
