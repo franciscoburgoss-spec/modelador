@@ -18,6 +18,7 @@ import { resolveWallGeometry, isWallXRun } from './elementGeometry.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { findRoofObstructions, applyObstructionsToRun } from './roofObstructions.js';
+import { createFinding } from './domainFindings.js';
 
 const EPS = 0.5;
 
@@ -744,7 +745,7 @@ export function roofElevationSegmentsOf(systems = [], axisType, pos) {
 }
 
 function roofFinding(severity, category, message, roofSystemIds = []) {
-  return { severity, category, message, roofSystemIds };
+  return createFinding({ severity, category, message, roofSystemIds });
 }
 
 /** Huella en planta {minH,maxH,minV,maxV} de UN sistema, a partir de sus segmentos ya

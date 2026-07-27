@@ -4,9 +4,10 @@ import { getWallDisplayName } from './naming.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { resolveAxisRef, isElementRef, buildElementsById } from './elementReferences.js';
 import { resolveFoundation, foundationVerticalRange } from './foundationGeometry.js';
+import { createFinding } from './domainFindings.js';
 
 function issue(severity, category, message, elementIds = []) {
-  return { severity, category, message, elementIds };
+  return createFinding({ severity, category, message, elementIds });
 }
 
 function levelRange(el, grid, paramsMap, elementsById = {}) {

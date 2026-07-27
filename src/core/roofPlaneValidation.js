@@ -6,9 +6,10 @@
 import { resolveRoofPlane } from './roofPlane.js';
 import { buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
+import { createFinding } from './domainFindings.js';
 
 function planeFinding(severity, category, message, roofPlaneIds) {
-  return { severity, category, message, roofPlaneIds };
+  return createFinding({ severity, category, message, roofPlaneIds });
 }
 
 /** Etiqueta legible del faldón: nombre si lo trae, si no su id. */

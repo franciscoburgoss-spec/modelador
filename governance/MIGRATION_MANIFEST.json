@@ -348,7 +348,10 @@
       "path": "src/core/analysisReadiness.js",
       "bytes": 5361,
       "sha256": "365443c0159919468aa14cfd02007660408a1f2ef463242c3e4ce9406dfb5065",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 5169,
+      "workspaceSha256": "6d43c5ba62e5cda6e5077ac1e7134b990a5352887536a4d863c599641e86ae09",
+      "changedBy": "SPEC-R4"
     },
     {
       "path": "src/core/attributeFilter.js",
@@ -582,7 +585,10 @@
       "path": "src/core/modelValidation.js",
       "bytes": 25815,
       "sha256": "ceaa2286722e57b342bc5a70a26bc4c7518f8ce03b734103d641e0df786f848f",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 25883,
+      "workspaceSha256": "83b34b000b592f841064b0d0f401884ebc376ad94cf7f9545bc70f2ca765fc46",
+      "changedBy": "SPEC-R4"
     },
     {
       "path": "src/core/naming.js",
@@ -666,7 +672,10 @@
       "path": "src/core/roofPlaneValidation.js",
       "bytes": 2067,
       "sha256": "8b478ab6bc6a2a06592bedb51d61c630f9430940ca96a585384a3f2aabf8d32f",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 2135,
+      "workspaceSha256": "68b4a78470a0b94fb57cf6d41b110737a2a8556a48baa34c7403cc6ecb11897b",
+      "changedBy": "SPEC-R4"
     },
     {
       "path": "src/core/roofPurlins.js",
@@ -738,7 +747,10 @@
       "path": "src/core/trussLayout.js",
       "bytes": 52186,
       "sha256": "a60dccedf51c21cd476619279a66838d51425b5322d4b274b531b14c7fcec8e8",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 52254,
+      "workspaceSha256": "d28f0493708da6defe7d78ce8179086169d8725894635d3870d8381157c7101c",
+      "changedBy": "SPEC-R4"
     },
     {
       "path": "src/core/trussTemplates.js",
