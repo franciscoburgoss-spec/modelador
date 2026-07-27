@@ -22,6 +22,7 @@
 
 import { resolveWallGeometry, isWallXRun } from './elementGeometry.js';
 import { resolveValue } from './projectParams.js';
+import { studFlangeSpan } from './trussLayout.js';
 
 const EPS = 1; // mm — tolerancia para "misma posición" / bordes
 
@@ -70,6 +71,59 @@ function dist(p, q) {
   return Math.sqrt((p.x - q.x) ** 2 + (p.y - q.y) ** 2);
 }
 
+function computeNoggingPieces(studs, openingSpans, jointZs, length, flangeWidth) {
+  if (!(flangeWidth > 0) || !jointZs?.length) return [];
+
+  const round1 = (value) => Math.round(value * 10) / 10;
+  const jambMins = openingSpans.map((opening) => opening.oMin);
+  const jambMaxs = openingSpans.map((opening) => opening.oMax);
+  const ctx = { length, jambMins, jambMaxs };
+  const pieces = [];
+
+  for (const jointZ of jointZs) {
+    const voids = openingSpans
+      .filter((opening) => (
+        opening.sillRel < jointZ - EPS && opening.topRel > jointZ + EPS
+      ))
+      .map((opening) => [opening.oMin, opening.oMax]);
+    const byOffset = new Map();
+    for (const stud of studs) {
+      if (
+        stud.role !== 'nogging'
+        && Number.isFinite(stud.offset)
+        && stud.zMin <= jointZ + EPS
+        && stud.zMax >= jointZ - EPS
+        && !byOffset.has(stud.offset)
+      ) {
+        byOffset.set(stud.offset, stud);
+      }
+    }
+    const supports = [...byOffset.values()]
+      .map((stud) => ({ stud, ...studFlangeSpan(stud, ctx, flangeWidth) }))
+      .sort((a, b) => a.stud.offset - b.stud.offset);
+
+    for (let index = 0; index < supports.length - 1; index++) {
+      const left = supports[index];
+      const right = supports[index + 1];
+      const oMin = left.xMax;
+      const oMax = right.xMin;
+      if (!(oMax - oMin > EPS)) continue;
+      const crossesVoid = voids.some(([voidMin, voidMax]) => (
+        Math.min(oMax, voidMax) - Math.max(oMin, voidMin) > EPS
+      ));
+      if (crossesVoid) continue;
+      pieces.push({
+        oMin: round1(oMin),
+        oMax: round1(oMax),
+        zMin: round1(jointZ - flangeWidth / 2),
+        zMax: round1(jointZ + flangeWidth / 2),
+        role: 'nogging'
+      });
+    }
+  }
+  return pieces;
+}
+
 /**
  * Calcula el despiece de montantes de un muro. Lógica pura — no toca el store ni persiste.
  *
@@ -78,9 +132,12 @@ function dist(p, q) {
  * @param paramsMap  buildParamsMap(model.projectParams)
  * @param elementsById  buildElementsById(model.elements)
  * @param config  { spacing (mm, formula u número; default 400), backupOffset (mm; default 100),
- *                  corners: { start, end } (de detectWallCorners; default sin esquina) }
- * @returns { resolved, length, wallHeight, studs: [{ offset, zMin, zMax, role }] }
- *          offset: distancia en mm desde el extremo "start" del muro, a lo largo de su eje.
+ *                  corners: { start, end } (de detectWallCorners; default sin esquina),
+ *                  jointZs: juntas horizontales de placa, flangeWidth: B real del perfil }
+ * @returns { resolved, length, wallHeight,
+ *            studs: [{ offset, zMin, zMax, role } |
+ *                    { oMin, oMax, zMin, zMax, role:'nogging' }] }
+ *          offset/oMin/oMax: distancia en mm desde el extremo "start" del muro.
  */
 export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {}, config = {}) {
   const geo = resolveWallGeometry(wall, grid, paramsMap, elementsById);
@@ -102,6 +159,8 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
   const spacing = resolveValue(config.spacing ?? 400, paramsMap, elementsById);
   const backupOffset = config.backupOffset ?? 100;
   const corners = config.corners || { start: false, end: false };
+  const jointZs = config.jointZs || [];
+  const flangeWidth = Number(config.flangeWidth);
 
   // --- vanos: intervalo horizontal [oMin,oMax] + rango vertical relativo al pie del muro ---
   const openingSpans = (wall.openings || [])
@@ -209,5 +268,14 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
   }
   headers.sort((a, b) => a.oMin - b.oMin);
 
-  return { resolved: true, length, wallHeight, studs, headers };
+  const warnings = [];
+  if (jointZs.length > 0 && !(flangeWidth > 0)) {
+    warnings.push('no se generaron cadenetas: el perfil de montante no tiene ancho B resoluble');
+  } else {
+    studs.push(...computeNoggingPieces(
+      studs, openingSpans, jointZs, length, flangeWidth
+    ));
+  }
+
+  return { resolved: true, length, wallHeight, studs, headers, warnings };
 }

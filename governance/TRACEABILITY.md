@@ -15,7 +15,7 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-DER-001 | Parámetros invalidan todos sus derivados | R-003 | D-008 | SPEC-002 | `DERIVED_STATE_MATRIX.md` + 45 muros | G3 | Verificado |
 | REQ-DER-002 | Biblioteca y vanos invalidan derivados relacionados | R-003 | D-008 | SPEC-002 | `derivedStateContract.test.mjs` | G3 | Verificado |
 | REQ-EXP-001 | Ningún INP se exporta con datos stale | R-003/R-007 | D-009 | SPEC-002 | `exportPolicy.test.mjs` + smoke CCX | G3 | Verificado |
-| REQ-DOM-001 | Cadenetas son piezas reales y se metran | R-005 | legado D-020 | SPEC-R3 | criterios de spec R3 | G4 | Pendiente |
+| REQ-DOM-001 | Cadenetas son piezas reales y se metran | R-005 | legado D-020 | SPEC-R3 | cierres `SPEC-R3-A/B` + pruebas `r3Cadenetas*`; metrado pendiente | G4 | En curso |
 | REQ-DOM-002 | R4–R8 completan catálogo, roles, encuentros y checks | R-005 | legado D-016–033 | ROADMAP-R1-R8 | cierres R4–R8 | G4 | Pendiente |
 | REQ-TST-001 | Existe fixture con planta y perfiles distintos | R-006 | — | SPEC-003 | fixture independiente auditado | G4 | Pendiente |
 | REQ-TST-002 | Existe fixture guardado con `roofPlanes` | R-006 | — | SPEC-003 | roundtrip persistido | G4 | Pendiente |

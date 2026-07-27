@@ -8,13 +8,13 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-002 | Pérdida de techumbre al importar legacy | 5 | 5 | 25 | Esquema, migración y roundtrip `casa-L`; G2 | Mitigado |
 | R-003 | Exportar derivados obsoletos como válidos | 4 | 5 | 20 | Registro central de invalidación y hard gate; G3 | Mitigado |
 | R-004 | Corrupción por guardado interrumpido | 3 | 5 | 15 | Escritura atómica, backups y ensayo de kill; G6 | Abierto |
-| R-005 | Reglas constructivas incompletas producen planos incorrectos | 4 | 4 | 16 | R3–R8, catálogo y fixtures independientes; G4 | Abierto |
+| R-005 | Reglas constructivas incompletas producen planos incorrectos | 4 | 4 | 16 | R3-A/B: 493 piezas visibles y 14 DXF 0/0; INP/metrado y 6 piezas <30 mm siguen en R3-C/D/R7; G4 | Abierto |
 | R-006 | Fixture duplicado oculta regresiones geométricas | 5 | 4 | 20 | Fixture con planta y perfiles distintos; G4 | Abierto |
 | R-007 | INP sintácticamente válido pero estructuralmente inválido | 3 | 5 | 15 | Validación previa y smoke CCX; G5 | Abierto |
 | R-008 | Permisos Tauri demasiado amplios | 3 | 5 | 15 | Capabilities mínimas, CSP y revisión; G6 | Abierto |
 | R-009 | Dependencia de macOS fuera de soporte | 5 | 4 | 20 | Offline, mínimo privilegio y riesgo aceptado; renovar hardware para eliminar | Aceptado |
 | R-010 | Rendimiento insuficiente en 8 GB/CPU dual core | 4 | 3 | 12 | Presupuestos medidos, lazy loading y perfiles; G7 | Abierto |
-| R-011 | Herramientas no reproducibles entre sesiones | 4 | 4 | 16 | Node/Rust/Python fijados y doctor; G0/G1 | Abierto |
+| R-011 | Herramientas no reproducibles entre sesiones | 4 | 4 | 16 | Node/Rust/Python fijados y doctor; registrador debe aceptar `SPEC-Rn`; G0/G1 | Abierto |
 | R-012 | Errores sólo visibles en consola | 4 | 3 | 12 | Error boundary, mensajes accionables y log local; G7 | Abierto |
 | R-013 | Integrar o redistribuir CCX sin revisar licencia/dependencias | 2 | 4 | 8 | v1 usa ruta instalada; auditoría antes de bundling | Abierto |
 | R-014 | Cambios heredados se pierden durante la migración | 3 | 5 | 15 | 187 hashes verificados contra origen; SPEC-000 | Mitigado |

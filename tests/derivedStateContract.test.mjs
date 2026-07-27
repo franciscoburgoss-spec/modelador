@@ -173,6 +173,14 @@ test('niveles y configuración de techumbre invalidan; fundaciones se resuelven 
   assert.equal(useModelStore.getState().model.roofSystems[0].stale, true);
 });
 
+test('cambiar el alto de placa invalida framing porque mueve las cadenetas, además del OSB', () => {
+  useModelStore.getState().setOsbDefaults({ panelHeight: 3000 });
+  const walls = useModelStore.getState().model.elements
+    .filter((element) => element.type === 'wall');
+  assert.ok(walls.every((wall) => wall.studsStale === true));
+  assert.ok(walls.every((wall) => wall.osbStale === true));
+});
+
 test('la regeneración de techumbre sólo limpia stale con resultado completo', () => {
   useModelStore.getState().updateRoofSystem('roof-1', { slopePercent: 35 });
   const before = useModelStore.getState().model;

@@ -73,7 +73,7 @@ export const MUTATION_DEPENDENCIES = Object.freeze({
   }),
   osbDefaults: Object.freeze({
     scope: 'all',
-    derivatives: Object.freeze(['wallOsb'])
+    derivatives: Object.freeze(['wallFraming', 'wallOsb'])
   }),
   metalconDefaults: Object.freeze({
     scope: 'all',

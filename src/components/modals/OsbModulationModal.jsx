@@ -78,11 +78,12 @@ export default function OsbModulationModal({ open, onClose }) {
     canvas.style.height = `${height}px`;
     const ctx = canvas.getContext('2d');
     ctx.scale(2, 2);
-    drawOsbLayoutElevation(ctx, layout, width, height, { gap });
-  }, [layout, gap]);
+    drawOsbLayoutElevation(ctx, { ...layout, studs: wall?.studs || [] }, width, height, { gap });
+  }, [layout, gap, wall?.studs]);
 
   const canGenerate = wall && layout.resolved;
   const totalPanels = layout.courses?.reduce((a, c) => a + c.panels.length, 0) ?? 0;
+  const totalNoggings = wall?.studs?.filter((piece) => piece.role === 'nogging').length ?? 0;
 
   const handleGenerate = () => {
     if (!canGenerate) return;
@@ -207,7 +208,7 @@ export default function OsbModulationModal({ open, onClose }) {
           {layout.resolved && (
             <p className="text-xs text-[#5a5a55]">
               {layout.numCourses} curso(s) · {totalPanels} placas · ancho total {(layout.length / 1000).toFixed(2)}m
-              {layout.numCourses > 1 ? ` · ${layout.noggings?.length ?? 0} cadeneta(s) en la junta horizontal` : ''}
+              {layout.numCourses > 1 ? ` · ${totalNoggings} cadeneta(s) en la junta horizontal` : ''}
             </p>
           )}
 

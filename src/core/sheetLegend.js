@@ -14,7 +14,7 @@ const SYMBOLS = {
     ['K', 'Jamba (king)'], ['J', 'Jamba bajo dintel (jack)'],
     ['C', 'Muchacho (bajo antepecho)'], ['CS', 'Puntal (sobre dintel)'],
     ['E', 'Cabezal (montante extremo)'], ['T', 'Cabezal (esquina/T)'], ['R', 'Refuerzo de pilar'],
-    ['D', 'Dintel'], ['A', 'Alfeizar'],
+    ['D', 'Dintel'], ['A', 'Alfeizar'], ['CD', 'Cadeneta'],
     ['SOLERAS-APOYO', 'Solera de apoyo de techumbre (referencia, se despieza en lamina de cerchas)'],
     ['EJES', 'Eje estructural (linea centro)'],
     ['NIVELES', 'Nivel Z de proyecto (linea segmentada)'],

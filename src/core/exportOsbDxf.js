@@ -56,7 +56,7 @@ function wallOsbReferenceEntities(xOffset, length, wallHeight, headers) {
  * eje. Devuelve `{entities, height}` — `height` sirve para calcular el extent (ver
  * computeOsbViewExtent) y para saber si hubo tabla en absoluto (rows vacío → sin tabla). */
 function osbScheduleTableEntities(xOffset, wall) {
-  const rows = buildOsbPieceScheduleRows(wall.osbCourses, wall.osbNoggings);
+  const rows = buildOsbPieceScheduleRows(wall.osbCourses);
   if (!rows.length) return { entities: [], height: 0 };
   // Con optimización de despuntes corrida (core/osbNesting.js) cada pieza sabe de qué placa madre
   // sale: se agrega la columna PLACA para que el instalador siga el plan de corte desde el plano.
@@ -76,7 +76,7 @@ export function wallOsbElevationEntities(wall, grid, layout, xOffset, axesInfo, 
   entities.push(text('ETIQUETAS', xOffset, wallHeight + LABEL_OFFSET_Y, TEXT_HEIGHT_TITLE, getWallDisplayName(wall, grid)));
   entities.push(...axisEntities(xOffset, wallHeight, axesInfo));
   entities.push(...levelEntities(xOffset, length, wallHeight, wallBottomElevation, grid));
-  entities.push(...osbEntities(xOffset, length, wallHeight, wall.osbCourses, gap, wall.osbNoggings));
+  entities.push(...osbEntities(xOffset, length, wallHeight, wall.osbCourses, gap, wall.studs));
   entities.push(...osbScheduleTableEntities(xOffset, wall).entities);
   return entities;
 }
