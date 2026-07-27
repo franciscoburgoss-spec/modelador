@@ -6,5 +6,6 @@ conserva completa porque contiene mediciones, alternativas descartadas y criteri
 Los cuatro cortes R3 están cerrados en `sessions/close-SPEC-R3-*.md`.
 Los tres cortes de `SPEC-R4-finding-catalog.md` están cerrados en
 `sessions/close-SPEC-R4-*.md`. Los tres cortes de `SPEC-R5-wall-types.md` están cerrados en
-`sessions/close-SPEC-R5-*.md`. R6 es la siguiente unidad y debe redactarse desde
-`domain/ROADMAP-R1-R8.md` usando `templates/SPEC.md` antes de modificar código.
+`sessions/close-SPEC-R5-*.md`. `SPEC-R6-wall-junctions.md` gobierna la unidad activa en tres
+cortes: A (frame/topología), B (pilar/invalidation) y C (envolvente OSB). R7–R8 se redactarán
+desde `domain/ROADMAP-R1-R8.md` usando `templates/SPEC.md` antes de modificar código.

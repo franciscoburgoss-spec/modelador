@@ -9,15 +9,15 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — encuentros entre muros |
+| Etapa | Reglas de dominio — encuentros L/T y traslape OSB |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; siguiente unidad a gobernar: R6 |
+| Spec activa | `specs/domain/SPEC-R6-wall-junctions.md` — corte A |
 | Suite oficial | 625/625; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 656,06 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; corresponde diagnosticar y redactar la spec R6 antes de implementar |
+| Bloqueo actual | Ninguno; el corte A puede implementar frame local y topología pura |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -60,7 +60,10 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
 - R5-A/B/C: cerrados; contrato/migración, CRUD/asignación con historial, invalidación central,
   modulación efectiva, `osbGap` por muro, nesting por rol y coordinación UI completos.
-- R6–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
+- R6: spec gobernada en tres cortes. La preparación midió 23 bandas L, 35 T, 24 coincidencias
+  paralelas falsas, 4 coincidencias sin traslape Z y 19 respaldos anfitriones ausentes en las 26 T
+  extremo-cuerpo de `casa-L`; A (topología), B (pilar/invalidation) y C (OSB) pendientes.
+- R7–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
 - R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
   detectadas en `casa-L`; R3-A no inventa una regla de absorción.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
@@ -84,5 +87,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Preparar y gobernar R6 desde `domain/ROADMAP-R1-R8.md`: diagnóstico reproducible de encuentros
-L/T, alcance, exclusiones y aceptación verificable antes de modificar código.
+El corte A de `SPEC-R6` debe implementar el frame local canónico, la topología global por bandas Z
+y la prioridad determinista de traslape, sin adoptar aún el resultado en Metalcon, store u OSB.
