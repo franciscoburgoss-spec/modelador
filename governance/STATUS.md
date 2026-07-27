@@ -9,22 +9,19 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Seguridad e integridad del modelo |
-| Código en este repositorio | Baseline migrado; 187 archivos inventariados por SHA-256 |
-| Spec activa | `SPEC-001-model-security-integrity.md` |
-| Suite oficial | 518/518; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 611,54 kB |
+| Etapa | Invalidación y confiabilidad de salidas |
+| Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
+| Spec activa | `SPEC-002-derived-state-and-exports.md` |
+| Suite oficial | 533/533; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 621,69 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Fórmulas ejecutables e importación con pérdida o modelo inválido |
+| Bloqueo actual | Mutaciones dejan derivados obsoletos y una salida estructural puede omitir su guarda |
 
 ## Hallazgos bloqueantes confirmados
 
 | ID | Severidad | Hallazgo | Spec |
 |---|---|---|---|
-| F-001 | P0 | Fórmulas ejecutan JavaScript mediante `new Function` | SPEC-001 |
-| F-002 | P1 | Importar un modelo heredado elimina `roofSystems` válidos | SPEC-001 |
-| F-003 | P1 | Se acepta `{}` como modelo y se rompe el contrato del store | SPEC-001 |
 | F-004 | P1 | Parámetros, biblioteca y eliminación de vanos no invalidan derivados | SPEC-002 |
 | F-005 | P1 | Exportación de cercha CalculiX omite la guarda de stale | SPEC-002 |
 | F-006 | P1 | Persistencia local puede fallar sin recuperación ni error visible | SPEC-004 |
@@ -34,14 +31,17 @@
 | ID | Resultado | Evidencia |
 |---|---|---|
 | F-007 | Existen scripts oficiales y `npm run validate` es la puerta única | `sessions/close-SPEC-000.md` |
+| F-001 | Fórmulas usan un parser aritmético cerrado, sin evaluación de JavaScript | `sessions/close-SPEC-001.md` |
+| F-002 | `roofSystems` se preserva y `roofPlanes` declara precedencia sin pérdida | `sessions/close-SPEC-001.md` |
+| F-003 | El modelo se migra y valida antes de cualquier commit al store | `sessions/close-SPEC-001.md` |
 
 ## Fases
 
 | Fase | Entregable | Estado |
 |---|---|---|
 | 0 | Repositorio y entorno reproducibles | Completada |
-| 1 | Seguridad e integridad de importación | En preparación |
-| 2 | Invalidación, reglas y salidas verificadas | No iniciada |
+| 1 | Seguridad e integridad de importación | Completada |
+| 2 | Invalidación, reglas y salidas verificadas | En preparación |
 | 3 | Persistencia y recuperación nativas | No iniciada |
 | 4 | Aplicación Tauri y CalculiX integrado | No iniciada |
 | 5 | UX, rendimiento y observabilidad local | No iniciada |
@@ -65,5 +65,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-`SPEC-001` sólo puede cerrarse con parser de expresiones cerrado, validación transaccional,
-versionado/migraciones secuenciales y roundtrip de `casa-L` sin pérdida de `roofSystems`.
+`SPEC-002` sólo puede cerrarse con invalidación central para todos los mutadores alcanzados y
+bloqueo uniforme de cualquier exportación estructural con datos obsoletos.

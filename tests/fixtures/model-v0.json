@@ -1,0 +1,26 @@
+{
+  "grid": {
+    "xAxes": [
+      {
+        "id": "x1",
+        "label": "1",
+        "position": 0
+      }
+    ],
+    "yAxes": [],
+    "zLevels": []
+  },
+  "elements": [
+    {
+      "id": "wall-legacy",
+      "type": "wall"
+    }
+  ],
+  "roofSystems": [
+    {
+      "id": "roof-legacy",
+      "wallLowId": "wall-legacy",
+      "wallHighId": "wall-legacy"
+    }
+  ]
+}

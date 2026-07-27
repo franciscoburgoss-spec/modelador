@@ -38,6 +38,8 @@ npm run validate   # formato, lint, tests, cobertura, build y validadores
 ```
 
 La instalación de desarrollo se documenta en [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
+El contrato JSON vigente y sus migraciones se documentan en
+[`docs/MODEL_FORMAT.md`](docs/MODEL_FORMAT.md).
 
 ## Estructura
 

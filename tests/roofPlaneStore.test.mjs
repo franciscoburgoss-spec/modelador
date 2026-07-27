@@ -39,30 +39,33 @@ test('removeRoofPlane elimina y limpia selección', () => {
   assert.equal(m.selectedRoofPlaneId, null);
 });
 
-test('loadModel con roofSystems legacy marca aviso y no los carga', () => {
+test('loadModel con roofSystems legacy los preserva y emite aviso tipado', () => {
   const { loadModel } = useModelStore.getState();
-  loadModel({
+  const result = loadModel({
     grid: { xAxes: [], yAxes: [], zLevels: [] },
     elements: [],
     roofSystems: [{ id: 999, wallLowId: 1, wallHighId: 2 }]
   });
   const m = useModelStore.getState().model;
-  assert.equal(m.roofSystems.length, 0, 'no carga la techumbre vieja');
-  assert.equal(m._legacyRoofSystemsDetected, true, 'marca el aviso');
+  assert.equal(result.ok, true);
+  assert.equal(m.roofSystems.length, 1, 'preserva la techumbre heredada');
+  assert.equal(useModelStore.getState().modelImportFeedback.severity, 'warning');
 });
 
-test('dismissLegacyRoofWarning apaga el aviso', () => {
-  const { loadModel, dismissLegacyRoofWarning } = useModelStore.getState();
+test('dismissModelImportFeedback apaga el aviso sin mutar el modelo', () => {
+  const { loadModel, dismissModelImportFeedback } = useModelStore.getState();
   loadModel({ grid: { xAxes: [], yAxes: [], zLevels: [] }, elements: [], roofSystems: [{ id: 1 }] });
-  assert.equal(useModelStore.getState().model._legacyRoofSystemsDetected, true);
-  dismissLegacyRoofWarning();
-  assert.equal(useModelStore.getState().model._legacyRoofSystemsDetected, false);
+  const model = useModelStore.getState().model;
+  assert.equal(useModelStore.getState().modelImportFeedback.severity, 'warning');
+  dismissModelImportFeedback();
+  assert.equal(useModelStore.getState().modelImportFeedback, null);
+  assert.equal(useModelStore.getState().model, model);
 });
 
-test('loadModel sin roofSystems no marca aviso', () => {
+test('loadModel v0 sin roofSystems informa sólo la migración', () => {
   const { loadModel } = useModelStore.getState();
   loadModel({ grid: { xAxes: [], yAxes: [], zLevels: [] }, elements: [] });
-  assert.equal(useModelStore.getState().model._legacyRoofSystemsDetected, false);
+  assert.equal(useModelStore.getState().modelImportFeedback.code, 'LEGACY_MODEL_MIGRATED');
 });
 
 // ★ B4.7.4c — edición/selección del faldón desde el lienzo

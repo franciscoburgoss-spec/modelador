@@ -12,6 +12,9 @@ import { migrateFoundations, migrateFoundationSections } from '../core/foundatio
 import { planWallSplit, planWallMerge, CUT_AXIS_PLACEHOLDER } from '../core/wallSplitMerge.js';
 import { createProjectInfo, normalizeProjectInfo, nextRevisionLetter } from '../core/projectInfo.js';
 import {
+  CURRENT_MODEL_VERSION, ModelImportError, prepareModelImport, prepareModelJsonImport
+} from '../core/modelSchema.js';
+import {
   invalidateDerived, applyWallPatchFlags, patchInvalidatesWall, invalidateSystemsForWall
 } from '../core/derivedInvalidation.js';
 
@@ -20,16 +23,11 @@ function maybeGlobalInvalidate(model, patch, field) {
   return patch && Object.hasOwn(patch, field) ? invalidateDerived(model, 'all') : model;
 }
 
-// Compatibilidad hacia atrás: un JSON guardado antes de que existiera una clave nueva
-// (ej. "materials", "roofSystems") no la trae. Sin estos defaults, la clave quedaba
-// `undefined` y reventaba silenciosamente al usarla (`[...undefined]`).
+// Normalización posterior a la validación/migración pura de core/modelSchema.js.
+// Los defaults completan claves opcionales, pero nunca sustituyen ni descartan datos importados.
 function mergeLoadedModel(data) {
-  // ★ B4.7: la techumbre por sistemas (roofSystems) fue reemplazada por faldones (roofPlanes).
-  // Un modelo guardado con el formato anterior conserva su roofSystems, pero ya NO se renderiza:
-  // se marca legacy para avisar al usuario una vez y se vacía el campo activo. La techumbre se
-  // remodela con la herramienta de faldones.
-  const hasLegacyRoofSystems = Array.isArray(data.roofSystems) && data.roofSystems.length > 0;
   const merged = {
+    modelVersion: CURRENT_MODEL_VERSION,
     projectParams: [],
     dimensions: [],
     roofSystems: [],
@@ -39,10 +37,8 @@ function mergeLoadedModel(data) {
     // combinado desde el menú sin abrir el modal). null hasta que el usuario guarde uno.
     metalconDefaults: null,
     ...data,
-    // ★ B4.7: el formato viejo de techumbre no se carga como activo; se descarta del render.
-    roofSystems: [],
+    roofSystems: Array.isArray(data.roofSystems) ? data.roofSystems : [],
     roofPlanes: Array.isArray(data.roofPlanes) ? data.roofPlanes : [],
-    _legacyRoofSystemsDetected: hasLegacyRoofSystems,
     // ★ Sesión 22: datos de proyecto del cajetín — normalizados para que un modelo guardado
     // antes de la sesión no llegue sin `revisiones` y reviente al listarlas.
     projectInfo: normalizeProjectInfo(data.projectInfo),
@@ -54,6 +50,47 @@ function mergeLoadedModel(data) {
     })()
   };
   return merged;
+}
+
+function normalizeImportError(error) {
+  if (error instanceof ModelImportError) return error;
+  return new ModelImportError(
+    'MODEL_IMPORT_FAILED',
+    error instanceof Error ? error.message : 'No se pudo importar el modelo.'
+  );
+}
+
+function importErrorResult(set, error) {
+  const typedError = normalizeImportError(error);
+  set({
+    modelImportFeedback: {
+      severity: 'error',
+      code: typedError.code,
+      message: typedError.message,
+      details: typedError.details
+    }
+  });
+  return { ok: false, error: typedError };
+}
+
+function commitPreparedImport(set, prepared) {
+  const feedback = prepared.warnings.length > 0
+    ? {
+        severity: 'warning',
+        code: prepared.warnings[0].code,
+        message: prepared.warnings.map((warning) => warning.message).join(' '),
+        details: prepared.warnings
+      }
+    : null;
+  set((state) => ({
+    ...withHistory(state, mergeLoadedModel(prepared.model)),
+    modelImportFeedback: feedback
+  }));
+  return {
+    ok: true,
+    warnings: prepared.warnings,
+    appliedMigrations: prepared.appliedMigrations
+  };
 }
 
 const STORAGE_KEY = 'modelador-structural-v1';
@@ -101,6 +138,7 @@ function getDefaultLibrary() {
 
 function emptyModel() {
   return {
+    modelVersion: CURRENT_MODEL_VERSION,
     grid: { xAxes: [], yAxes: [], zLevels: [] },
     elements: [],
     library: getDefaultLibrary(),
@@ -235,6 +273,7 @@ export const useModelStore = create((set, get) => ({
   view: { scale: 0.04, offsetX: -3000, offsetY: -2000, showAxes: true },
   past: [],
   future: [],
+  modelImportFeedback: null,
 
   // ---- deshacer / rehacer ----
   undo: () => set((s) => {
@@ -473,8 +512,7 @@ export const useModelStore = create((set, get) => ({
   selectRoofPlane: (id) => set((s) => ({
     model: { ...s.model, selectedRoofPlaneId: id, selectedElementId: null, selectedRoofSystemId: null }
   })),
-  // Descarta el aviso de techumbre legacy una vez que el usuario lo vio.
-  dismissLegacyRoofWarning: () => set((s) => ({ model: { ...s.model, _legacyRoofSystemsDetected: false } })),
+  dismissModelImportFeedback: () => set({ modelImportFeedback: null }),
 
 
   // ---- ejes / niveles ----
@@ -810,23 +848,31 @@ export const useModelStore = create((set, get) => ({
     localStorage.setItem(STORAGE_KEY, JSON.stringify(get().model));
   },
   loadModel: (incoming) => {
-    if (incoming && typeof incoming === 'object') {
-      set((s) => withHistory(s, mergeLoadedModel(incoming)));
-      return true;
+    if (incoming !== undefined) {
+      try {
+        return commitPreparedImport(set, prepareModelImport(incoming));
+      } catch (error) {
+        return importErrorResult(set, error);
+      }
     }
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return false;
+    const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
+    if (!raw) {
+      return {
+        ok: false,
+        error: new ModelImportError('MODEL_NOT_FOUND', 'No existe un modelo guardado.')
+      };
+    }
     try {
-      const data = JSON.parse(raw);
-      // ★ Fix: un proyecto guardado antes de que existiera una clave nueva de librería (ej.
-      // "materials") no la trae en su JSON. Sin este merge, library.materials quedaba
-      // `undefined` y agregar un material rompía silenciosamente (`[...undefined]` revienta
-      // dentro de addLibraryItem, sin mensaje de error visible para el usuario).
-      set((s) => withHistory(s, mergeLoadedModel(data)));
-      return true;
-    } catch (err) {
-      console.error('Modelo corrupto en localStorage:', err);
-      return false;
+      return commitPreparedImport(set, prepareModelJsonImport(raw));
+    } catch (error) {
+      return importErrorResult(set, error);
+    }
+  },
+  importModelText: (raw) => {
+    try {
+      return commitPreparedImport(set, prepareModelJsonImport(raw));
+    } catch (error) {
+      return importErrorResult(set, error);
     }
   },
   exportModelToFile: () => {
@@ -841,13 +887,12 @@ export const useModelStore = create((set, get) => ({
   importModelFromFile: (file) => {
     const reader = new FileReader();
     reader.onload = (ev) => {
-      try {
-        const data = JSON.parse(String(ev.target.result));
-        set((s) => withHistory(s, mergeLoadedModel(data)));
-      } catch (err) {
-        console.error('JSON inválido al importar:', err);
-      }
+      get().importModelText(String(ev.target.result));
     };
+    reader.onerror = () => importErrorResult(
+      set,
+      new ModelImportError('FILE_READ_FAILED', 'No se pudo leer el archivo seleccionado.')
+    );
     reader.readAsText(file);
   }
 }));

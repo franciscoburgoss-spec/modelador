@@ -33,6 +33,7 @@ import { useModelStore } from './store/useModelStore.js';
 import { useKeyboardShortcuts } from './core/useKeyboardShortcuts.js';
 import { useAutosave } from './core/useAutosave.js';
 import AutosaveBanner from './components/AutosaveBanner.jsx';
+import ModelImportBanner from './components/ModelImportBanner.jsx';
 
 export default function App() {
   const [activeModal, setActiveModal] = useState(null); // 'wall' | 'column' | 'beam' | 'opening' | 'foundation' | 'grid' | 'audit' | 'validate' | 'viewer3d' | { name, ... } | null
@@ -51,6 +52,8 @@ export default function App() {
   const currentLevel = zLevels.find(z => z.id === currentZLevelId);
   const layout = useModelStore((s) => s.layout);
   const loadModel = useModelStore((s) => s.loadModel);
+  const modelImportFeedback = useModelStore((s) => s.modelImportFeedback);
+  const dismissModelImportFeedback = useModelStore((s) => s.dismissModelImportFeedback);
 
   useKeyboardShortcuts();
 
@@ -87,6 +90,7 @@ export default function App() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <AutosaveBanner pending={autosave.pending} onRestore={autosave.restore} onDismiss={autosave.dismiss} />
+      <ModelImportBanner feedback={modelImportFeedback} onDismiss={dismissModelImportFeedback} />
       <div className="flex items-center justify-between border-b border-[#e4e4e0]">
         <MenuBar onOpenModal={setActiveModal} canvasSize={canvasSize} />
         <div className="flex items-center gap-2 px-3">

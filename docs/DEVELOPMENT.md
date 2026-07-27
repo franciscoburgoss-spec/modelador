@@ -26,13 +26,13 @@ ni reportes. `npm run validate` no abre interfaces ni depende de rutas personale
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite heredada oficial, 518 pruebas |
+| `npm test` | suite oficial, 533 pruebas |
 | `npm run test:lab` | laboratorio de faldones, 35 pruebas |
 | `npm run test:coverage` | umbrales separados para core y store |
 | `npm run lint` | ESLint sobre JavaScript, JSX y scripts |
 | `npm run format:check` | UTF-8, LF, whitespace, newline y JSON válido |
 | `npm run build` | bundle Vite de producción |
-| `npm run verify:migration` | presencia e integridad del baseline SHA-256 |
+| `npm run verify:migration` | hashes originales y cambios posteriores registrados por spec |
 | `npm run verify:artifacts` | ausencia de artefactos generados en el inventario |
 | `npm run validate` | todas las puertas anteriores y gobernanza |
 
@@ -56,9 +56,9 @@ reporta desde ahora para que su ausencia nunca sea silenciosa.
 
 ## Baselines visibles
 
-- Suite: 518/518; laboratorio: 35/35.
-- Cobertura de líneas: core 90,70 %; store 54,75 %.
-- Bundle inicial: 611,54 kB raw / 188,67 kB gzip.
+- Suite: 533/533; laboratorio: 35/35.
+- Cobertura de líneas: core 90,48 %; store 57,80 %.
+- Bundle inicial: 621,69 kB raw / 192,29 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

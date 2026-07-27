@@ -111,7 +111,10 @@
       "path": "src/App.jsx",
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 11689,
+      "workspaceSha256": "2a7a2ca00dc79ec2609d15bbfce2f4a29ada7b5e9af78a0e0f43c58660f860cf",
+      "changedBy": "SPEC-001"
     },
     {
       "path": "src/components/AutosaveBanner.jsx",
@@ -567,7 +570,10 @@
       "path": "src/core/projectParams.js",
       "bytes": 4534,
       "sha256": "95e4c804f5a73605eaa39a3f2ce65c7014b14077e94ff6a7072048b2b322de59",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 5037,
+      "workspaceSha256": "12f8c69d33275a6bbb98d94ecc0b99b3507f54c645a1a44cb2e750451f17f1b6",
+      "changedBy": "SPEC-001"
     },
     {
       "path": "src/core/projection.js",
@@ -789,7 +795,10 @@
       "path": "src/store/useModelStore.js",
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 43042,
+      "workspaceSha256": "32f22730b8429f15ca872b12b690a677e0c369c02a036d6fa14d23db0f4adf6f",
+      "changedBy": "SPEC-001"
     },
     {
       "path": "tailwind.config.js",
@@ -1005,7 +1014,10 @@
       "path": "tests/roofPlaneStore.test.mjs",
       "bytes": 4188,
       "sha256": "d8e9d073b69d07ad13a0ffcfffa1aa86b37cbcab1d82978e99e8c7d8b4876d2a",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 4400,
+      "workspaceSha256": "d2ce41115751c76553c93b1a640a35e1af8d3817eeb71118315f0a7be62b2754",
+      "changedBy": "SPEC-001"
     },
     {
       "path": "tests/roofPlaneSupportLedger.test.mjs",

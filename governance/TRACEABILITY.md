@@ -8,10 +8,10 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-GOV-001 | Estado, decisiones, riesgos y specs validados | R-011 | D-015 | SPEC-000 | `make governance` + cierre SPEC-000 | G0 | Verificado |
 | REQ-MIG-001 | Fuentes y fixtures se migran sin pérdida ni artefactos | R-014 | D-015 | SPEC-000 | `MIGRATION_MANIFEST.json` + comparación con origen | G1 | Verificado |
 | REQ-TST-000 | Existe una puerta única de tests, cobertura, lint y build | R-011/R-015 | D-003/D-016 | SPEC-000 | `npm run validate` + cierre SPEC-000 | G1 | Verificado |
-| REQ-SEC-001 | Ninguna fórmula puede ejecutar JavaScript | R-001 | D-005 | SPEC-001 | corpus de payloads y reversión | G2 | Pendiente |
-| REQ-DATA-001 | Modelo inválido no modifica el estado activo | R-002 | D-006 | SPEC-001 | importación `{}` y JSON truncado | G2 | Pendiente |
-| REQ-DATA-002 | Modelos declaran versión y migran secuencialmente | R-002 | D-006 | SPEC-001 | fixtures por versión + idempotencia | G2 | Pendiente |
-| REQ-DATA-003 | `roofSystems` heredados se preservan | R-002 | D-007 | SPEC-001 | roundtrip `casa-L` conserva 2 | G2 | Pendiente |
+| REQ-SEC-001 | Ninguna fórmula puede ejecutar JavaScript | R-001 | D-005 | SPEC-001 | corpus adversario + 92 fórmulas de fixtures + reversión | G2 | Verificado |
+| REQ-DATA-001 | Modelo inválido no modifica el estado activo | R-002 | D-006 | SPEC-001 | `{}`, JSON truncado y versión futura transaccionales | G2 | Verificado |
+| REQ-DATA-002 | Modelos declaran versión y migran secuencialmente | R-002 | D-006 | SPEC-001 | fixtures v0/v1 + idempotencia | G2 | Verificado |
+| REQ-DATA-003 | `roofSystems` heredados se preservan | R-002 | D-007 | SPEC-001 | roundtrip `casa-L` conserva 2 y precedencia visible | G2 | Verificado |
 | REQ-DER-001 | Parámetros invalidan todos sus derivados | R-003 | D-008 | SPEC-002 | contrato de mutadores | G3 | Pendiente |
 | REQ-DER-002 | Biblioteca y vanos invalidan derivados relacionados | R-003 | D-008 | SPEC-002 | pruebas store por acción | G3 | Pendiente |
 | REQ-EXP-001 | Ningún INP se exporta con datos stale | R-003/R-007 | D-009 | SPEC-002 | matriz de exportadores | G3 | Pendiente |

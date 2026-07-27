@@ -87,13 +87,19 @@ async function verifyCurrent({ compareSource = null } = {}) {
   const manifest = await loadManifest();
   const errors = [];
   let fixtures = 0;
+  let sourceIdentical = 0;
+  let registeredChanges = 0;
 
   for (const expected of manifest.files) {
     try {
       const current = await digest(root, expected.path);
-      if (current.bytes !== expected.bytes || current.sha256 !== expected.sha256) {
-        errors.push(`${expected.path}: el archivo migrado difiere del hash de origen`);
+      const expectedBytes = expected.workspaceBytes ?? expected.bytes;
+      const expectedSha256 = expected.workspaceSha256 ?? expected.sha256;
+      if (current.bytes !== expectedBytes || current.sha256 !== expectedSha256) {
+        errors.push(`${expected.path}: el archivo difiere del hash registrado`);
       }
+      if (expected.workspaceSha256) registeredChanges += 1;
+      else sourceIdentical += 1;
       if (expected.kind === 'fixture') fixtures += 1;
       if (compareSource) {
         const source = await digest(compareSource, expected.path);
@@ -113,14 +119,49 @@ async function verifyCurrent({ compareSource = null } = {}) {
   }
 
   const suffix = compareSource ? ' y origen comparados byte a byte' : '';
-  console.log(`Migración válida: ${manifest.files.length} archivos, ${fixtures} fixtures${suffix}.`);
+  console.log(
+    `Migración válida: ${manifest.files.length} archivos `
+    + `(${sourceIdentical} idénticos al origen, ${registeredChanges} cambios posteriores registrados), `
+    + `${fixtures} fixtures${suffix}.`
+  );
 }
 
-const [command, argument] = process.argv.slice(2);
+async function recordWorkspaceChanges(specId, paths) {
+  if (!specId || !/^SPEC-\d{3}$/.test(specId) || paths.length === 0) {
+    throw new Error(
+      'Uso: node scripts/migration-manifest.mjs --record SPEC-xxx <ruta> [ruta...]'
+    );
+  }
+  const manifest = await loadManifest();
+  const entries = new Map(manifest.files.map((entry) => [entry.path, entry]));
+
+  for (const relative of paths) {
+    const expected = entries.get(relative);
+    if (!expected) {
+      throw new Error(`${relative}: no pertenece al baseline migrado`);
+    }
+    const current = await digest(root, relative);
+    if (current.bytes === expected.bytes && current.sha256 === expected.sha256) {
+      delete expected.workspaceBytes;
+      delete expected.workspaceSha256;
+      delete expected.changedBy;
+    } else {
+      expected.workspaceBytes = current.bytes;
+      expected.workspaceSha256 = current.sha256;
+      expected.changedBy = specId;
+    }
+  }
+
+  await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+  console.log(`${paths.length} cambio(s) de ${specId} registrados sin alterar los hashes de origen.`);
+}
+
+const [command, argument, ...rest] = process.argv.slice(2);
 
 try {
   if (command === '--create') await createManifest(argument);
   else if (command === '--compare') await verifyCurrent({ compareSource: argument });
+  else if (command === '--record') await recordWorkspaceChanges(argument, rest);
   else if (!command) await verifyCurrent();
   else throw new Error(`Opción desconocida: ${command}`);
 } catch (error) {
