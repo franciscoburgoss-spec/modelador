@@ -71,7 +71,7 @@ function countInpCards(inp) {
   return { nodes, elements };
 }
 
-test('R3-A: casa-L genera cadenetas reales en los mismos 40 muros y limpia el subproducto OSB', () => {
+test('R6-B: casa-L rebasa cadenetas reales con los pilares L/T y limpia el subproducto OSB', () => {
   const oldWalls = casaL.elements.filter((element) => element.type === 'wall');
   assert.equal(oldWalls.filter((wall) => wall.osbNoggings?.length > 0).length, 40);
   assert.equal(oldWalls.reduce((sum, wall) => sum + (wall.osbNoggings?.length || 0), 0), 67);
@@ -93,10 +93,10 @@ test('R3-A: casa-L genera cadenetas reales en los mismos 40 muros y limpia el su
     wallsWithNoggings.every((wall) => patches.get(wall.id).osbNoggings.length === 0),
     'wall.osbNoggings deja de almacenar las cadenetas'
   );
-  assert.equal(noggings.length, 493, 'los 67 tramos continuos se convierten en piezas');
+  assert.equal(noggings.length, 439, 'los 67 tramos continuos se reparten entre los nuevos apoyos L/T');
   assert.equal(
     noggings.reduce((sum, piece) => sum + piece.oMax - piece.oMin, 0),
-    134551,
+    136447,
     'largo neto exacto, descontando las caras reales de los montantes'
   );
 });
@@ -203,7 +203,7 @@ test('R3-A/D-021: computeOsbPanelLayout ignora explícitamente cualquier role no
   assert.deepEqual(guarded.courses, baseline.courses);
 });
 
-test('R3-C: casa-L conserva 1529 nodos y 1104 elementos al agregar cadenetas', () => {
+test('R6-B: casa-L rebasa CalculiX y las cadenetas siguen excluidas del INP', () => {
   const withNoggings = regenerateCasaL();
   const beforeR3 = {
     ...withNoggings,
@@ -219,7 +219,7 @@ test('R3-C: casa-L conserva 1529 nodos y 1104 elementos al agregar cadenetas', (
   const baselineInp = generateCalculix(beforeR3);
   const currentInp = generateCalculix(withNoggings);
 
-  assert.deepEqual(countInpCards(baselineInp), { nodes: 1529, elements: 1104 });
+  assert.deepEqual(countInpCards(baselineInp), { nodes: 1384, elements: 1046 });
   assert.deepEqual(countInpCards(currentInp), countInpCards(baselineInp));
   assert.doesNotMatch(currentInp, /\b(?:NaN|Infinity)\b/);
 });
@@ -234,7 +234,7 @@ test('R3-C: el kerf inicial del nesting es 5 mm y no lee osbDefaults.gap', () =>
   assert.doesNotMatch(source, /osbDefaults\?\.gap/);
 });
 
-test('R3-D: el metrado agrega 1473 piezas por perfil y rol sin alterar las 11 filas heredadas', () => {
+test('R6-B: el metrado rebasa 1361 piezas por perfil y rol sin alterar las 11 filas no framing', () => {
   const regenerated = regenerateCasaL();
   const withoutFraming = {
     ...regenerated,
@@ -254,15 +254,14 @@ test('R3-D: el metrado agrega 1473 piezas por perfil y rol sin alterar las 11 fi
   );
 
   const expected = new Map([
-    ['90CA085p — Montante respaldo', { count: 88, ml: 284.4 }],
-    ['90CA085p — Montante esquina/T', { count: 88, ml: 284.4 }],
+    ['90CA085p — Pilar conformado esquina/T', { count: 109, ml: 366.3 }],
     ['90CA085p — Montante bajo antepecho', { count: 66, ml: 44.85 }],
     ['90CA085p — Montante sobre dintel', { count: 189, ml: 224.15 }],
-    ['90CA085p — Montante extremo', { count: 2, ml: 6.2 }],
+    ['90CA085p — Montante extremo', { count: 7, ml: 18.1 }],
     ['90CA085p — Montante bajo dintel', { count: 86, ml: 210.7 }],
-    ['90CA085p — Montante jamba', { count: 69, ml: 245.7 }],
-    ['90CA085p — Cadeneta', { count: 493, ml: 134.551 }],
-    ['90CA085p — Montante relleno', { count: 338, ml: 1161.3 }],
+    ['90CA085p — Montante jamba', { count: 73, ml: 261.4 }],
+    ['90CA085p — Cadeneta', { count: 439, ml: 136.447 }],
+    ['90CA085p — Montante relleno', { count: 338, ml: 1155.4 }],
     ['92C085 — Dintel', { count: 43, ml: 61.9 }],
     ['92C085 — Antepecho', { count: 11, ml: 20.9 }]
   ]);
@@ -275,8 +274,8 @@ test('R3-D: el metrado agrega 1473 piezas por perfil y rol sin alterar las 11 fi
     assert.ok(Math.abs(row.ml - target.ml) < 1e-9, row.section);
     assert.equal(row.warnings, 0, row.section);
   }
-  assert.equal(takeoff.totalsByType.framing.count, 1473);
-  assert.ok(Math.abs(takeoff.totalsByType.framing.ml - 2679.051) < 1e-9);
+  assert.equal(takeoff.totalsByType.framing.count, 1361);
+  assert.ok(Math.abs(takeoff.totalsByType.framing.ml - 2500.147) < 1e-9);
 });
 
 test('R3-A: una puerta que cruza la junta conserva dos corridas y ninguna pieza atraviesa el vano', () => {

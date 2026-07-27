@@ -122,11 +122,20 @@ test('R1 A-7: las nueve letras de tabiquería traen su nombre chileno en la leye
   const content = legendEntities(l, 'framing', []).join('\n');
   for (const [tag, nombre] of [
     ['K', 'Jamba'], ['J', 'Jamba'], ['C', 'Muchacho'], ['CS', 'Puntal'],
-    ['E', 'Cabezal'], ['T', 'Cabezal'], ['R', 'Refuerzo de pilar'],
+    ['E', 'Cabezal'], ['T', 'Pilar conformado'], ['R', 'Montante respaldo (legacy)'],
     ['D', 'Dintel'], ['A', 'Alfeizar']
   ]) {
     assert.ok(content.includes(`${tag} = ${nombre}`), `falta traducción de ${tag}`);
   }
+});
+
+test('R6-B: la leyenda describe el pilar L/T y su costura en toda la altura', () => {
+  const l = sheetLayout('A1');
+  const content = legendEntities(l, 'framing', []).join('\n');
+  assert.ok(content.includes('T = Pilar conformado esquina/T'));
+  assert.ok(content.includes('R = Montante respaldo (legacy)'));
+  assert.ok(content.includes('tornillos N%%D10x3/4" @150 mm'));
+  assert.ok(content.includes('en zig-zag'));
 });
 
 test('R1 A-7: nada se trunca en A3 con la nomenclatura nueva — sin marcador "(...)"', () => {

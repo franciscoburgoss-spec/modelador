@@ -56,8 +56,8 @@ export const MUTATION_DEPENDENCIES = Object.freeze({
     derivatives: Object.freeze(['roofTruss'])
   }),
   wallTopology: Object.freeze({
-    scope: 'removedWalls',
-    derivatives: Object.freeze(['roofTruss'])
+    scope: 'wallTopology',
+    derivatives: Object.freeze(['wallFraming', 'wallOsb', 'roofTruss'])
   }),
   wallTypeConfig: Object.freeze({
     scope: 'wallType',
@@ -123,10 +123,23 @@ export const WALL_GEOMETRY_FIELDS = [
   'osbPanelWidth', 'osbPanelHeight', 'osbMinPanelWidth', 'osbGap'
 ];
 
+// Sólo estos campos cambian qué muros pueden formar una unión L/T. Vanos y
+// configuración de despiece permanecen locales por contrato.
+export const WALL_TOPOLOGY_FIELDS = [
+  'xStart', 'xEnd', 'yStart', 'yEnd',
+  'bottomZ', 'topZ',
+  'thickness', 'direction'
+];
+
 /** ¿El patch de updateElement toca geometría relevante? */
 export function patchInvalidatesWall(patch) {
   if (!patch) return false;
   return WALL_GEOMETRY_FIELDS.some((f) => Object.hasOwn(patch, f));
+}
+
+export function patchInvalidatesWallTopology(patch) {
+  if (!patch) return false;
+  return WALL_TOPOLOGY_FIELDS.some((field) => Object.hasOwn(patch, field));
 }
 
 export function patchInvalidatesRoofSystemsForWall(patch) {
@@ -205,14 +218,16 @@ export function invalidateForMutation(model, mutation, context = {}) {
   const wallIds = new Set(context.wallIds || []);
   if (context.wallId != null) wallIds.add(context.wallId);
   const all = dependency.scope === 'all';
+  const topology = dependency.scope === 'wallTopology';
   const byWallType = dependency.scope === 'wallType';
-  const affectsWalls = all || dependency.scope === 'wall' || byWallType;
+  const affectsWalls = all || topology || dependency.scope === 'wall' || byWallType;
   let touched = false;
 
   const elements = (model.elements || []).map((element) => {
     if (element.type !== 'wall' || !affectsWalls) return element;
     if (
       !all
+      && !topology
       && (byWallType
         ? element.wallTypeId !== context.wallTypeId
         : !wallIds.has(element.id))
@@ -224,9 +239,11 @@ export function invalidateForMutation(model, mutation, context = {}) {
 
   const roofSystems = (model.roofSystems || []).map((system) => {
     let selected = all;
-    if (dependency.scope === 'wall' || dependency.scope === 'dependentRoof') {
-      selected = wallIds.has(system.wallLowId) || wallIds.has(system.wallHighId);
-    } else if (dependency.scope === 'removedWalls') {
+    if (
+      dependency.scope === 'wall'
+      || dependency.scope === 'dependentRoof'
+      || dependency.scope === 'wallTopology'
+    ) {
       selected = wallIds.has(system.wallLowId) || wallIds.has(system.wallHighId);
     } else if (dependency.scope === 'roofSystem') {
       selected = system.id === context.roofSystemId;

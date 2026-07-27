@@ -33,8 +33,8 @@ const TYPE_LABEL = {
 const LIBRARY_KEY = { wall: 'wallSections', column: 'columnSections', beam: 'beamSections', foundation: 'foundationSections' };
 const FRAMING_ROLE_LABEL = {
   edge: 'Montante extremo',
-  corner: 'Montante esquina/T',
-  backup: 'Montante respaldo',
+  corner: 'Pilar conformado esquina/T',
+  backup: 'Montante respaldo (legacy)',
   stud: 'Montante relleno',
   king: 'Montante jamba',
   jack: 'Montante bajo dintel',

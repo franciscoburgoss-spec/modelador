@@ -106,7 +106,7 @@ test('R3-B: DXF dibuja la cadeneta con su rectángulo real en MONTANTES y la rot
   assert.doesNotMatch(content, /NaN/);
 });
 
-test('R3-B: las 493 piezas de casa-L llegan al plano R12 con rótulo CD', () => {
+test('R6-B: las 439 cadenetas rebasadas de casa-L llegan al plano R12 con rótulo CD', () => {
   const regeneration = modulateAllWallsFull(casaL, {
     metalcon: casaL.metalconDefaults || {},
     osb: casaL.osbDefaults || {}
@@ -124,7 +124,7 @@ test('R3-B: las 493 piezas de casa-L llegan al plano R12 con rótulo CD', () => 
   };
   const content = generateFramingDxf(model);
 
-  assert.equal((content.match(/\n1\nCD(?:\n|$)/g) || []).length, 493);
+  assert.equal((content.match(/\n1\nCD(?:\n|$)/g) || []).length, 439);
   assert.doesNotMatch(content, /NaN/);
 });
 

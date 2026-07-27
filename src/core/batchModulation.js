@@ -8,12 +8,17 @@
 // studSpacing, osbPanelWidth, etc.) se respeta ese valor; si no, se usa el default pasado
 // por parámetro (el que el usuario dejó seleccionado en el modal).
 
-import { computeStudLayout, detectWallCorners } from './metalconModulation.js';
+import { computeStudLayout } from './metalconModulation.js';
 import { computeCourseBreaks, computeOsbPanelLayout } from './osbModulation.js';
 import { buildParamsMap, resolveValue } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { getWallDisplayName } from './naming.js';
 import { resolveWallTypeConfig } from './wallTypes.js';
+import {
+  analyzeWallJunctions,
+  compareStableWallIds,
+  getWallJunctionView
+} from './wallJunctions.js';
 
 function resolveModulationConfig(model, wall, metalconFallback = {}, osbFallback = {}) {
   const resolved = resolveWallTypeConfig(model, wall);
@@ -52,12 +57,31 @@ function resolveModulationConfig(model, wall, metalconFallback = {}, osbFallback
   };
 }
 
+function normalizeBlocker(blocker) {
+  const wallIds = blocker.wallIds || (blocker.wallId != null ? [blocker.wallId] : []);
+  return {
+    reason: blocker.reason || blocker.type,
+    wallIds: [...wallIds].sort(compareStableWallIds),
+    nodeIds: blocker.nodeIds || (blocker.nodeId ? [blocker.nodeId] : [])
+  };
+}
+
+function uniqueBlockers(blockers) {
+  const byKey = new Map();
+  for (const raw of blockers) {
+    const blocker = normalizeBlocker(raw);
+    const key = `${blocker.reason}|${blocker.wallIds.map(String).join(',')}|${blocker.nodeIds.join(',')}`;
+    if (!byKey.has(key)) byKey.set(key, blocker);
+  }
+  return [...byKey.values()];
+}
+
 /**
  * Modula metalcon (montantes/dinteles) para todos los muros elegibles del modelo.
  * @param model
  * @param defaults { spacing, studProfileId, trackProfileId, materialId }
- * @param opts { skipExisting } — si true, omite muros que ya tienen wall.studs.
- * @returns { patches: [{wallId, patch}], skipped: [{wallId, name, reason}] }
+ * @param opts { skipExisting, topology? } — si true, omite muros que ya tienen wall.studs.
+ * @returns { patches, skipped, blocked, topology }
  */
 export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
   const { osb: osbFallback = {}, ...metalconFallback } = defaults;
@@ -66,9 +90,16 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
   const elementsById = buildElementsById(model.elements || []);
   const grid = model.grid;
   const allWalls = (model.elements || []).filter((el) => el.type === 'wall');
+  const topology = opts.topology || analyzeWallJunctions(model, { paramsMap, elementsById });
 
   const patches = [];
   const skipped = [];
+  // La ambigüedad de lap L gobierna la envolvente OSB (R6-C), no el pilar
+  // estructural: framing sólo bloquea nodos cuya geometría/rayos son ambiguos.
+  const blocked = uniqueBlockers(
+    (topology.issues || []).filter((issue) => issue.type === 'ambiguous-geometry')
+  );
+  if (blocked.length > 0) return { patches: [], skipped, blocked, topology };
 
   for (const wall of allWalls) {
     const effective = resolveModulationConfig(
@@ -131,13 +162,17 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
       });
       continue;
     }
-    const corners = detectWallCorners(wall, allWalls, grid, paramsMap, elementsById);
+    const junctions = getWallJunctionView(topology, wall.id);
     const layout = computeStudLayout(wall, grid, paramsMap, elementsById, {
       spacing: wallSpacing,
-      corners,
+      junctions,
       jointZs,
       flangeWidth: studProfile?.B
     });
+    if (layout.errors?.length > 0) {
+      blocked.push(...layout.errors);
+      continue;
+    }
     if (!layout.resolved) {
       skipped.push({ wallId: wall.id, name: getWallDisplayName(wall, grid), reason: 'geometría/nivel no resuelto' });
       continue;
@@ -156,7 +191,13 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
     });
   }
 
-  return { patches, skipped };
+  const finalBlocked = uniqueBlockers(blocked);
+  return {
+    patches: finalBlocked.length > 0 ? [] : patches,
+    skipped,
+    blocked: finalBlocked,
+    topology
+  };
 }
 
 /**
@@ -224,12 +265,22 @@ export function modulateAllWallsOsb(model, defaults = {}, opts = {}) {
 export function modulateAllWallsFull(model, defaults = {}, opts = {}) {
   const { metalcon: metalconDefaults = {}, osb: osbDefaults = {} } = defaults;
   const { skipExisting = false } = opts;
+  const topology = opts.topology || analyzeWallJunctions(model);
 
   const metalconResult = modulateAllWallsMetalcon(
     model,
     { ...metalconDefaults, osb: osbDefaults },
-    { skipExisting }
+    { skipExisting, topology }
   );
+  if (metalconResult.blocked.length > 0) {
+    return {
+      patches: [],
+      skippedMetalcon: metalconResult.skipped,
+      skippedOsb: [],
+      blocked: metalconResult.blocked,
+      topology
+    };
+  }
 
   const metalconPatchMap = new Map(metalconResult.patches.map((p) => [p.wallId, p.patch]));
   const intermediateModel = {
@@ -248,6 +299,8 @@ export function modulateAllWallsFull(model, defaults = {}, opts = {}) {
   return {
     patches: [...merged.entries()].map(([wallId, patch]) => ({ wallId, patch })),
     skippedMetalcon: metalconResult.skipped,
-    skippedOsb: osbResult.skipped
+    skippedOsb: osbResult.skipped,
+    blocked: [],
+    topology
   };
 }

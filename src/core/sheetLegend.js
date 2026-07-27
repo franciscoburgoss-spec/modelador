@@ -13,7 +13,7 @@ const SYMBOLS = {
   framing: [
     ['K', 'Jamba (king)'], ['J', 'Jamba bajo dintel (jack)'],
     ['C', 'Muchacho (bajo antepecho)'], ['CS', 'Puntal (sobre dintel)'],
-    ['E', 'Cabezal (montante extremo)'], ['T', 'Cabezal (esquina/T)'], ['R', 'Refuerzo de pilar'],
+    ['E', 'Cabezal (montante extremo)'], ['T', 'Pilar conformado esquina/T'], ['R', 'Montante respaldo (legacy)'],
     ['D', 'Dintel'], ['A', 'Alfeizar'], ['CD', 'Cadeneta'],
     ['SOLERAS-APOYO', 'Solera de apoyo de techumbre (referencia, se despieza en lamina de cerchas)'],
     ['EJES', 'Eje estructural (linea centro)'],
@@ -52,6 +52,7 @@ export const DEFAULT_NOTES = {
     'Cotas en milimetros. Niveles en metros respecto al N.P.T. = 0.00.',
     'Perfiles y espesores de acero segun cuadro de modulacion de cada elevacion.',
     'Separacion de montantes segun la modulacion indicada; no modificar en obra.',
+    'Pilar conformado L/T: tornillos N°10x3/4" @150 mm en toda la altura, en zig-zag.',
     'Montantes de jamba (K) y bajo dintel (J) fijados a solera superior e inferior.',
     'Verificar en obra las medidas de vano contra la carpinteria antes de modular.'
   ],

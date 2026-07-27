@@ -4,8 +4,9 @@
 // persiste en wall.studs al presionar Generar/Regenerar. Preview en vivo antes de guardar.
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useModelStore } from '../../store/useModelStore.js';
-import { computeStudLayout, detectWallCorners } from '../../core/metalconModulation.js';
+import { computeStudLayout } from '../../core/metalconModulation.js';
 import { modulateAllWallsMetalcon } from '../../core/batchModulation.js';
+import { analyzeWallJunctions, getWallJunctionView } from '../../core/wallJunctions.js';
 import { computeCourseBreaks } from '../../core/osbModulation.js';
 import { drawStudLayoutElevation, METALCON_ROLE_LABELS } from '../../render/metalconModulation.js';
 import { buildParamsMap, resolveValue } from '../../core/projectParams.js';
@@ -73,6 +74,10 @@ export default function MetalconModulationModal({ open, onClose }) {
     [model, wall]
   );
   const typed = effective?.source === 'wallType';
+  const topology = useMemo(
+    () => analyzeWallJunctions(model, { paramsMap, elementsById }),
+    [model, paramsMap, elementsById]
+  );
 
   // El resolvedor compartido es la única autoridad para muros tipados; legacy conserva su flujo.
   useEffect(() => {
@@ -93,17 +98,20 @@ export default function MetalconModulationModal({ open, onClose }) {
     gap: wall?.osbGap ?? osbDefaults.gap ?? 5
   };
 
-  const corners = useMemo(() => {
-    if (!wall) return { start: false, end: false };
-    return detectWallCorners(wall, elements, grid, paramsMap, elementsById);
-  }, [wall, elements, grid, paramsMap, elementsById]);
+  const junctions = useMemo(
+    () => (wall ? getWallJunctionView(topology, wall.id) : null),
+    [wall, topology]
+  );
 
   const studProfile = studProfiles.find(p => String(p.id) === String(activeStudProfileId));
   const trackProfile = trackProfiles.find(p => String(p.id) === String(activeTrackProfileId));
 
   const layout = useMemo(() => {
     if (!wall) return { resolved: false, length: null, wallHeight: null, studs: [] };
-    const base = computeStudLayout(wall, grid, paramsMap, elementsById, { spacing: activeSpacing, corners });
+    const base = computeStudLayout(wall, grid, paramsMap, elementsById, {
+      spacing: activeSpacing,
+      junctions
+    });
     if (!base.resolved) return base;
     const panelHeight = resolveValue(
       activeOsb.panelHeight,
@@ -113,7 +121,7 @@ export default function MetalconModulationModal({ open, onClose }) {
     const jointZs = computeCourseBreaks(base.wallHeight, panelHeight).jointZs;
     return computeStudLayout(wall, grid, paramsMap, elementsById, {
       spacing: activeSpacing,
-      corners,
+      junctions,
       jointZs,
       flangeWidth: studProfile?.B
     });
@@ -123,7 +131,7 @@ export default function MetalconModulationModal({ open, onClose }) {
     paramsMap,
     elementsById,
     activeSpacing,
-    corners,
+    junctions,
     activeOsb.panelHeight,
     studProfile?.B
   ]);
@@ -179,7 +187,7 @@ export default function MetalconModulationModal({ open, onClose }) {
 
   const handleGenerate = () => {
     if (!canGenerate) return;
-    commitWallRegeneration(wall.id, 'wallFraming', {
+    const selectedPatch = {
       framingStudProfileId: studProfile?.id ?? activeStudProfileId,
       framingTrackProfileId: trackProfile?.id ?? activeTrackProfileId,
       framingMaterialId: activeMaterialId,
@@ -187,7 +195,56 @@ export default function MetalconModulationModal({ open, onClose }) {
       osbGap: activeOsb.gap,
       studs: layout.studs,
       headers: layout.headers
-    });
+    };
+    const requiredHostIds = new Set(
+      ['start', 'end'].flatMap((side) => (
+        (junctions?.[side]?.matches || [])
+          .filter((match) => match.tipo === 'T')
+          .map((match) => match.wallId)
+      ))
+    );
+    if (requiredHostIds.size === 0) {
+      commitWallRegeneration(wall.id, 'wallFraming', selectedPatch);
+      return;
+    }
+
+    const coordinated = modulateAllWallsMetalcon(
+      model,
+      {
+        spacing: activeSpacing,
+        studProfileId: activeStudProfileId,
+        trackProfileId: activeTrackProfileId,
+        materialId: activeMaterialId,
+        osb: osbDefaults
+      },
+      { topology }
+    );
+    if (coordinated.blocked.length > 0) {
+      setBatchSummary({
+        kind: 'error',
+        text: `Regeneración bloqueada: ${coordinated.blocked.map((item) => (
+          `${item.reason} [${item.wallIds.join(', ')}]`
+        )).join('; ')}`
+      });
+      return;
+    }
+    const hostPatches = coordinated.patches.filter(({ wallId: candidateId }) => (
+      requiredHostIds.has(candidateId)
+    ));
+    const missing = [...requiredHostIds].filter((hostId) => (
+      !hostPatches.some(({ wallId: candidateId }) => candidateId === hostId)
+    ));
+    if (missing.length > 0) {
+      setBatchSummary({
+        kind: 'error',
+        text: `Regeneración bloqueada: no se pudo resolver el apoyo T en muro(s) ${missing.join(', ')}.`
+      });
+      return;
+    }
+    applyWallPatchesBatch([
+      { wallId: wall.id, patch: selectedPatch },
+      ...hostPatches.filter(({ wallId: hostId }) => hostId !== wall.id)
+    ]);
   };
 
   const existingCount = walls.filter(w => w.studs?.length > 0).length;
@@ -200,7 +257,7 @@ export default function MetalconModulationModal({ open, onClose }) {
       );
       skipExisting = !overwrite;
     }
-    const { patches, skipped } = modulateAllWallsMetalcon(
+    const { patches, skipped, blocked } = modulateAllWallsMetalcon(
       model,
       {
         spacing,
@@ -209,12 +266,22 @@ export default function MetalconModulationModal({ open, onClose }) {
         materialId: materialId ? Number(materialId) : null,
         osb: osbDefaults
       },
-      { skipExisting }
+      { skipExisting, topology }
     );
+    if (blocked.length > 0) {
+      setBatchSummary({
+        kind: 'error',
+        text: `Generación bloqueada: ${blocked.map((item) => (
+          `${item.reason} [${item.wallIds.join(', ')}]`
+        )).join('; ')}`
+      });
+      return;
+    }
     if (patches.length > 0) applyWallPatchesBatch(patches);
-    setBatchSummary(
-      `${patches.length} generado(s)` + (skipped.length > 0 ? `, ${skipped.length} omitido(s) (${skipped.map(s => s.reason).join('; ')})` : '')
-    );
+    setBatchSummary({
+      kind: 'success',
+      text: `${patches.length} generado(s)` + (skipped.length > 0 ? `, ${skipped.length} omitido(s) (${skipped.map(s => s.reason).join('; ')})` : '')
+    });
   };
 
   return (
@@ -269,8 +336,12 @@ export default function MetalconModulationModal({ open, onClose }) {
             </div>
           )}
           {batchSummary && (
-            <div className="rounded border border-emerald-400 bg-emerald-50 px-2 py-1 text-xs text-emerald-800">
-              {batchSummary}
+            <div className={`rounded border px-2 py-1 text-xs ${
+              batchSummary.kind === 'error'
+                ? 'border-red-400 bg-red-50 text-red-800'
+                : 'border-emerald-400 bg-emerald-50 text-emerald-800'
+            }`}>
+              {batchSummary.text}
             </div>
           )}
 
@@ -300,10 +371,13 @@ export default function MetalconModulationModal({ open, onClose }) {
             <FormulaInput value={spacing} onChange={setSpacing} paramsMap={paramsMap} projectParams={projectParams} disabled={typed} />
           </Field>
 
-          {(corners.start || corners.end) && (
+          {(junctions?.start || junctions?.end || junctions?.interior?.length > 0) && (
             <p className="text-xs text-[#5a5a55]">
-              Se detectó encuentro con otro muro en: {[corners.start && 'inicio', corners.end && 'fin'].filter(Boolean).join(' y ')}
-              {' '}— se agregan montantes de esquina/respaldo en ese extremo.
+              Pilar conformado detectado en: {[
+                junctions?.start && 'inicio',
+                junctions?.end && 'fin',
+                junctions?.interior?.length > 0 && `${junctions.interior.length} apoyo(s) T interior(es)`
+              ].filter(Boolean).join(', ')}. La generación coordina los montantes `corner` contiguos.
             </p>
           )}
 
@@ -325,7 +399,11 @@ export default function MetalconModulationModal({ open, onClose }) {
           <canvas ref={canvasRef} className="w-full border border-[#e4e4e0] rounded-md bg-white" />
 
           {!layout.resolved && (
-            <p className="text-xs text-[#b5502a]">El muro seleccionado no tiene geometría/nivel resuelto.</p>
+            <p className="text-xs text-[#b5502a]">
+              {layout.errors?.length > 0
+                ? `Regeneración bloqueada: ${layout.errors.map((item) => `${item.reason} [${item.wallIds.join(', ')}]`).join('; ')}`
+                : 'El muro seleccionado no tiene geometría/nivel resuelto.'}
+            </p>
           )}
 
           {despieceRows.length > 0 && (

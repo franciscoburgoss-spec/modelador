@@ -10,8 +10,8 @@
 //
 // Vocabulario de rol (análogo al usado en tabiquería de madera del proyecto, adaptado a acero):
 //   edge    → montante de extremo de muro (siempre, alma a alma con solera)
-//   corner  → como 'edge', pero el extremo coincide con la esquina/T de otro muro
-//   backup  → montante adicional junto a 'corner', de respaldo para anclar el muro que llega
+//   corner  → pieza de altura completa que integra un pilar conformado L/T
+//   backup  → rol legacy: se conserva al importar, pero este solver nunca lo genera
 //   stud    → montante de relleno a espaciamiento regular
 //   king    → montante doble de jamba (altura completa), flanquea el vano
 //   jack    → montante corto bajo el dintel (mismo offset que king), soporta el dintel
@@ -23,6 +23,11 @@
 import { resolveWallGeometry, isWallXRun } from './elementGeometry.js';
 import { resolveValue } from './projectParams.js';
 import { studFlangeSpan } from './trussLayout.js';
+import {
+  analyzeWallJunctions,
+  compareStableWallIds,
+  getWallJunctionView
+} from './wallJunctions.js';
 
 const EPS = 1; // mm — tolerancia para "misma posición" / bordes
 
@@ -34,41 +39,19 @@ function nearAny(offset, offsets, tol = EPS) {
   return offsets.some(o => Math.abs(o - offset) < tol);
 }
 
-/**
- * Detecta si los extremos de `wall` coinciden con el extremo o el cuerpo de otro muro del
- * mismo nivel (condición de esquina L o encuentro en T). Solo coincidencia geométrica en
- * planta — no considera si el otro muro es estructural o el ángulo del encuentro.
- * Devuelve { start: boolean, end: boolean }.
- */
+/** Adaptador booleano temporal. La autoridad es `analyzeWallJunctions`; ningún consumidor nuevo
+ * debe volver a recorrer muros localmente. */
 export function detectWallCorners(wall, allElements, grid, paramsMap = {}, elementsById = {}, tolerance = 5) {
-  const geo = resolveWallGeometry(wall, grid, paramsMap, elementsById);
-  if (!geo) return { start: false, end: false };
-
-  const others = allElements.filter(el => el.type === 'wall' && el.id !== wall.id);
-  let start = false, end = false;
-
-  for (const other of others) {
-    const og = resolveWallGeometry(other, grid, paramsMap, elementsById);
-    if (!og) continue;
-    // Coincidencia por punto (esquina L: extremo con extremo) o por proyección sobre el
-    // segmento del otro muro (encuentro en T: extremo de `wall` cae en el cuerpo de `other`).
-    if (pointOnSegment(geo.p1, og.p1, og.p2, tolerance)) start = true;
-    if (pointOnSegment(geo.p2, og.p1, og.p2, tolerance)) end = true;
-  }
-  return { start, end };
-}
-
-function pointOnSegment(p, a, b, tolerance) {
-  const dx = b.x - a.x, dy = b.y - a.y;
-  const len = Math.sqrt(dx * dx + dy * dy);
-  if (len < 1) return dist(p, a) < tolerance;
-  const t = clamp(((p.x - a.x) * dx + (p.y - a.y) * dy) / (len * len), 0, 1);
-  const proj = { x: a.x + t * dx, y: a.y + t * dy };
-  return dist(p, proj) < tolerance;
-}
-
-function dist(p, q) {
-  return Math.sqrt((p.x - q.x) ** 2 + (p.y - q.y) ** 2);
+  const topology = analyzeWallJunctions(
+    { grid, elements: allElements },
+    { tolerance, paramsMap, elementsById }
+  );
+  const view = getWallJunctionView(topology, wall.id);
+  const isJunction = (endpoint) => endpoint?.tipo === 'L' || endpoint?.tipo === 'T';
+  return {
+    start: isJunction(view?.start),
+    end: isJunction(view?.end)
+  };
 }
 
 function computeNoggingPieces(studs, openingSpans, jointZs, length, flangeWidth) {
@@ -124,6 +107,41 @@ function computeNoggingPieces(studs, openingSpans, jointZs, length, flangeWidth)
   return pieces;
 }
 
+function sortedWallIds(ids) {
+  return [...new Map(ids.map((id) => [`${typeof id}:${String(id)}`, id])).values()]
+    .sort(compareStableWallIds);
+}
+
+function framingError(reason, wallIds, nodeIds = []) {
+  return {
+    reason,
+    wallIds: sortedWallIds(wallIds),
+    nodeIds: [...new Set(nodeIds)].sort()
+  };
+}
+
+function legacyJunctionView(corners) {
+  return {
+    start: corners?.start ? { tipo: 'L', wallId: null, matches: [], lapState: null } : null,
+    end: corners?.end ? { tipo: 'L', wallId: null, matches: [], lapState: null } : null,
+    interior: [],
+    unsupported: []
+  };
+}
+
+function junctionAmbiguities(wallId, junctions) {
+  const errors = [];
+  for (const event of junctions?.unsupported || []) {
+    if (event.tipo !== 'ambiguous') continue;
+    errors.push(framingError(
+      'ambiguous-junction',
+      event.wallIds || [wallId],
+      [event.nodeId]
+    ));
+  }
+  return errors;
+}
+
 /**
  * Calcula el despiece de montantes de un muro. Lógica pura — no toca el store ni persiste.
  *
@@ -131,8 +149,8 @@ function computeNoggingPieces(studs, openingSpans, jointZs, length, flangeWidth)
  * @param grid    model.grid
  * @param paramsMap  buildParamsMap(model.projectParams)
  * @param elementsById  buildElementsById(model.elements)
- * @param config  { spacing (mm, formula u número; default 400), backupOffset (mm; default 100),
- *                  corners: { start, end } (de detectWallCorners; default sin esquina),
+ * @param config  { spacing (mm, formula u número; default 400),
+ *                  junctions: vista de getWallJunctionView (corners booleano sólo legacy),
  *                  jointZs: juntas horizontales de placa, flangeWidth: B real del perfil }
  * @returns { resolved, length, wallHeight,
  *            studs: [{ offset, zMin, zMax, role } |
@@ -157,10 +175,21 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
   }
 
   const spacing = resolveValue(config.spacing ?? 400, paramsMap, elementsById);
-  const backupOffset = config.backupOffset ?? 100;
-  const corners = config.corners || { start: false, end: false };
+  const junctions = config.junctions || legacyJunctionView(config.corners);
   const jointZs = config.jointZs || [];
   const flangeWidth = Number(config.flangeWidth);
+  const ambiguous = junctionAmbiguities(wall.id, junctions);
+  if (ambiguous.length > 0) {
+    return {
+      resolved: false,
+      length,
+      wallHeight,
+      studs: [],
+      headers: [],
+      warnings: [],
+      errors: ambiguous
+    };
+  }
 
   // --- vanos: intervalo horizontal [oMin,oMax] + rango vertical relativo al pie del muro ---
   const openingSpans = (wall.openings || [])
@@ -188,11 +217,18 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
     placedOffsets.push(offset);
   };
 
-  // 1) extremos (edge / corner + backup)
-  pushStud(0, corners.start ? 'corner' : 'edge');
-  pushStud(length, corners.end ? 'corner' : 'edge');
-  if (corners.start && backupOffset < length) pushStud(backupOffset, 'backup');
-  if (corners.end && length - backupOffset > 0) pushStud(length - backupOffset, 'backup');
+  const endpointIsJunction = (endpoint) => (
+    endpoint?.tipo === 'L'
+    || endpoint?.tipo === 'T'
+    || (
+      endpoint?.matches?.length > 0
+      && endpoint.matches.every((match) => match.tipo === 'L' || match.tipo === 'T')
+    )
+  );
+
+  // 1) extremos: cada participante L/T aporta su pieza contigua del pilar, sin backup separado.
+  pushStud(0, endpointIsJunction(junctions.start) ? 'corner' : 'edge');
+  pushStud(length, endpointIsJunction(junctions.end) ? 'corner' : 'edge');
 
   const findOpeningSpanAt = (offset) => openingSpans.find(s => offset > s.oMin + EPS && offset < s.oMax - EPS);
 
@@ -258,9 +294,60 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
     }
   }
 
+  // 4) llegada T al cuerpo: una sola pieza de altura completa en el anfitrión. Si el paso regular
+  // ya la puso, se reclasifica; un vano, jamba o pieza parcial bloquea en vez de atravesarse.
+  const supportGroups = new Map();
+  for (const event of junctions.interior || []) {
+    if (event.tipo !== 'T') continue;
+    const key = Math.round(event.offset * 10) / 10;
+    if (!supportGroups.has(key)) supportGroups.set(key, []);
+    supportGroups.get(key).push(event);
+  }
+  const supportErrors = [];
+  for (const [offset, events] of supportGroups) {
+    const wallIds = [wall.id, ...events.map((event) => event.wallId)];
+    const nodeIds = events.map((event) => event.nodeId);
+    if (findOpeningSpanAt(offset)) {
+      supportErrors.push(framingError('t-support-in-opening', wallIds, nodeIds));
+      continue;
+    }
+
+    const existing = studs.filter((piece) => (
+      piece.role !== 'nogging'
+      && Number.isFinite(piece.offset)
+      && Math.abs(piece.offset - offset) < EPS
+    ));
+    const regular = existing.length === 1
+      && existing[0].role === 'stud'
+      && existing[0].zMin <= EPS
+      && existing[0].zMax >= wallHeight - EPS;
+    if (regular) {
+      existing[0].role = 'corner';
+    } else if (existing.length === 0) {
+      pushStud(offset, 'corner');
+    } else {
+      supportErrors.push(framingError(
+        't-support-incompatible-piece',
+        wallIds,
+        nodeIds
+      ));
+    }
+  }
+  if (supportErrors.length > 0) {
+    return {
+      resolved: false,
+      length,
+      wallHeight,
+      studs: [],
+      headers: [],
+      warnings: [],
+      errors: supportErrors
+    };
+  }
+
   studs.sort((a, b) => a.offset - b.offset || a.zMin - b.zMin);
 
-  // 4) piezas horizontales del vano: dintel (header, siempre) y antepecho (sill, solo con antepecho > 0)
+  // 5) piezas horizontales del vano: dintel (header, siempre) y antepecho (sill, solo con antepecho > 0)
   const headers = [];
   for (const span of openingSpans) {
     headers.push({ oMin: span.oMin, oMax: span.oMax, z: span.topRel, role: 'header' });
@@ -277,5 +364,5 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
     ));
   }
 
-  return { resolved: true, length, wallHeight, studs, headers, warnings };
+  return { resolved: true, length, wallHeight, studs, headers, warnings, errors: [] };
 }

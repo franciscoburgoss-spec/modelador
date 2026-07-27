@@ -170,11 +170,18 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
       );
       skipExisting = !overwrite;
     }
-    const { patches, skippedMetalcon, skippedOsb } = modulateAllWallsFull(
+    const { patches, skippedMetalcon, skippedOsb, blocked } = modulateAllWallsFull(
       state.model,
       { metalcon: state.model.metalconDefaults, osb: state.model.osbDefaults },
       { skipExisting }
     );
+    if (blocked.length > 0) {
+      alert(
+        'Generación bloqueada; no se aplicaron cambios.\n'
+        + blocked.map((item) => `${item.reason}: muros ${item.wallIds.join(', ')}`).join('\n')
+      );
+      return;
+    }
     if (patches.length > 0) applyWallPatchesBatch(patches);
     alert(
       `${patches.length} muro(s) modulados (metalcon + OSB).`

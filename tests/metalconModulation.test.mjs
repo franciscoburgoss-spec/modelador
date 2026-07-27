@@ -146,22 +146,21 @@ test('modulación: jamba de vano pegada al extremo no duplica montante', () => {
   assert.equal(atStart.filter(s => s.role === 'king').length, 0);
 });
 
-// --- esquina/T: corner + backup ---
-test('modulación: con corners.start agrega corner + backup', () => {
+// --- compatibilidad temporal del adaptador booleano: corner sin generar backup nuevo ---
+test('R6-B: con corners.start agrega un corner y cero backup', () => {
   const wall = makeWall();
   const r = computeStudLayout(wall, grid, {}, {}, { spacing: 400, corners: { start: true, end: false }, backupOffset: 100 });
   const corner = r.studs.filter(s => s.role === 'corner');
   const backup = r.studs.filter(s => s.role === 'backup');
   assert.equal(corner.length, 1);
   assert.equal(corner[0].offset, 0);
-  assert.equal(backup.length, 1);
-  assert.equal(backup[0].offset, 100);
+  assert.equal(backup.length, 0);
 });
 
 // --- detectWallCorners: L y T ---
 test('detectWallCorners: detecta esquina L (extremo con extremo)', () => {
   const wallA = makeWall({ id: 1, xStart: 'x1', xEnd: 'x2', yStart: 'y1', yEnd: 'y1', direction: 'x' });
-  const wallB = { id: 2, type: 'wall', xStart: 'x1', xEnd: 'x1', yStart: 'y1', yEnd: 'y2', direction: 'y', bottomZ: 0, topZ: 2400, thickness: 90, openings: [] };
+  const wallB = { id: 2, type: 'wall', xStart: 'x1', xEnd: 'x1', yStart: 'y1', yEnd: 'y2', direction: 'y', bottomZ: 'z0', topZ: 'z1', thickness: 90, openings: [] };
   const r = detectWallCorners(wallA, [wallA, wallB], grid, {}, {});
   assert.equal(r.start, true);
   assert.equal(r.end, false);
@@ -169,9 +168,9 @@ test('detectWallCorners: detecta esquina L (extremo con extremo)', () => {
 
 test('detectWallCorners: detecta encuentro en T (extremo sobre el cuerpo de otro muro)', () => {
   const wallA = makeWall({ id: 1 }); // corre en x de (0,0) a (4000,0)
-  const wallB = { id: 2, type: 'wall', xStart: 'x1', xEnd: 'x1', yStart: 'y1', yEnd: 'y2', direction: 'y', bottomZ: 0, topZ: 2400, thickness: 90, openings: [] };
+  const wallB = { id: 2, type: 'wall', xStart: 'x1', xEnd: 'x1', yStart: 'y1', yEnd: 'y2', direction: 'y', bottomZ: 'z0', topZ: 'z1', thickness: 90, openings: [] };
   // wallA parte en (0,0), que es el extremo de wallB (x=0,y de 0 a 3000) → esto es L, probemos T real:
-  const wallC = { id: 3, type: 'wall', xStart: 'x2', xEnd: 'x2', yStart: 'y1', yEnd: 'y2', direction: 'y', bottomZ: 0, topZ: 2400, thickness: 90, openings: [] };
+  const wallC = { id: 3, type: 'wall', xStart: 'x2', xEnd: 'x2', yStart: 'y1', yEnd: 'y2', direction: 'y', bottomZ: 'z0', topZ: 'z1', thickness: 90, openings: [] };
   const rEnd = detectWallCorners(wallA, [wallA, wallC], grid, {}, {});
   assert.equal(rEnd.end, true);
 });

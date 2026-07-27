@@ -72,8 +72,8 @@ export function drawStudLayoutElevation(ctx, { studs, headers, length, wallHeigh
 
 export const METALCON_ROLE_LABELS = {
   edge: 'Montante extremo',
-  corner: 'Montante esquina/T',
-  backup: 'Montante respaldo',
+  corner: 'Pilar conformado esquina/T',
+  backup: 'Montante respaldo (legacy)',
   stud: 'Montante relleno',
   king: 'Montante jamba (king)',
   jack: 'Montante bajo dintel (jack)',

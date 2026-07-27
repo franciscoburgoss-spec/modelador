@@ -20,6 +20,7 @@ import {
   applyWallRegeneration,
   applyWallRegenerationPatch,
   patchInvalidatesWall,
+  patchInvalidatesWallTopology,
   assertNoDerivedWrites,
   DERIVED_WRITE_FIELDS
 } from '../core/derivedInvalidation.js';
@@ -735,13 +736,28 @@ export const useModelStore = create((set, get) => ({
   })),
 
   // ---- elementos ----
-  addElement: (element) => set((s) => withHistory(s, {
-    ...s.model, elements: [...s.model.elements, { ...element, id: generateId() }]
-  })),
+  addElement: (element) => set((s) => {
+    const entry = { ...element, id: generateId() };
+    const next = { ...s.model, elements: [...s.model.elements, entry] };
+    return withHistory(
+      s,
+      entry.type === 'wall'
+        ? invalidateForMutation(next, 'wallTopology', { wallId: entry.id })
+        : next
+    );
+  }),
   // ★ Colocación generativa: agrega varios elementos como un solo paso de deshacer/rehacer.
-  addElements: (newElements) => set((s) => withHistory(s, {
-    ...s.model, elements: [...s.model.elements, ...newElements.map(e => ({ ...e, id: generateId() }))]
-  })),
+  addElements: (newElements) => set((s) => {
+    const entries = newElements.map((element) => ({ ...element, id: generateId() }));
+    const wallIds = entries.filter((entry) => entry.type === 'wall').map((entry) => entry.id);
+    const next = { ...s.model, elements: [...s.model.elements, ...entries] };
+    return withHistory(
+      s,
+      wallIds.length > 0
+        ? invalidateForMutation(next, 'wallTopology', { wallIds })
+        : next
+    );
+  }),
   // ★ Colocación generativa (spacing): crea ejes auxiliares nuevos + los pilares que los
   // referencian, en un solo paso de historial. newAxes trae el id ya asignado (generado en
   // generativePlacement.js) porque los elementos ya lo referencian en axisXId/axisYId.
@@ -753,11 +769,19 @@ export const useModelStore = create((set, get) => ({
       if (ax.axis === 'x') xAxes = [...xAxes, entry];
       else yAxes = [...yAxes, entry];
     }
-    return withHistory(s, {
+    const entries = newElements.map(e => ({ ...e, id: generateId() }));
+    const next = {
       ...s.model,
       grid: { ...s.model.grid, xAxes, yAxes },
-      elements: [...s.model.elements, ...newElements.map(e => ({ ...e, id: generateId() }))]
-    });
+      elements: [...s.model.elements, ...entries]
+    };
+    const wallIds = entries.filter((entry) => entry.type === 'wall').map((entry) => entry.id);
+    return withHistory(
+      s,
+      wallIds.length > 0
+        ? invalidateForMutation(next, 'wallTopology', { wallIds })
+        : next
+    );
   }),
   // ★ Sesión 15 — dividir un muro: crea el eje del corte si hace falta, reemplaza el muro
   // original por sus dos tramos (ids NUEVOS, ver core/wallSplitMerge.js) y deja todo en UNA
@@ -824,7 +848,10 @@ export const useModelStore = create((set, get) => ({
       )
     };
     if (target?.type === 'wall' && patchInvalidatesWall(patch)) {
-      return withHistory(s, invalidateForMutation(next, 'wallGeometry', { wallId: id }));
+      const mutation = patchInvalidatesWallTopology(patch)
+        ? 'wallTopology'
+        : 'wallGeometry';
+      return withHistory(s, invalidateForMutation(next, mutation, { wallId: id }));
     }
     if (target?.type === 'foundation') {
       return withHistory(s, invalidateForMutation(next, 'foundationGeometry', { foundationId: id }));
@@ -1011,7 +1038,7 @@ export const useModelStore = create((set, get) => ({
       return withHistory(
         s,
         topLevel.type === 'wall'
-          ? invalidateForMutation(next, 'wallRemoval', { wallId: id })
+          ? invalidateForMutation(next, 'wallTopology', { wallId: id })
           : next
       );
     }

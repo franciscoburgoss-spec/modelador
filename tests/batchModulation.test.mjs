@@ -4,7 +4,11 @@ import { modulateAllWallsMetalcon, modulateAllWallsOsb, modulateAllWallsFull } f
 
 const grid = {
   xAxes: [{ id: 'X1', position: 0 }, { id: 'X2', position: 4000 }],
-  yAxes: [{ id: 'Y1', position: 0 }, { id: 'Y2', position: 3000 }],
+  yAxes: [
+    { id: 'Y1', position: 0 },
+    { id: 'Y2', position: 3000 },
+    { id: 'Y3', position: 6000 }
+  ],
   zLevels: [{ id: 'Z0', elevation: 0 }, { id: 'Z1', elevation: 2400 }]
 };
 
@@ -35,7 +39,11 @@ const wallType = (id, role, studProfileId, trackProfileId, spacing, gap) => ({
 });
 
 test('modulateAllWallsMetalcon: genera patch para cada muro elegible con defaults', () => {
-  const model = { grid, projectParams: [], elements: [wallX(1), wallX(2)] };
+  const model = {
+    grid,
+    projectParams: [],
+    elements: [wallX(1), wallX(2, { yStart: 'Y2', yEnd: 'Y2' })]
+  };
   const { patches, skipped } = modulateAllWallsMetalcon(model, {
     spacing: 400, studProfileId: 'S1', trackProfileId: 'T1', materialId: null
   });
@@ -76,7 +84,10 @@ test('modulateAllWallsMetalcon: sin perfil (ni propio ni default) se omite', () 
 test('modulateAllWallsMetalcon: skipExisting omite muros que ya tienen studs', () => {
   const model = {
     grid, projectParams: [],
-    elements: [wallX(1, { studs: [{ offset: 0, zMin: 0, zMax: 2400, role: 'edge' }] }), wallX(2)]
+    elements: [
+      wallX(1, { studs: [{ offset: 0, zMin: 0, zMax: 2400, role: 'edge' }] }),
+      wallX(2, { yStart: 'Y2', yEnd: 'Y2' })
+    ]
   };
   const { patches, skipped } = modulateAllWallsMetalcon(model, { studProfileId: 'S1', trackProfileId: 'T1' }, { skipExisting: true });
   assert.equal(patches.length, 1);
@@ -147,8 +158,8 @@ test('modulateAllWallsFull: skipExisting respeta ambos subsistemas por separado'
     grid, projectParams: [],
     elements: [
       wallX(1, { studs, osbCourses: [{ panels: [] }] }), // ya tiene ambos → se salta completo
-      wallX(2, { studs }), // ya tiene metalcon, falta OSB
-      wallX(3) // no tiene nada
+      wallX(2, { yStart: 'Y2', yEnd: 'Y2', studs }), // ya tiene metalcon, falta OSB
+      wallX(3, { yStart: 'Y3', yEnd: 'Y3' }) // no tiene nada
     ]
   };
   const { patches, skippedMetalcon, skippedOsb } = modulateAllWallsFull(model, {
@@ -176,7 +187,7 @@ test('R5-C: batch/full resuelven dos tipos 90/60 sin overrides y persisten confi
     ],
     elements: [
       wallX('W90', { wallTypeId: 'exterior-90' }),
-      wallX('W60', { wallTypeId: 'tabique-60' })
+      wallX('W60', { wallTypeId: 'tabique-60', yStart: 'Y2', yEnd: 'Y2' })
     ]
   };
 

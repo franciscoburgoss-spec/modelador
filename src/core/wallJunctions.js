@@ -93,11 +93,11 @@ function findLevelElevation(grid, levelId) {
   return Number.isFinite(elevation) ? elevation : null;
 }
 
-function resolveWalls(model, tolerance) {
+function resolveWalls(model, tolerance, options) {
   const elements = model?.elements || [];
   const grid = model?.grid || {};
-  const paramsMap = buildParamsMap(model?.projectParams || []);
-  const elementsById = buildElementsById(elements);
+  const paramsMap = options.paramsMap || buildParamsMap(model?.projectParams || []);
+  const elementsById = options.elementsById || buildElementsById(elements);
   const resolved = [];
   const unresolved = [];
 
@@ -464,7 +464,8 @@ function buildWallViews(resolvedWalls, nodes) {
           tipo: node.type,
           offset: participant.offset,
           position: participant.position,
-          nodeId: node.id
+          nodeId: node.id,
+          wallIds: node.participants.map((entry) => entry.wallId)
         });
         continue;
       }
@@ -528,9 +529,14 @@ function buildIssues(nodes, wallViews) {
     for (const side of ['start', 'end']) {
       const endpoint = view[side];
       if (endpoint?.lapState === 'ambiguous') {
+        const wallIds = [
+          view.wallId,
+          ...endpoint.matches.map((match) => match.wallId)
+        ].sort(compareStableWallIds);
         issues.push({
           type: 'ambiguous-lap',
           wallId: view.wallId,
+          wallIds,
           side,
           nodeIds: endpoint.matches.map((match) => match.nodeId)
         });
@@ -556,7 +562,7 @@ export function analyzeWallJunctions(model, options = {}) {
   const tolerance = Number.isFinite(rawTolerance) && rawTolerance >= 0
     ? rawTolerance
     : WALL_JUNCTION_TOLERANCE;
-  const { resolved, unresolved } = resolveWalls(model, tolerance);
+  const { resolved, unresolved } = resolveWalls(model, tolerance, options);
   const nodes = buildNodes(resolved, tolerance);
   const wallViews = buildWallViews(resolved, nodes);
 
