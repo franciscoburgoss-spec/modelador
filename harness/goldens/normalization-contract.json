@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "identifiers": {
+    "normalized": [],
+    "preserved": [
+      "model element/axis/profile/type/roof/opening IDs and references",
+      "DXF handles, owners, block and layout references",
+      "CalculiX node IDs, element IDs, NSET and ELSET names"
+    ]
+  },
+  "timestamps": {
+    "normalized": [],
+    "fixedInputs": [
+      {
+        "path": "projectInfo.fecha for reference sheets",
+        "value": "2026-07-28"
+      }
+    ]
+  },
+  "order": {
+    "normalized": [
+      "JSON object-key order",
+      "CSV takeoff row order after grouping",
+      "DXF record order in the semantic hash",
+      "summary map/set order"
+    ],
+    "preserved": [
+      "JSON array order",
+      "DXF group-code order inside each record",
+      "INP keyword and data-line order",
+      "node and element connectivity"
+    ]
+  },
+  "text": {
+    "lineEndings": "LF",
+    "terminalLineFeed": true,
+    "inpComments": "excluded except unit declarations and ADVERTENCIA lines"
+  }
+}

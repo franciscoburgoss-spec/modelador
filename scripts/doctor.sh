@@ -58,10 +58,12 @@ else
   fail "Rust/Cargo no están instalados"
 fi
 
-if python3 -c 'import ezdxf' >/dev/null 2>&1; then
-  pass "Python ezdxf disponible"
+verification_python=".venv-verification/bin/python"
+if [[ -x "$verification_python" ]] \
+  && "$verification_python" -c 'import ezdxf; assert ezdxf.__version__ == "1.4.4"' >/dev/null 2>&1; then
+  pass "Python ezdxf 1.4.4 disponible en .venv-verification"
 else
-  fail "Python ezdxf no está disponible en el entorno activo"
+  fail "Falta ezdxf 1.4.4 en .venv-verification; ejecutar npm run setup:verification-python"
 fi
 
 if xcode-select -p >/dev/null 2>&1; then
@@ -75,4 +77,3 @@ printf '\nResumen: %d fallos, %d advertencias\n' "$failures" "$warnings"
 if [[ "$failures" -gt 0 && "$advisory" -eq 0 ]]; then
   exit 1
 fi
-

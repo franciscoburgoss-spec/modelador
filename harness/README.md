@@ -25,15 +25,16 @@ npm run test:lab
 npm run test:coverage
 npm run lint
 npm run format:check
+npm run verify:goldens
 npm run audit:dxf
 npm run smoke:ccx
 npm run build
 npm run validate
 ```
 
-Los comandos disponibles en fase 0 forman parte de `npm run validate`. `audit:dxf` y `smoke:ccx`
-se incorporan en `SPEC-003`, cuando existan los fixtures y arneses correspondientes. Ningún comando
-de validación abre interfaces, modifica fixtures ni depende de rutas personales.
+Los goldens y `audit:dxf` se incorporaron en `SPEC-003-B`; `smoke:ccx` se incorpora en el corte C.
+Antes de la primera auditoría se ejecuta `npm run setup:verification-python`. Ningún comando de
+validación abre interfaces, modifica fixtures ni depende de rutas personales.
 
 El conjunto de referencia de `SPEC-003` cubre JSON y CSV semánticos; planta y fundaciones DXF;
 framing, OSB y cerchas en R12/A3; e INP global, de cerchas y de fundaciones. Los smoke INP usan los
@@ -43,6 +44,8 @@ El manifiesto de fixtures ya es parte de `npm test`. Para comprobar únicamente 
 
 ```bash
 node --test tests/fixtureManifest.test.mjs
+npm run verify:goldens
+npm run audit:dxf
 ```
 
 ## Evidencia

@@ -20,6 +20,10 @@
     "verify:migration": "node scripts/migration-manifest.mjs",
     "verify:artifacts": "node scripts/check-artifacts.mjs",
     "verify:derived": "node scripts/check-derived-contract.mjs",
+    "verify:goldens": "node scripts/verify-artifact-goldens.mjs",
+    "update:goldens": "node scripts/verify-artifact-goldens.mjs --write",
+    "setup:verification-python": "bash scripts/setup-verification-python.sh",
+    "audit:dxf": "node scripts/audit-dxf.mjs",
     "validate": "npm run format:check && npm run lint && npm test && npm run test:lab && npm run test:coverage && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
   },
   "dependencies": {

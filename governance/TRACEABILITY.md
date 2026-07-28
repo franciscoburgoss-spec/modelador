@@ -19,7 +19,7 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-DOM-002 | R4–R8 completan catálogo, roles, encuentros, checks e informe | R-005 | legado D-016–033 + gobernanza D-018–029 | SPEC-R4 + SPEC-R5 + SPEC-R6 + SPEC-R7 + SPEC-R8 | cierres `SPEC-R4-A/B/C`, `SPEC-R5-A/B/C`, `SPEC-R6-A/B/C`, `SPEC-R7-A/B/C`, `SPEC-R8-A/B/C`; pruebas R8 16/16; cuatro DXF A3 0/0 | G4 | Verificado |
 | REQ-TST-001 | Existe fixture con planta y perfiles distintos | R-006 | D-030 | SPEC-003-A | `fixtures.manifest.json` + `fixtureManifest.test.mjs`: FX-003 independiente, X/Y, 3 puertas, 3 ventanas y perfiles 60/90 | G4 | Verificado |
 | REQ-TST-002 | Existe fixture guardado con `roofPlanes` | R-006 | D-007/D-030 | SPEC-003-A | FX-004 v2: roundtrip preserva faldón y reproduce 1 sistema / 2 ledgers derivados | G4 | Verificado |
-| REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | D-030 | SPEC-003-B | R8-C verifica cuatro variantes A3 0/0; `audit:dxf` cubrirá las ocho familias de referencia | G4 | En curso |
+| REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | D-030 | SPEC-003-B | `artifactGoldens.test.mjs` + `artifacts/<commit>/audit-dxf.json`: 8 familias, 9 archivos, 0 errores / 0 reparaciones con ezdxf 1.4.4 | G4 | Verificado |
 | REQ-CCX-001 | INP de referencia ejecuta y converge en CCX | R-007 | D-011/D-030 | SPEC-003-C/004 | tres jobs con IDs persistidos + reporte y parser finito | G5 | Pendiente |
 | REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010 | SPEC-004 | kill test + comparación | G6 | Pendiente |
 | REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010 | SPEC-004 | rotación y recovery test | G6 | Pendiente |

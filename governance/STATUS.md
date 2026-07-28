@@ -9,21 +9,22 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — `SPEC-003-B` artefactos |
+| Etapa | Arnés de verificación — `SPEC-003-C` solver, precondición pendiente |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `specs/SPEC-003-verification-harness.md`; corte activo **B — Artefactos** |
-| Suite oficial | 704/704; laboratorio 35/35 |
+| Suite oficial | 708/708; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 701,70 kB |
-| Cobertura | core 93,13 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
-| Toolchain de verificación | Node 22.23.1; Python 3.14.5 sin `ezdxf` reproducible; CalculiX 2.23 disponible |
+| Cobertura | core 93,45 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
+| Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23 disponible |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | DXF R8-C | 4 láminas A3 AC1015 representativas, 0 errores / 0 reparaciones |
+| DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno para implementar `SPEC-003-B`; los cortes C–E quedan bloqueados por orden |
+| Bloqueo actual | Antes de ejecutar `SPEC-003-C`, decidir y documentar cómo completar las propiedades mecánicas faltantes de FX-004: su INP de cerchas contiene 16 tokens no finitos |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -110,6 +111,9 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   versión, propósito, cobertura e invariantes ejecutables. FX-003 aporta seis muros independientes,
   perfiles 60/90 y seis vanos; FX-004 aporta un `roofPlane` v2 resoluble que deriva un sistema,
   seis posiciones de cercha y dos ledgers reproducibles tras roundtrip, sin persistirlos.
+- SPEC-003-B: cerrado. Dieciocho artefactos (4 JSON, 2 CSV, 9 DXF y 3 INP) tienen goldens
+  semánticos compactos y normalización explícita; `audit:dxf` usa `ezdxf` 1.4.4 desde el entorno
+  del repositorio y verifica las ocho familias completas con 0 errores / 0 reparaciones.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -127,12 +131,15 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - El INP global usa IDs persistidos dentro de nombres `ELSET`; en `casa-L` superan los 20
   caracteres que CalculiX conserva y las secciones no encuentran sus conjuntos. Seguimiento R-007
   antes de G5.
+- El INP de cerchas de FX-004 contiene 16 tokens `NaN`: sus perfiles propios tienen geometría
+  60/90 pero no `areaCm2`/inercias y sombrean el catálogo completo. El golden lo hace visible;
+  `SPEC-003-C` no puede ejecutar ese job hasta gobernar la corrección de fixture/exportador.
 - `resolveRoofPlane` intenta construir el resultado fallido con variables `let` aún no
   inicializadas cuando falta `canalWallId`; el fixture mínimo `model-v1-dual-roof` reproduce un
   `ReferenceError` si se expande. Seguimiento R-017 en un corte explícito, fuera de SPEC-003-A.
 
 ## Próximo cierre
 
-Implementar `SPEC-003-B`: normalizadores y goldens semánticos JSON/CSV/DXF/INP, entorno Python
-fijado y `audit:dxf` para las ocho familias de referencia. No ejecutar todavía CalculiX, tocar
-componentes ni subir el umbral de cobertura.
+Preparar `SPEC-003-C` resolviendo explícitamente la precondición de propiedades mecánicas de
+FX-004; después implementar los tres smoke CalculiX y el parser finito con IDs persistidos. No
+tocar Tauri, componentes ni umbrales de cobertura.

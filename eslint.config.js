@@ -42,6 +42,7 @@ export default [
       'node_modules/**',
       'playwright-report/**',
       'test-results/**',
+      '.venv-verification/**',
     ],
   },
   js.configs.recommended,

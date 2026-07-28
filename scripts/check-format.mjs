@@ -5,6 +5,7 @@ import process from 'node:process';
 const root = process.cwd();
 const ignoredDirectories = new Set([
   '.git',
+  '.venv-verification',
   '.vite',
   'artifacts',
   'coverage',

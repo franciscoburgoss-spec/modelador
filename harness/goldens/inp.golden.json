@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "format": "inp",
+  "normalizationContract": "normalization-contract.json",
+  "artifacts": [
+    {
+      "id": "inp-foundations",
+      "family": "calculix-foundations",
+      "variant": "reference-only",
+      "sourceFixture": "FX-001",
+      "filename": "fundaciones.inp",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "keywordCounts": {
+          "BEAM SECTION": 4,
+          "BOUNDARY": 1,
+          "CLOAD": 1,
+          "ELASTIC": 1,
+          "ELEMENT": 11,
+          "END STEP": 1,
+          "MATERIAL": 1,
+          "NODE": 1,
+          "NODE FILE": 1,
+          "NODE PRINT": 1,
+          "NSET": 1,
+          "SPRING": 7,
+          "STATIC": 1,
+          "STEP": 1
+        },
+        "materials": [
+          "HORMIGON"
+        ],
+        "nsets": [
+          "NFUND"
+        ],
+        "elsets": [
+          "FUND_1784817127997",
+          "FUND_1784817832731",
+          "FUND_1784817889908",
+          "FUND_1784817948237",
+          "RES_1",
+          "RES_2",
+          "RES_3",
+          "RES_4",
+          "RES_5",
+          "RES_6",
+          "RES_7"
+        ],
+        "elementTypes": {
+          "B31": 87,
+          "SPRING1": 89
+        },
+        "nodes": {
+          "count": 89,
+          "idsSha256": "8d1a687132b4d901dccb1f1a7917c5ef8d6cc0c3e578edded17429e78b85bc47",
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "minZ": -75,
+            "maxX": 14500,
+            "maxY": 5400,
+            "maxZ": -75
+          }
+        },
+        "elements": {
+          "count": 176,
+          "idsSha256": "b7d4345cfb89fa8446e5262b85ca8a026f57ad44c628303985c27ff20b994ad7",
+          "connectivitySha256": "3a94660f34e4cad65a467e006f898ea6c573234a93778a03f7aacf85befcc37c"
+        },
+        "boundaryRows": 354,
+        "loadRows": 89,
+        "nonFiniteTokens": 0,
+        "unitDeclarations": [
+          "Unidades: mm, N, MPa. Vigas B31 (seccion rectangular equivalente) + resortes SPRING1 verticales."
+        ],
+        "warnings": [],
+        "semanticSha256": "b804e60394b7c1e8901915220a7547f04d2e7e954fce0e009d49eb586c3517d0"
+      }
+    },
+    {
+      "id": "inp-global",
+      "family": "calculix-global",
+      "variant": "reference-only",
+      "sourceFixture": "FX-001",
+      "filename": "global.inp",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "keywordCounts": {
+          "BEAM SECTION": 133,
+          "ELASTIC": 2,
+          "ELEMENT": 134,
+          "MATERIAL": 2,
+          "NODE": 1,
+          "USER ELEMENT": 1
+        },
+        "materials": [
+          "ACERO_GALVANIZADO",
+          "MAT_METALCON_1784585816953"
+        ],
+        "nsets": [],
+        "elsets": [
+          "ANTEPECHOS_M1784600403613",
+          "ANTEPECHOS_M1784605101040",
+          "ANTEPECHOS_M1784607987483",
+          "ANTEPECHOS_M1784647611157",
+          "ANTEPECHOS_M1784669652371",
+          "ANTEPECHOS_M1784670218571",
+          "ANTEPECHOS_M1784753357217",
+          "ANTEPECHOS_M1784754251210",
+          "ANTEPECHOS_M1784757472733",
+          "CUERDA_INF",
+          "CUERDA_SUP",
+          "DIAGONALES",
+          "DINTELES_M1784600403613",
+          "DINTELES_M1784604634483",
+          "DINTELES_M1784605101040",
+          "DINTELES_M1784607987483",
+          "DINTELES_M1784647611157",
+          "DINTELES_M1784669652371",
+          "DINTELES_M1784670218571",
+          "DINTELES_M1784686784467",
+          "DINTELES_M1784728683761",
+          "DINTELES_M1784749705535",
+          "DINTELES_M1784749888610",
+          "DINTELES_M1784749942810",
+          "DINTELES_M1784750181891",
+          "DINTELES_M1784751024158",
+          "DINTELES_M1784751397992",
+          "DINTELES_M1784752639636",
+          "DINTELES_M1784753322528",
+          "DINTELES_M1784753357217",
+          "DINTELES_M1784754251210",
+          "DINTELES_M1784755106854",
+          "DINTELES_M1784756325325",
+          "DINTELES_M1784756728679",
+          "DINTELES_M1784757472733",
+          "DINTELES_M1784757952953",
+          "DINTELES_M1784833709805",
+          "DINTELES_M1784833709806",
+          "FUNDACIONES",
+          "MONTANTES",
+          "MONTANTES_M1784600403613",
+          "MONTANTES_M1784604634483",
+          "MONTANTES_M1784605101040",
+          "MONTANTES_M1784606313849",
+          "MONTANTES_M1784607987483",
+          "MONTANTES_M1784647611157",
+          "MONTANTES_M1784669652371",
+          "MONTANTES_M1784670218571",
+          "MONTANTES_M1784686784467",
+          "MONTANTES_M1784728640167",
+          "MONTANTES_M1784728683761",
+          "MONTANTES_M1784749661502",
+          "MONTANTES_M1784749705535",
+          "MONTANTES_M1784749888610",
+          "MONTANTES_M1784749942810",
+          "MONTANTES_M1784750181891",
+          "MONTANTES_M1784750954119",
+          "MONTANTES_M1784751024158",
+          "MONTANTES_M1784751397992",
+          "MONTANTES_M1784752583321",
+          "MONTANTES_M1784752639636",
+          "MONTANTES_M1784753322528",
+          "MONTANTES_M1784753357217",
+          "MONTANTES_M1784754251210",
+          "MONTANTES_M1784754427246",
+          "MONTANTES_M1784755083288",
+          "MONTANTES_M1784755106854",
+          "MONTANTES_M1784755505070",
+          "MONTANTES_M1784756325325",
+          "MONTANTES_M1784756626924",
+          "MONTANTES_M1784756700772",
+          "MONTANTES_M1784756728679",
+          "MONTANTES_M1784757406814",
+          "MONTANTES_M1784757439976",
+          "MONTANTES_M1784757472733",
+          "MONTANTES_M1784757952953",
+          "MONTANTES_M1784759799178",
+          "MONTANTES_M1784759848518",
+          "MONTANTES_M1784818076062",
+          "MONTANTES_M1784819708086",
+          "MONTANTES_M1784820397268",
+          "MONTANTES_M1784833573291",
+          "MONTANTES_M1784833573292",
+          "MONTANTES_M1784833709805",
+          "MONTANTES_M1784833709806",
+          "SOLERAS_M1784600403613",
+          "SOLERAS_M1784604634483",
+          "SOLERAS_M1784605101040",
+          "SOLERAS_M1784606313849",
+          "SOLERAS_M1784607987483",
+          "SOLERAS_M1784647611157",
+          "SOLERAS_M1784669652371",
+          "SOLERAS_M1784670218571",
+          "SOLERAS_M1784686784467",
+          "SOLERAS_M1784728640167",
+          "SOLERAS_M1784728683761",
+          "SOLERAS_M1784749661502",
+          "SOLERAS_M1784749705535",
+          "SOLERAS_M1784749888610",
+          "SOLERAS_M1784749942810",
+          "SOLERAS_M1784750181891",
+          "SOLERAS_M1784750954119",
+          "SOLERAS_M1784751024158",
+          "SOLERAS_M1784751397992",
+          "SOLERAS_M1784752583321",
+          "SOLERAS_M1784752639636",
+          "SOLERAS_M1784753322528",
+          "SOLERAS_M1784753357217",
+          "SOLERAS_M1784754251210",
+          "SOLERAS_M1784754427246",
+          "SOLERAS_M1784755083288",
+          "SOLERAS_M1784755106854",
+          "SOLERAS_M1784755505070",
+          "SOLERAS_M1784756325325",
+          "SOLERAS_M1784756626924",
+          "SOLERAS_M1784756700772",
+          "SOLERAS_M1784756728679",
+          "SOLERAS_M1784757406814",
+          "SOLERAS_M1784757439976",
+          "SOLERAS_M1784757472733",
+          "SOLERAS_M1784757952953",
+          "SOLERAS_M1784759799178",
+          "SOLERAS_M1784759848518",
+          "SOLERAS_M1784818076062",
+          "SOLERAS_M1784819708086",
+          "SOLERAS_M1784820397268",
+          "SOLERAS_M1784833573291",
+          "SOLERAS_M1784833573292",
+          "SOLERAS_M1784833709805",
+          "SOLERAS_M1784833709806"
+        ],
+        "elementTypes": {
+          "B31": 4,
+          "U1": 1042
+        },
+        "nodes": {
+          "count": 1384,
+          "idsSha256": "a3b6c2157fbf557eb1c56ca19a6acb9879c824713cbf62a05fc689fd51fd1d84",
+          "extents": {
+            "minX": 0,
+            "minY": 0,
+            "minZ": 450,
+            "maxX": 29300,
+            "maxY": 18750,
+            "maxZ": 4750
+          }
+        },
+        "elements": {
+          "count": 1046,
+          "idsSha256": "5640abcd6581dd68b0731b4fae0a2f21b916f3890df5070f26da330a182e02b5",
+          "connectivitySha256": "437bcdcc5db8e245dbbbe1a4a1338934021bf1a4060798ce46b0ad853bf1221a"
+        },
+        "boundaryRows": 0,
+        "loadRows": 0,
+        "nonFiniteTokens": 0,
+        "unitDeclarations": [
+          "Unidades: mm (coordenadas), consistentes con Newtons/MPa si se agregan cargas/materiales en esas unidades."
+        ],
+        "warnings": [],
+        "semanticSha256": "d5014751a86fac327c8536eb3d9fbc83759602bee7b860d29e30015264970278"
+      }
+    },
+    {
+      "id": "inp-truss",
+      "family": "calculix-truss",
+      "variant": "reference-only",
+      "sourceFixture": "FX-004",
+      "filename": "cerchas.inp",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "keywordCounts": {
+          "BEAM SECTION": 4,
+          "BOUNDARY": 2,
+          "CLOAD": 1,
+          "EL FILE": 1,
+          "ELASTIC": 1,
+          "ELEMENT": 4,
+          "END STEP": 1,
+          "MATERIAL": 1,
+          "NODE": 1,
+          "NODE FILE": 1,
+          "STATIC": 1,
+          "STEP": 1,
+          "USER ELEMENT": 1
+        },
+        "materials": [
+          "ACERO_GALVANIZADO"
+        ],
+        "nsets": [],
+        "elsets": [
+          "CUERDA_INF",
+          "CUERDA_SUP",
+          "DIAGONALES",
+          "MONTANTES"
+        ],
+        "elementTypes": {
+          "U1": 22
+        },
+        "nodes": {
+          "count": 13,
+          "idsSha256": "79df609df996249165955441ee54cef9fe088083caa61c5cb43bd484b1541829",
+          "extents": {
+            "minX": 2430,
+            "minY": 45,
+            "minZ": 2550,
+            "maxX": 2430,
+            "maxY": 3155,
+            "maxZ": 3315
+          }
+        },
+        "elements": {
+          "count": 22,
+          "idsSha256": "8c85407c541239a092222b53cd471b470a31448161b08b73f8584b6f314c233b",
+          "connectivitySha256": "b63d725d335d74f6de072d7a67ca4a467ea03f6d4ba87991b2e4f7916a6ac412"
+        },
+        "boundaryRows": 42,
+        "loadRows": 6,
+        "nonFiniteTokens": 16,
+        "unitDeclarations": [
+          "Unidades: mm, N, MPa. Vigas U1 (2 nodos, nudos rigidos). Modelo PLANO resuelto en 3D."
+        ],
+        "warnings": [
+          "ADVERTENCIA: sistema FX4-RP-01__t0: el sistema no tiene costaneras — la carga se reparte en los nudos de la cuerda superior"
+        ],
+        "semanticSha256": "92054bf2fd77e446c11355586e15e97f887c2d80e52359055840ca854a64cf0c"
+      }
+    }
+  ]
+}

@@ -10,6 +10,7 @@ coverage/
 .env.*
 !.env.example
 .venv/
+.venv-verification/
 __pycache__/
 *.pyc
 target/
@@ -19,4 +20,3 @@ test-results/
 playwright-report/
 projects/
 recovery/
-

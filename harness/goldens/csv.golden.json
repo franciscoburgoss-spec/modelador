@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "format": "csv",
+  "normalizationContract": "normalization-contract.json",
+  "artifacts": [
+    {
+      "id": "csv-fx003-takeoff",
+      "family": "takeoff",
+      "variant": "generated",
+      "sourceFixture": "FX-003",
+      "filename": "fx-003-metrado.csv",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "status": "VIGENTE",
+        "columns": [
+          "Tipo",
+          "Sección",
+          "Cantidad",
+          "ml",
+          "m2",
+          "m3",
+          "Advertencias",
+          "Estado derivados"
+        ],
+        "rows": [
+          {
+            "Tipo": "Muro",
+            "Sección": "Personalizado",
+            "Cantidad": 6,
+            "ml": 39.6,
+            "m2": 110.8,
+            "m3": 9.235,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "OSB",
+            "Sección": "Placa 1200x2400 mm",
+            "Cantidad": 10,
+            "ml": 0,
+            "m2": 28.8,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "OSB",
+            "Sección": "Placa 1220x2440 mm",
+            "Cantidad": 37,
+            "ml": 0,
+            "m2": 110.142,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Montante bajo dintel",
+            "Cantidad": 4,
+            "ml": 8.2,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Montante jamba",
+            "Cantidad": 4,
+            "ml": 9.6,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Montante relleno",
+            "Cantidad": 23,
+            "ml": 55.2,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Montante sobre dintel",
+            "Cantidad": 6,
+            "ml": 2.1,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Pilar conformado esquina/T",
+            "Cantidad": 5,
+            "ml": 12,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "62C085 — Dintel",
+            "Cantidad": 2,
+            "ml": 1.6,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Cadeneta",
+            "Cantidad": 51,
+            "ml": 25.91,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Montante bajo antepecho",
+            "Cantidad": 10,
+            "ml": 9.3,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Montante bajo dintel",
+            "Cantidad": 8,
+            "ml": 16,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Montante jamba",
+            "Cantidad": 8,
+            "ml": 26.4,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Montante relleno",
+            "Cantidad": 31,
+            "ml": 102.3,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Montante sobre dintel",
+            "Cantidad": 13,
+            "ml": 16.9,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Pilar conformado esquina/T",
+            "Cantidad": 11,
+            "ml": 36.3,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "92C085 — Antepecho",
+            "Cantidad": 3,
+            "ml": 4.1,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "92C085 — Dintel",
+            "Cantidad": 4,
+            "ml": 5,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          }
+        ],
+        "annex": {
+          "% de pérdida": [
+            13.46
+          ],
+          "Ahorro (placas)": [
+            3,
+            "6.0%"
+          ],
+          "Despuntes reutilizables": [
+            19,
+            "15.217 m2"
+          ],
+          "m2 comprados": [
+            138.942
+          ],
+          "m2 usados": [
+            120.24
+          ],
+          "Merma no recuperable (m2)": [
+            3.485
+          ],
+          "Placas a comprar": [
+            47
+          ],
+          "Placas sin optimizar (muro por muro)": [
+            50
+          ],
+          "title": "Reporte de compra OSB"
+        },
+        "rowCount": 18,
+        "units": [
+          "Cantidad",
+          "ml",
+          "m2",
+          "m3"
+        ],
+        "semanticSha256": "b3a1f2cf4a0a0b0c4418b279ac05253282cb157c88a1325de7945dcc5f39b3c8"
+      }
+    },
+    {
+      "id": "csv-fx004-takeoff",
+      "family": "takeoff",
+      "variant": "generated",
+      "sourceFixture": "FX-004",
+      "filename": "fx-004-metrado.csv",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "status": "VIGENTE",
+        "columns": [
+          "Tipo",
+          "Sección",
+          "Cantidad",
+          "ml",
+          "m2",
+          "m3",
+          "Advertencias",
+          "Estado derivados"
+        ],
+        "rows": [
+          {
+            "Tipo": "Muro",
+            "Sección": "Personalizado",
+            "Cantidad": 4,
+            "ml": 18.4,
+            "m2": 66.24,
+            "m3": 5.27,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "OSB",
+            "Sección": "Placa 1200x2400 mm",
+            "Cantidad": 9,
+            "ml": 0,
+            "m2": 25.92,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "OSB",
+            "Sección": "Placa 1220x2440 mm",
+            "Cantidad": 18,
+            "ml": 0,
+            "m2": 53.582,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Cadeneta",
+            "Cantidad": 16,
+            "ml": 5.716,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Montante relleno",
+            "Cantidad": 14,
+            "ml": 50.4,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "60CA085 — Pilar conformado esquina/T",
+            "Cantidad": 4,
+            "ml": 14.4,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Cadeneta",
+            "Cantidad": 20,
+            "ml": 11.164,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Montante relleno",
+            "Cantidad": 18,
+            "ml": 64.8,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Tabiquería",
+            "Sección": "90CA085 — Pilar conformado esquina/T",
+            "Cantidad": 4,
+            "ml": 14.4,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Techumbre",
+            "Sección": "35OMA085",
+            "Cantidad": 6,
+            "ml": 35.64,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Techumbre",
+            "Sección": "40CA085",
+            "Cantidad": 36,
+            "ml": 18.024,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Techumbre",
+            "Sección": "60CA085",
+            "Cantidad": 30,
+            "ml": 23.507,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          },
+          {
+            "Tipo": "Techumbre",
+            "Sección": "90CA085",
+            "Cantidad": 14,
+            "ml": 48.286,
+            "m2": 0,
+            "m3": 0,
+            "Advertencias": 0,
+            "Estado derivados": "VIGENTE"
+          }
+        ],
+        "annex": {
+          "% de pérdida": [
+            16.95
+          ],
+          "Ahorro (placas)": [
+            1,
+            "3.6%"
+          ],
+          "Despuntes reutilizables": [
+            12,
+            "11.721 m2"
+          ],
+          "m2 comprados": [
+            79.502
+          ],
+          "m2 usados": [
+            66.024
+          ],
+          "Merma no recuperable (m2)": [
+            1.758
+          ],
+          "Placas a comprar": [
+            27
+          ],
+          "Placas sin optimizar (muro por muro)": [
+            28
+          ],
+          "title": "Reporte de compra OSB"
+        },
+        "rowCount": 13,
+        "units": [
+          "Cantidad",
+          "ml",
+          "m2",
+          "m3"
+        ],
+        "semanticSha256": "865b73245b681abfc011b7ee795adfd53176f6dbe8542b71b0c43740c2c3c0bb"
+      }
+    }
+  ]
+}

@@ -23,7 +23,11 @@
         "resolvableWallCount": 45,
         "bounds": { "minX": 0, "minY": 0, "maxX": 29300, "maxY": 18750 }
       },
-      "goldenOutputs": []
+      "goldenOutputs": [
+        "dxf-foundations-1",
+        "inp-foundations",
+        "inp-global"
+      ]
     },
     {
       "id": "FX-002",
@@ -71,7 +75,18 @@
         "resolvableWallCount": 6,
         "bounds": { "minX": 0, "minY": 0, "maxX": 8000, "maxY": 6000 }
       },
-      "goldenOutputs": []
+      "goldenOutputs": [
+        "csv-fx003-takeoff",
+        "dxf-framing-a3-1",
+        "dxf-framing-r12",
+        "dxf-osb-a3-1",
+        "dxf-osb-a3-2",
+        "dxf-osb-r12",
+        "dxf-plan",
+        "json-fx003-derived-fresh",
+        "json-fx003-derived-stale",
+        "json-fx003-roundtrip"
+      ]
     },
     {
       "id": "FX-004",
@@ -99,7 +114,13 @@
         "roofSystemCount": 1,
         "ledgerCount": 2
       },
-      "goldenOutputs": []
+      "goldenOutputs": [
+        "csv-fx004-takeoff",
+        "dxf-truss-a3-1",
+        "dxf-truss-r12",
+        "inp-truss",
+        "json-fx004-roundtrip"
+      ]
     },
     {
       "id": "FX-005-V0",

@@ -1,0 +1,1212 @@
+{
+  "schemaVersion": 1,
+  "format": "json",
+  "normalizationContract": "normalization-contract.json",
+  "artifacts": [
+    {
+      "id": "json-fx003-derived-fresh",
+      "family": "json-derived-state",
+      "variant": "fresh",
+      "sourceFixture": "FX-003",
+      "filename": "fx-003-derived-fresh.json",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "modelVersion": 2,
+        "semanticSha256": "2c2d739822afea34fb48731cdfce6603a94d544c31105db05fe705f5f10d130c",
+        "axes": {
+          "x": [
+            {
+              "id": "FX3-X0",
+              "position": 0,
+              "label": "1"
+            },
+            {
+              "id": "FX3-X1",
+              "position": 2400,
+              "label": "2"
+            },
+            {
+              "id": "FX3-X2",
+              "position": 5000,
+              "label": "3"
+            },
+            {
+              "id": "FX3-X3",
+              "position": 8000,
+              "label": "4"
+            }
+          ],
+          "y": [
+            {
+              "id": "FX3-Y0",
+              "position": 0,
+              "label": "A"
+            },
+            {
+              "id": "FX3-Y1",
+              "position": 3000,
+              "label": "B"
+            },
+            {
+              "id": "FX3-Y2",
+              "position": 6000,
+              "label": "C"
+            }
+          ],
+          "z": [
+            {
+              "id": "FX3-Z0",
+              "elevation": 0,
+              "label": "Fundación"
+            },
+            {
+              "id": "FX3-Z1",
+              "elevation": 2400,
+              "label": "Cielo"
+            },
+            {
+              "id": "FX3-Z2",
+              "elevation": 3300,
+              "label": "Coronación"
+            }
+          ]
+        },
+        "units": {
+          "geometry": "mm",
+          "parameters": []
+        },
+        "counts": {
+          "elements": {
+            "wall": 6
+          },
+          "openings": {
+            "door": 3,
+            "window": 3
+          },
+          "wallTypes": 2,
+          "profiles": 4,
+          "roofPlanes": 0,
+          "roofSystemsPersisted": 0
+        },
+        "references": {
+          "walls": [
+            {
+              "id": "FX3-W-SUR",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X0",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y0",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-ESTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X3",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-NORTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X3",
+              "xEnd": "FX3-X0",
+              "yStart": "FX3-Y2",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-OESTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X0",
+              "xEnd": "FX3-X0",
+              "yStart": "FX3-Y2",
+              "yEnd": "FX3-Y0",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-INTERIOR-X",
+              "wallTypeId": "FX3-T60",
+              "xStart": "FX3-X1",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y1",
+              "yEnd": "FX3-Y1",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z1",
+              "framingStudProfileId": "FX3-C60",
+              "framingTrackProfileId": "FX3-U60"
+            },
+            {
+              "id": "FX3-W-INTERIOR-Y",
+              "wallTypeId": "FX3-T60",
+              "xStart": "FX3-X1",
+              "xEnd": "FX3-X1",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z1",
+              "framingStudProfileId": "FX3-C60",
+              "framingTrackProfileId": "FX3-U60"
+            }
+          ],
+          "wallTypes": [
+            {
+              "id": "FX3-T90",
+              "role": "MP1",
+              "studProfileId": "FX3-C90",
+              "trackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-T60",
+              "role": "tabique",
+              "studProfileId": "FX3-C60",
+              "trackProfileId": "FX3-U60"
+            }
+          ],
+          "roofPlanes": []
+        },
+        "magnitudes": {
+          "wallThickness": [
+            {
+              "id": "FX3-W-SUR",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-ESTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-NORTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-OESTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-INTERIOR-X",
+              "value": 60
+            },
+            {
+              "id": "FX3-W-INTERIOR-Y",
+              "value": 60
+            }
+          ],
+          "openingWidths": [
+            {
+              "id": "FX3-O-PUERTA-ACCESO",
+              "value": 900
+            },
+            {
+              "id": "FX3-O-VENTANA-ESTAR",
+              "value": 1400
+            },
+            {
+              "id": "FX3-O-VENTANA-COCINA",
+              "value": 1200
+            },
+            {
+              "id": "FX3-O-VENTANA-DORMITORIO",
+              "value": 1500
+            },
+            {
+              "id": "FX3-O-PUERTA-COCINA",
+              "value": 800
+            },
+            {
+              "id": "FX3-O-PUERTA-DORMITORIO",
+              "value": 800
+            }
+          ],
+          "roofPlanePolygons": []
+        },
+        "derived": [
+          {
+            "wallId": "FX3-W-SUR",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "cripple": 3,
+              "crippleTop": 6,
+              "jack": 4,
+              "king": 4,
+              "nogging": 16,
+              "stud": 8
+            },
+            "studLengthMm": 68408,
+            "headers": 3,
+            "osbPanels": 18,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-ESTE",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "cripple": 3,
+              "crippleTop": 3,
+              "jack": 2,
+              "king": 2,
+              "nogging": 10,
+              "stud": 5
+            },
+            "studLengthMm": 44480,
+            "headers": 2,
+            "osbPanels": 12,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-NORTE",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "cripple": 4,
+              "crippleTop": 4,
+              "jack": 2,
+              "king": 2,
+              "nogging": 15,
+              "stud": 9
+            },
+            "studLengthMm": 59570,
+            "headers": 2,
+            "osbPanels": 18,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-OESTE",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 2,
+              "nogging": 10,
+              "stud": 9
+            },
+            "studLengthMm": 36680,
+            "headers": 0,
+            "osbPanels": 10,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-INTERIOR-X",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 2,
+              "crippleTop": 3,
+              "jack": 2,
+              "king": 2,
+              "stud": 11
+            },
+            "studLengthMm": 41150,
+            "headers": 1,
+            "osbPanels": 5,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-INTERIOR-Y",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "crippleTop": 3,
+              "jack": 2,
+              "king": 2,
+              "stud": 12
+            },
+            "studLengthMm": 45950,
+            "headers": 1,
+            "osbPanels": 5,
+            "osbAreaMm2": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "json-fx003-derived-stale",
+      "family": "json-derived-state",
+      "variant": "stale",
+      "sourceFixture": "FX-003",
+      "filename": "fx-003-derived-stale.json",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "modelVersion": 2,
+        "semanticSha256": "dfcd61b8075cd205266f923800fb9c5bb777ba7ce39bca6bb4c9f7594b9cff78",
+        "axes": {
+          "x": [
+            {
+              "id": "FX3-X0",
+              "position": 0,
+              "label": "1"
+            },
+            {
+              "id": "FX3-X1",
+              "position": 2400,
+              "label": "2"
+            },
+            {
+              "id": "FX3-X2",
+              "position": 5000,
+              "label": "3"
+            },
+            {
+              "id": "FX3-X3",
+              "position": 8000,
+              "label": "4"
+            }
+          ],
+          "y": [
+            {
+              "id": "FX3-Y0",
+              "position": 0,
+              "label": "A"
+            },
+            {
+              "id": "FX3-Y1",
+              "position": 3000,
+              "label": "B"
+            },
+            {
+              "id": "FX3-Y2",
+              "position": 6000,
+              "label": "C"
+            }
+          ],
+          "z": [
+            {
+              "id": "FX3-Z0",
+              "elevation": 0,
+              "label": "Fundación"
+            },
+            {
+              "id": "FX3-Z1",
+              "elevation": 2400,
+              "label": "Cielo"
+            },
+            {
+              "id": "FX3-Z2",
+              "elevation": 3300,
+              "label": "Coronación"
+            }
+          ]
+        },
+        "units": {
+          "geometry": "mm",
+          "parameters": []
+        },
+        "counts": {
+          "elements": {
+            "wall": 6
+          },
+          "openings": {
+            "door": 3,
+            "window": 3
+          },
+          "wallTypes": 2,
+          "profiles": 4,
+          "roofPlanes": 0,
+          "roofSystemsPersisted": 0
+        },
+        "references": {
+          "walls": [
+            {
+              "id": "FX3-W-SUR",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X0",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y0",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-ESTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X3",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-NORTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X3",
+              "xEnd": "FX3-X0",
+              "yStart": "FX3-Y2",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-OESTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X0",
+              "xEnd": "FX3-X0",
+              "yStart": "FX3-Y2",
+              "yEnd": "FX3-Y0",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": "FX3-C90",
+              "framingTrackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-W-INTERIOR-X",
+              "wallTypeId": "FX3-T60",
+              "xStart": "FX3-X1",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y1",
+              "yEnd": "FX3-Y1",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z1",
+              "framingStudProfileId": "FX3-C60",
+              "framingTrackProfileId": "FX3-U60"
+            },
+            {
+              "id": "FX3-W-INTERIOR-Y",
+              "wallTypeId": "FX3-T60",
+              "xStart": "FX3-X1",
+              "xEnd": "FX3-X1",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z1",
+              "framingStudProfileId": "FX3-C60",
+              "framingTrackProfileId": "FX3-U60"
+            }
+          ],
+          "wallTypes": [
+            {
+              "id": "FX3-T90",
+              "role": "MP1",
+              "studProfileId": "FX3-C90",
+              "trackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-T60",
+              "role": "tabique",
+              "studProfileId": "FX3-C60",
+              "trackProfileId": "FX3-U60"
+            }
+          ],
+          "roofPlanes": []
+        },
+        "magnitudes": {
+          "wallThickness": [
+            {
+              "id": "FX3-W-SUR",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-ESTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-NORTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-OESTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-INTERIOR-X",
+              "value": 60
+            },
+            {
+              "id": "FX3-W-INTERIOR-Y",
+              "value": 60
+            }
+          ],
+          "openingWidths": [
+            {
+              "id": "FX3-O-PUERTA-ACCESO",
+              "value": 900
+            },
+            {
+              "id": "FX3-O-VENTANA-ESTAR",
+              "value": 1400
+            },
+            {
+              "id": "FX3-O-VENTANA-COCINA",
+              "value": 1200
+            },
+            {
+              "id": "FX3-O-VENTANA-DORMITORIO",
+              "value": 1500
+            },
+            {
+              "id": "FX3-O-PUERTA-COCINA",
+              "value": 800
+            },
+            {
+              "id": "FX3-O-PUERTA-DORMITORIO",
+              "value": 800
+            }
+          ],
+          "roofPlanePolygons": []
+        },
+        "derived": [
+          {
+            "wallId": "FX3-W-SUR",
+            "studsStale": true,
+            "osbStale": true,
+            "studRoles": {
+              "corner": 3,
+              "cripple": 3,
+              "crippleTop": 6,
+              "jack": 4,
+              "king": 4,
+              "nogging": 16,
+              "stud": 8
+            },
+            "studLengthMm": 68408,
+            "headers": 3,
+            "osbPanels": 18,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-ESTE",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "cripple": 3,
+              "crippleTop": 3,
+              "jack": 2,
+              "king": 2,
+              "nogging": 10,
+              "stud": 5
+            },
+            "studLengthMm": 44480,
+            "headers": 2,
+            "osbPanels": 12,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-NORTE",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "cripple": 4,
+              "crippleTop": 4,
+              "jack": 2,
+              "king": 2,
+              "nogging": 15,
+              "stud": 9
+            },
+            "studLengthMm": 59570,
+            "headers": 2,
+            "osbPanels": 18,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-OESTE",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 2,
+              "nogging": 10,
+              "stud": 9
+            },
+            "studLengthMm": 36680,
+            "headers": 0,
+            "osbPanels": 10,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-INTERIOR-X",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 2,
+              "crippleTop": 3,
+              "jack": 2,
+              "king": 2,
+              "stud": 11
+            },
+            "studLengthMm": 41150,
+            "headers": 1,
+            "osbPanels": 5,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-INTERIOR-Y",
+            "studsStale": false,
+            "osbStale": false,
+            "studRoles": {
+              "corner": 3,
+              "crippleTop": 3,
+              "jack": 2,
+              "king": 2,
+              "stud": 12
+            },
+            "studLengthMm": 45950,
+            "headers": 1,
+            "osbPanels": 5,
+            "osbAreaMm2": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "json-fx003-roundtrip",
+      "family": "json-roundtrip",
+      "variant": "persisted",
+      "sourceFixture": "FX-003",
+      "filename": "fx-003-roundtrip.json",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "modelVersion": 2,
+        "semanticSha256": "7120d10adcae458a83d33b2c39c60ea6661d4188b87e38d26ef95bbb76396c32",
+        "axes": {
+          "x": [
+            {
+              "id": "FX3-X0",
+              "position": 0,
+              "label": "1"
+            },
+            {
+              "id": "FX3-X1",
+              "position": 2400,
+              "label": "2"
+            },
+            {
+              "id": "FX3-X2",
+              "position": 5000,
+              "label": "3"
+            },
+            {
+              "id": "FX3-X3",
+              "position": 8000,
+              "label": "4"
+            }
+          ],
+          "y": [
+            {
+              "id": "FX3-Y0",
+              "position": 0,
+              "label": "A"
+            },
+            {
+              "id": "FX3-Y1",
+              "position": 3000,
+              "label": "B"
+            },
+            {
+              "id": "FX3-Y2",
+              "position": 6000,
+              "label": "C"
+            }
+          ],
+          "z": [
+            {
+              "id": "FX3-Z0",
+              "elevation": 0,
+              "label": "Fundación"
+            },
+            {
+              "id": "FX3-Z1",
+              "elevation": 2400,
+              "label": "Cielo"
+            },
+            {
+              "id": "FX3-Z2",
+              "elevation": 3300,
+              "label": "Coronación"
+            }
+          ]
+        },
+        "units": {
+          "geometry": "mm",
+          "parameters": []
+        },
+        "counts": {
+          "elements": {
+            "wall": 6
+          },
+          "openings": {
+            "door": 3,
+            "window": 3
+          },
+          "wallTypes": 2,
+          "profiles": 4,
+          "roofPlanes": 0,
+          "roofSystemsPersisted": 0
+        },
+        "references": {
+          "walls": [
+            {
+              "id": "FX3-W-SUR",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X0",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y0",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX3-W-ESTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X3",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX3-W-NORTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X3",
+              "xEnd": "FX3-X0",
+              "yStart": "FX3-Y2",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX3-W-OESTE",
+              "wallTypeId": "FX3-T90",
+              "xStart": "FX3-X0",
+              "xEnd": "FX3-X0",
+              "yStart": "FX3-Y2",
+              "yEnd": "FX3-Y0",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z2",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX3-W-INTERIOR-X",
+              "wallTypeId": "FX3-T60",
+              "xStart": "FX3-X1",
+              "xEnd": "FX3-X3",
+              "yStart": "FX3-Y1",
+              "yEnd": "FX3-Y1",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z1",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX3-W-INTERIOR-Y",
+              "wallTypeId": "FX3-T60",
+              "xStart": "FX3-X1",
+              "xEnd": "FX3-X1",
+              "yStart": "FX3-Y0",
+              "yEnd": "FX3-Y2",
+              "bottomZ": "FX3-Z0",
+              "topZ": "FX3-Z1",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            }
+          ],
+          "wallTypes": [
+            {
+              "id": "FX3-T90",
+              "role": "MP1",
+              "studProfileId": "FX3-C90",
+              "trackProfileId": "FX3-U90"
+            },
+            {
+              "id": "FX3-T60",
+              "role": "tabique",
+              "studProfileId": "FX3-C60",
+              "trackProfileId": "FX3-U60"
+            }
+          ],
+          "roofPlanes": []
+        },
+        "magnitudes": {
+          "wallThickness": [
+            {
+              "id": "FX3-W-SUR",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-ESTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-NORTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-OESTE",
+              "value": 90
+            },
+            {
+              "id": "FX3-W-INTERIOR-X",
+              "value": 60
+            },
+            {
+              "id": "FX3-W-INTERIOR-Y",
+              "value": 60
+            }
+          ],
+          "openingWidths": [
+            {
+              "id": "FX3-O-PUERTA-ACCESO",
+              "value": 900
+            },
+            {
+              "id": "FX3-O-VENTANA-ESTAR",
+              "value": 1400
+            },
+            {
+              "id": "FX3-O-VENTANA-COCINA",
+              "value": 1200
+            },
+            {
+              "id": "FX3-O-VENTANA-DORMITORIO",
+              "value": 1500
+            },
+            {
+              "id": "FX3-O-PUERTA-COCINA",
+              "value": 800
+            },
+            {
+              "id": "FX3-O-PUERTA-DORMITORIO",
+              "value": 800
+            }
+          ],
+          "roofPlanePolygons": []
+        },
+        "derived": [
+          {
+            "wallId": "FX3-W-SUR",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-ESTE",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-NORTE",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-OESTE",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-INTERIOR-X",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX3-W-INTERIOR-Y",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "json-fx004-roundtrip",
+      "family": "json-roundtrip",
+      "variant": "persisted",
+      "sourceFixture": "FX-004",
+      "filename": "fx-004-roundtrip.json",
+      "lineEndings": "LF",
+      "terminalLineFeed": true,
+      "summary": {
+        "modelVersion": 2,
+        "semanticSha256": "d6f252743724014d177328a554c07547da48351f89787d7a67472d134b321ab7",
+        "axes": {
+          "x": [
+            {
+              "id": "FX4-X0",
+              "position": 0,
+              "label": "1"
+            },
+            {
+              "id": "FX4-X1",
+              "position": 6000,
+              "label": "2"
+            }
+          ],
+          "y": [
+            {
+              "id": "FX4-Y0",
+              "position": 0,
+              "label": "A"
+            },
+            {
+              "id": "FX4-Y1",
+              "position": 3200,
+              "label": "B"
+            }
+          ],
+          "z": [
+            {
+              "id": "FX4-Z0",
+              "elevation": 0,
+              "label": "Fundación"
+            },
+            {
+              "id": "FX4-Z-CIELO",
+              "elevation": 2450,
+              "label": "Cielo"
+            },
+            {
+              "id": "FX4-Z-CORONA",
+              "elevation": 3600,
+              "label": "Coronación"
+            }
+          ]
+        },
+        "units": {
+          "geometry": "mm",
+          "parameters": []
+        },
+        "counts": {
+          "elements": {
+            "wall": 4
+          },
+          "openings": {},
+          "wallTypes": 2,
+          "profiles": 6,
+          "roofPlanes": 1,
+          "roofSystemsPersisted": 0
+        },
+        "references": {
+          "walls": [
+            {
+              "id": "FX4-W-CANALETA",
+              "wallTypeId": "FX4-T90",
+              "xStart": "FX4-X0",
+              "xEnd": "FX4-X1",
+              "yStart": "FX4-Y0",
+              "yEnd": "FX4-Y0",
+              "bottomZ": "FX4-Z0",
+              "topZ": "FX4-Z-CORONA",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX4-W-ALTO",
+              "wallTypeId": "FX4-T90",
+              "xStart": "FX4-X1",
+              "xEnd": "FX4-X0",
+              "yStart": "FX4-Y1",
+              "yEnd": "FX4-Y1",
+              "bottomZ": "FX4-Z0",
+              "topZ": "FX4-Z-CORONA",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX4-W-LATERAL-OESTE",
+              "wallTypeId": "FX4-T60",
+              "xStart": "FX4-X0",
+              "xEnd": "FX4-X0",
+              "yStart": "FX4-Y0",
+              "yEnd": "FX4-Y1",
+              "bottomZ": "FX4-Z0",
+              "topZ": "FX4-Z-CORONA",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            },
+            {
+              "id": "FX4-W-LATERAL-ESTE",
+              "wallTypeId": "FX4-T60",
+              "xStart": "FX4-X1",
+              "xEnd": "FX4-X1",
+              "yStart": "FX4-Y1",
+              "yEnd": "FX4-Y0",
+              "bottomZ": "FX4-Z0",
+              "topZ": "FX4-Z-CORONA",
+              "framingStudProfileId": null,
+              "framingTrackProfileId": null
+            }
+          ],
+          "wallTypes": [
+            {
+              "id": "FX4-T90",
+              "role": "MP1",
+              "studProfileId": "90CA085",
+              "trackProfileId": "92C085"
+            },
+            {
+              "id": "FX4-T60",
+              "role": "tabique",
+              "studProfileId": "60CA085",
+              "trackProfileId": "62C085"
+            }
+          ],
+          "roofPlanes": [
+            {
+              "id": "FX4-RP-01",
+              "canalWallId": "FX4-W-CANALETA",
+              "supportLevelId": "FX4-Z-CIELO",
+              "templateId": "FX4-TRUSS-90",
+              "supportProfile": "90CA085",
+              "profiles": {
+                "topChord": "90CA085",
+                "bottomChord": "90CA085",
+                "post": "40CA085",
+                "diagonal": "60CA085"
+              }
+            }
+          ]
+        },
+        "magnitudes": {
+          "wallThickness": [
+            {
+              "id": "FX4-W-CANALETA",
+              "value": 90
+            },
+            {
+              "id": "FX4-W-ALTO",
+              "value": 90
+            },
+            {
+              "id": "FX4-W-LATERAL-OESTE",
+              "value": 60
+            },
+            {
+              "id": "FX4-W-LATERAL-ESTE",
+              "value": 60
+            }
+          ],
+          "openingWidths": [],
+          "roofPlanePolygons": [
+            {
+              "id": "FX4-RP-01",
+              "polygon": [
+                {
+                  "x": 0,
+                  "y": 0
+                },
+                {
+                  "x": 6000,
+                  "y": 0
+                },
+                {
+                  "x": 6000,
+                  "y": 3200
+                },
+                {
+                  "x": 0,
+                  "y": 3200
+                }
+              ]
+            }
+          ]
+        },
+        "derived": [
+          {
+            "wallId": "FX4-W-CANALETA",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX4-W-ALTO",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX4-W-LATERAL-OESTE",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          },
+          {
+            "wallId": "FX4-W-LATERAL-ESTE",
+            "studsStale": "absent",
+            "osbStale": "absent",
+            "studRoles": {},
+            "studLengthMm": 0,
+            "headers": 0,
+            "osbPanels": 0,
+            "osbAreaMm2": 0
+          }
+        ]
+      }
+    }
+  ]
+}
