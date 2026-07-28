@@ -185,7 +185,9 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `Object.hasOwn`. El bootstrap muestra un error escapado en vez de una ventana vacía y se retira
   después del primer render. Tauri mostró barra de menú, selector de vista y lienzo durante más de
   30 segundos en macOS 11.7.11 x86_64. La puerta local pasó 770 Node, 18 componentes, 9 Rust,
-  35 lab, DXF 0/0 y CCX 3/3.
+  35 lab, DXF 0/0 y CCX 3/3; el E2E externo
+  [30403943338](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30403943338)
+  pasó 1/1 sobre `f78c8404e5b9`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline

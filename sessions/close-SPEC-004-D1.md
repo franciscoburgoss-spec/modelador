@@ -54,6 +54,7 @@ persistencia, geometría, DXF, INP, permisos Tauri, dependencias ni versiones de
 | `make governance` | PASS | 20 archivos requeridos, 29 requisitos y 42 decisiones |
 | `npm run validate` | PASS | 770 Node; 18 componentes; 9 Rust; 35 lab; core 93,39 %; store 96,97 %; 18 goldens; DXF 9 archivos/8 familias, 0 errores y 0 reparaciones; CCX 3/3; build; migración 187 verificados (132 idénticos, 55 registrados, 2 fixtures) |
 | `npm run tauri:dev -- --no-watch` | PASS | aplicación completa visible >30 s en macOS 11.7.11 x86_64, sin error de bootstrap |
+| E2E externo | PASS | [run 30403943338](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30403943338), 1/1 en 2,4 s; reporte JSON/HTML por `f78c8404e5b9` |
 | Auditoría DXF | PASS | `artifacts/0f04c111e6ba/audit-dxf.json`: ezdxf 1.4.4, 0 errores / 0 reparaciones |
 | Smoke CalculiX | PASS | `artifacts/0f04c111e6ba/smoke-ccx.json`: CCX 2.23, 3/3 jobs, 1.486 nodos y 8.649 valores finitos |
 
@@ -77,6 +78,8 @@ incompatibles y reprodujo `TypeError: Object.hasOwn is not a function` en la rut
 - El chunk inicial creció a 728,17 kB raw / 226,81 kB gzip y conserva el warning mayor a 600 kB;
   sigue acotado a `SPEC-005`.
 - La línea compatible con macOS 11 mantiene el aviso futuro de `block` 0.1.6 bajo R-009.
+- Actions conserva el aviso ya registrado bajo R-011: sus acciones oficiales v4 declaran Node 20
+  y el runner las fuerza a Node 24. El E2E terminó verde y sin reintentos.
 - El smoke se terminó con `Ctrl-C`; el marcador de sesión interrumpida resultante es esperado y
   no implica un snapshot sucio.
 
