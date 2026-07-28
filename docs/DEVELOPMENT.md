@@ -5,6 +5,7 @@
 - macOS;
 - Node `22.x`;
 - npm `10.x`;
+- Rust/Cargo `1.97.1` con target `x86_64-apple-darwin`;
 - Git y Xcode Command Line Tools;
 - Python `3.14.x` para el entorno aislado de DXF;
 - CalculiX `2.23` disponible como `ccx`.
@@ -19,6 +20,7 @@ nvm install
 nvm use
 npm ci
 npm run setup:verification-python
+make doctor
 npm run validate
 ```
 
@@ -30,14 +32,18 @@ Python/CalculiX sin rutas personales.
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite oficial, 750 Node + 12 componentes |
+| `npm test` | suite oficial, 759 Node + 12 componentes |
 | `npm run test:components` | doce workflows críticos con DOM |
 | `npm run test:e2e` | build y Playwright; se ejecuta externamente en plataforma soportada |
+| `npm run test:rust` | cuatro invariantes del filesystem y configuración nativos |
 | `npm run test:lab` | laboratorio de faldones, 35 pruebas |
 | `npm run test:coverage` | umbrales separados para core y store |
 | `npm run lint` | ESLint sobre JavaScript, JSX y scripts |
 | `npm run format:check` | UTF-8, LF, whitespace, newline y JSON válido |
+| `npm run format:rust` | formato Rust sin modificar fuentes |
 | `npm run build` | bundle Vite de producción |
+| `npm run tauri:check` | compila el shell nativo y su manifiesto con `Cargo.lock` |
+| `npm run tauri:dev` | abre la aplicación Tauri; detener con `Ctrl+C` |
 | `npm run verify:migration` | hashes originales y cambios posteriores registrados por spec |
 | `npm run verify:artifacts` | ausencia de artefactos generados en el inventario |
 | `npm run verify:derived` | matriz de mutadores e inventario de guardas de exportación |
@@ -86,9 +92,13 @@ sobre `11962f3b114cd0a60262f0f21ae4a156a20855ed`: 1/1 esperado, sin reintentos.
 | ezdxf | 1.4.4, entorno `.venv-verification` |
 | Playwright | 1.62.0, Chromium externo en Ubuntu |
 | Apple Clang | 13.0.0 |
+| Rust / Cargo | 1.97.1 |
+| Tauri / API JS / CLI | 2.0.2 / 2.0.3 / 2.11.4 |
+| tauri-runtime / runtime-wry / Wry | 2.0.1 / 2.0.1 / 0.44.1 |
 
-Rust/Cargo entran cuando comience Tauri. `make doctor` comprueba `ezdxf` en el entorno fijado del
-repositorio para que una ausencia o versión distinta nunca sea silenciosa.
+`rust-toolchain.toml` fija compilador, `rustfmt` y target. `scripts/cargo.sh` carga la instalación
+estándar de rustup antes de invocar Cargo. `make doctor` comprueba Rust y `ezdxf` en el entorno
+fijado del repositorio para que una ausencia o versión distinta nunca sea silenciosa.
 
 ## Contrato de persistencia nativa
 
@@ -111,19 +121,29 @@ contrato:
 {
   fileSystem: { readText, writeTextAtomic },
   chooseOpenPath,
-  chooseSavePath
+  chooseSavePath,
+  loadRecentPaths,
+  saveRecentPaths
 }
 ```
 
-En localhost no existe todavía ese runtime: Abrir/Guardar/Guardar como aparecen deshabilitados,
+`SPEC-004-C/C1` implementa ese contrato en Tauri mediante seis comandos estrechos. En localhost
+no se publica un runtime nativo aparente: Abrir/Guardar/Guardar como aparecen deshabilitados,
 mientras `Guardar copia en navegador`, `Cargar copia del navegador` e importar/exportar JSON siguen
-operativos. Tauri implementará el runtime en el corte siguiente.
+operativos. Para probar selectores, archivos y recientes reales se debe usar:
+
+```bash
+npm run tauri:dev -- --no-watch
+```
+
+El runtime está fijado por D-040 porque Wry 0.46 o superior aborta al crear la ventana en macOS 11.
+No actualizar Tauri, sus runtimes o Wry sin repetir el smoke real en ese sistema.
 
 ## Baselines visibles
 
-- Suite: 750/750 Node; componentes: 12/12; laboratorio: 35/35.
+- Suite: 759/759 Node; componentes: 12/12; Rust: 4/4; laboratorio: 35/35.
 - Cobertura de líneas: core 93,67 %; store 96,98 %.
-- Bundle inicial: 719,32 kB raw / 223,67 kB gzip.
+- Bundle inicial: 721,29 kB raw / 224,38 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

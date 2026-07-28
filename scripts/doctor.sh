@@ -40,6 +40,12 @@ check_command npm "npm"
 check_command ccx "CalculiX"
 check_command clang "Apple Clang"
 
+if [[ -f "$HOME/.cargo/env" ]]; then
+  # rustup se instala sin modificar perfiles interactivos.
+  # shellcheck disable=SC1091
+  source "$HOME/.cargo/env"
+fi
+
 if command -v node >/dev/null 2>&1; then
   node_version="$(node -p 'process.versions.node')"
   node_major="${node_version%%.*}"

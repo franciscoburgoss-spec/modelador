@@ -36,12 +36,14 @@ import { useKeyboardShortcuts } from './core/useKeyboardShortcuts.js';
 import { useAutosave } from './core/useAutosave.js';
 import AutosaveBanner from './components/AutosaveBanner.jsx';
 import ModelImportBanner from './components/ModelImportBanner.jsx';
+import { hydrateProjectRuntimeRecents } from './adapters/projectRecentPersistence.js';
 
 export default function App({ projectRuntime = null }) {
   const [activeModal, setActiveModal] = useState(null); // 'wall' | 'column' | 'beam' | 'opening' | 'foundation' | 'grid' | 'audit' | 'validate' | 'viewer3d' | { name, ... } | null
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
   const [quickAddValues, setQuickAddValues] = useState(null);
   const canvasWrapRef = useRef(null);
+  const projectRecentsHydratedRef = useRef(false);
 
   const setViewMode = useModelStore((s) => s.setViewMode);
   const viewMode = useModelStore((s) => s.model.viewMode);
@@ -57,6 +59,8 @@ export default function App({ projectRuntime = null }) {
   const modelImportFeedback = useModelStore((s) => s.modelImportFeedback);
   const dismissModelImportFeedback = useModelStore((s) => s.dismissModelImportFeedback);
   const projectDocument = useModelStore((s) => s.projectDocument);
+  const hydrateProjectRecentPaths = useModelStore((s) => s.hydrateProjectRecentPaths);
+  const reportProjectOperationError = useModelStore((s) => s.reportProjectOperationError);
 
   useKeyboardShortcuts();
 
@@ -72,6 +76,20 @@ export default function App({ projectRuntime = null }) {
   useEffect(() => {
     document.title = `${projectDocument.dirty ? '* ' : ''}${projectDocument.title} — Modelador`;
   }, [projectDocument.dirty, projectDocument.title]);
+
+  useEffect(() => {
+    if (
+      projectRecentsHydratedRef.current
+      || typeof projectRuntime?.loadRecentPaths !== 'function'
+    ) {
+      return;
+    }
+    projectRecentsHydratedRef.current = true;
+    void hydrateProjectRuntimeRecents(projectRuntime, {
+      hydrateProjectRecentPaths,
+      reportProjectOperationError
+    });
+  }, [hydrateProjectRecentPaths, projectRuntime, reportProjectOperationError]);
 
   const autosave = useAutosave();
 

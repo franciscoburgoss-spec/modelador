@@ -114,6 +114,7 @@ test('SPEC-004-B: sin runtime nativo conserva flujos web y deshabilita sólo los
 
 test('SPEC-004-B: menú coordina abrir, dirty, guardar como y recientes', async () => {
   const writes = [];
+  const savedRecents = [];
   const saveChoices = ['/p/copia.modelador.json'];
   const runtime = {
     fileSystem: {
@@ -121,7 +122,8 @@ test('SPEC-004-B: menú coordina abrir, dirty, guardar como y recientes', async 
       writeTextAtomic: async (...args) => { writes.push(args); }
     },
     chooseOpenPath: async () => '/p/casa.modelador.json',
-    chooseSavePath: async () => saveChoices.shift() ?? null
+    chooseSavePath: async () => saveChoices.shift() ?? null,
+    saveRecentPaths: async (recentPaths) => { savedRecents.push(recentPaths); }
   };
   render(
     <MenuBar
@@ -165,6 +167,10 @@ test('SPEC-004-B: menú coordina abrir, dirty, guardar como y recientes', async 
   await waitFor(() => {
     assert.equal(screen.getByLabelText('Documento activo').textContent, 'casa.modelador.json');
   });
+  assert.deepEqual(savedRecents.at(-1), [
+    '/p/casa.modelador.json',
+    '/p/copia.modelador.json'
+  ]);
 });
 
 test('SPEC-004-B: cancelar un selector no cambia documento ni invoca filesystem', async () => {

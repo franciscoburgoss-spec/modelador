@@ -18,12 +18,27 @@ elegidas, resultados de CalculiX y cualquier texto que llegue desde un proyecto 
 - CalculiX se ejecuta con ruta y argumentos separados, directorio temporal, timeout y cancelación.
 - Los logs no incluyen contenido completo del proyecto ni datos del sistema innecesarios.
 
+## Runtime Tauri de proyectos
+
+La ventana `main` recibe únicamente seis permisos propios: elegir ruta de apertura/guardado, leer
+y escribir el proyecto, y cargar/guardar recientes. No se incorporan plugins genéricos de shell,
+filesystem, HTTP u opener. El frontend sólo envía argumentos estructurados a esos comandos.
+
+Una ruta de proyecto se autoriza únicamente cuando proviene de un selector nativo o del archivo de
+recientes previamente persistido. Lecturas y escrituras exigen coincidencia exacta con el registro
+en memoria; rutas relativas, vacías o con `..` son rechazadas antes de tocar el filesystem.
+
+La escritura crea un temporal privado junto al archivo, sincroniza sus bytes, conserva hasta diez
+copias en `.<nombre>.backups`, publica con `rename` y sincroniza el directorio. Un error de recientes
+es auxiliar y visible: nunca transforma una apertura o guardado principal exitoso en una pérdida
+silenciosa.
+
 ## Ubicaciones
 
 | Dato | Ubicación |
 |---|---|
 | Proyectos sugeridos | `~/Documents/Modelador/Proyectos` |
-| Configuración y recientes | `~/Library/Application Support/Modelador` |
+| Configuración y recientes | `<appConfigDir>/recent-projects.json`, resuelto por Tauri |
 | Autosave y recuperación | `~/Library/Application Support/Modelador/Recovery` |
 | Logs rotativos | `~/Library/Logs/Modelador` |
 | Temporales de cálculo | directorio temporal privado por ejecución |
@@ -58,4 +73,3 @@ o descartar. Ninguna opción sobrescribe el proyecto original antes de confirmar
 Los errores se muestran con operación, archivo o subsistema, causa segura y siguiente acción. El
 detalle técnico queda en log local con un identificador visible. `console.error` no constituye una
 interfaz de error de producción.
-

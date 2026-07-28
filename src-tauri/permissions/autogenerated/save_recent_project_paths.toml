@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-save-recent-project-paths"
+description = "Enables the save_recent_project_paths command without any pre-configured scope."
+commands.allow = ["save_recent_project_paths"]
+
+[[permission]]
+identifier = "deny-save-recent-project-paths"
+description = "Denies the save_recent_project_paths command without any pre-configured scope."
+commands.deny = ["save_recent_project_paths"]

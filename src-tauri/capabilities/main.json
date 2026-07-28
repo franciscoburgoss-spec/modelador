@@ -1,0 +1,20 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Acceso mínimo de la ventana principal a proyectos autorizados",
+  "local": true,
+  "windows": [
+    "main"
+  ],
+  "platforms": [
+    "macOS"
+  ],
+  "permissions": [
+    "allow-choose-open-project-path",
+    "allow-choose-save-project-path",
+    "allow-read-project-text",
+    "allow-write-project-text-atomic",
+    "allow-load-recent-project-paths",
+    "allow-save-recent-project-paths"
+  ]
+}

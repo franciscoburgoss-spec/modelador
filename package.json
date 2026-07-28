@@ -13,13 +13,18 @@
     "test": "node --test tests/*.test.mjs && npm run test:components",
     "test:components": "node --import tsx --test tests/*.component.test.jsx",
     "test:e2e": "npm run build && playwright test",
+    "test:rust": "bash scripts/cargo.sh test --manifest-path src-tauri/Cargo.toml --locked",
     "test:lab": "node --test lab/roofPlane/tests/*.test.mjs",
     "test:coverage": "npm run test:coverage:core && npm run test:coverage:store",
     "test:coverage:core": "node --test --experimental-test-coverage --test-coverage-include='src/core/**/*.js' --test-coverage-lines=90 tests/*.test.mjs",
     "test:coverage:store": "node --test --experimental-test-coverage --test-coverage-include='src/store/**/*.js' --test-coverage-lines=85 tests/*.test.mjs",
     "lint": "eslint . --max-warnings=0",
     "format:check": "node scripts/check-format.mjs",
+    "format:rust": "bash scripts/cargo.sh fmt --manifest-path src-tauri/Cargo.toml -- --check",
     "build": "vite build",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:check": "bash scripts/cargo.sh check --manifest-path src-tauri/Cargo.toml --locked",
     "verify:migration": "node scripts/migration-manifest.mjs",
     "verify:artifacts": "node scripts/check-artifacts.mjs",
     "verify:derived": "node scripts/check-derived-contract.mjs",
@@ -28,9 +33,10 @@
     "setup:verification-python": "bash scripts/setup-verification-python.sh",
     "audit:dxf": "node scripts/audit-dxf.mjs",
     "smoke:ccx": "node scripts/smoke-ccx.mjs",
-    "validate": "npm run format:check && npm run lint && npm test && npm run test:lab && npm run test:coverage && npm run verify:goldens && npm run audit:dxf && npm run smoke:ccx && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
+    "validate": "npm run format:check && npm run format:rust && npm run lint && npm test && npm run test:rust && npm run tauri:check && npm run test:lab && npm run test:coverage && npm run verify:goldens && npm run audit:dxf && npm run smoke:ccx && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
   },
   "dependencies": {
+    "@tauri-apps/api": "2.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.185.1",
@@ -40,6 +46,7 @@
   "devDependencies": {
     "@eslint/js": "9.39.2",
     "@playwright/test": "1.62.0",
+    "@tauri-apps/cli": "2.11.4",
     "@testing-library/dom": "10.4.1",
     "@testing-library/react": "16.3.2",
     "@vitejs/plugin-react": "^4.3.1",

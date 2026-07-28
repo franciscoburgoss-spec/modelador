@@ -16,6 +16,7 @@ import {
 } from '../core/modelSchema.js';
 import {
   createProjectDocument,
+  hydrateProjectDocumentRecents,
   markProjectDocumentDirty,
   openProjectDocument,
   resetProjectDocument,
@@ -1249,6 +1250,9 @@ export const useModelStore = create((set, get) => ({
     });
     return { ok: true, path: projectPath };
   },
+  hydrateProjectRecentPaths: (recentPaths) => set((state) => ({
+    projectDocument: hydrateProjectDocumentRecents(state.projectDocument, recentPaths)
+  })),
   reportProjectOperationError: (error) => projectOperationErrorResult(set, error),
   saveModel: () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(get().model));

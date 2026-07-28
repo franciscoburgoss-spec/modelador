@@ -112,8 +112,8 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 12474,
-      "workspaceSha256": "78ddc1ec62ddb65d4c8985966023628678d3177d4d17353370e7c198ef7d6b34",
+      "workspaceBytes": 13208,
+      "workspaceSha256": "32301c7c6d04d102b8b79a3ea07947d4098afcada4b8ca3c56fdf48201c4eeb9",
       "changedBy": "SPEC-004"
     },
     {
@@ -139,8 +139,8 @@
       "bytes": 16614,
       "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
       "kind": "source",
-      "workspaceBytes": 21199,
-      "workspaceSha256": "45aa23e3050199ca49085befbc8b65050f2724d8351789d936d5e8c80f1a41ff",
+      "workspaceBytes": 21839,
+      "workspaceSha256": "c2e32fa50b27ce8bb64b1199aba11b61dea421aef39ed4db5c15b25917738d1d",
       "changedBy": "SPEC-004"
     },
     {
@@ -822,7 +822,10 @@
       "path": "src/main.jsx",
       "bytes": 233,
       "sha256": "26c739b131ac4cd9501d988c6057eab42f3f72879ecc18a4fddabcc80a9dc526",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 397,
+      "workspaceSha256": "0a3c103c6bb8c104d36d78e8404358c9189a693f7b4ef2684af22b154f6162d1",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "src/render/dimensions.js",
@@ -904,8 +907,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 57045,
-      "workspaceSha256": "d1fd08c1dd0ebd5e8f29e0d59c6a54d360e98b617ef36104ec6dff42ee5a4926",
+      "workspaceBytes": 57236,
+      "workspaceSha256": "76f8bbd550edf7e27170f5de2457695673b33a1ee2b4f11597088f1115100cff",
       "changedBy": "SPEC-004"
     },
     {

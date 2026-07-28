@@ -10,8 +10,11 @@ test('SPEC-003-E: validate ejecuta todos los gates locales y nunca actualiza aut
   const commands = packageJson.scripts.validate.split(' && ');
   const required = [
     'npm run format:check',
+    'npm run format:rust',
     'npm run lint',
     'npm test',
+    'npm run test:rust',
+    'npm run tauri:check',
     'npm run test:lab',
     'npm run test:coverage',
     'npm run build',

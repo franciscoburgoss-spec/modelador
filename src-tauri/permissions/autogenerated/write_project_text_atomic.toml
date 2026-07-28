@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-write-project-text-atomic"
+description = "Enables the write_project_text_atomic command without any pre-configured scope."
+commands.allow = ["write_project_text_atomic"]
+
+[[permission]]
+identifier = "deny-write-project-text-atomic"
+description = "Denies the write_project_text_atomic command without any pre-configured scope."
+commands.deny = ["write_project_text_atomic"]

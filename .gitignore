@@ -15,6 +15,7 @@ __pycache__/
 *.pyc
 target/
 src-tauri/target/
+src-tauri/gen/
 artifacts/
 test-results/
 playwright-report/

@@ -14,6 +14,10 @@ const ignoredDirectories = new Set([
   'playwright-report',
   'test-results',
 ]);
+const ignoredGeneratedDirectories = new Set([
+  'src-tauri/gen',
+  'src-tauri/target',
+]);
 const textExtensions = new Set([
   '.css',
   '.html',
@@ -37,8 +41,15 @@ const textNames = new Set([
 async function collect(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
-    if (entry.isDirectory() && ignoredDirectories.has(entry.name)) continue;
     const absolute = path.join(directory, entry.name);
+    const relative = path.relative(root, absolute).split(path.sep).join('/');
+    if (
+      entry.isDirectory()
+      && (
+        ignoredDirectories.has(entry.name)
+        || ignoredGeneratedDirectories.has(relative)
+      )
+    ) continue;
     if (entry.isDirectory()) files.push(...await collect(absolute));
     if (entry.isFile()) {
       const extension = path.extname(entry.name);

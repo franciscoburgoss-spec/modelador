@@ -35,6 +35,7 @@ make doctor       # prerrequisitos estrictos de la estación de trabajo
 make foundation   # gobernanza + diagnóstico informativo
 npm ci             # instalación exacta desde package-lock.json
 npm run validate   # formato, lint, tests, cobertura, build y validadores
+npm run tauri:dev  # aplicación de escritorio en desarrollo
 ```
 
 La instalación de desarrollo se documenta en [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
@@ -54,5 +55,6 @@ El contrato JSON vigente y sus migraciones se documentan en
 | `archive/` | evidencia histórica; nunca es fuente de estado vigente |
 | `scripts/` | arneses ejecutables de control |
 | `src/` | aplicación React y módulos de dominio heredados |
+| `src-tauri/` | shell nativo, comandos estrechos, capabilities y filesystem seguro |
 | `tests/` | suite oficial y fixtures de regresión |
 | `lab/` | laboratorio reproducible de faldones |

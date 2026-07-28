@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 
 import {
   createProjectDocument,
+  hydrateProjectDocumentRecents,
   markProjectDocumentDirty,
   openProjectDocument,
   resetProjectDocument,
@@ -83,4 +84,27 @@ test('SPEC-004-B: dirty, open, save y reset conservan sus invariantes', () => {
     dirty: false,
     recentPaths: ['/p/casa.json', '/p/anterior.json']
   });
+});
+
+test('SPEC-004-C: hidratar recientes conserva identidad y estado sucio del documento', () => {
+  const document = createProjectDocument({
+    path: '/p/activo.modelador.json',
+    dirty: true,
+    recentPaths: ['/p/anterior.modelador.json']
+  });
+
+  assert.deepEqual(
+    hydrateProjectDocumentRecents(document, [
+      '/p/recuperado.modelador.json',
+      '/p/recuperado.modelador.json',
+      '',
+      null
+    ]),
+    {
+      path: '/p/activo.modelador.json',
+      title: 'activo.modelador.json',
+      dirty: true,
+      recentPaths: ['/p/recuperado.modelador.json']
+    }
+  );
 });

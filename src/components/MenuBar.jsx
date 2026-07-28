@@ -1,6 +1,7 @@
 // components/MenuBar.jsx
 import { useState, useRef, useEffect } from 'react';
 import { useModelStore } from '../store/useModelStore.js';
+import { persistProjectRuntimeRecents } from '../adapters/projectRecentPersistence.js';
 import { downloadDxf } from '../core/exportDxf.js';
 import { downloadFramingDxf } from '../core/exportFramingDxf.js';
 import { downloadOsbFramingDxf } from '../core/exportOsbDxf.js';
@@ -175,16 +176,31 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
     }
   };
 
+  const persistRecentsAfter = async (result) => {
+    if (!result?.ok) return;
+    await persistProjectRuntimeRecents(
+      projectRuntime,
+      useModelStore.getState().projectDocument.recentPaths,
+      { reportProjectOperationError }
+    );
+  };
+
   const handleOpenProject = () => runProjectOperation(async () => {
     const projectPath = await projectRuntime.chooseOpenPath();
-    if (projectPath) await openProjectFromPath(projectRuntime.fileSystem, projectPath);
+    if (projectPath) {
+      const result = await openProjectFromPath(projectRuntime.fileSystem, projectPath);
+      await persistRecentsAfter(result);
+    }
   });
 
   const handleSaveProjectAs = () => runProjectOperation(async () => {
     const projectPath = await projectRuntime.chooseSavePath({
       currentPath: projectDocument.path
     });
-    if (projectPath) await saveProjectToPath(projectRuntime.fileSystem, projectPath);
+    if (projectPath) {
+      const result = await saveProjectToPath(projectRuntime.fileSystem, projectPath);
+      await persistRecentsAfter(result);
+    }
   });
 
   const handleSaveProject = () => {
@@ -192,14 +208,19 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
       handleSaveProjectAs();
       return;
     }
-    runProjectOperation(() => (
-      saveProjectToPath(projectRuntime.fileSystem, projectDocument.path)
-    ));
+    runProjectOperation(async () => {
+      const result = await saveProjectToPath(
+        projectRuntime.fileSystem,
+        projectDocument.path
+      );
+      await persistRecentsAfter(result);
+    });
   };
 
-  const handleOpenRecentProject = (projectPath) => runProjectOperation(() => (
-    openProjectFromPath(projectRuntime.fileSystem, projectPath)
-  ));
+  const handleOpenRecentProject = (projectPath) => runProjectOperation(async () => {
+    const result = await openProjectFromPath(projectRuntime.fileSystem, projectPath);
+    await persistRecentsAfter(result);
+  });
 
   const canGenerateAllModulation = model.elements
     .filter((element) => element.type === 'wall')

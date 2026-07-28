@@ -27,7 +27,7 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010/D-038/D-039 | SPEC-004-A/B/004 | A: `SIGKILL` conserva SHA; B: apertura inválida no hace commit y save concurrente conserva dirty; adopción Tauri pendiente | G6 | En curso |
 | REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010/D-038 | SPEC-004-A/004 | rotación A conserva exactamente 10 backups reabribles; autosave/recovery pendiente | G6 | En curso |
 | REQ-APP-001 | La app abre desde `/Applications` sin Terminal | R-008 | D-002/D-013 | SPEC-004 | smoke instalado | G6 | Pendiente |
-| REQ-APP-002 | Runtime no realiza conexiones de red | R-008 | D-012 | SPEC-004 | capabilities/CSP + inspección | G6 | Pendiente |
+| REQ-APP-002 | Runtime no realiza conexiones de red | R-008 | D-012/D-040 | SPEC-004-C/C1/004 | C: capability de seis comandos y CSP local pasan inspección; C1 debe cerrar smoke macOS 11 | G6 | En curso |
 | REQ-CCX-002 | CCX usa comando estrecho, timeout y cancelación | R-007/R-008 | D-011 | SPEC-004 | tests Rust + smoke | G5/G6 | Pendiente |
 | REQ-UX-001 | Fallos críticos son visibles y accionables | R-012 | — | SPEC-005 | pruebas UI + smoke | G7 | Pendiente |
 | REQ-PERF-001 | Se cumplen presupuestos en el Mac objetivo | R-010 | — | SPEC-005 | benchmark fechado | G7 | Pendiente |

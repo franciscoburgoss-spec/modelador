@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-load-recent-project-paths"
+description = "Enables the load_recent_project_paths command without any pre-configured scope."
+commands.allow = ["load_recent_project_paths"]
+
+[[permission]]
+identifier = "deny-load-recent-project-paths"
+description = "Denies the load_recent_project_paths command without any pre-configured scope."
+commands.deny = ["load_recent_project_paths"]

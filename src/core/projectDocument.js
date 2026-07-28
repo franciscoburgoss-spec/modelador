@@ -56,6 +56,13 @@ export function markProjectDocumentDirty(document) {
   return { ...document, dirty: true };
 }
 
+export function hydrateProjectDocumentRecents(document, recentPaths) {
+  return {
+    ...document,
+    recentPaths: normalizeRecentPaths(recentPaths)
+  };
+}
+
 export function openProjectDocument(document, projectPath) {
   assertProjectPath(projectPath);
   return {

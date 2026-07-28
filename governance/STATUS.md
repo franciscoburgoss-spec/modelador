@@ -156,6 +156,11 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   edición mientras el snapshot se escribía. El menú expone Abrir/Guardar/Guardar como/Recientes
   mediante runtime inyectable, conserva los flujos web con etiquetas distintas y muestra título y
   `*`; las acciones nativas siguen deshabilitadas en localhost hasta conectar Tauri.
+- SPEC-004-C: sustituido por C1 después del smoke. Los seis comandos autorizados, filesystem
+  atómico, recientes y seguridad estática compilan y pasan 4 Rust + 11 JS; Tauri 2.11.5/Wry 0.55.1
+  aborta en macOS 11 antes de crear ventana al registrar un método WebKit disponible desde macOS
+  12. D-040 exige Tauri 2.0.2/runtimes 2.0.1/Wry 0.44.1 y smoke real; Wry 0.48.1
+      también reprodujo el panic y descartó el primer candidato de C1.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -178,6 +183,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Definir e implementar `SPEC-004-C` para crear el shell Tauri 2 y conectar diálogos, archivos y
-persistencia de recientes mediante capacidades/CSP mínimas. No incorporar todavía CalculiX,
-instalación en `/Applications` ni packaging de release.
+Implementar `SPEC-004-C1` para mantener el shell y sus contratos con la línea Tauri 2 compatible
+con macOS 11, y cerrar sólo después de un smoke nativo real. No incorporar todavía autosave,
+CalculiX, instalación en `/Applications` ni packaging de release.
