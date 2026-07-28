@@ -46,9 +46,9 @@ test('exportCalculix: muro con studs generados exporta ELSET de montantes y sole
 
   const library = { metalconProfiles, materials: [], columnSections: [], beamSections: [] };
   const inp = generateCalculix({ grid, elements: [wall], projectParams: [], library });
-  assert.match(inp, /ELSET=MONTANTES_MW1/);
-  assert.match(inp, /ELSET=SOLERAS_MW1/);
-  assert.match(inp, /BEAM SECTION, ELSET=MONTANTES_MW1/);
+  assert.match(inp, /ELSET=WM_W1/);
+  assert.match(inp, /ELSET=WS_W1/);
+  assert.match(inp, /BEAM SECTION, ELSET=WM_W1/);
   assert.match(inp, /MATERIAL=ACERO_GALVANIZADO/);
   assert.doesNotMatch(inp, /ADVERTENCIA/);
 });
@@ -62,7 +62,7 @@ test('exportCalculix: muro con perfiles asignados pero sin studs → advertencia
   const inp = generateCalculix({ grid, elements: [wall], projectParams: [], library });
   assert.match(inp, /ADVERTENCIA/);
   assert.match(inp, /studs vacío/);
-  assert.doesNotMatch(inp, /ELSET=MONTANTES/);
+  assert.doesNotMatch(inp, /ELSET=WM_/);
 });
 
 test('exportCalculix: muro sin perfiles asignados y sin studs se omite en silencio', () => {
@@ -136,7 +136,7 @@ test('exportCalculix: muro con framingMaterialId real → usa ese material en ve
 
   const library = { metalconProfiles, materials, columnSections: [], beamSections: [] };
   const inp = generateCalculix({ grid, elements: [wall], projectParams: [], library });
-  assert.match(inp, /BEAM SECTION, ELSET=MONTANTES_MW1, MATERIAL=MAT_METALCONZAR_3/);
+  assert.match(inp, /BEAM SECTION, ELSET=WM_W1, MATERIAL=MAT_METALCONZAR_3/);
   assert.match(inp, /203000, 0\.3/);
   assert.doesNotMatch(inp, /MATERIAL=ACERO_GALVANIZADO/);
 });
@@ -151,4 +151,99 @@ test('exportCalculix: muro sin framingMaterialId sigue usando el genérico ACERO
   const library = { metalconProfiles, materials: [], columnSections: [], beamSections: [] };
   const inp = generateCalculix({ grid, elements: [wall], projectParams: [], library });
   assert.match(inp, /MATERIAL=ACERO_GALVANIZADO/);
+});
+
+test('SPEC-003-C2: IDs largos producen ELSET determinista <=20 sin perder IDs que caben', () => {
+  const grid = baseGrid();
+  const metalconProfiles = loadedMetalconProfiles();
+  const shortWall = makeWall(metalconProfiles, { id: 1784600403613 });
+  shortWall.studs = computeStudLayout(shortWall, grid, {}, {}, { spacing: 400 }).studs;
+  const longWall = makeWall(metalconProfiles, { id: 'MURO-PERSISTENTE-EXTREMADAMENTE-LARGO' });
+  longWall.studs = computeStudLayout(longWall, grid, {}, {}, { spacing: 400 }).studs;
+  const library = { metalconProfiles, materials: [], columnSections: [], beamSections: [] };
+
+  const first = generateCalculix({
+    grid,
+    elements: [shortWall, longWall],
+    projectParams: [],
+    library
+  });
+  const second = generateCalculix({
+    grid,
+    elements: [shortWall, longWall],
+    projectParams: [],
+    library
+  });
+  const names = [...first.matchAll(/ELSET=([^,\n]+)/g)].map((match) => match[1]);
+
+  assert.equal(first, second);
+  assert.ok(names.every((name) => name.length <= 20));
+  assert.ok(names.includes('WM_1784600403613'));
+  assert.ok(names.includes('WS_1784600403613'));
+  assert.ok(names.some((name) => (
+    name.length === 20 && /^WM_[A-Z0-9]+_[A-Z0-9]{7}$/.test(name)
+  )));
+});
+
+function makeFoundation(id, overrides = {}) {
+  return {
+    id,
+    type: 'foundation',
+    foundationType: 'corrida',
+    direction: 'x',
+    fixedAxisId: 'y0',
+    startAxisId: 'x0',
+    endAxisId: 'x1',
+    levelZ: 'z0',
+    cimiento: { width: 400, depth: 600 },
+    sobrecimiento: { width: 140, height: 450 },
+    ...overrides
+  };
+}
+
+test('SPEC-003-C2: fundación sin U1 conserva B31/RECT con ID y dimensiones propias', () => {
+  const inp = generateCalculix({
+    grid: baseGrid(),
+    elements: [makeFoundation(1784817127997)],
+    projectParams: [],
+    library: {}
+  });
+  assert.match(inp, /\*ELEMENT, TYPE=B31, ELSET=F_1784817127997/);
+  assert.match(
+    inp,
+    /\*BEAM SECTION, ELSET=F_1784817127997, MATERIAL=HORMIGON_GENERICO, SECTION=RECT\n1050\.0, 400\.0\n0\.0, 0\.0, 1\.0/
+  );
+});
+
+test('SPEC-003-C2: fundaciones en global U1 usan GENERAL con rectángulos reales independientes', () => {
+  const grid = baseGrid();
+  const metalconProfiles = loadedMetalconProfiles();
+  const wall = makeWall(metalconProfiles);
+  wall.studs = computeStudLayout(wall, grid, {}, {}, { spacing: 400 }).studs;
+  const foundations = [
+    makeFoundation(1784817127997),
+    makeFoundation(1784817127998, {
+      cimiento: { width: 500, depth: 700 },
+      sobrecimiento: null
+    })
+  ];
+  const inp = generateCalculix({
+    grid,
+    elements: [wall, ...foundations],
+    projectParams: [],
+    library: { metalconProfiles, materials: [], columnSections: [], beamSections: [] }
+  });
+
+  assert.match(inp, /\*ELEMENT, TYPE=U1, ELSET=F_1784817127997/);
+  assert.match(
+    inp,
+    /\*BEAM SECTION, ELSET=F_1784817127997, MATERIAL=HORMIGON_GENERICO, SECTION=GENERAL\n420000\.0, 5600000000\.0, 0\.0, 38587500000\.0, 17033435410\.1\n0\.0, 0\.0, 1\.0/
+  );
+  assert.match(inp, /\*ELEMENT, TYPE=U1, ELSET=F_1784817127998/);
+  assert.match(
+    inp,
+    /\*BEAM SECTION, ELSET=F_1784817127998, MATERIAL=HORMIGON_GENERICO, SECTION=GENERAL\n350000\.0, 7291666666\.7, 0\.0, 14291666666\.7, 16326378765\.8\n0\.0, 0\.0, 1\.0/
+  );
+  assert.doesNotMatch(inp, /\*ELEMENT, TYPE=B31/);
+  assert.doesNotMatch(inp, /ELSET=FUNDACIONES/);
 });

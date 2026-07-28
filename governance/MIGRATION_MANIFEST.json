@@ -393,7 +393,10 @@
       "path": "src/core/calculixCommon.js",
       "bytes": 1122,
       "sha256": "a43745b5844360d776e6d8e2c228129601da18fc3d2b18b7c3c6a82eab12d2e5",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 3170,
+      "workspaceSha256": "1db61f43408fb9604d34d871c983782d85f63d2cf5c7566051e8f256efe08777",
+      "changedBy": "SPEC-003"
     },
     {
       "path": "src/core/derivedInvalidation.js",
@@ -454,18 +457,18 @@
       "bytes": 20075,
       "sha256": "855edc86e7795ff3c8eff6f229dfc3ceb345c96e88e2bc8e4386a8e5cd861fe7",
       "kind": "source",
-      "workspaceBytes": 20266,
-      "workspaceSha256": "b587d868f8c1f47fd31626e3d59b34fba2ee02530bd1b548e8745322fd61aed7",
-      "changedBy": "SPEC-R3"
+      "workspaceBytes": 21252,
+      "workspaceSha256": "b2a8b8a241f355ad0734477280378586a9b1304e0e77b30decda57b13026f59c",
+      "changedBy": "SPEC-003"
     },
     {
       "path": "src/core/exportCalculixFoundation.js",
       "bytes": 17227,
       "sha256": "304eb8321859039568dfafd26e6eb12bfda93685920ab5baff2de43326e3f0b1",
       "kind": "source",
-      "workspaceBytes": 17388,
-      "workspaceSha256": "b369c4b39844d07a2d497d12308ea9e4c546318fb1fdb38c28e5205445fad220",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 16513,
+      "workspaceSha256": "0031b0e65e49348ee80fe6fa69cf53cef445abd35498a83a63c4ac942dbc779e",
+      "changedBy": "SPEC-003"
     },
     {
       "path": "src/core/exportCalculixTruss.js",
@@ -966,7 +969,10 @@
       "path": "tests/exportCalculix.test.mjs",
       "bytes": 7878,
       "sha256": "f063b605e2267803e4e160bc711458a5ccbdefbddba9a9babf5f797fac0293d1",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 11207,
+      "workspaceSha256": "967605a697357cddcd86a04e4ecd1db6dabd1c1bb6dead9df5ea802efdeaa336",
+      "changedBy": "SPEC-003"
     },
     {
       "path": "tests/exportCalculixFoundation.test.mjs",

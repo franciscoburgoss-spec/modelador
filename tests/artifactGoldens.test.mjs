@@ -14,6 +14,7 @@ import {
   buildReferenceArtifacts,
   buildReferenceModels
 } from '../scripts/lib/reference-artifacts.mjs';
+import { parseCalculixInpContract } from '../src/core/calculixResults.js';
 
 const goldenDirectory = new URL('../harness/goldens/', import.meta.url);
 
@@ -101,7 +102,7 @@ test('SPEC-003-B: existen ocho familias DXF y tres variantes INP con IDs persist
   );
   assert.match(
     inp.find((artifact) => artifact.id === 'inp-global').content,
-    /MONTANTES_M1784600403613/
+    /WM_1784600403613/
   );
   assert.match(
     inp.find((artifact) => artifact.id === 'inp-truss').content,
@@ -138,6 +139,44 @@ test('SPEC-003-B: existen ocho familias DXF y tres variantes INP con IDs persist
       `${fixture.id}: goldenOutputs debe enumerar exactamente sus artefactos`
     );
   }
+});
+
+test('SPEC-003-C2: el INP global homogéneo conserva geometría, IDs y conectividad', () => {
+  const artifact = buildReferenceArtifacts()
+    .find((candidate) => candidate.id === 'inp-global');
+  const summary = summarizeInp(artifact.content);
+  const contract = parseCalculixInpContract(artifact.content);
+
+  assert.deepEqual(summary.elementTypes, { U1: 1046 });
+  assert.deepEqual(summary.nodes, {
+    count: 1384,
+    idsSha256: 'a3b6c2157fbf557eb1c56ca19a6acb9879c824713cbf62a05fc689fd51fd1d84',
+    extents: {
+      minX: 0,
+      minY: 0,
+      minZ: 450,
+      maxX: 29300,
+      maxY: 18750,
+      maxZ: 4750
+    }
+  });
+  assert.deepEqual(summary.elements, {
+    count: 1046,
+    idsSha256: '5640abcd6581dd68b0731b4fae0a2f21b916f3890df5070f26da330a182e02b5',
+    connectivitySha256: '437bcdcc5db8e245dbbbe1a4a1338934021bf1a4060798ce46b0ad853bf1221a'
+  });
+  assert.equal(contract.maxSetNameLength, 16);
+  assert.equal(contract.sectionReferences.length, 137);
+  assert.deepEqual(contract.unresolvedSectionReferences, []);
+  assert.deepEqual(
+    [...contract.elementSets].filter((name) => name.startsWith('F_')).sort(),
+    [
+      'F_1784817127997',
+      'F_1784817832731',
+      'F_1784817889908',
+      'F_1784817948237'
+    ]
+  );
 });
 
 test('SPEC-003-B: audit:dxf fija ezdxf y usa sólo el entorno Python del repositorio', () => {

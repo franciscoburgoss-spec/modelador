@@ -24,7 +24,10 @@ import { resolveFoundation } from './foundationGeometry.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { makeNodeRegistry, safeName, KGF_TO_N } from './calculixCommon.js';
+import { parseCalculixDatDisplacements } from './calculixResults.js';
 import { guardExport } from './exportPolicy.js';
+
+export { parseCalculixDatDisplacements } from './calculixResults.js';
 
 const KGF_M_TO_N_MM = KGF_TO_N / 1000;      // 1 kgf/m  = 9.80665 N / 1000 mm
 export const KGF_CM3_TO_N_MM3 = KGF_TO_N / 1000; // 1 kgf/cm3 = 9.80665 N / 1000 mm3
@@ -306,32 +309,6 @@ export function generateCalculixFoundation(model, options = {}) {
 }
 
 const sanitize = (s) => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\x20-\x7E]/g, '');
-
-/**
- * Lee los desplazamientos del .dat de CalculiX (bloque "displacements ... for set NFUND").
- * Se queda con el ÚLTIMO bloque (último incremento) — es el que interesa en un *STATIC simple.
- * @returns Map<nodeId, {ux, uy, uz}>
- */
-export function parseCalculixDatDisplacements(datText) {
-  const out = new Map();
-  const lines = String(datText || '').split(/\r?\n/);
-  let inBlock = false;
-  for (const raw of lines) {
-    const line = raw.trim();
-    if (/^displacements/i.test(line)) { out.clear(); inBlock = true; continue; }
-    if (!inBlock) continue;
-    const parts = line.split(/\s+/);
-    if (parts.length < 4 || !/^\d+$/.test(parts[0])) {
-      if (line === '') continue;   // líneas en blanco dentro del bloque
-      inBlock = false; continue;   // otro encabezado → fin del bloque
-    }
-    const [id, ux, uy, uz] = parts;
-    if ([ux, uy, uz].every((v) => Number.isFinite(Number(v)))) {
-      out.set(Number(id), { ux: Number(ux), uy: Number(uy), uz: Number(uz) });
-    }
-  }
-  return out;
-}
 
 /**
  * Presión de contacto por tramo a partir de los asentamientos leídos del .dat.

@@ -4,7 +4,15 @@ import { resolveFoundation } from './foundationGeometry.js';
 import { resolveValue, buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { guardExport } from './exportPolicy.js';
-import { makeNodeRegistry, cm2ToMm2, cm4ToMm4, safeName } from './calculixCommon.js';
+import {
+  calculixIdSetName,
+  compactCalculixName,
+  makeNodeRegistry,
+  cm2ToMm2,
+  cm4ToMm4,
+  rectangularGeneralProperties,
+  safeName
+} from './calculixCommon.js';
 import { collectTypicalTruss } from './exportCalculixTruss.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
 
@@ -55,7 +63,7 @@ export function generateCalculix(model) {
 
   const columnEls = []; // fallback genérico (sin sección de librería o sin material asignado)
   const beamEls = [];
-  const foundationEls = [];
+  const foundationGroups = [];
   /** Un grupo por sección de librería (family) con material/perfil real asignado. */
   const columnGroups = new Map(); // libraryId -> { elsetName, els, section, material }
   const beamGroups = new Map();
@@ -74,7 +82,7 @@ export function generateCalculix(model) {
       const material = resolveSectionMaterial(section, materials);
       if (material) {
         const key = `col_${el.libraryId}`;
-        if (!columnGroups.has(key)) columnGroups.set(key, { elsetName: `PILARES_L${safeName(el.libraryId)}`, els: [], section, material });
+        if (!columnGroups.has(key)) columnGroups.set(key, { elsetName: compactCalculixName(`PILARES_L${safeName(el.libraryId)}`), els: [], section, material });
         columnGroups.get(key).els.push({ n1, n2 });
       } else {
         columnEls.push({ n1, n2, widthX: geo.w, widthY: geo.h });
@@ -90,7 +98,7 @@ export function generateCalculix(model) {
       const material = resolveSectionMaterial(section, materials);
       if (material) {
         const key = `beam_${el.libraryId}`;
-        if (!beamGroups.has(key)) beamGroups.set(key, { elsetName: `VIGAS_L${safeName(el.libraryId)}`, els: [], section, material, orientVec: beamOrientVec(geo) });
+        if (!beamGroups.has(key)) beamGroups.set(key, { elsetName: compactCalculixName(`VIGAS_L${safeName(el.libraryId)}`), els: [], section, material, orientVec: beamOrientVec(geo) });
         beamGroups.get(key).els.push({ n1, n2 });
       } else {
         beamEls.push({ n1, n2, width: geo.width, height });
@@ -102,7 +110,14 @@ export function generateCalculix(model) {
       const z = f.topElevation;
       const n1 = reg.getNode(f.p1.x, f.p1.y, z);
       const n2 = reg.getNode(f.p2.x, f.p2.y, z);
-      foundationEls.push({ n1, n2, width: f.width, depth: f.topElevation - f.sealElevation });
+      foundationGroups.push({
+        elsetName: calculixIdSetName('F', el.id),
+        elementId: el.id,
+        n1,
+        n2,
+        width: f.width,
+        depth: f.topElevation - f.sealElevation
+      });
     } else if (el.type === 'wall') {
       collectWallFraming(el, grid, paramsMap, elementsById, reg, metalconProfiles, materials, framingGroups, skippedWalls);
     }
@@ -119,7 +134,13 @@ export function generateCalculix(model) {
     const res = collectTypicalTruss(system, library, reg);
     trussWarnings.push(...(res.warnings || []).map(w => `techumbre ${system.id}: ${w}`));
     if (res.resolved) {
-      for (const g of res.groups) trussGroups.push({ ...g, runAxis: system.runAxis });
+      for (const g of res.groups) {
+        trussGroups.push({
+          ...g,
+          elsetName: compactCalculixName(g.elsetName),
+          runAxis: system.runAxis
+        });
+      }
     }
   }
 
@@ -152,9 +173,9 @@ export function generateCalculix(model) {
     lines.push('*ELEMENT, TYPE=B31, ELSET=VIGAS');
     for (const e of beamEls) lines.push(`${elId++}, ${e.n1}, ${e.n2}`);
   }
-  if (foundationEls.length) {
-    lines.push('*ELEMENT, TYPE=B31, ELSET=FUNDACIONES');
-    for (const e of foundationEls) lines.push(`${elId++}, ${e.n1}, ${e.n2}`);
+  for (const g of foundationGroups) {
+    lines.push(`*ELEMENT, TYPE=${anyU1 ? 'U1' : 'B31'}, ELSET=${g.elsetName}`);
+    lines.push(`${elId++}, ${g.n1}, ${g.n2}`);
   }
   for (const g of columnGroups.values()) {
     lines.push(`*ELEMENT, TYPE=${usesGeneral(g) ? 'U1' : 'B31'}, ELSET=${g.elsetName}`);
@@ -173,9 +194,9 @@ export function generateCalculix(model) {
     for (const e of g.els) lines.push(`${elId++}, ${e.n1}, ${e.n2}`);
   }
 
-  if (columnEls.length || beamEls.length) {
+  if (columnEls.length || beamEls.length || foundationGroups.length) {
     lines.push('** Material y secciones de ejemplo (hormigón genérico) — AJUSTAR según especificación real.');
-    lines.push('** Se usa este material genérico para pilares/vigas SIN material asignado en su sección de librería.');
+    lines.push('** Se usa este material genérico para fundaciones y pilares/vigas SIN material asignado en su sección de librería.');
     lines.push('*MATERIAL, NAME=HORMIGON_GENERICO');
     lines.push('*ELASTIC');
     lines.push('25000, 0.2');
@@ -188,6 +209,17 @@ export function generateCalculix(model) {
       lines.push('*BEAM SECTION, ELSET=VIGAS, MATERIAL=HORMIGON_GENERICO, SECTION=RECT');
       const ref = beamEls[0];
       lines.push(`${ref.width.toFixed(1)}, ${ref.height.toFixed(1)}`);
+    }
+    for (const g of foundationGroups) {
+      if (anyU1) {
+        const section = rectangularGeneralProperties(g.width, g.depth);
+        lines.push(`*BEAM SECTION, ELSET=${g.elsetName}, MATERIAL=HORMIGON_GENERICO, SECTION=GENERAL`);
+        lines.push(`${section.area.toFixed(1)}, ${section.i11.toFixed(1)}, 0.0, ${section.i22.toFixed(1)}, ${section.torsion.toFixed(1)}`);
+      } else {
+        lines.push(`*BEAM SECTION, ELSET=${g.elsetName}, MATERIAL=HORMIGON_GENERICO, SECTION=RECT`);
+        lines.push(`${g.depth.toFixed(1)}, ${g.width.toFixed(1)}`);
+      }
+      lines.push('0.0, 0.0, 1.0');
     }
   }
 
@@ -304,7 +336,7 @@ function collectWallFraming(wall, grid, paramsMap, elementsById, reg, metalconPr
   const studOrient = { x: runX ? 0 : 1, y: runX ? 1 : 0, z: 0 };
   const trackOrient = { x: 0, y: 0, z: 1 };
 
-  const suffix = `M${safeName(wall.id)}`;
+  const wallId = wall.id;
   const studEls = [];
   for (const s of studs) {
     const p = wallOffsetToWorldPoint(wall, geo, s.offset);
@@ -312,7 +344,7 @@ function collectWallFraming(wall, grid, paramsMap, elementsById, reg, metalconPr
     const n2 = reg.getNode(p.x, p.y, baseZ + s.zMax);
     studEls.push({ n1, n2 });
   }
-  framingGroups.push({ elsetName: `MONTANTES_${suffix}`, wallId: wall.id, profile: studProfile, orientVec: studOrient, material: wallMaterial, els: studEls });
+  framingGroups.push({ elsetName: calculixIdSetName('WM', wallId), wallId, profile: studProfile, orientVec: studOrient, material: wallMaterial, els: studEls });
 
   if (trackProfile) {
     const maxOffset = Math.max(...studs.map(s => s.offset), 0);
@@ -324,8 +356,8 @@ function collectWallFraming(wall, grid, paramsMap, elementsById, reg, metalconPr
     const nTopStart = reg.getNode(pStart.x, pStart.y, topZ);
     const nTopEnd = reg.getNode(pEnd.x, pEnd.y, topZ);
     framingGroups.push({
-      elsetName: `SOLERAS_${suffix}`,
-      wallId: wall.id,
+      elsetName: calculixIdSetName('WS', wallId),
+      wallId,
       profile: trackProfile,
       orientVec: trackOrient,
       material: wallMaterial,
@@ -344,8 +376,8 @@ function collectWallFraming(wall, grid, paramsMap, elementsById, reg, metalconPr
     };
     const headerEls = wall.headers.filter(h => h.role === 'header').map(toEl);
     const sillEls = wall.headers.filter(h => h.role === 'sill').map(toEl);
-    if (headerEls.length) framingGroups.push({ elsetName: `DINTELES_${suffix}`, wallId: wall.id, profile: trackProfile, orientVec: trackOrient, material: wallMaterial, els: headerEls });
-    if (sillEls.length) framingGroups.push({ elsetName: `ANTEPECHOS_${suffix}`, wallId: wall.id, profile: trackProfile, orientVec: trackOrient, material: wallMaterial, els: sillEls });
+    if (headerEls.length) framingGroups.push({ elsetName: calculixIdSetName('WD', wallId), wallId, profile: trackProfile, orientVec: trackOrient, material: wallMaterial, els: headerEls });
+    if (sillEls.length) framingGroups.push({ elsetName: calculixIdSetName('WA', wallId), wallId, profile: trackProfile, orientVec: trackOrient, material: wallMaterial, els: sillEls });
   }
 }
 
