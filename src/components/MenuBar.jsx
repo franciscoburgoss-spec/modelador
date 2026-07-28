@@ -114,7 +114,8 @@ function FormatFlyout({ label, onExport, defaultFormat }) {
   );
 }
 
-export default function MenuBar({ onOpenModal, canvasSize }) {
+export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null }) {
+  const [projectOperationPending, setProjectOperationPending] = useState(false);
   const clearAll = useModelStore((s) => s.clearAll);
   const newModel = useModelStore((s) => s.newModel);
   const toggleFilterPanel = useModelStore((s) => s.toggleFilterPanel);
@@ -124,6 +125,10 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
   const futureLength = useModelStore((s) => s.future.length);
   const saveModel = useModelStore((s) => s.saveModel);
   const loadModel = useModelStore((s) => s.loadModel);
+  const openProjectFromPath = useModelStore((s) => s.openProjectFromPath);
+  const saveProjectToPath = useModelStore((s) => s.saveProjectToPath);
+  const reportProjectOperationError = useModelStore((s) => s.reportProjectOperationError);
+  const projectDocument = useModelStore((s) => s.projectDocument);
   const exportModelToFile = useModelStore((s) => s.exportModelToFile);
   const zoomIn = useModelStore((s) => s.zoomIn);
   const zoomOut = useModelStore((s) => s.zoomOut);
@@ -149,6 +154,52 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
   const untypedWallCount = model.elements.filter((element) => (
     element.type === 'wall' && element.wallTypeId == null
   )).length;
+  const nativeProjectAvailable = !!(
+    projectRuntime?.fileSystem
+    && typeof projectRuntime.chooseOpenPath === 'function'
+    && typeof projectRuntime.chooseSavePath === 'function'
+  );
+  const nativeUnavailableTitle = nativeProjectAvailable
+    ? undefined
+    : 'Disponible al ejecutar con un runtime nativo';
+
+  const runProjectOperation = async (operation) => {
+    if (!nativeProjectAvailable || projectOperationPending) return;
+    setProjectOperationPending(true);
+    try {
+      await operation();
+    } catch (error) {
+      reportProjectOperationError(error);
+    } finally {
+      setProjectOperationPending(false);
+    }
+  };
+
+  const handleOpenProject = () => runProjectOperation(async () => {
+    const projectPath = await projectRuntime.chooseOpenPath();
+    if (projectPath) await openProjectFromPath(projectRuntime.fileSystem, projectPath);
+  });
+
+  const handleSaveProjectAs = () => runProjectOperation(async () => {
+    const projectPath = await projectRuntime.chooseSavePath({
+      currentPath: projectDocument.path
+    });
+    if (projectPath) await saveProjectToPath(projectRuntime.fileSystem, projectPath);
+  });
+
+  const handleSaveProject = () => {
+    if (projectDocument.path === null) {
+      handleSaveProjectAs();
+      return;
+    }
+    runProjectOperation(() => (
+      saveProjectToPath(projectRuntime.fileSystem, projectDocument.path)
+    ));
+  };
+
+  const handleOpenRecentProject = (projectPath) => runProjectOperation(() => (
+    openProjectFromPath(projectRuntime.fileSystem, projectPath)
+  ));
 
   const canGenerateAllModulation = model.elements
     .filter((element) => element.type === 'wall')
@@ -199,9 +250,53 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
         <Item onClick={undo} disabled={pastLength === 0}>Deshacer{pastLength > 0 ? ` (${pastLength})` : ''}</Item>
         <Item onClick={redo} disabled={futureLength === 0}>Rehacer{futureLength > 0 ? ` (${futureLength})` : ''}</Item>
         <div className="border-t border-[#e4e4e0] my-1" />
-        <Item onClick={() => { if (confirm('¿Crear un modelo nuevo? Se perderá lo no guardado.')) newModel(); }}>Nuevo modelo</Item>
-        <Item onClick={saveModel}>Guardar</Item>
-        <Item onClick={() => loadModel()}>Cargar</Item>
+        <Item onClick={() => {
+          if (
+            !projectDocument.dirty
+            || confirm('Hay cambios sin guardar. ¿Crear un proyecto nuevo y descartarlos?')
+          ) {
+            newModel();
+          }
+        }}>
+          Nuevo proyecto
+        </Item>
+        <Item
+          onClick={handleOpenProject}
+          disabled={!nativeProjectAvailable || projectOperationPending}
+          title={nativeUnavailableTitle}
+        >
+          Abrir…
+        </Item>
+        <Item
+          onClick={handleSaveProject}
+          disabled={!nativeProjectAvailable || projectOperationPending}
+          title={nativeUnavailableTitle}
+        >
+          Guardar
+        </Item>
+        <Item
+          onClick={handleSaveProjectAs}
+          disabled={!nativeProjectAvailable || projectOperationPending}
+          title={nativeUnavailableTitle}
+        >
+          Guardar como…
+        </Item>
+        {nativeProjectAvailable && projectDocument.recentPaths.length > 0 && (
+          <Flyout label={`Recientes (${projectDocument.recentPaths.length})`}>
+            {projectDocument.recentPaths.map((projectPath) => (
+              <Item
+                key={projectPath}
+                onClick={() => handleOpenRecentProject(projectPath)}
+                title={projectPath}
+              >
+                {projectPath}
+              </Item>
+            ))}
+          </Flyout>
+        )}
+        <div className="border-t border-[#e4e4e0] my-1" />
+        <Item onClick={saveModel}>Guardar copia en navegador</Item>
+        <Item onClick={() => loadModel()}>Cargar copia del navegador</Item>
         <Item onClick={exportModelToFile}>Exportar JSON…</Item>
         <Item onClick={() => fileInputRef.current?.click()}>Importar JSON…</Item>
         <div className="border-t border-[#e4e4e0] my-1" />
@@ -330,6 +425,13 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
         <Item disabled>Cargas y combinaciones…</Item>
         <Item disabled>Análisis (CalculiX)…</Item>
       </Dropdown>
+      <span
+        aria-label="Documento activo"
+        className="max-w-[280px] truncate px-2 text-xs text-[#5a5a55]"
+        title={projectDocument.path || projectDocument.title}
+      >
+        {projectDocument.title}{projectDocument.dirty ? ' *' : ''}
+      </span>
 
       <input
         ref={fileInputRef}

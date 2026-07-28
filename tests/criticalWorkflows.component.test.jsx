@@ -188,7 +188,7 @@ test('SPEC-003-D: una exportación stale se bloquea desde el menú sin iniciar d
   }
 });
 
-test('SPEC-003-D: Cargar desde el menú recupera el modelo persistido sin importar el evento React', () => {
+test('SPEC-003-D: cargar copia del navegador recupera el modelo sin importar el evento React', () => {
   const persisted = emptyModel({
     projectInfo: { name: 'Modelo persistido' }
   });
@@ -201,7 +201,7 @@ test('SPEC-003-D: Cargar desde el menú recupera el modelo persistido sin import
 
   render(<MenuBar onOpenModal={() => {}} canvasSize={{ width: 800, height: 600 }} />);
   fireEvent.click(screen.getByRole('button', { name: /Archivo/ }));
-  fireEvent.click(screen.getByRole('button', { name: 'Cargar' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Cargar copia del navegador' }));
 
   assert.equal(useModelStore.getState().model.projectInfo.name, 'Modelo persistido');
 });

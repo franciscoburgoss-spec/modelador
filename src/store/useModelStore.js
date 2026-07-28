@@ -14,6 +14,18 @@ import { createProjectInfo, normalizeProjectInfo, nextRevisionLetter } from '../
 import {
   CURRENT_MODEL_VERSION, ModelImportError, prepareModelImport, prepareModelJsonImport
 } from '../core/modelSchema.js';
+import {
+  createProjectDocument,
+  markProjectDocumentDirty,
+  openProjectDocument,
+  resetProjectDocument,
+  saveProjectDocument
+} from '../core/projectDocument.js';
+import {
+  NativeProjectError,
+  openNativeProject,
+  saveNativeProject
+} from '../core/nativeProjectFile.js';
 import { assertValidWallTypes, getWallType } from '../core/wallTypes.js';
 import {
   invalidateForMutation,
@@ -84,8 +96,29 @@ function importErrorResult(set, error) {
   return { ok: false, error: typedError };
 }
 
-function commitPreparedImport(set, prepared) {
-  const feedback = prepared.warnings.length > 0
+function projectOperationErrorResult(set, error) {
+  const typedError = error instanceof Error && typeof error.code === 'string'
+    ? error
+    : new NativeProjectError(
+        'PROJECT_OPERATION_FAILED',
+        error instanceof Error
+          ? error.message
+          : 'No se pudo completar la operación del proyecto.',
+        error
+      );
+  set({
+    modelImportFeedback: {
+      severity: 'error',
+      code: typedError.code || 'PROJECT_OPERATION_FAILED',
+      message: typedError.message,
+      details: typedError.details || []
+    }
+  });
+  return { ok: false, error: typedError };
+}
+
+function importFeedback(prepared) {
+  return prepared.warnings.length > 0
     ? {
         severity: 'warning',
         code: prepared.warnings[0].code,
@@ -93,9 +126,12 @@ function commitPreparedImport(set, prepared) {
         details: prepared.warnings
       }
     : null;
+}
+
+function commitPreparedImport(set, prepared) {
   set((state) => ({
     ...withHistory(state, mergeLoadedModel(prepared.model)),
-    modelImportFeedback: feedback
+    modelImportFeedback: importFeedback(prepared)
   }));
   return {
     ok: true,
@@ -314,12 +350,14 @@ function withHistory(s, nextModel) {
   return {
     model: nextModel,
     past: [...s.past, s.model].slice(-HISTORY_LIMIT),
-    future: []
+    future: [],
+    projectDocument: markProjectDocumentDirty(s.projectDocument)
   };
 }
 
 export const useModelStore = create((set, get) => ({
   model: emptyModel(),
+  projectDocument: createProjectDocument(),
   view: { scale: 0.04, offsetX: -3000, offsetY: -2000, showAxes: true },
   past: [],
   future: [],
@@ -329,12 +367,22 @@ export const useModelStore = create((set, get) => ({
   undo: () => set((s) => {
     if (s.past.length === 0) return s;
     const previous = s.past[s.past.length - 1];
-    return { model: previous, past: s.past.slice(0, -1), future: [s.model, ...s.future].slice(0, HISTORY_LIMIT) };
+    return {
+      model: previous,
+      past: s.past.slice(0, -1),
+      future: [s.model, ...s.future].slice(0, HISTORY_LIMIT),
+      projectDocument: markProjectDocumentDirty(s.projectDocument)
+    };
   }),
   redo: () => set((s) => {
     if (s.future.length === 0) return s;
     const [next, ...rest] = s.future;
-    return { model: next, future: rest, past: [...s.past, s.model].slice(-HISTORY_LIMIT) };
+    return {
+      model: next,
+      future: rest,
+      past: [...s.past, s.model].slice(-HISTORY_LIMIT),
+      projectDocument: markProjectDocumentDirty(s.projectDocument)
+    };
   }),
 
   // ---- filtro/resaltado por atributo (ítem 7): estado de UI, no entra al historial ni al JSON exportado ----
@@ -1133,9 +1181,75 @@ export const useModelStore = create((set, get) => ({
 
   // ---- ciclo de vida del modelo ----
   clearAll: () => set((s) => withHistory(s, emptyModel())),
-  newModel: () => set((s) => ({ ...withHistory(s, emptyModel()), view: { scale: 0.04, offsetX: 0, offsetY: 0, showAxes: true } })),
+  newModel: () => set((s) => ({
+    model: emptyModel(),
+    past: [],
+    future: [],
+    projectDocument: resetProjectDocument(s.projectDocument),
+    modelImportFeedback: null,
+    view: { scale: 0.04, offsetX: 0, offsetY: 0, showAxes: true }
+  })),
 
   // ---- persistencia ----
+  openProjectFromPath: async (fileSystem, projectPath) => {
+    if (typeof projectPath !== 'string' || projectPath.length === 0) {
+      return projectOperationErrorResult(
+        set,
+        new NativeProjectError(
+          'PROJECT_PATH_REQUIRED',
+          'Debes elegir un archivo de proyecto para abrir.'
+        )
+      );
+    }
+    let opened;
+    try {
+      opened = await openNativeProject(fileSystem, projectPath);
+    } catch (error) {
+      return projectOperationErrorResult(set, error);
+    }
+    set((state) => ({
+      model: mergeLoadedModel(opened.prepared.model),
+      past: [],
+      future: [],
+      projectDocument: openProjectDocument(state.projectDocument, projectPath),
+      modelImportFeedback: importFeedback(opened.prepared)
+    }));
+    return {
+      ok: true,
+      warnings: opened.prepared.warnings,
+      appliedMigrations: opened.prepared.appliedMigrations
+    };
+  },
+  saveProjectToPath: async (fileSystem, requestedPath = undefined) => {
+    const stateAtStart = get();
+    const projectPath = requestedPath ?? stateAtStart.projectDocument.path;
+    if (typeof projectPath !== 'string' || projectPath.length === 0) {
+      return projectOperationErrorResult(
+        set,
+        new NativeProjectError(
+          'PROJECT_PATH_REQUIRED',
+          'Debes elegir un destino mediante Guardar como.'
+        )
+      );
+    }
+    const modelAtStart = stateAtStart.model;
+    try {
+      await saveNativeProject(fileSystem, projectPath, modelAtStart);
+    } catch (error) {
+      return projectOperationErrorResult(set, error);
+    }
+    set((state) => {
+      const savedDocument = saveProjectDocument(state.projectDocument, projectPath);
+      return {
+        projectDocument: state.model === modelAtStart
+          ? savedDocument
+          : markProjectDocumentDirty(savedDocument),
+        modelImportFeedback: null
+      };
+    });
+    return { ok: true, path: projectPath };
+  },
+  reportProjectOperationError: (error) => projectOperationErrorResult(set, error),
   saveModel: () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(get().model));
   },

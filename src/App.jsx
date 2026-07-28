@@ -37,7 +37,7 @@ import { useAutosave } from './core/useAutosave.js';
 import AutosaveBanner from './components/AutosaveBanner.jsx';
 import ModelImportBanner from './components/ModelImportBanner.jsx';
 
-export default function App() {
+export default function App({ projectRuntime = null }) {
   const [activeModal, setActiveModal] = useState(null); // 'wall' | 'column' | 'beam' | 'opening' | 'foundation' | 'grid' | 'audit' | 'validate' | 'viewer3d' | { name, ... } | null
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 });
   const [quickAddValues, setQuickAddValues] = useState(null);
@@ -56,6 +56,7 @@ export default function App() {
   const loadModel = useModelStore((s) => s.loadModel);
   const modelImportFeedback = useModelStore((s) => s.modelImportFeedback);
   const dismissModelImportFeedback = useModelStore((s) => s.dismissModelImportFeedback);
+  const projectDocument = useModelStore((s) => s.projectDocument);
 
   useKeyboardShortcuts();
 
@@ -67,6 +68,10 @@ export default function App() {
     loadModel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    document.title = `${projectDocument.dirty ? '* ' : ''}${projectDocument.title} — Modelador`;
+  }, [projectDocument.dirty, projectDocument.title]);
 
   const autosave = useAutosave();
 
@@ -94,7 +99,11 @@ export default function App() {
       <AutosaveBanner pending={autosave.pending} onRestore={autosave.restore} onDismiss={autosave.dismiss} />
       <ModelImportBanner feedback={modelImportFeedback} onDismiss={dismissModelImportFeedback} />
       <div className="flex items-center justify-between border-b border-[#e4e4e0]">
-        <MenuBar onOpenModal={setActiveModal} canvasSize={canvasSize} />
+        <MenuBar
+          onOpenModal={setActiveModal}
+          canvasSize={canvasSize}
+          projectRuntime={projectRuntime}
+        />
         <div className="flex items-center gap-2 px-3">
           <label className="text-xs text-[#5a5a55]">Vista</label>
           <select
