@@ -9,12 +9,12 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — `SPEC-003-D` store y componentes |
+| Etapa | Arnés de verificación — `SPEC-003-E` integración y E2E externo |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-003-verification-harness.md`, corte D |
-| Suite oficial | 723/723; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 703,08 kB |
-| Cobertura | core 93,46 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
+| Spec activa | `specs/SPEC-003-verification-harness.md`, corte E |
+| Suite oficial | 730/730 Node; 4/4 componentes; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 703,69 kB |
+| Cobertura | core 93,55 %; store 97,85 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23 disponible |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -24,7 +24,7 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; C2 cerró el arnés solver y habilitó el corte D |
+| Bloqueo actual | Evidencia Playwright externa pendiente para cerrar SPEC-003-E |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -129,14 +129,15 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   una familia U1 homogénea que conserva 1.384 nodos/1.046 elementos, IDs, coordenadas y
   conectividad. `smoke:ccx` ejecuta global, cercha y fundaciones con CalculiX 2.23, valida 1.486
   nodos/8.649 valores finitos y registra hashes, extremos, warnings y duración por commit.
+- SPEC-003-D: cerrado. Siete pruebas conductuales cubren mutaciones, invalidación, historial,
+  navegación, selección, sustitución, techumbre y fronteras de persistencia/archivo del store.
+  Cuatro pruebas con DOM cubren importación fallida visible, exportación stale bloqueada,
+  carga persistida desde el menú y revisión/descarga. El store alcanza 97,85 % con gate de 85 %;
+  core conserva 93,55 %. Eliminar un perfil Metalcon referenciado se bloquea explícitamente.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
 
-- El store tiene 72,76 % de cobertura de líneas frente al objetivo de 85 %; seguimiento R-015 /
-  `SPEC-003`.
-- Eliminar un `metalconProfile` referenciado por un `wallType` puede dejar el modelo activo con una
-  referencia inválida; gobernar bloqueo/resultado explícito antes de cerrar G4, sin ampliar R5-B.
 - Siete hallazgos heredados de dependencias de hooks quedan acotados a cinco archivos; seguimiento
   R-016 / `SPEC-005`.
 - `migration-manifest --record` ya acepta identificadores `SPEC-NNN` y `SPEC-Rn`; sigue faltando
@@ -152,6 +153,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Implementar el corte D de `SPEC-003`: cubrir contratos observables faltantes del store, agregar
-pruebas de componentes para importación fallida, exportación stale y revisión/descarga, y subir el
-umbral del store a 85 %. No refactorizar el store ni mover reglas de dominio a React.
+Implementar el corte E de `SPEC-003`: incorporar goldens, auditoría DXF y smoke CCX a la puerta
+local única, consolidar reportes/trazabilidad por commit y registrar Playwright actual externamente
+sobre el mismo commit. No incorporar persistencia nativa, packaging ni release.

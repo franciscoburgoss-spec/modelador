@@ -15,10 +15,10 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-009 | Dependencia de macOS fuera de soporte | 5 | 4 | 20 | Offline, mínimo privilegio y riesgo aceptado; renovar hardware para eliminar | Aceptado |
 | R-010 | Rendimiento insuficiente en 8 GB/CPU dual core | 4 | 3 | 12 | Presupuestos medidos, lazy loading y perfiles; G7 | Abierto |
 | R-011 | Herramientas no reproducibles entre sesiones | 4 | 4 | 16 | Node y `ezdxf` 1.4.4 quedan fijados; `audit:dxf` usa `.venv-verification`; C2 detecta ruta/versión de CCX y registra reportes por commit; gobernanza aún debe recorrer `specs/domain/`; G0/G1 | Abierto |
-| R-012 | Errores sólo visibles en consola | 4 | 3 | 12 | Error boundary, mensajes accionables y log local; G7 | Abierto |
+| R-012 | Errores sólo visibles en consola | 4 | 3 | 12 | SPEC-003-D cubre importación fallida visible y exportación stale bloqueada; error boundary y log local siguen en SPEC-005/G7 | Abierto |
 | R-013 | Integrar o redistribuir CCX sin revisar licencia/dependencias | 2 | 4 | 8 | v1 usa ruta instalada; auditoría antes de bundling | Abierto |
 | R-014 | Cambios heredados se pierden durante la migración | 3 | 5 | 15 | 187 hashes verificados contra origen; SPEC-000 | Mitigado |
-| R-015 | Cobertura insuficiente del store oculta mutadores sin contrato | 4 | 3 | 12 | Baseline 72,76 %; `SPEC-003-D` cubre acciones observables y sube el gate a 85 % sin exponer helpers; G4 | Abierto |
+| R-015 | Cobertura insuficiente del store oculta mutadores sin contrato | 4 | 3 | 12 | SPEC-003-D cubre contratos observables, componentes críticos y fija gates core/store 90/85; cobertura 93,55/97,85; G4 | Mitigado |
 | R-016 | Dependencias incompletas de hooks producen UI con estado obsoleto | 3 | 3 | 9 | Baseline acotado a cinco archivos y pruebas UI; SPEC-005/G7 | Abierto |
 | R-017 | Un `roofPlane` incompleto puede romper el pipeline antes de devolver un resultado no resuelto | 3 | 4 | 12 | `model-v1-dual-roof` reproduce el acceso TDZ de `resolveRoofPlane.fail`; requiere corte explícito con regresión antes de G4, sin ampliar SPEC-003-A | Abierto |
 
