@@ -8,6 +8,7 @@ import {
 } from './elementGeometry.js';
 import { buildElementsById, resolveAxisRef } from './elementReferences.js';
 import { createFinding } from './domainFindings.js';
+import { hasOwn } from './hasOwn.js';
 import {
   resolveRuleLimit,
   ruleAppliesToRole
@@ -42,9 +43,9 @@ function addSkip(skipped, wallId, rule, reason, extra = {}) {
 }
 
 function outsideLimit(value, limit, tolerance = 0) {
-  if (Object.hasOwn(limit, 'min') && value < limit.min - tolerance) return true;
-  if (Object.hasOwn(limit, 'max') && value > limit.max + tolerance) return true;
-  if (Object.hasOwn(limit, 'equal')) {
+  if (hasOwn(limit, 'min') && value < limit.min - tolerance) return true;
+  if (hasOwn(limit, 'max') && value > limit.max + tolerance) return true;
+  if (hasOwn(limit, 'equal')) {
     return Math.abs(value - limit.equal) > tolerance;
   }
   return false;

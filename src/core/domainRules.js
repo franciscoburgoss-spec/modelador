@@ -2,6 +2,7 @@
 // resuelve límites a partir del contexto explícito que entregue un check futuro.
 
 import { isWallRole } from './wallRoles.js';
+import { hasOwn } from './hasOwn.js';
 
 export const RULE_SCOPES = Object.freeze(['sistema', 'proyecto', 'oficina', 'elemento']);
 export const RULE_ORIGINS = Object.freeze(['manual', 'derivado', 'obra']);
@@ -293,7 +294,7 @@ export const DOMAIN_RULES = deepFreeze(catalog);
 
 /** Devuelve la regla inmutable o null si el id no está declarado. */
 export function getDomainRule(ruleId) {
-  return Object.hasOwn(DOMAIN_RULES, ruleId) ? DOMAIN_RULES[ruleId] : null;
+  return hasOwn(DOMAIN_RULES, ruleId) ? DOMAIN_RULES[ruleId] : null;
 }
 
 /** Comprueba aplicación exacta; un rol ausente nunca satisface una regla condicionada. */
@@ -310,14 +311,14 @@ function normalizedLimit(limit, ruleId) {
   if (!isRecord(limit) || !nonEmptyString(limit.unit)) {
     throw new TypeError(`resolveLimit de ${ruleId} devolvió un límite inválido.`);
   }
-  const bounds = ['min', 'max', 'equal'].filter((field) => Object.hasOwn(limit, field));
+  const bounds = ['min', 'max', 'equal'].filter((field) => hasOwn(limit, field));
   if (bounds.length === 0 || bounds.some((field) => !Number.isFinite(limit[field]))) {
     throw new TypeError(`resolveLimit de ${ruleId} devolvió un límite no finito.`);
   }
-  if (Object.hasOwn(limit, 'equal') && bounds.length > 1) {
+  if (hasOwn(limit, 'equal') && bounds.length > 1) {
     throw new TypeError(`resolveLimit de ${ruleId} mezcló equal con un rango.`);
   }
-  if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max') && limit.min > limit.max) {
+  if (hasOwn(limit, 'min') && hasOwn(limit, 'max') && limit.min > limit.max) {
     throw new TypeError(`resolveLimit de ${ruleId} devolvió min mayor que max.`);
   }
   return Object.freeze({

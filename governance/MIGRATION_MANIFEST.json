@@ -15,7 +15,10 @@
       "path": "index.html",
       "bytes": 231,
       "sha256": "30311356554e7ead0f54d1db28cc7abcc4c5fd20bb7ea444229523081cd148cb",
-      "kind": "config"
+      "kind": "config",
+      "workspaceBytes": 375,
+      "workspaceSha256": "64705cbd52112e291f1fd9dfc5895ba7f2c0024692831cdf4b33935e7c15c246",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "lab/roofPlane/core/polygonClip.js",
@@ -112,8 +115,8 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 13550,
-      "workspaceSha256": "219ce5b3967ca23c40fde1a7ae9361a0036b046d678d99c8bd0fa85cbcd89060",
+      "workspaceBytes": 13595,
+      "workspaceSha256": "41f87f4ec323d127b6497a9e8e9b6ad2076d5756f29ff529321a4e0220fe004a",
       "changedBy": "SPEC-004"
     },
     {
@@ -409,9 +412,9 @@
       "bytes": 6426,
       "sha256": "a19b525fdf5aa94dc63c0c4cbff7ec8f5ce4fc516036ad2a4bb57204958aec2e",
       "kind": "source",
-      "workspaceBytes": 13116,
-      "workspaceSha256": "8fa73563cb1d46e1c9cad205371ae48ff0796edcb50f1078886d7a5ab7653863",
-      "changedBy": "SPEC-R6"
+      "workspaceBytes": 13098,
+      "workspaceSha256": "feb37cdee3cf67bbece418dc9ec0c60ffe6a2391c9b15cd9f1c751661bdae3fc",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "src/core/dimensions.js",
@@ -655,9 +658,9 @@
       "bytes": 4534,
       "sha256": "95e4c804f5a73605eaa39a3f2ce65c7014b14077e94ff6a7072048b2b322de59",
       "kind": "source",
-      "workspaceBytes": 5037,
-      "workspaceSha256": "12f8c69d33275a6bbb98d94ecc0b99b3507f54c645a1a44cb2e750451f17f1b6",
-      "changedBy": "SPEC-001"
+      "workspaceBytes": 5061,
+      "workspaceSha256": "5e823eda555c05492a07f8c0151a1c4a76114a0a1807632aab698a040036e75b",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "src/core/projection.js",
@@ -736,9 +739,9 @@
       "bytes": 6293,
       "sha256": "d8e8abfb0ab83d806eef5e3bdcbadcaf1a049cca0aaaff8da85404b063d43f93",
       "kind": "source",
-      "workspaceBytes": 8883,
-      "workspaceSha256": "9411804408a6801ddc831d7f95f03d11f2a65617070fc149f352398299dc3cc6",
-      "changedBy": "SPEC-R8"
+      "workspaceBytes": 8893,
+      "workspaceSha256": "67abed4d3fdaf1cdf597df7b3e5736330cc8f809b279da6a6141e6605a2a3b7d",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "src/core/sheetTitleBlock.js",
@@ -829,8 +832,8 @@
       "bytes": 233,
       "sha256": "26c739b131ac4cd9501d988c6057eab42f3f72879ecc18a4fddabcc80a9dc526",
       "kind": "source",
-      "workspaceBytes": 397,
-      "workspaceSha256": "0a3c103c6bb8c104d36d78e8404358c9189a693f7b4ef2684af22b154f6162d1",
+      "workspaceBytes": 625,
+      "workspaceSha256": "882162744e040005a7cab626e8d7f42137b265455caed374c019ac922110423c",
       "changedBy": "SPEC-004"
     },
     {
@@ -913,8 +916,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 57969,
-      "workspaceSha256": "e8d18485296bb786c9104cad1bd9dc02b626db5cec76f69124f8d1445ae08783",
+      "workspaceBytes": 57985,
+      "workspaceSha256": "851b7367de7f406c52560caa06d5a5db6546d0eb434062d3c10f930b1f1d137f",
       "changedBy": "SPEC-004"
     },
     {

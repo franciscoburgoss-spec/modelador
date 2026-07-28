@@ -5,6 +5,7 @@
 // Lógica pura: no toca React ni el store, se testea con node --test.
 
 import { getWallDisplayName } from './naming.js';
+import { hasOwn } from './hasOwn.js';
 
 export const DERIVED_REGISTRY = Object.freeze({
   wallFraming: Object.freeze({
@@ -134,17 +135,17 @@ export const WALL_TOPOLOGY_FIELDS = [
 /** ¿El patch de updateElement toca geometría relevante? */
 export function patchInvalidatesWall(patch) {
   if (!patch) return false;
-  return WALL_GEOMETRY_FIELDS.some((f) => Object.hasOwn(patch, f));
+  return WALL_GEOMETRY_FIELDS.some((f) => hasOwn(patch, f));
 }
 
 export function patchInvalidatesWallTopology(patch) {
   if (!patch) return false;
-  return WALL_TOPOLOGY_FIELDS.some((field) => Object.hasOwn(patch, field));
+  return WALL_TOPOLOGY_FIELDS.some((field) => hasOwn(patch, field));
 }
 
 export function patchInvalidatesRoofSystemsForWall(patch) {
   if (!patch) return false;
-  return WALL_SYSTEM_GEOMETRY_FIELDS.some((field) => Object.hasOwn(patch, field));
+  return WALL_SYSTEM_GEOMETRY_FIELDS.some((field) => hasOwn(patch, field));
 }
 
 export const DERIVED_WRITE_FIELDS = Object.freeze(
@@ -154,7 +155,7 @@ export const DERIVED_WRITE_FIELDS = Object.freeze(
 );
 
 export function assertNoDerivedWrites(patch) {
-  const fields = DERIVED_WRITE_FIELDS.filter((field) => Object.hasOwn(patch || {}, field));
+  const fields = DERIVED_WRITE_FIELDS.filter((field) => hasOwn(patch || {}, field));
   if (fields.length > 0) {
     throw new Error(
       `Los resultados derivados (${fields.join(', ')}) sólo pueden escribirse mediante un comando de regeneración.`
@@ -169,9 +170,9 @@ export function assertNoDerivedWrites(patch) {
 export function patchRegenerates(patch) {
   return {
     studs: Boolean(patch)
-      && (Object.hasOwn(patch, 'studs') || Object.hasOwn(patch, 'headers')),
+      && (hasOwn(patch, 'studs') || hasOwn(patch, 'headers')),
     osb: Boolean(patch)
-      && (Object.hasOwn(patch, 'osbCourses') || Object.hasOwn(patch, 'osbNoggings'))
+      && (hasOwn(patch, 'osbCourses') || hasOwn(patch, 'osbNoggings'))
   };
 }
 

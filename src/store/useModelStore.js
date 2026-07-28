@@ -3,6 +3,7 @@ import { create } from 'zustand';
 import { buildParamsMap } from '../core/projectParams.js';
 import { buildElementsById } from '../core/elementReferences.js';
 import { getLibraryFields } from '../core/libraryFields.js';
+import { hasOwn } from '../core/hasOwn.js';
 import { METALCON_PROFILES } from '../core/metalconCatalog.js';
 import { mergeSeedTemplates } from '../core/trussTemplates.js';
 import { toProjectionMode } from '../core/viewMode.js';
@@ -42,7 +43,7 @@ import { guardExport } from '../core/exportPolicy.js';
 
 // Sólo un cambio de posición/elevación reubica geometría; renombrar un eje no invalida nada.
 function maybeGlobalInvalidate(model, patch, field) {
-  return patch && Object.hasOwn(patch, field)
+  return patch && hasOwn(patch, field)
     ? invalidateForMutation(model, 'gridGeometry')
     : model;
 }
@@ -241,7 +242,7 @@ function cloneWallType(wallType) {
 function mergeWallTypePatch(wallType, patch) {
   const next = { ...wallType, ...patch };
   for (const field of ['metalconDefaults', 'osbDefaults']) {
-    if (!Object.hasOwn(patch, field)) {
+    if (!hasOwn(patch, field)) {
       next[field] = { ...wallType[field] };
     } else if (
       patch[field] !== null
@@ -505,7 +506,7 @@ export const useModelStore = create((set, get) => ({
     return { ok: true, wallTypeId: wallType.id };
   },
   updateWallType: (id, patch) => {
-    if (Object.hasOwn(patch || {}, 'id')) {
+    if (hasOwn(patch || {}, 'id')) {
       throw new TypeError('El id de un tipo de muro es inmutable.');
     }
     const current = get().model;
@@ -706,7 +707,7 @@ export const useModelStore = create((set, get) => ({
     ...s.model, roofSystems: [...(s.model.roofSystems || []), { ...system, id: generateId() }]
   })),
   updateRoofSystem: (id, patch) => {
-    const derivedFields = DERIVED_WRITE_FIELDS.filter((field) => Object.hasOwn(patch || {}, field));
+    const derivedFields = DERIVED_WRITE_FIELDS.filter((field) => hasOwn(patch || {}, field));
     if (derivedFields.length > 0) {
       throw new Error(
         `Los resultados derivados (${derivedFields.join(', ')}) sólo pueden escribirse mediante un comando de regeneración.`

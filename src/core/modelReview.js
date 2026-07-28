@@ -7,6 +7,7 @@ import {
   ruleAppliesToRole
 } from './domainRules.js';
 import { buildElementsById } from './elementReferences.js';
+import { hasOwn } from './hasOwn.js';
 import { evaluateModelValidation } from './modelValidation.js';
 import { buildParamsMap, resolveValue } from './projectParams.js';
 import { validateRoofPlanes } from './roofPlaneValidation.js';
@@ -165,7 +166,7 @@ export function collectApplicableCriteria(model, findings = []) {
     }
 
     for (const finding of findings.filter((item) => item.rule === rule.id)) {
-      const limit = Object.hasOwn(finding, 'limit') ? finding.limit : null;
+      const limit = hasOwn(finding, 'limit') ? finding.limit : null;
       const key = limitKey(limit);
       if (byLimit.has(key)) continue;
       const criterion = createCriterion(rule, limit, 'finding');

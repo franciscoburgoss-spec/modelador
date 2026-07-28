@@ -2,6 +2,7 @@
 // acción resuelta; las reglas, prioridades y textos verificables permanecen fuera del componente.
 
 import { FINDING_SEVERITIES, getDomainRule } from './domainRules.js';
+import { hasOwn } from './hasOwn.js';
 
 const SEVERITY_LABELS = Object.freeze({
   error: 'Error',
@@ -27,16 +28,16 @@ function formatMeasured(measured) {
 
 function formatLimit(limit) {
   if (limit === null) return 'No resoluble';
-  if (Object.hasOwn(limit, 'equal')) {
+  if (hasOwn(limit, 'equal')) {
     return `= ${formatNumber(limit.equal)} ${limit.unit}`;
   }
-  if (Object.hasOwn(limit, 'exclusiveMin')) {
+  if (hasOwn(limit, 'exclusiveMin')) {
     return `> ${formatNumber(limit.exclusiveMin)} ${limit.unit}`;
   }
-  if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max')) {
+  if (hasOwn(limit, 'min') && hasOwn(limit, 'max')) {
     return `${formatNumber(limit.min)}–${formatNumber(limit.max)} ${limit.unit}`;
   }
-  if (Object.hasOwn(limit, 'min')) {
+  if (hasOwn(limit, 'min')) {
     return `≥ ${formatNumber(limit.min)} ${limit.unit}`;
   }
   return `≤ ${formatNumber(limit.max)} ${limit.unit}`;
@@ -84,8 +85,8 @@ export function resolveFindingNavigation(finding) {
 /** Convierte un finding canónico o legacy en datos de presentación sin mutarlo. */
 export function presentFinding(finding) {
   const rule = finding?.rule ? getDomainRule(finding.rule) : null;
-  const hasMeasured = Object.hasOwn(finding, 'measured');
-  const hasLimit = Object.hasOwn(finding, 'limit');
+  const hasMeasured = hasOwn(finding, 'measured');
+  const hasLimit = hasOwn(finding, 'limit');
   return {
     severityLabel: SEVERITY_LABELS[finding.severity] || finding.severity,
     ruleId: rule?.id ?? null,

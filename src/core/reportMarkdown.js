@@ -2,6 +2,7 @@
 
 import { presentFinding } from './domainFindingPresentation.js';
 import { getDomainRule } from './domainRules.js';
+import { hasOwn } from './hasOwn.js';
 import { normalizeProjectInfo } from './projectInfo.js';
 
 const SEVERITY_SECTIONS = Object.freeze([
@@ -57,10 +58,10 @@ function normText(finding, presented) {
 
 function findingRow(finding, index) {
   const presented = presentFinding(finding);
-  const expected = Object.hasOwn(finding, 'limit')
+  const expected = hasOwn(finding, 'limit')
     ? presented.limitText
     : 'No declarado';
-  const measured = Object.hasOwn(finding, 'measured')
+  const measured = hasOwn(finding, 'measured')
     ? presented.measuredText
     : 'No medido';
   return `| ${index} | ${escapeUntrusted(findingSection(finding))} | `

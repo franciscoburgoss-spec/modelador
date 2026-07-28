@@ -2,6 +2,7 @@
 // derivados; los consumidores reciben una configuración efectiva y findings canónicos.
 
 import { createFinding } from './domainFindings.js';
+import { hasOwn } from './hasOwn.js';
 import {
   WALL_ROLES,
   isWallRole,
@@ -69,12 +70,12 @@ function assertDefaults(wallType, library) {
   }
 
   for (const field of ['spacing', 'studProfileId', 'trackProfileId', 'materialId']) {
-    if (!Object.hasOwn(metalcon, field)) {
+    if (!hasOwn(metalcon, field)) {
       throw new TypeError(`metalconDefaults de ${wallType.id} requiere ${field}.`);
     }
   }
   for (const field of ['panelWidth', 'panelHeight', 'minPanelWidth', 'gap']) {
-    if (!Object.hasOwn(osb, field)) {
+    if (!hasOwn(osb, field)) {
       throw new TypeError(`osbDefaults de ${wallType.id} requiere ${field}.`);
     }
   }
@@ -220,7 +221,7 @@ export function resolveWallTypeConfig(model, wall) {
   const findings = [];
   for (const [wallField, group, typeField] of OVERRIDE_FIELDS) {
     if (
-      Object.hasOwn(wall, wallField)
+      hasOwn(wall, wallField)
       && !Object.is(wall[wallField], wallType[group][typeField])
     ) {
       findings.push(ignoredOverrideFinding(wall, wallType, wallField, `${group}.${typeField}`));

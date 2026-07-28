@@ -2,6 +2,7 @@
 // dominio y valida que las extensiones numéricas/navegables sean explícitas.
 
 import { FINDING_SEVERITIES, getDomainRule } from './domainRules.js';
+import { hasOwn } from './hasOwn.js';
 
 const ID_FIELDS = ['elementIds', 'wallIds', 'roofSystemIds', 'roofPlaneIds'];
 const SEVERITY_RANK = { info: 0, warning: 1, error: 2 };
@@ -36,17 +37,17 @@ function normalizeLimit(limit) {
     throw new TypeError('limit contiene campos no reconocidos.');
   }
   const bounds = ['min', 'max', 'equal', 'exclusiveMin']
-    .filter((field) => Object.hasOwn(limit, field));
+    .filter((field) => hasOwn(limit, field));
   if (bounds.length === 0 || bounds.some((field) => !Number.isFinite(limit[field]))) {
     throw new TypeError('limit requiere min, max, equal o exclusiveMin finito.');
   }
-  if (Object.hasOwn(limit, 'equal') && bounds.length > 1) {
+  if (hasOwn(limit, 'equal') && bounds.length > 1) {
     throw new TypeError('limit no puede mezclar equal con otros límites.');
   }
-  if (Object.hasOwn(limit, 'exclusiveMin') && bounds.length > 1) {
+  if (hasOwn(limit, 'exclusiveMin') && bounds.length > 1) {
     throw new TypeError('limit no puede mezclar exclusiveMin con otros límites.');
   }
-  if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max') && limit.min > limit.max) {
+  if (hasOwn(limit, 'min') && hasOwn(limit, 'max') && limit.min > limit.max) {
     throw new TypeError('limit no puede tener min mayor que max.');
   }
   return {
@@ -73,14 +74,14 @@ function normalizeIds(field, value) {
  */
 export function createFinding(input) {
   if (!isRecord(input)) throw new TypeError('El finding debe ser un objeto.');
-  if (Object.hasOwn(input, 'ids')) {
+  if (hasOwn(input, 'ids')) {
     throw new TypeError('No existe un campo ids genérico; usa ids tipados.');
   }
   if (!nonEmptyString(input.category)) throw new TypeError('El finding requiere category.');
   if (!nonEmptyString(input.message)) throw new TypeError('El finding requiere message.');
 
   let rule = null;
-  if (Object.hasOwn(input, 'rule')) {
+  if (hasOwn(input, 'rule')) {
     if (!nonEmptyString(input.rule) || !(rule = getDomainRule(input.rule))) {
       throw new TypeError(`Regla inexistente: ${input.rule}.`);
     }
@@ -102,17 +103,17 @@ export function createFinding(input) {
 
   if (rule) finding.rule = rule.id;
 
-  if (Object.hasOwn(input, 'stage')) {
+  if (hasOwn(input, 'stage')) {
     if (!nonEmptyString(input.stage)) {
       throw new TypeError('stage debe ser un string no vacío.');
     }
     finding.stage = input.stage;
   }
 
-  if (Object.hasOwn(input, 'measured')) {
+  if (hasOwn(input, 'measured')) {
     finding.measured = normalizeMeasured(input.measured);
   }
-  if (Object.hasOwn(input, 'limit')) {
+  if (hasOwn(input, 'limit')) {
     finding.limit = normalizeLimit(input.limit);
   }
   if (
@@ -126,7 +127,7 @@ export function createFinding(input) {
   }
 
   for (const field of ID_FIELDS) {
-    if (Object.hasOwn(input, field)) finding[field] = normalizeIds(field, input[field]);
+    if (hasOwn(input, field)) finding[field] = normalizeIds(field, input[field]);
   }
   return finding;
 }

@@ -114,7 +114,10 @@ export default function App({ projectRuntime = null }) {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <div
+      data-modelador-ready="true"
+      style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
+    >
       <AutosaveBanner pending={autosave.pending} onRestore={autosave.restore} onDismiss={autosave.dismiss} />
       <LegacyProjectMigrationBanner
         candidates={legacyMigration.candidates}

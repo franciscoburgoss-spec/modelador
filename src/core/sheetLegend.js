@@ -4,6 +4,7 @@
 // de exportSheetsDxf.js con coordenadas absolutas de A1; acá se dibuja dentro del box que le pasa
 // sheetFormats.js, así funciona igual en A0/A2/A3.
 import { line, text, estimateTextWidth, sanitizeDxfText } from './exportFramingDxf.js';
+import { hasOwn } from './hasOwn.js';
 
 const L_BOX = 'CAJETIN';
 const L_TEXT = 'LEYENDA';
@@ -83,13 +84,13 @@ function formatNumber(value) {
 function formatCriterionLimit(limit) {
   if (limit === null) return 'No resoluble con los datos actuales';
   const unit = limit.unit;
-  if (Object.hasOwn(limit, 'equal')) {
+  if (hasOwn(limit, 'equal')) {
     return `= ${formatNumber(limit.equal)} ${unit}`;
   }
-  if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max')) {
+  if (hasOwn(limit, 'min') && hasOwn(limit, 'max')) {
     return `${formatNumber(limit.min)}-${formatNumber(limit.max)} ${unit}`;
   }
-  if (Object.hasOwn(limit, 'min')) {
+  if (hasOwn(limit, 'min')) {
     return `>= ${formatNumber(limit.min)} ${unit}`;
   }
   return `<= ${formatNumber(limit.max)} ${unit}`;

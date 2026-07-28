@@ -1,3 +1,4 @@
+import { hasOwn } from './hasOwn.js';
 import { isValidParamName } from './projectParams.js';
 import { assertValidWallTypes } from './wallTypes.js';
 
@@ -69,7 +70,7 @@ function migrateV1ToV2(model) {
   return {
     ...model,
     modelVersion: 2,
-    wallTypes: Object.hasOwn(model, 'wallTypes') ? model.wallTypes : []
+    wallTypes: hasOwn(model, 'wallTypes') ? model.wallTypes : []
   };
 }
 
@@ -79,7 +80,7 @@ const MIGRATIONS = new Map([
 ]);
 
 function declaredVersion(model) {
-  if (!Object.hasOwn(model, 'modelVersion')) return LEGACY_MODEL_VERSION;
+  if (!hasOwn(model, 'modelVersion')) return LEGACY_MODEL_VERSION;
   if (!Number.isInteger(model.modelVersion) || model.modelVersion < 0) {
     throw new ModelImportError(
       'INVALID_MODEL_VERSION',
@@ -228,7 +229,7 @@ export function validateModel(model) {
     );
     model.elements.forEach((element, index) => {
       if (!isRecord(element) || element.type !== 'wall') return;
-      if (Object.hasOwn(element, 'role')) {
+      if (hasOwn(element, 'role')) {
         addIssue(
           issues,
           `elements[${index}].role`,

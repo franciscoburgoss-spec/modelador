@@ -7,6 +7,7 @@
 import {
   evaluateNumericExpression, parseNumericExpression, walkNumericAst
 } from './numericExpression.js';
+import { hasOwn } from './hasOwn.js';
 
 const NAME_RE = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
 const RESERVED_NAMES = new Set([
@@ -33,7 +34,7 @@ function resolveElementField(elementId, field, elementsById, paramsMap, context)
   if (context.referenceDepth >= MAX_REFERENCE_DEPTH) return NaN;
   const key = `${elementId}.${field}`;
   if (context.visiting.has(key)) return NaN;
-  if (!Object.hasOwn(elementsById, elementId)) return NaN;
+  if (!hasOwn(elementsById, elementId)) return NaN;
   const el = elementsById[elementId];
   if (!el || el[field] === undefined || el[field] === null) return NaN;
   if (PLAIN_NUMBER_FIELDS.has(field)) {
@@ -85,7 +86,7 @@ export function resolveValue(raw, paramsMap, elementsById = {}, context = null) 
     const resolutionContext = context || { visiting: new Set(), referenceDepth: 0 };
     return evaluateNumericExpression(expr, {
       resolveIdentifier: (name) => (
-        isValidParamName(name) && Object.hasOwn(paramsMap, name) ? paramsMap[name] : NaN
+        isValidParamName(name) && hasOwn(paramsMap, name) ? paramsMap[name] : NaN
       ),
       resolveReference: (elementId, field) => (
         resolveElementField(elementId, field, elementsById, paramsMap, resolutionContext)
