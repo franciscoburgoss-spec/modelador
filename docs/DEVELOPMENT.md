@@ -32,10 +32,10 @@ Python/CalculiX sin rutas personales.
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite oficial, 759 Node + 12 componentes |
-| `npm run test:components` | doce workflows críticos con DOM |
+| `npm test` | suite oficial, 765 Node + 18 componentes |
+| `npm run test:components` | dieciocho workflows críticos con DOM |
 | `npm run test:e2e` | build y Playwright; se ejecuta externamente en plataforma soportada |
-| `npm run test:rust` | cuatro invariantes del filesystem y configuración nativos |
+| `npm run test:rust` | nueve invariantes del filesystem, recovery y configuración nativos |
 | `npm run test:lab` | laboratorio de faldones, 35 pruebas |
 | `npm run test:coverage` | umbrales separados para core y store |
 | `npm run lint` | ESLint sobre JavaScript, JSX y scripts |
@@ -154,7 +154,7 @@ No actualizar Tauri, sus runtimes o Wry sin repetir el smoke real en ese sistema
 
 - Suite: 765/765 Node; componentes: 18/18; Rust: 9/9; laboratorio: 35/35.
 - Cobertura de líneas: core 93,59 %; store 96,97 %.
-- Bundle inicial: 727,03 kB raw / 226,08 kB gzip.
+- Bundle inicial: 727,24 kB raw / 226,14 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

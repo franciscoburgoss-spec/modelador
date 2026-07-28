@@ -11,10 +11,10 @@
 |---|---|
 | Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-004-D-native-autosave-recovery.md` |
-| Suite oficial | 759/759 Node; 12/12 componentes; 4/4 Rust; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 721,29 kB |
-| Cobertura | core 93,71 %; store 96,91 % (gates 90 % / 85 %) |
+| Spec activa | Ninguna; próximo corte de `SPEC-004` pendiente de diagnóstico |
+| Suite oficial | 765/765 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 727,24 kB |
+| Cobertura | core 93,59 %; store 96,97 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -28,9 +28,7 @@
 
 ## Hallazgos bloqueantes confirmados
 
-| ID | Severidad | Hallazgo | Spec |
-|---|---|---|---|
-| F-006 | P1 | Persistencia local puede fallar sin recuperación ni error visible | SPEC-004 |
+Ninguno.
 
 ## Hallazgos resueltos
 
@@ -42,6 +40,7 @@
 | F-003 | El modelo se migra y valida antes de cualquier commit al store | `sessions/close-SPEC-001.md` |
 | F-004 | Parámetros, biblioteca, niveles y vanos invalidan mediante el registro central | `sessions/close-SPEC-002.md` |
 | F-005 | Las tres variantes CalculiX tienen guarda dura y no descargan stale | `sessions/close-SPEC-002.md` |
+| F-006 | Recovery nativo distingue crash/cierre limpio y muestra errores sin tocar el original | `sessions/close-SPEC-004-D.md` |
 
 ## Fases
 
@@ -50,8 +49,8 @@
 | 0 | Repositorio y entorno reproducibles | Completada |
 | 1 | Seguridad, integridad e invalidación | Completada |
 | 2 | Reglas de dominio R3–R8 y formatos | En ejecución |
-| 3 | Persistencia y recuperación nativas | En ejecución |
-| 4 | Aplicación Tauri y CalculiX integrado | No iniciada |
+| 3 | Persistencia y recuperación nativas | Completada |
+| 4 | Aplicación Tauri y CalculiX integrado | En ejecución |
 | 5 | UX, rendimiento y observabilidad local | No iniciada |
 | 6 | Release `v1.0.0-local` | No iniciada |
 
@@ -168,6 +167,16 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   759 Node, 12 componentes, 4 Rust, 35 lab, DXF 0/0 y CCX 3/3; el E2E externo
   [30396039167](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30396039167)
   pasó 1/1 sobre `59bf6e67d2a5`.
+- SPEC-004-D: cerrado. Recovery usa un snapshot v2 privado y atómico separado del proyecto, y un
+  marcador Rust ofrece recuperación sólo después de una sesión interrumpida. Recuperar valida en
+  un único commit, conserva la ruta y exige Guardar explícito; corrupción y versiones futuras son
+  visibles y se preservan. La migración de las dos claves web accesibles exige destino, reabre
+  antes de consumirlas y documenta Exportar/Importar para orígenes externos. La capability queda
+  en exactamente nueve comandos sin red ni plugins amplios. La ventana permaneció viva más de
+  30 segundos en macOS 11.7.11 x86_64; la puerta local pasó 765 Node, 18 componentes, 9 Rust,
+  35 lab, DXF 0/0 y CCX 3/3, y el E2E externo
+  [30398940925](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30398940925)
+  pasó 1/1 sobre `9480850c5484`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -193,6 +202,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Implementar `SPEC-004-D`: autosave y recuperación nativos con marcador de crash, más migración
-controlada desde el `localStorage` accesible. No incorporar todavía CalculiX, instalación en
+Diagnosticar el siguiente corte de `SPEC-004`: ejecución controlada de CalculiX mediante un comando
+Tauri estrecho, con timeout, cancelación y logs. No incorporar todavía instalación en
 `/Applications` ni packaging de release.
