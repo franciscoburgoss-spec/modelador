@@ -9,9 +9,9 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — `SPEC-003-C` solver habilitado |
+| Etapa | Arnés de verificación — `SPEC-003-C1` solver, diagnóstico ampliado |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-003-verification-harness.md`; corte activo **C — Solver** |
+| Spec activa | `specs/SPEC-003-C1-solver-harness.md` |
 | Suite oficial | 709/709; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 701,70 kB |
 | Cobertura | core 93,45 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
@@ -24,7 +24,7 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; C debe reproducir el defecto conocido de `ELSET` global y cerrar los tres jobs |
+| Bloqueo actual | Ninguno; C1 gobierna la sección de fundaciones globales descubierta al ejecutar CCX |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -117,6 +117,10 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - SPEC-003-C0: cerrado. FX-004 persiste área e inercias canónicas para `90CA085`, `40CA085` y
   `60CA085`; su golden INP baja de 16 a cero tokens no finitos. CalculiX 2.23 termina la cercha
   con 13 nodos de desplazamiento, 78 valores finitos y máximo absoluto de 0,590202 mm.
+- SPEC-003-C-DIAG: cerrado como sustituido. Cercha y fundaciones terminan, pero el global confirma
+  125 referencias de sección con `ELSET` mayor a 20 caracteres. Al compactarlas temporalmente,
+  CCX descubre además barras `FUNDACIONES` sin sección y termina con código 201. C1 reemplaza el
+  alcance anterior y prohíbe aceptar el falso positivo código 0 + `Job finished` con `*ERROR`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -131,18 +135,18 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   una prueba automatizada del CLI bajo el alcance de herramientas.
 - `validate-governance` sólo inspecciona specs en el primer nivel de `specs/`; las specs de
   `specs/domain/` requieren revisión manual hasta ampliar el validador bajo R-011.
-- El INP global usa IDs persistidos dentro de nombres `ELSET`; en `casa-L` superan los 20
-  caracteres que CalculiX conserva y las secciones no encuentran sus conjuntos. Seguimiento R-007
-  antes de G5.
+- El INP global tiene 125 referencias de sección con nombres `ELSET` mayores a 20 caracteres; tras
+  compactarlos sólo para diagnóstico, CCX revela además que las cuatro barras de fundación no
+  tienen sección. `SPEC-003-C1` corrige ambas precondiciones antes de G5.
 - La precondición mecánica de FX-004 quedó resuelta en `SPEC-003-C0` sin fallback del exportador:
   las propiedades persistidas coinciden con el catálogo y la cercha ya ejecuta con resultados
-  finitos. El parser y reporte comunes de tres jobs siguen correspondiendo a `SPEC-003-C`.
+  finitos. El parser y reporte comunes de tres jobs siguen correspondiendo a `SPEC-003-C1`.
 - `resolveRoofPlane` intenta construir el resultado fallido con variables `let` aún no
   inicializadas cuando falta `canalWallId`; el fixture mínimo `model-v1-dual-roof` reproduce un
   `ReferenceError` si se expande. Seguimiento R-017 en un corte explícito, fuera de SPEC-003-A.
 
 ## Próximo cierre
 
-Implementar `SPEC-003-C`: smoke CalculiX de global, cercha y fundación, parser finito común y
-reporte por commit con IDs persistidos; corregir mínimamente los nombres `ELSET` sólo si el job
-global reproduce el defecto conocido. No tocar Tauri, componentes ni umbrales de cobertura.
+Implementar `SPEC-003-C1`: completar nombres/secciones del INP global, sonda cinemática explícita,
+smoke CalculiX de tres jobs, parser finito común y reporte por commit con IDs persistidos. No tocar
+Tauri, componentes ni umbrales de cobertura.
