@@ -11,10 +11,10 @@
 |---|---|
 | Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-004-D1-macos11-webview-render.md` |
-| Suite oficial | 765/765 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 727,24 kB |
-| Cobertura | core 93,59 %; store 96,97 % (gates 90 % / 85 %) |
+| Spec activa | Ninguna; `SPEC-004-D1` cerrada |
+| Suite oficial | 770/770 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 728,17 kB |
+| Cobertura | core 93,39 %; store 96,97 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -24,13 +24,13 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | F-008: Tauri abre una ventana sin renderizar el frontend en macOS 11 |
+| Bloqueo actual | Ninguno |
 
 ## Hallazgos bloqueantes confirmados
 
 | ID | Severidad | Hallazgo | Spec |
 |---|---|---|---|
-| F-008 | P1 | WebView macOS 11 carece de `Object.hasOwn`; React aborta antes del primer render | SPEC-004-D1 |
+Ninguno.
 
 ## Hallazgos resueltos
 
@@ -43,6 +43,7 @@
 | F-004 | Parámetros, biblioteca, niveles y vanos invalidan mediante el registro central | `sessions/close-SPEC-002.md` |
 | F-005 | Las tres variantes CalculiX tienen guarda dura y no descargan stale | `sessions/close-SPEC-002.md` |
 | F-006 | Recovery nativo distingue crash/cierre limpio y muestra errores sin tocar el original | `sessions/close-SPEC-004-D.md` |
+| F-008 | Frontend compatible con el WebView de macOS 11 y fallo de bootstrap visible | `sessions/close-SPEC-004-D1.md` |
 
 ## Fases
 
@@ -179,6 +180,12 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   35 lab, DXF 0/0 y CCX 3/3, y el E2E externo
   [30398940925](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30398940925)
   pasó 1/1 sobre `9480850c5484`.
+- SPEC-004-D1: cerrado. Las 47 consultas productivas de propiedades propias en doce módulos usan
+  un helper compatible con el WebView de macOS 11; una inspección recursiva impide reintroducir
+  `Object.hasOwn`. El bootstrap muestra un error escapado en vez de una ventana vacía y se retira
+  después del primer render. Tauri mostró barra de menú, selector de vista y lienzo durante más de
+  30 segundos en macOS 11.7.11 x86_64. La puerta local pasó 770 Node, 18 componentes, 9 Rust,
+  35 lab, DXF 0/0 y CCX 3/3.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -204,6 +211,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Corregir `SPEC-004-D1`: compatibilidad del frontend y smoke de contenido real en el WebView de
-macOS 11. Después retomar la ejecución controlada de CalculiX, sin incorporar todavía instalación
-en `/Applications` ni packaging de release.
+Retomar la ejecución controlada de CalculiX prevista por `SPEC-004`, sin incorporar todavía
+instalación en `/Applications` ni packaging de release.

@@ -7,7 +7,7 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-ENV-001 | Build con Node 22 fijado y dependencias reproducibles | R-011 | D-003/D-004 | SPEC-000 | `docs/DEVELOPMENT.md` + clean install | G1 | Verificado |
 | REQ-GOV-001 | Estado, decisiones, riesgos y specs validados | R-011 | D-015 | SPEC-000 | `make governance` + cierre SPEC-000 | G0 | Verificado |
 | REQ-MIG-001 | Fuentes y fixtures se migran sin pérdida ni artefactos | R-014 | D-015 | SPEC-000 | `MIGRATION_MANIFEST.json` + comparación con origen | G1 | Verificado |
-| REQ-TST-000 | Existe una puerta única de tests, cobertura, lint, artefactos, solver y build | R-011/R-015 | D-003/D-016/D-036 | SPEC-000/003-E | `npm run validate` en `9480850c5484`: 765 Node, 18 componentes, 9 Rust, 35 lab, 18 goldens, DXF 0/0, CCX 3/3 y build | G1/G4/G5 | Verificado |
+| REQ-TST-000 | Existe una puerta única de tests, cobertura, lint, artefactos, solver y build | R-011/R-015 | D-003/D-016/D-036 | SPEC-000/003-E | `npm run validate` en `0f04c111e6ba`: 770 Node, 18 componentes, 9 Rust, 35 lab, 18 goldens, DXF 0/0, CCX 3/3 y build | G1/G4/G5 | Verificado |
 | REQ-SEC-001 | Ninguna fórmula puede ejecutar JavaScript | R-001 | D-005 | SPEC-001 | corpus adversario + 92 fórmulas de fixtures + reversión | G2 | Verificado |
 | REQ-DATA-001 | Modelo inválido no modifica el estado activo | R-002 | D-006 | SPEC-001 | `{}`, JSON truncado y versión futura transaccionales | G2 | Verificado |
 | REQ-DATA-002 | Modelos declaran versión y migran secuencialmente | R-002 | D-006 | SPEC-001 | fixtures v0/v1 + idempotencia | G2 | Verificado |
@@ -27,7 +27,7 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010/D-038/D-039/D-040/D-041 | SPEC-004-A/B/C1/D | A: `SIGKILL` conserva SHA; B: apertura inválida no hace commit y save concurrente conserva dirty; C1 adopta el contrato en Rust; D prueba crash/cierre limpio y que recovery no modifica el original | G6 | Verificado |
 | REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010/D-038/D-041 | SPEC-004-A/D | rotación A conserva exactamente 10 backups reabribles; D guarda snapshot v2 atómico en `Recovery`, sólo ofrece el crash previo y preserva corrupción con error visible | G6 | Verificado |
 | REQ-APP-001 | La app abre desde `/Applications` sin Terminal | R-008 | D-002/D-013 | SPEC-004 | smoke instalado | G6 | Pendiente |
-| REQ-APP-002 | Runtime no realiza conexiones de red | R-008 | D-012/D-040/D-041 | SPEC-004-C/C1/D | Capability de nueve comandos, CSP local y ausencia de plugins shell/fs/HTTP/opener pasan inspección; smoke macOS 11 y [E2E 30398940925](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30398940925) pasan sobre `9480850c5484` | G6 | Verificado |
+| REQ-APP-002 | Runtime no realiza conexiones de red y renderiza en el WebView objetivo | R-008/R-009 | D-012/D-040/D-041/D-042 | SPEC-004-C/C1/D/D1 | Capability de nueve comandos, CSP local y ausencia de plugins shell/fs/HTTP/opener pasan inspección; `0f04c111e6ba` muestra menú, selector y lienzo por más de 30 s en macOS 11.7.11 x86_64 | G6 | Verificado |
 | REQ-CCX-002 | CCX usa comando estrecho, timeout y cancelación | R-007/R-008 | D-011 | SPEC-004 | tests Rust + smoke | G5/G6 | Pendiente |
 | REQ-UX-001 | Fallos críticos son visibles y accionables | R-012 | — | SPEC-005 | pruebas UI + smoke | G7 | Pendiente |
 | REQ-PERF-001 | Se cumplen presupuestos en el Mac objetivo | R-010 | — | SPEC-005 | benchmark fechado | G7 | Pendiente |

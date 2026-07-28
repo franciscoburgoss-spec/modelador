@@ -32,7 +32,7 @@ Python/CalculiX sin rutas personales.
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite oficial, 765 Node + 18 componentes |
+| `npm test` | suite oficial, 770 Node + 18 componentes |
 | `npm run test:components` | dieciocho workflows críticos con DOM |
 | `npm run test:e2e` | build y Playwright; se ejecuta externamente en plataforma soportada |
 | `npm run test:rust` | nueve invariantes del filesystem, recovery y configuración nativos |
@@ -144,17 +144,34 @@ Importar JSON en la app nativa.
 Para probar selectores, archivos, recientes y recovery reales se debe usar:
 
 ```bash
+nvm use
 npm run tauri:dev -- --no-watch
 ```
 
 El runtime está fijado por D-040 porque Wry 0.46 o superior aborta al crear la ventana en macOS 11.
 No actualizar Tauri, sus runtimes o Wry sin repetir el smoke real en ese sistema.
 
+Una terminal nueva no activa `.nvmrc` por sí sola. Si `make doctor` informa Node 20, cargar NVM y
+seleccionar la versión del repositorio antes de ejecutar Tauri:
+
+```bash
+source "$HOME/.nvm/nvm.sh"
+nvm use
+source "$HOME/.cargo/env"
+make doctor
+```
+
+El smoke de Tauri sólo pasa cuando la ventana muestra contenido reconocible: barra de menú,
+selector de vista y lienzo durante al menos diez segundos. Una ventana blanca, el texto
+`Iniciando Modelador…` permanente o el mensaje `Modelador no pudo iniciar` son fallos, aunque el
+proceso permanezca vivo. D-042 prohíbe `Object.hasOwn` en producción porque el WebView de macOS 11
+no implementa ese built-in; `src/core/hasOwn.js` es la frontera compatible.
+
 ## Baselines visibles
 
-- Suite: 765/765 Node; componentes: 18/18; Rust: 9/9; laboratorio: 35/35.
-- Cobertura de líneas: core 93,59 %; store 96,97 %.
-- Bundle inicial: 727,24 kB raw / 226,14 kB gzip.
+- Suite: 770/770 Node; componentes: 18/18; Rust: 9/9; laboratorio: 35/35.
+- Cobertura de líneas: core 93,39 %; store 96,97 %.
+- Bundle inicial: 728,17 kB raw / 226,81 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en
