@@ -1,0 +1,45 @@
+name: E2E externo
+
+on:
+  push:
+    branches:
+      - spec/003-verification-harness
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    name: Playwright Chromium
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Node fijado
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Dependencias reproducibles
+        run: npm ci
+
+      - name: Chromium soportado
+        run: npx playwright install --with-deps chromium
+
+      - name: Workflow crítico
+        run: npm run test:e2e
+
+      - name: Evidencia por commit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ github.sha }}
+          path: |
+            playwright-report/
+            test-results/results.json
+          if-no-files-found: error
+          retention-days: 14

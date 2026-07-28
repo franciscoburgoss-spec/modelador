@@ -9,8 +9,10 @@
   "packageManager": "npm@10.9.8",
   "scripts": {
     "dev": "vite",
+    "preview": "vite preview",
     "test": "node --test tests/*.test.mjs && npm run test:components",
     "test:components": "node --import tsx --test tests/*.component.test.jsx",
+    "test:e2e": "npm run build && playwright test",
     "test:lab": "node --test lab/roofPlane/tests/*.test.mjs",
     "test:coverage": "npm run test:coverage:core && npm run test:coverage:store",
     "test:coverage:core": "node --test --experimental-test-coverage --test-coverage-include='src/core/**/*.js' --test-coverage-lines=90 tests/*.test.mjs",
@@ -26,7 +28,7 @@
     "setup:verification-python": "bash scripts/setup-verification-python.sh",
     "audit:dxf": "node scripts/audit-dxf.mjs",
     "smoke:ccx": "node scripts/smoke-ccx.mjs",
-    "validate": "npm run format:check && npm run lint && npm test && npm run test:lab && npm run test:coverage && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
+    "validate": "npm run format:check && npm run lint && npm test && npm run test:lab && npm run test:coverage && npm run verify:goldens && npm run audit:dxf && npm run smoke:ccx && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -37,6 +39,7 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
+    "@playwright/test": "1.62.0",
     "@testing-library/dom": "10.4.1",
     "@testing-library/react": "16.3.2",
     "@vitejs/plugin-react": "^4.3.1",

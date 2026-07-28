@@ -24,6 +24,7 @@ const textExtensions = new Set([
   '.mjs',
   '.rc',
   '.sh',
+  '.yml',
 ]);
 const textNames = new Set([
   '.editorconfig',
