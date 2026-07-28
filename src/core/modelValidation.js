@@ -8,6 +8,7 @@ import { createFinding } from './domainFindings.js';
 import { resolveWallTypeConfig } from './wallTypes.js';
 import { evaluateWallDomainChecks } from './domainChecks.js';
 import { evaluateRoofSupportChecks } from './roofSupportChecks.js';
+import { computeShearCapacityByDirection } from './shearCapacity.js';
 
 function issue(severity, category, message, elementIds = []) {
   return createFinding({ severity, category, message, elementIds });
@@ -449,10 +450,12 @@ export function validateModel(model, extraMargin = 0) {
   const elementsById = buildElementsById(elements);
   const domainChecks = evaluateWallDomainChecks(model);
   const roofSupportChecks = evaluateRoofSupportChecks(model);
+  const shearCapacity = computeShearCapacityByDirection(model);
   return [
     ...checkWallTypeConfiguration(model),
     ...domainChecks.findings,
     ...roofSupportChecks.findings,
+    ...shearCapacity.findings,
     ...checkDanglingReferences(elements, grid, paramsMap, elementsById),
     ...checkZeroLength(elements, grid, paramsMap, elementsById),
     ...checkOpeningsOutsideWall(elements, grid, paramsMap, elementsById),

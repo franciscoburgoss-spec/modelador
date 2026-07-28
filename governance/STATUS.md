@@ -9,18 +9,18 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — ejecutar R7-C |
+| Etapa | Reglas de dominio — preparar R8 |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R7-checks.md`, corte C |
-| Suite oficial | 678/678; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 685,08 kB |
+| Spec activa | Ninguna en implementación; próxima spec se redacta desde R8 del roadmap |
+| Suite oficial | 684/684; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 690,96 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno para R7-C; la capacidad verificada seguirá en cero mientras existan condiciones constructivas no modeladas |
+| Bloqueo actual | Ninguno para redactar R8; la capacidad verificada seguirá en cero mientras existan condiciones constructivas no modeladas |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -81,8 +81,11 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   apilados y verifica cada llegada sobre vano contra `B/2` sin fallback. `casa-L` conserva seis
   llegadas únicas, todas fuera de 19 mm. Las tres guardas `MIN_TRAMO` emiten etapa, solape,
   umbral estricto y muro sin volver a crear el tramo; el wrapper de faldones conserva el finding.
-- R7-C separa capacidad verificada, condicionada y excluida por dirección.
-- R8: pendiente según `domain/ROADMAP-R1-R8.md`.
+- R7-C: cerrado. `computeShearCapacityByDirection` separa X/Y y estados
+  `verified`/`conditional`/`excluded`, individualiza catorce condiciones, mantiene cuatro como
+  `unknown`, calcula 417 kgf/m sólo como capacidad condicionada y deja cero capacidad verificada.
+  Los totales y findings por dirección nunca mezclan capacidad condicionada con verificada.
+- R8: pendiente de spec desde `domain/ROADMAP-R1-R8.md`; no se modifica código antes de aprobarla.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
@@ -104,6 +107,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Implementar `SPEC-R7-checks.md`, corte C: capacidad de corte MP1 por X/Y con estados
-`verified`/`conditional`/`excluded`, condiciones individualizadas, totales separados e integración
-final en validación/presentación.
+Redactar la spec R8 desde `domain/ROADMAP-R1-R8.md`: informe markdown, cobertura explícita y
+criterios filtrados por roles. Confirmar diagnóstico, formato, exclusiones y aceptación antes de
+modificar código.
