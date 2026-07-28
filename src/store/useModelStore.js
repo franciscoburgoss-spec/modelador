@@ -529,6 +529,51 @@ export const useModelStore = create((set, get) => ({
     });
     return { ok: true, changed: true };
   },
+  assignWallTypesBatch: (wallIds, wallTypeId) => {
+    if (!Array.isArray(wallIds)) {
+      throw new TypeError('wallIds debe ser un array.');
+    }
+    const current = get().model;
+    const requested = wallTypeId ?? null;
+    if (requested !== null && !getWallType(current, requested)) {
+      throw new TypeError(`El tipo de muro ${requested} no existe.`);
+    }
+
+    const uniqueIds = [...new Set(wallIds)];
+    const wallsById = new Map();
+    for (const wallId of uniqueIds) {
+      const element = (current.elements || []).find((candidate) => candidate.id === wallId);
+      if (!element) throw new TypeError(`El muro ${wallId} no existe.`);
+      if (element.type !== 'wall') {
+        throw new TypeError(`El elemento ${wallId} no existe como muro.`);
+      }
+      wallsById.set(wallId, element);
+    }
+
+    const changedIds = uniqueIds.filter((wallId) => (
+      (wallsById.get(wallId).wallTypeId ?? null) !== requested
+    ));
+    if (changedIds.length === 0) {
+      return { ok: true, changed: false, wallIds: [] };
+    }
+
+    const changedSet = new Set(changedIds);
+    set((s) => {
+      const elements = s.model.elements.map((element) => {
+        if (!changedSet.has(element.id)) return element;
+        const next = { ...element };
+        if (requested === null) delete next.wallTypeId;
+        else next.wallTypeId = requested;
+        return next;
+      });
+      return withHistory(s, invalidateForMutation(
+        { ...s.model, elements },
+        'wallTypeAssignment',
+        { wallIds: changedIds }
+      ));
+    });
+    return { ok: true, changed: true, wallIds: changedIds };
+  },
 
   // ---- datos de proyecto del cajetín (sesión 22) ----
   // Entran al historial: son datos del modelo y un cambio de mandante/obra debe poder deshacerse

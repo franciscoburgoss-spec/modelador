@@ -27,6 +27,7 @@ import MetalconModulationModal from './components/modals/MetalconModulationModal
 import OsbModulationModal from './components/modals/OsbModulationModal.jsx';
 import OsbNestingModal from './components/modals/OsbNestingModal.jsx';
 import WallTypesModal from './components/modals/WallTypesModal.jsx';
+import ElementInventoryModal from './components/modals/ElementInventoryModal.jsx';
 import RoofTrussModal from './components/modals/RoofTrussModal.jsx';
 import RoofPlaneModal from './components/modals/RoofPlaneModal.jsx';
 import FilterPanel from './components/FilterPanel.jsx';
@@ -184,6 +185,12 @@ export default function App() {
       <OsbModulationModal open={activeModal === 'osbModulation'} onClose={() => setActiveModal(null)} />
       <OsbNestingModal open={activeModal === 'osbNesting'} onClose={() => setActiveModal(null)} />
       <WallTypesModal open={activeModal === 'wallTypes'} onClose={() => setActiveModal(null)} />
+      <ElementInventoryModal
+        open={activeModal === 'elementInventory'}
+        onClose={() => setActiveModal(null)}
+        onEdit={handleEditRequest}
+        canvasSize={canvasSize}
+      />
       <RoofTrussModal
         open={activeModal === 'roofTruss' || isModal('roofTruss')}
         initialSystemId={editIdFor('roofTruss')}

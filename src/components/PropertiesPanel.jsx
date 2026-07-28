@@ -8,6 +8,7 @@ import { buildElementsById } from '../core/elementReferences.js';
 import { resolveRoofPlane } from '../core/roofPlane.js';
 import { getElementShortLabel } from '../core/naming.js';
 import { Button } from './ui/Button.jsx';
+import FloatingPanel from './ui/FloatingPanel.jsx';
 
 const TYPE_LABELS = { wall: 'Muro', column: 'Pilar', beam: 'Viga', foundation: 'Fundación' };
 const LIBRARY_KEY = { wall: 'wallSections', column: 'columnSections', beam: 'beamSections', foundation: 'foundationSections' };
@@ -22,7 +23,7 @@ function findLibraryName(library, type, libraryId) {
   return library[key].find(i => i.id === libraryId)?.name ?? '—';
 }
 
-function ElementFields({ el, grid, library, paramsMap, elementsById }) {
+function ElementFields({ el, grid, library, wallTypes, paramsMap, elementsById }) {
   if (el.type === 'column') {
     return (
       <>
@@ -53,6 +54,7 @@ function ElementFields({ el, grid, library, paramsMap, elementsById }) {
   }
   if (el.type === 'wall') {
     const isXRun = isWallXRun(el);
+    const wallType = (wallTypes || []).find((type) => type.id === el.wallTypeId);
     return (
       <>
         <Field label="Dirección" value={isXRun ? 'Corre en X' : 'Corre en Y'} />
@@ -63,6 +65,10 @@ function ElementFields({ el, grid, library, paramsMap, elementsById }) {
         <Field label="Nivel superior" value={grid.zLevels.find(z => z.id === el.topZ)?.label ?? '—'} />
         <Field label="Espesor" value={formatDim(el.thickness, paramsMap, elementsById)} />
         <Field label="Sección de librería" value={findLibraryName(library, 'wall', el.libraryId)} />
+        <Field
+          label="Tipo y rol"
+          value={wallType ? `${wallType.name} · ${wallType.role}` : 'Sin tipo / rol'}
+        />
         <Field label="Vanos" value={`${(el.openings || []).length}`} />
       </>
     );
@@ -126,43 +132,38 @@ function RoofSystemPanel({ system, grid, library, onEdit, findings }) {
   };
 
   return (
-    <div
-      className="fixed bg-white rounded-lg shadow-xl w-80 pointer-events-auto"
-      style={{ top: 80, right: 24, zIndex: 110 }}
-      onClick={(e) => e.stopPropagation()}
+    <FloatingPanel
+      title={`Techumbre #${system.id}`}
+      onClose={() => selectRoofSystem(null)}
+      footer={(
+        <>
+          <Button variant="primary" className="w-full text-center" onClick={() => onEdit('roofTruss', system.id)}>
+            Editar…
+          </Button>
+          <Button variant="danger" className="w-full text-center" onClick={handleDelete}>
+            Eliminar sistema
+          </Button>
+          <Button variant="secondary" className="w-full text-center" onClick={() => selectRoofSystem(null)}>
+            Deseleccionar
+          </Button>
+        </>
+      )}
     >
-      <div className="px-4 py-2 bg-[#f2f2ee] border-b border-[#e4e4e0] rounded-t-lg flex items-center justify-between">
-        <span className="font-semibold text-sm text-[#3d3d38]">Techumbre #{system.id}</span>
-        <button className="text-[#8a8a85] hover:text-[#5a5a55] text-lg leading-none" onClick={() => selectRoofSystem(null)}>×</button>
-      </div>
-      <div className="p-4 text-sm max-h-[60vh] overflow-y-auto">
-        <Field label="Luz" value={geo?.span != null ? `${(geo.span / 1000).toFixed(2)} m` : '—'} />
-        <Field label="Pendiente" value={`${system.slopePercent ?? '—'} %`} />
-        <Field label="N° de cerchas" value={`${(system.trussPositions || []).length}`} />
-        <Field label="Espaciamiento" value={`${system.trussSpacing ?? '—'} mm`} />
-        <Field label="Cota de apoyo" value={system.supportElevation != null ? `${Math.round(system.supportElevation)} mm` : '—'} />
-        <Field label="Avance" value={system.runAxis === 'x' ? 'Cerchas sobre ejes X' : 'Cerchas sobre ejes Y'} />
-        <Field label="Plantilla" value={template?.name ?? '—'} />
-        <Field label="Alturas talón / cumbrera" value={geo?.resolved ? `${Math.round(geo.heightLow)} / ${Math.round(geo.heightHigh)} mm` : '—'} />
-        {system.stale && <div className="mt-2 text-xs text-amber-700">Geometría desactualizada: regenerar en el modal.</div>}
-        {(findings || []).map((f, i) => (
-          <div key={i} className={`mt-2 text-xs ${f.severity === 'error' ? 'text-red-700' : 'text-amber-700'}`}>
-            {f.message}
-          </div>
-        ))}
-      </div>
-      <div className="p-4 border-t border-[#e4e4e0] space-y-2">
-        <Button variant="primary" className="w-full text-center" onClick={() => onEdit('roofTruss', system.id)}>
-          Editar…
-        </Button>
-        <Button variant="danger" className="w-full text-center" onClick={handleDelete}>
-          Eliminar sistema
-        </Button>
-        <Button variant="secondary" className="w-full text-center" onClick={() => selectRoofSystem(null)}>
-          Deseleccionar
-        </Button>
-      </div>
-    </div>
+      <Field label="Luz" value={geo?.span != null ? `${(geo.span / 1000).toFixed(2)} m` : '—'} />
+      <Field label="Pendiente" value={`${system.slopePercent ?? '—'} %`} />
+      <Field label="N° de cerchas" value={`${(system.trussPositions || []).length}`} />
+      <Field label="Espaciamiento" value={`${system.trussSpacing ?? '—'} mm`} />
+      <Field label="Cota de apoyo" value={system.supportElevation != null ? `${Math.round(system.supportElevation)} mm` : '—'} />
+      <Field label="Avance" value={system.runAxis === 'x' ? 'Cerchas sobre ejes X' : 'Cerchas sobre ejes Y'} />
+      <Field label="Plantilla" value={template?.name ?? '—'} />
+      <Field label="Alturas talón / cumbrera" value={geo?.resolved ? `${Math.round(geo.heightLow)} / ${Math.round(geo.heightHigh)} mm` : '—'} />
+      {system.stale && <div className="mt-2 text-xs text-amber-700">Geometría desactualizada: regenerar en el modal.</div>}
+      {(findings || []).map((f, i) => (
+        <div key={i} className={`mt-2 text-xs ${f.severity === 'error' ? 'text-red-700' : 'text-amber-700'}`}>
+          {f.message}
+        </div>
+      ))}
+    </FloatingPanel>
   );
 }
 
@@ -192,44 +193,39 @@ function RoofPlanePanel({ plane, model, paramsMap, elementsById }) {
   };
 
   return (
-    <div
-      className="fixed bg-white rounded-lg shadow-xl w-80 pointer-events-auto"
-      style={{ top: 80, right: 24, zIndex: 110 }}
-      onClick={(e) => e.stopPropagation()}
+    <FloatingPanel
+      title={`Faldón #${plane.id}`}
+      onClose={() => selectRoofPlane(null)}
+      footer={(
+        <>
+          <Button variant="primary" className="w-full text-center" onClick={() => startEditRoofPlane(plane.id)}>
+            Editar…
+          </Button>
+          <Button variant="danger" className="w-full text-center" onClick={handleDelete}>
+            Eliminar faldón
+          </Button>
+          <Button variant="secondary" className="w-full text-center" onClick={() => selectRoofPlane(null)}>
+            Deseleccionar
+          </Button>
+        </>
+      )}
     >
-      <div className="px-4 py-2 bg-[#f2f2ee] border-b border-[#e4e4e0] rounded-t-lg flex items-center justify-between">
-        <span className="font-semibold text-sm text-[#3d3d38]">Faldón #{plane.id}</span>
-        <button className="text-[#8a8a85] hover:text-[#5a5a55] text-lg leading-none" onClick={() => selectRoofPlane(null)}>×</button>
-      </div>
-      <div className="p-4 text-sm max-h-[60vh] overflow-y-auto">
-        <Field label="Pendiente" value={resolved?.resolved ? `${resolved.slopePercent?.toFixed(2)} %` : '—'} />
-        <Field label="N° de tramos" value={`${(resolved?.tramos || []).length}`} />
-        <Field label="N° de cerchas" value={`${(resolved?.trussPositions || []).length}`} />
-        <Field label="Paso de cerchas" value={`${plane.trussSpacing ?? '—'} mm`} />
-        <Field label="Canaleta" value={canalWall ? getElementShortLabel(canalWall, grid) : '—'} />
-        <Field label="Nivel de cielo" value={level ? `${level.name} (${Math.round(level.elevation)}mm)` : '—'} />
-        <Field label="Plantilla" value={template?.name ?? '—'} />
-        <Field label="Vértices del contorno" value={`${(plane.polygon || []).length}`} />
-        {(resolved?.findings || []).length > 0 && (
-          <ul className="mt-2 space-y-0.5 text-xs">
-            {resolved.findings.map((f, i) => (
-              <li key={i} className={SEV_COLOR[f.severity] || 'text-[#6a6a63]'}>· {f.message}</li>
-            ))}
-          </ul>
-        )}
-      </div>
-      <div className="p-4 border-t border-[#e4e4e0] space-y-2">
-        <Button variant="primary" className="w-full text-center" onClick={() => startEditRoofPlane(plane.id)}>
-          Editar…
-        </Button>
-        <Button variant="danger" className="w-full text-center" onClick={handleDelete}>
-          Eliminar faldón
-        </Button>
-        <Button variant="secondary" className="w-full text-center" onClick={() => selectRoofPlane(null)}>
-          Deseleccionar
-        </Button>
-      </div>
-    </div>
+      <Field label="Pendiente" value={resolved?.resolved ? `${resolved.slopePercent?.toFixed(2)} %` : '—'} />
+      <Field label="N° de tramos" value={`${(resolved?.tramos || []).length}`} />
+      <Field label="N° de cerchas" value={`${(resolved?.trussPositions || []).length}`} />
+      <Field label="Paso de cerchas" value={`${plane.trussSpacing ?? '—'} mm`} />
+      <Field label="Canaleta" value={canalWall ? getElementShortLabel(canalWall, grid) : '—'} />
+      <Field label="Nivel de cielo" value={level ? `${level.name} (${Math.round(level.elevation)}mm)` : '—'} />
+      <Field label="Plantilla" value={template?.name ?? '—'} />
+      <Field label="Vértices del contorno" value={`${(plane.polygon || []).length}`} />
+      {(resolved?.findings || []).length > 0 && (
+        <ul className="mt-2 space-y-0.5 text-xs">
+          {resolved.findings.map((f, i) => (
+            <li key={i} className={SEV_COLOR[f.severity] || 'text-[#6a6a63]'}>· {f.message}</li>
+          ))}
+        </ul>
+      )}
+    </FloatingPanel>
   );
 }
 
@@ -243,6 +239,7 @@ export default function PropertiesPanel({ onEdit }) {
   const elements = useModelStore((s) => s.model.elements);
   const grid = useModelStore((s) => s.model.grid);
   const library = useModelStore((s) => s.model.library);
+  const wallTypes = useModelStore((s) => s.model.wallTypes || []);
   const projectParams = useModelStore((s) => s.model.projectParams || []);
   const selectElement = useModelStore((s) => s.selectElement);
   const deleteSelectedElement = useModelStore((s) => s.deleteSelectedElement);
@@ -277,47 +274,49 @@ export default function PropertiesPanel({ onEdit }) {
   };
 
   return (
-    <div
-      className="fixed bg-white rounded-lg shadow-xl w-80 pointer-events-auto"
-      style={{ top: 80, right: 24, zIndex: 110 }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className="px-4 py-2 bg-[#f2f2ee] border-b border-[#e4e4e0] rounded-t-lg flex items-center justify-between">
-        <span className="font-semibold text-sm text-[#3d3d38]">{title} #{el.id}</span>
-        <button className="text-[#8a8a85] hover:text-[#5a5a55] text-lg leading-none" onClick={() => selectElement(null)}>×</button>
-      </div>
-      <div className="p-4 text-sm max-h-[60vh] overflow-y-auto">
-        {parentWall ? (
-          <>
-            <Field label="Posición en el muro" value={`${el.position} mm`} />
-            <Field label="Ancho" value={formatDim(el.width, paramsMap, elementsById)} />
-            <Field label="Alto" value={formatDim(el.height, paramsMap, elementsById)} />
-            {el.type === 'window' && <Field label="Altura de antepecho" value={formatDim(el.sillHeight, paramsMap, elementsById)} />}
-            <Field label="Sección de librería" value={findLibraryName(library, el.type, el.libraryId)} />
-            <Button variant="secondary" className="mt-2 !py-1 !text-xs" onClick={() => selectElement(parentWall.id)}>
-              Ir al muro contenedor
-            </Button>
-          </>
-        ) : (
-          <ElementFields el={el} grid={grid} library={library} paramsMap={paramsMap} elementsById={elementsById} />
-        )}
-      </div>
-      <div className="p-4 border-t border-[#e4e4e0] space-y-2">
-        <Button variant="primary" className="w-full text-center" onClick={handleEdit}>
-          Editar
-        </Button>
-        {el.type === 'wall' && !parentWall && (
-          <Button variant="secondary" className="w-full text-center" onClick={() => onEdit('wallSplit', el.id)}>
-            Dividir / unir…
+    <FloatingPanel
+      title={`${title} #${el.id}`}
+      onClose={() => selectElement(null)}
+      footer={(
+        <>
+          <Button variant="primary" className="w-full text-center" onClick={handleEdit}>
+            Editar
           </Button>
-        )}
-        <Button variant="danger" className="w-full text-center" onClick={deleteSelectedElement}>
-          Eliminar seleccionado
-        </Button>
-        <Button variant="secondary" className="w-full text-center" onClick={() => selectElement(null)}>
-          Deseleccionar
-        </Button>
-      </div>
-    </div>
+          {el.type === 'wall' && !parentWall && (
+            <Button variant="secondary" className="w-full text-center" onClick={() => onEdit('wallSplit', el.id)}>
+              Dividir / unir…
+            </Button>
+          )}
+          <Button variant="danger" className="w-full text-center" onClick={deleteSelectedElement}>
+            Eliminar seleccionado
+          </Button>
+          <Button variant="secondary" className="w-full text-center" onClick={() => selectElement(null)}>
+            Deseleccionar
+          </Button>
+        </>
+      )}
+    >
+      {parentWall ? (
+        <>
+          <Field label="Posición en el muro" value={`${el.position} mm`} />
+          <Field label="Ancho" value={formatDim(el.width, paramsMap, elementsById)} />
+          <Field label="Alto" value={formatDim(el.height, paramsMap, elementsById)} />
+          {el.type === 'window' && <Field label="Altura de antepecho" value={formatDim(el.sillHeight, paramsMap, elementsById)} />}
+          <Field label="Sección de librería" value={findLibraryName(library, el.type, el.libraryId)} />
+          <Button variant="secondary" className="mt-2 !py-1 !text-xs" onClick={() => selectElement(parentWall.id)}>
+            Ir al muro contenedor
+          </Button>
+        </>
+      ) : (
+        <ElementFields
+          el={el}
+          grid={grid}
+          library={library}
+          wallTypes={wallTypes}
+          paramsMap={paramsMap}
+          elementsById={elementsById}
+        />
+      )}
+    </FloatingPanel>
   );
 }

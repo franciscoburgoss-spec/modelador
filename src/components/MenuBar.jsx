@@ -146,6 +146,9 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
   const model = useModelStore((s) => s.model);
   const applyWallPatchesBatch = useModelStore((s) => s.applyWallPatchesBatch);
   const sheetFormat = useModelStore((s) => s.model.projectInfo?.formato) || 'A1';
+  const untypedWallCount = model.elements.filter((element) => (
+    element.type === 'wall' && element.wallTypeId == null
+  )).length;
 
   const canGenerateAllModulation = model.elements
     .filter((element) => element.type === 'wall')
@@ -258,6 +261,11 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
       </Dropdown>
 
       <Dropdown label="Elementos">
+        <Item onClick={() => onOpenModal('elementInventory')}>
+          Listado de elementos del proyecto…
+          {untypedWallCount > 0 ? ` (${untypedWallCount} sin tipo)` : ''}
+        </Item>
+        <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={() => onOpenModal('wall')}>+ Muro</Item>
         <Item onClick={() => onOpenModal('column')}>+ Pilar</Item>
         <Item onClick={() => onOpenModal('beam')}>+ Viga</Item>

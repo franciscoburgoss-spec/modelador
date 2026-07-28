@@ -112,8 +112,8 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 11855,
-      "workspaceSha256": "00968f3257fc6b26a78008cc146014332099fe66bd32692a2d079055c6dceadb",
+      "workspaceBytes": 12138,
+      "workspaceSha256": "9ee416a2ae9d2c3875b698011b4df4b2e9d426aa6f52f6c2f8de34b8b19e4619",
       "changedBy": "SPEC-R5"
     },
     {
@@ -139,15 +139,18 @@
       "bytes": 16614,
       "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
       "kind": "source",
-      "workspaceBytes": 17213,
-      "workspaceSha256": "24f0a8ce4e0d91f4a3d739266a407ae67dc18cb0a696abcb61b0ae8313e70e5b",
-      "changedBy": "SPEC-003"
+      "workspaceBytes": 17607,
+      "workspaceSha256": "8120a9554fe26e108a9ef87b49d5216d7a00fc23e2c7d38d9f195a83e846c1f9",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/PropertiesPanel.jsx",
       "bytes": 18006,
       "sha256": "ad3b5719fe6102e410422fe9d2df661cf6bf53575e4b890aa0605a0f9ce8de42",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 16821,
+      "workspaceSha256": "3fcb5c4bced1eb570ec161a71021f2591b8b2b730c3eff1bacc36c68ad18ac3c",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "src/components/Sidebar.jsx",
@@ -901,9 +904,9 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 52084,
-      "workspaceSha256": "2587e8113a78c79843fad677a697be7433d1f26b385974f12fb231af073a4805",
-      "changedBy": "SPEC-003"
+      "workspaceBytes": 53695,
+      "workspaceSha256": "459b110b2925e340b0d7658fa55c5094e1c14d34a82fbcb280af55b50dff2594",
+      "changedBy": "SPEC-R5"
     },
     {
       "path": "tailwind.config.js",
