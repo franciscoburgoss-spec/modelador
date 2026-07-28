@@ -30,8 +30,8 @@ Python/CalculiX sin rutas personales.
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite oficial, 741 Node + 8 componentes |
-| `npm run test:components` | ocho workflows críticos con DOM |
+| `npm test` | suite oficial, 750 Node + 12 componentes |
+| `npm run test:components` | doce workflows críticos con DOM |
 | `npm run test:e2e` | build y Playwright; se ejecuta externamente en plataforma soportada |
 | `npm run test:lab` | laboratorio de faldones, 35 pruebas |
 | `npm run test:coverage` | umbrales separados para core y store |
@@ -101,14 +101,29 @@ node --test tests/nativeProjectFile.test.mjs tests/nodeProjectFileSystem.test.mj
 
 El adaptador crea un temporal en el directorio del proyecto, sincroniza, conserva diez backups y
 publica con `rename`. La prueba usa `spawn` sin shell y mata el proceso por `SIGKILL` antes del
-reemplazo. Esta frontera aún no sustituye `Guardar/Cargar` de la UI web; su adopción corresponde a
-los cortes siguientes de `SPEC-004`.
+reemplazo. Es un adaptador de referencia para el contrato; no constituye por sí solo un runtime
+disponible desde el navegador.
+
+`SPEC-004-B` agrega la sesión de documento y conecta el menú a un runtime inyectable con este
+contrato:
+
+```js
+{
+  fileSystem: { readText, writeTextAtomic },
+  chooseOpenPath,
+  chooseSavePath
+}
+```
+
+En localhost no existe todavía ese runtime: Abrir/Guardar/Guardar como aparecen deshabilitados,
+mientras `Guardar copia en navegador`, `Cargar copia del navegador` e importar/exportar JSON siguen
+operativos. Tauri implementará el runtime en el corte siguiente.
 
 ## Baselines visibles
 
-- Suite: 741/741 Node; componentes: 8/8; laboratorio: 35/35.
-- Cobertura de líneas: core 93,59 %; store 97,77 %.
-- Bundle inicial: 714,70 kB raw / 222,14 kB gzip.
+- Suite: 750/750 Node; componentes: 12/12; laboratorio: 35/35.
+- Cobertura de líneas: core 93,67 %; store 96,98 %.
+- Bundle inicial: 719,32 kB raw / 223,67 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

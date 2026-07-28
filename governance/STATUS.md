@@ -12,9 +12,9 @@
 | Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `specs/SPEC-004-native-runtime-persistence.md` |
-| Suite oficial | 741/741 Node; 8/8 componentes; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 714,70 kB |
-| Cobertura | core 93,59 %; store 97,77 % (gates 90 % / 85 %) |
+| Suite oficial | 750/750 Node; 12/12 componentes; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 719,32 kB |
+| Cobertura | core 93,67 %; store 96,98 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -150,6 +150,12 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   un proceso muerto con `SIGKILL` antes del reemplazo conserva el SHA previo. Después de doce
   versiones permanecen exactamente los diez backups reabribles más recientes. La UI web todavía
   usa `localStorage`: el riesgo R-004 sigue en mitigación hasta integrar el contrato con Tauri.
+- SPEC-004-B: cerrado. La sesión de documento separa ruta, título, sucio y diez recientes del
+  modelo persistido. Historial/undo/redo marcan cambios; navegación no. Abrir sólo sustituye
+  modelo, documento e historiales después de validar, y Guardar conserva `dirty=true` si hubo una
+  edición mientras el snapshot se escribía. El menú expone Abrir/Guardar/Guardar como/Recientes
+  mediante runtime inyectable, conserva los flujos web con etiquetas distintas y muestra título y
+  `*`; las acciones nativas siguen deshabilitadas en localhost hasta conectar Tauri.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -172,6 +178,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Definir e implementar `SPEC-004-B` para estado de documento —ruta, título, sucio y recientes— y la
-coordinación transaccional de abrir, guardar y guardar como sobre el puerto de A. No incorporar
-todavía packaging, instalación ni integración de CalculiX.
+Definir e implementar `SPEC-004-C` para crear el shell Tauri 2 y conectar diálogos, archivos y
+persistencia de recientes mediante capacidades/CSP mínimas. No incorporar todavía CalculiX,
+instalación en `/Applications` ni packaging de release.
