@@ -160,6 +160,9 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - `resolveRoofPlane` intenta construir el resultado fallido con variables `let` aún no
   inicializadas cuando falta `canalWallId`; el fixture mínimo `model-v1-dual-roof` reproduce un
   `ReferenceError` si se expande. Seguimiento R-017 en un corte explícito, fuera de SPEC-003-A.
+- GitHub Actions advierte que `checkout`, `setup-node` y `upload-artifact` v4 aún declaran runtime
+  Node 20 y los fuerza a Node 24. El E2E permanece verde y la aplicación conserva Node 22; actualizar
+  las acciones oficiales requiere un corte explícito de herramientas bajo R-011 antes del release.
 
 ## Próximo cierre
 
