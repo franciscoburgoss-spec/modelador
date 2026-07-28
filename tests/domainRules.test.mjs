@@ -9,12 +9,17 @@ import {
 } from '../src/core/domainRules.js';
 
 const RULE_IDS = [
+  'muro.corte.capacidadOsb',
+  'muro.dintel.llegadaCercha',
+  'muro.jamba.distanciaMontante',
+  'muro.montante.paso',
+  'muro.panel.largo',
   'muro.vano.holguraManilla',
   'osb.cadeneta.ala',
   'osb.tornillo.borde'
 ];
 
-test('R4-A: el catálogo declara exactamente las tres reglas iniciales y sus taxonomías', () => {
+test('R7-A: el catálogo conserva R4 y declara las cinco reglas R7 con sus taxonomías', () => {
   assert.deepEqual(Object.keys(DOMAIN_RULES).sort(), RULE_IDS);
   assert.deepEqual(
     {
@@ -46,6 +51,26 @@ test('R4-A: el catálogo declara exactamente las tres reglas iniciales y sus tax
     },
     { scope: 'proyecto', origen: 'obra', severity: 'info' }
   );
+  assert.deepEqual(
+    {
+      origen: DOMAIN_RULES['muro.jamba.distanciaMontante'].origen,
+      severity: DOMAIN_RULES['muro.jamba.distanciaMontante'].severity,
+      aplicaA: DOMAIN_RULES['muro.jamba.distanciaMontante'].aplicaA
+    },
+    {
+      origen: 'obra',
+      severity: 'info',
+      aplicaA: ['MP1', 'MP2', 'MP3', 'tabique']
+    }
+  );
+  for (const ruleId of [
+    'muro.montante.paso',
+    'muro.dintel.llegadaCercha',
+    'muro.panel.largo',
+    'muro.corte.capacidadOsb'
+  ]) {
+    assert.equal(DOMAIN_RULES[ruleId].origen, 'manual');
+  }
 });
 
 test('R4-A: una regla manual identifica la publicación y una regla de obra no inventa cita', () => {
@@ -106,6 +131,33 @@ test('R4-A: límites resuelven gap efectivo sin default oculto', () => {
     min: 50,
     max: 60,
     unit: 'mm'
+  });
+  assert.deepEqual(resolveRuleLimit('muro.montante.paso', { role: 'MP1' }), {
+    max: 610,
+    unit: 'mm'
+  });
+  assert.deepEqual(resolveRuleLimit('muro.montante.paso', { role: 'MP2' }), {
+    max: 600,
+    unit: 'mm'
+  });
+  assert.equal(resolveRuleLimit('muro.montante.paso', { role: 'MP3' }), null);
+  assert.deepEqual(resolveRuleLimit('muro.dintel.llegadaCercha', { flangeWidth: 38 }), {
+    max: 19,
+    unit: 'mm'
+  });
+  assert.equal(resolveRuleLimit('muro.dintel.llegadaCercha'), null);
+  assert.deepEqual(resolveRuleLimit('muro.panel.largo', { role: 'MP2' }), {
+    min: 3000,
+    max: 5000,
+    unit: 'mm'
+  });
+  assert.deepEqual(resolveRuleLimit('muro.panel.largo', { role: 'MP3' }), {
+    max: 5000,
+    unit: 'mm'
+  });
+  assert.deepEqual(resolveRuleLimit('muro.corte.capacidadOsb'), {
+    equal: 417,
+    unit: 'kgf/m'
   });
 });
 

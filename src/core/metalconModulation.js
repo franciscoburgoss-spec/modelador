@@ -21,6 +21,7 @@
 //   sill    → pieza HORIZONTAL (antepecho) que cierra el vano por abajo, apoyada sobre los 'cripple' (solo 'window')
 
 import { resolveWallGeometry, isWallXRun } from './elementGeometry.js';
+import { resolveRuleLimit } from './domainRules.js';
 import { resolveValue } from './projectParams.js';
 import { studFlangeSpan } from './trussLayout.js';
 import {
@@ -37,6 +38,48 @@ function clamp(v, min, max) {
 
 function nearAny(offset, offsets, tol = EPS) {
   return offsets.some(o => Math.abs(o - offset) < tol);
+}
+
+function isFullHeightStud(piece, wallHeight) {
+  return (
+    piece.role !== 'nogging'
+    && Number.isFinite(piece.offset)
+    && piece.zMin <= EPS
+    && piece.zMax >= wallHeight - EPS
+  );
+}
+
+function normalizeRegularStudsNearJambs(studs, wallHeight, role) {
+  const spacingLimit = resolveRuleLimit('muro.montante.paso', { role });
+  const jambLimit = resolveRuleLimit('muro.jamba.distanciaMontante');
+  if (!spacingLimit || !jambLimit) return;
+
+  const kingOffsets = studs
+    .filter((piece) => piece.role === 'king' && isFullHeightStud(piece, wallHeight))
+    .map((piece) => piece.offset);
+  const candidates = studs
+    .filter((piece) => piece.role === 'stud' && isFullHeightStud(piece, wallHeight))
+    .map((piece) => ({
+      piece,
+      distance: Math.min(...kingOffsets.map((offset) => Math.abs(piece.offset - offset)))
+    }))
+    .filter(({ distance }) => distance < jambLimit.min)
+    .sort((a, b) => a.distance - b.distance || a.piece.offset - b.piece.offset);
+
+  for (const { piece } of candidates) {
+    const currentIndex = studs.indexOf(piece);
+    if (currentIndex < 0) continue;
+    const remainingOffsets = [...new Set(
+      studs
+        .filter((candidate) => candidate !== piece && isFullHeightStud(candidate, wallHeight))
+        .map((candidate) => candidate.offset)
+    )].sort((a, b) => a - b);
+    const previous = remainingOffsets.filter((offset) => offset < piece.offset).at(-1);
+    const next = remainingOffsets.find((offset) => offset > piece.offset);
+    if (!Number.isFinite(previous) || !Number.isFinite(next)) continue;
+    if (next - previous > spacingLimit.max + EPS) continue;
+    studs.splice(currentIndex, 1);
+  }
 }
 
 /** Adaptador booleano temporal. La autoridad es `analyzeWallJunctions`; ningún consumidor nuevo
@@ -150,6 +193,7 @@ function junctionAmbiguities(wallId, junctions) {
  * @param paramsMap  buildParamsMap(model.projectParams)
  * @param elementsById  buildElementsById(model.elements)
  * @param config  { spacing (mm, formula u número; default 400),
+ *                  role: rol tipado o null,
  *                  junctions: vista de getWallJunctionView (corners booleano sólo legacy),
  *                  jointZs: juntas horizontales de placa, flangeWidth: B real del perfil }
  * @returns { resolved, length, wallHeight,
@@ -280,8 +324,19 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
     if (wallHeight - base > EPS) zones.push({ zMin: base, zMax: wallHeight, role: 'crippleTop' });
 
     for (const jambOffset of [oMin, oMax]) {
-      if (jambOffset > EPS && jambOffset < length - EPS && !nearAny(jambOffset, placedOffsets)) {
-        pushStud(jambOffset, 'king');
+      if (jambOffset > EPS && jambOffset < length - EPS) {
+        const exactRegular = config.role == null
+          ? null
+          : studs.find((piece) => (
+              piece.role === 'stud'
+              && isFullHeightStud(piece, wallHeight)
+              && Math.abs(piece.offset - jambOffset) < EPS
+            ));
+        if (exactRegular) {
+          exactRegular.role = 'king';
+        } else if (!nearAny(jambOffset, placedOffsets)) {
+          pushStud(jambOffset, 'king');
+        }
       }
       for (const z of zones) pushStud(jambOffset, z.role, z.zMin, z.zMax);
     }
@@ -345,6 +400,7 @@ export function computeStudLayout(wall, grid, paramsMap = {}, elementsById = {},
     };
   }
 
+  normalizeRegularStudsNearJambs(studs, wallHeight, config.role);
   studs.sort((a, b) => a.offset - b.offset || a.zMin - b.zMin);
 
   // 5) piezas horizontales del vano: dintel (header, siempre) y antepecho (sill, solo con antepecho > 0)

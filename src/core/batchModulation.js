@@ -165,6 +165,7 @@ export function modulateAllWallsMetalcon(model, defaults = {}, opts = {}) {
     const junctions = getWallJunctionView(topology, wall.id);
     const layout = computeStudLayout(wall, grid, paramsMap, elementsById, {
       spacing: wallSpacing,
+      role: effective.role,
       junctions,
       jointZs,
       flangeWidth: studProfile?.B

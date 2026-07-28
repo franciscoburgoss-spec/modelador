@@ -6,6 +6,7 @@ import { resolveAxisRef, isElementRef, buildElementsById } from './elementRefere
 import { resolveFoundation, foundationVerticalRange } from './foundationGeometry.js';
 import { createFinding } from './domainFindings.js';
 import { resolveWallTypeConfig } from './wallTypes.js';
+import { evaluateWallDomainChecks } from './domainChecks.js';
 
 function issue(severity, category, message, elementIds = []) {
   return createFinding({ severity, category, message, elementIds });
@@ -445,8 +446,10 @@ export function validateModel(model, extraMargin = 0) {
   const { elements, grid } = model;
   const paramsMap = buildParamsMap(model.projectParams);
   const elementsById = buildElementsById(elements);
+  const domainChecks = evaluateWallDomainChecks(model);
   return [
     ...checkWallTypeConfiguration(model),
+    ...domainChecks.findings,
     ...checkDanglingReferences(elements, grid, paramsMap, elementsById),
     ...checkZeroLength(elements, grid, paramsMap, elementsById),
     ...checkOpeningsOutsideWall(elements, grid, paramsMap, elementsById),

@@ -379,9 +379,9 @@
       "bytes": 6932,
       "sha256": "a202c592131e2efc12fd371232fef8edf51fcb23ee1ac1d0306188c84f6aa334",
       "kind": "source",
-      "workspaceBytes": 12619,
-      "workspaceSha256": "67e64dc8d8f8e6d93c48579f5557cb23342c5112f1c518a43db435ba480a6cfe",
-      "changedBy": "SPEC-R6"
+      "workspaceBytes": 12647,
+      "workspaceSha256": "3a6448c21f16aae97f40d9280384ff9f893e0ac2892404b8aae5873753a416a5",
+      "changedBy": "SPEC-R7"
     },
     {
       "path": "src/core/build3d.js",
@@ -589,18 +589,18 @@
       "bytes": 10189,
       "sha256": "419c177f7477ce6ec0d877e1088a9677582aaeb8bab0ca07abafee1487c0557d",
       "kind": "source",
-      "workspaceBytes": 14573,
-      "workspaceSha256": "086407a360fc78bd5549d066e3c93a6746b9940168c93ba03918c42aef461452",
-      "changedBy": "SPEC-R6"
+      "workspaceBytes": 16766,
+      "workspaceSha256": "0d0e4544d8f14abf5ae8fb9a4e2db49ab35faa88d3a95dc16327f9f48170d4fc",
+      "changedBy": "SPEC-R7"
     },
     {
       "path": "src/core/modelValidation.js",
       "bytes": 25815,
       "sha256": "ceaa2286722e57b342bc5a70a26bc4c7518f8ce03b734103d641e0df786f848f",
       "kind": "source",
-      "workspaceBytes": 26180,
-      "workspaceSha256": "8cae070e3563e444792d0f9feb59db6682105f5e2f1edb39db2fe53b433e00dd",
-      "changedBy": "SPEC-R5"
+      "workspaceBytes": 26328,
+      "workspaceSha256": "c868edad16f7956ae14d9c5ec806bc34113d9ba20178c09a1ea99d448da83111",
+      "changedBy": "SPEC-R7"
     },
     {
       "path": "src/core/naming.js",

@@ -9,6 +9,13 @@ export const FINDING_SEVERITIES = Object.freeze(['error', 'warning', 'info']);
 
 const RULE_ID = /^[a-z][A-Za-z0-9]*\.[a-z][A-Za-z0-9]*\.[a-z][A-Za-z0-9]*$/;
 const EDGE_DISTANCE_MM = 10;
+const CINTAC_METALCON_SOURCE = {
+  doc: 'Manual de Diseño Metalcon',
+  ed: '2020',
+  seccion: '§1.5.2, §1.5.2.1 y Anexo IV',
+  url: 'https://www.cintac.cl/wp-content/uploads/2023/08/Manual-de-Diseno-Metalcon.pdf',
+  consultado: '2026-07-27'
+};
 
 function isRecord(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -169,6 +176,87 @@ const catalog = {
     aplicaA: ['MP1', 'MP2', 'MP3', 'tabique'],
     dependsOn: [],
     resolveLimit: () => ({ min: 50, max: 60, unit: 'mm' })
+  },
+  'muro.montante.paso': {
+    id: 'muro.montante.paso',
+    titulo: 'Paso máximo de montantes',
+    descripcion: 'El paso configurado de montantes no supera el máximo del rol de panel.',
+    scope: 'sistema',
+    origen: 'manual',
+    severity: 'error',
+    unidad: 'mm',
+    fuente: CINTAC_METALCON_SOURCE,
+    aplicaA: ['MP1', 'MP2'],
+    dependsOn: [],
+    resolveLimit: ({ role } = {}) => (
+      role === 'MP1'
+        ? { max: 610, unit: 'mm' }
+        : role === 'MP2'
+          ? { max: 600, unit: 'mm' }
+          : null
+    )
+  },
+  'muro.jamba.distanciaMontante': {
+    id: 'muro.jamba.distanciaMontante',
+    titulo: 'Distancia entre montante regular y jamba',
+    descripcion: 'La separación eje a eje menor a 150 mm requiere coordinación de oficina.',
+    scope: 'oficina',
+    origen: 'obra',
+    severity: 'info',
+    unidad: 'mm',
+    fuente: null,
+    aplicaA: ['MP1', 'MP2', 'MP3', 'tabique'],
+    dependsOn: [],
+    resolveLimit: () => ({ min: 150, unit: 'mm' })
+  },
+  'muro.dintel.llegadaCercha': {
+    id: 'muro.dintel.llegadaCercha',
+    titulo: 'Coincidencia de llegada de cercha con jamba',
+    descripcion: 'La llegada de cercha sobre un vano coincide con el pie derecho del dintel.',
+    scope: 'sistema',
+    origen: 'manual',
+    severity: 'error',
+    unidad: 'mm',
+    fuente: CINTAC_METALCON_SOURCE,
+    aplicaA: ['MP1', 'MP2', 'MP3'],
+    dependsOn: [],
+    resolveLimit: ({ flangeWidth } = {}) => (
+      Number.isFinite(flangeWidth) && flangeWidth > 0
+        ? { max: flangeWidth / 2, unit: 'mm' }
+        : null
+    )
+  },
+  'muro.panel.largo': {
+    id: 'muro.panel.largo',
+    titulo: 'Largo nominal del panel de muro',
+    descripcion: 'El largo estructural nominal respeta el rango definido para MP2 o MP3.',
+    scope: 'elemento',
+    origen: 'manual',
+    severity: 'error',
+    unidad: 'mm',
+    fuente: CINTAC_METALCON_SOURCE,
+    aplicaA: ['MP2', 'MP3'],
+    dependsOn: [],
+    resolveLimit: ({ role } = {}) => (
+      role === 'MP2'
+        ? { min: 3000, max: 5000, unit: 'mm' }
+        : role === 'MP3'
+          ? { max: 5000, unit: 'mm' }
+          : null
+    )
+  },
+  'muro.corte.capacidadOsb': {
+    id: 'muro.corte.capacidadOsb',
+    titulo: 'Capacidad admisible de corte del OSB',
+    descripcion: 'El OSB estructural verificable aporta 417 kgf/m por una cara.',
+    scope: 'proyecto',
+    origen: 'manual',
+    severity: 'info',
+    unidad: 'kgf/m',
+    fuente: CINTAC_METALCON_SOURCE,
+    aplicaA: ['MP1'],
+    dependsOn: [],
+    resolveLimit: () => ({ equal: 417, unit: 'kgf/m' })
   }
 };
 
