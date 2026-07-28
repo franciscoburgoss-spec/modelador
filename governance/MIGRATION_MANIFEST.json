@@ -319,9 +319,9 @@
       "bytes": 7152,
       "sha256": "1abf3f5fa62b2b5124347f6cf329f5d76f6810acd39cc18c6d5e0f849a25abe4",
       "kind": "source",
-      "workspaceBytes": 6847,
-      "workspaceSha256": "a4a8eda4c884a0927af93389a2e853d4387a60aca6b9380e79d5c164edeb0f19",
-      "changedBy": "SPEC-R4"
+      "workspaceBytes": 6889,
+      "workspaceSha256": "604d2f564cf3910bdcf9accd39d9725d6320c4d6eb87a465442bb7da3dc8663d",
+      "changedBy": "SPEC-R8"
     },
     {
       "path": "src/components/modals/Viewer3DModal.jsx",

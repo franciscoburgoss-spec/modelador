@@ -10,7 +10,10 @@ import {
   collectApplicableCriteria,
   evaluateModelReview
 } from '../src/core/modelReview.js';
-import { renderReviewMarkdown } from '../src/core/reportMarkdown.js';
+import {
+  downloadReviewMarkdown,
+  renderReviewMarkdown
+} from '../src/core/reportMarkdown.js';
 import { validateRoofPlanes } from '../src/core/roofPlaneValidation.js';
 import { validateRoofSystems } from '../src/core/trussLayout.js';
 
@@ -395,4 +398,114 @@ test('R8-A: cero findings conserva las tres secciones explícitas', () => {
   ]) {
     assert.ok(markdown.includes(`${heading}\n\nSin hallazgos.`));
   }
+});
+
+test('R8-B: descarga cero findings, usa nombre/MIME exactos, revoca URL y no muta snapshot', () => {
+  const review = {
+    findings: [],
+    coverage: emptyCoverage(),
+    criteria: []
+  };
+  const before = structuredClone(review);
+  const events = [];
+  let downloadedBlob = null;
+  const anchor = {
+    href: '',
+    download: '',
+    click() {
+      events.push(['click', this.href, this.download]);
+    }
+  };
+  class FakeBlob {
+    constructor(parts, options) {
+      this.parts = parts;
+      this.type = options.type;
+      events.push(['blob', options.type]);
+    }
+  }
+  const environment = {
+    Blob: FakeBlob,
+    document: {
+      createElement(tag) {
+        events.push(['element', tag]);
+        return anchor;
+      }
+    },
+    URL: {
+      createObjectURL(blob) {
+        downloadedBlob = blob;
+        events.push(['create-url']);
+        return 'blob:revision';
+      },
+      revokeObjectURL(url) {
+        events.push(['revoke-url', url]);
+      }
+    }
+  };
+
+  assert.equal(downloadReviewMarkdown(review, {}, environment), true);
+  assert.deepEqual(review, before);
+  assert.equal(downloadedBlob.type, 'text/markdown;charset=utf-8');
+  assert.match(downloadedBlob.parts[0], /## Hallazgos críticos\n\nSin hallazgos\./);
+  assert.deepEqual(events, [
+    ['blob', 'text/markdown;charset=utf-8'],
+    ['create-url'],
+    ['element', 'a'],
+    ['click', 'blob:revision', 'revision-constructiva.md'],
+    ['revoke-url', 'blob:revision']
+  ]);
+});
+
+test('R8-B: descarga revoca el object URL incluso si el click falla', () => {
+  const revoked = [];
+  const review = {
+    findings: [],
+    coverage: emptyCoverage(),
+    criteria: []
+  };
+  const environment = {
+    Blob: class {},
+    document: {
+      createElement() {
+        return {
+          click() {
+            throw new Error('click falló');
+          }
+        };
+      }
+    },
+    URL: {
+      createObjectURL() {
+        return 'blob:fallo';
+      },
+      revokeObjectURL(url) {
+        revoked.push(url);
+      }
+    }
+  };
+
+  assert.throws(
+    () => downloadReviewMarkdown(review, {}, environment),
+    /click falló/
+  );
+  assert.deepEqual(revoked, ['blob:fallo']);
+});
+
+test('R8-B: ValidationModal usa un snapshot/margen para pantalla e informe', async () => {
+  const source = await readFile(
+    new URL('../src/components/modals/ValidationModal.jsx', import.meta.url),
+    'utf8'
+  );
+
+  assert.equal(source.match(/useMemo\(/g)?.length, 1);
+  assert.match(source, /evaluateModelReview\(model,\s*normalizedExtraMargin\)/);
+  assert.match(source, /const findings = review\.findings/);
+  assert.match(
+    source,
+    /downloadReviewMarkdown\(review,\s*\{\s*projectInfo:\s*model\.projectInfo\s*\}\)/
+  );
+  assert.match(source, /Exportar informe \(\.md\)/);
+  assert.doesNotMatch(source, /\bvalidateModel\(/);
+  assert.doesNotMatch(source, /\bvalidateRoofSystems\(/);
+  assert.doesNotMatch(source, /\bvalidateRoofPlanes\(/);
 });

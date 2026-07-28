@@ -1,9 +1,8 @@
 // components/modals/ValidationModal.jsx
 import { useMemo, useState } from 'react';
 import { useModelStore } from '../../store/useModelStore.js';
-import { validateModel } from '../../core/modelValidation.js';
-import { validateRoofSystems } from '../../core/trussLayout.js';
-import { validateRoofPlanes } from '../../core/roofPlaneValidation.js';
+import { evaluateModelReview } from '../../core/modelReview.js';
+import { downloadReviewMarkdown } from '../../core/reportMarkdown.js';
 import {
   groupFindingsBySeverity,
   presentFinding,
@@ -45,6 +44,7 @@ const CONNECTIVITY_CATEGORIES = new Set([
   'Sin conexión superior',
   'Extremo sin apoyo'
 ]);
+const EMPTY_REVIEW = Object.freeze({ findings: [] });
 
 function FindingRow({ finding, onNavigate }) {
   const presented = presentFinding(finding);
@@ -111,15 +111,18 @@ export default function ValidationModal({ open, onClose, canvasSize }) {
   const selectRoofPlane = useModelStore((s) => s.selectRoofPlane);
   const [extraMargin, setExtraMargin] = useState(0);
 
-  const issues = useMemo(() => (open ? validateModel(model, Number(extraMargin) || 0) : []), [open, model, extraMargin]);
-  // roofSystems quedó vacío desde B4.7 (lo reemplazan faldones); se conserva por si carga un modelo legacy.
-  const roofFindings = useMemo(
-    () => (open ? [...validateRoofSystems(model), ...validateRoofPlanes(model)] : []),
-    [open, model]
+  const normalizedExtraMargin = Number(extraMargin) || 0;
+  const review = useMemo(
+    () => (open ? evaluateModelReview(model, normalizedExtraMargin) : EMPTY_REVIEW),
+    [open, model, normalizedExtraMargin]
   );
-  const findings = [...issues, ...roofFindings];
+  const findings = review.findings;
   const sections = groupFindingsBySeverity(findings);
   const totalCount = findings.length;
+
+  const exportReport = () => {
+    downloadReviewMarkdown(review, { projectInfo: model.projectInfo });
+  };
 
   const goToFinding = (finding) => {
     const target = resolveFindingNavigation(finding);
@@ -136,7 +139,12 @@ export default function ValidationModal({ open, onClose, canvasSize }) {
       onClose={onClose}
       title="Verificación de coherencia geométrica"
       width="max-w-lg"
-      footer={<Button variant="primary" onClick={onClose}>Cerrar</Button>}
+      footer={(
+        <>
+          <Button onClick={exportReport}>Exportar informe (.md)</Button>
+          <Button variant="primary" onClick={onClose}>Cerrar</Button>
+        </>
+      )}
     >
       <div className="flex items-end gap-3 mb-4 bg-[#f2f2ee] border border-[#e4e4e0] rounded-md px-3 py-2.5">
         <label className="text-sm flex-1">

@@ -9,6 +9,7 @@ const SEVERITY_SECTIONS = Object.freeze([
   { severity: 'warning', heading: 'Hallazgos moderados' },
   { severity: 'info', heading: 'Observaciones' }
 ]);
+export const REVIEW_MARKDOWN_FILENAME = 'revision-constructiva.md';
 
 function escapeUntrusted(value) {
   return String(value ?? '')
@@ -259,4 +260,41 @@ export function renderReviewMarkdown(review, { projectInfo, date } = {}) {
   appendCoverage(lines, review.coverage);
   appendCriteria(lines, review.criteria);
   return `${lines.join('\n')}\n`;
+}
+
+/**
+ * Adaptador DOM estrecho: recibe el snapshot ya evaluado, descarga su Markdown y siempre revoca
+ * el object URL. Las dependencias son inyectables para probarlo sin navegador.
+ */
+export function downloadReviewMarkdown(
+  review,
+  renderOptions = {},
+  environment = {}
+) {
+  const BlobCtor = environment.Blob ?? globalThis.Blob;
+  const documentRef = environment.document ?? globalThis.document;
+  const urlApi = environment.URL ?? globalThis.URL;
+  if (
+    typeof BlobCtor !== 'function'
+    || typeof documentRef?.createElement !== 'function'
+    || typeof urlApi?.createObjectURL !== 'function'
+    || typeof urlApi?.revokeObjectURL !== 'function'
+  ) {
+    throw new TypeError('El entorno no permite descargar el informe Markdown.');
+  }
+
+  const markdown = renderReviewMarkdown(review, renderOptions);
+  const blob = new BlobCtor([markdown], {
+    type: 'text/markdown;charset=utf-8'
+  });
+  const objectUrl = urlApi.createObjectURL(blob);
+  try {
+    const anchor = documentRef.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = REVIEW_MARKDOWN_FILENAME;
+    anchor.click();
+    return true;
+  } finally {
+    urlApi.revokeObjectURL(objectUrl);
+  }
 }

@@ -9,18 +9,18 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — ejecutar R8-B |
+| Etapa | Reglas de dominio — ejecutar R8-C |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R8-report-markdown.md`, corte B |
-| Suite oficial | 693/693; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 691,92 kB |
+| Spec activa | `specs/domain/SPEC-R8-report-markdown.md`, corte C |
+| Suite oficial | 696/696; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 700,70 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno para R8-A; la cobertura legacy no instrumentada debe declararse, no completarse fuera de alcance |
+| Bloqueo actual | Ninguno para R8-C; toda lámina DXF modificada deberá terminar con auditoría 0/0 |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -92,6 +92,10 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   Cobertura R7, productores no instrumentados y criterios por rol explícito quedan visibles. El
   renderer puro emite una fila por finding, distingue fuente/ausencia/null, neutraliza datos no
   confiables y es determinista.
+- R8-B: cerrado. `ValidationModal` usa un único `useMemo` de `evaluateModelReview`; pantalla y
+  descarga consumen el mismo snapshot y margen. El botón exporta `revision-constructiva.md`
+  incluso sin findings. El adaptador DOM inyectable usa MIME Markdown, no muta el modelo y revoca
+  su object URL también si falla el click.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
@@ -113,5 +117,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Implementar `SPEC-R8-report-markdown.md`, corte B: integrar `ValidationModal` al snapshot único y
-agregar descarga `revision-constructiva.md` con revocación de object URL. No modificar DXF.
+Implementar `SPEC-R8-report-markdown.md`, corte C: anteponer criterios automáticos por variante en
+`NOTAS GENERALES`, preservar notas existentes/defaults y auditar cada DXF modificado con 0/0.
