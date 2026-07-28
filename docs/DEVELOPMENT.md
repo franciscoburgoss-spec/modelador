@@ -30,7 +30,7 @@ Python/CalculiX sin rutas personales.
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite oficial, 736 Node + 8 componentes |
+| `npm test` | suite oficial, 741 Node + 8 componentes |
 | `npm run test:components` | ocho workflows críticos con DOM |
 | `npm run test:e2e` | build y Playwright; se ejecuta externamente en plataforma soportada |
 | `npm run test:lab` | laboratorio de faldones, 35 pruebas |
@@ -90,10 +90,24 @@ sobre `11962f3b114cd0a60262f0f21ae4a156a20855ed`: 1/1 esperado, sin reintentos.
 Rust/Cargo entran cuando comience Tauri. `make doctor` comprueba `ezdxf` en el entorno fijado del
 repositorio para que una ausencia o versión distinta nunca sea silenciosa.
 
+## Contrato de persistencia nativa
+
+`SPEC-004-A` introduce una frontera pura de apertura/guardado y un adaptador Node de referencia
+para probar filesystem real. El ensayo enfocado se ejecuta con:
+
+```bash
+node --test tests/nativeProjectFile.test.mjs tests/nodeProjectFileSystem.test.mjs
+```
+
+El adaptador crea un temporal en el directorio del proyecto, sincroniza, conserva diez backups y
+publica con `rename`. La prueba usa `spawn` sin shell y mata el proceso por `SIGKILL` antes del
+reemplazo. Esta frontera aún no sustituye `Guardar/Cargar` de la UI web; su adopción corresponde a
+los cortes siguientes de `SPEC-004`.
+
 ## Baselines visibles
 
-- Suite: 736/736 Node; componentes: 8/8; laboratorio: 35/35.
-- Cobertura de líneas: core 93,63 %; store 97,77 %.
+- Suite: 741/741 Node; componentes: 8/8; laboratorio: 35/35.
+- Cobertura de líneas: core 93,59 %; store 97,77 %.
 - Bundle inicial: 714,70 kB raw / 222,14 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 

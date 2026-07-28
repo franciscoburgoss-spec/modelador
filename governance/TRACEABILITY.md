@@ -24,8 +24,8 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-TST-004 | La puerta local es completa y Playwright actual registra el flujo crítico sobre el mismo commit | R-011/R-012 | D-014/D-030/D-036 | SPEC-003-E | `verificationPipeline.test.mjs` 2/2; [Actions 30381500063](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30381500063): SHA `81c91ec`, 1/1 esperado; reporte por SHA | G4/G5 | Verificado |
 | REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | D-030/D-036 | SPEC-003-B/E | `artifactGoldens.test.mjs` + `artifacts/81c91ec364fc/audit-dxf.json`: 8 familias, 9 archivos, 0 errores / 0 reparaciones con ezdxf 1.4.4 | G4 | Verificado |
 | REQ-CCX-001 | INP de referencia ejecuta y converge en CCX | R-007 | D-011/D-030/D-031/D-032/D-033/D-036 | SPEC-003-C0/C2/004 | `artifacts/81c91ec364fc/smoke-ccx.json`: CCX 2.23, 3/3 jobs, 1.486 nodos, 8.649 valores finitos; parser y warnings contractuales en tests C2 | G5 | Verificado |
-| REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010 | SPEC-004 | kill test + comparación | G6 | Pendiente |
-| REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010 | SPEC-004 | rotación y recovery test | G6 | Pendiente |
+| REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010/D-038 | SPEC-004-A/004 | `nodeProjectFileSystem.test.mjs`: `SIGKILL` después de `fsync` conserva SHA; adopción Tauri pendiente | G6 | En curso |
+| REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010/D-038 | SPEC-004-A/004 | rotación A conserva exactamente 10 backups reabribles; autosave/recovery pendiente | G6 | En curso |
 | REQ-APP-001 | La app abre desde `/Applications` sin Terminal | R-008 | D-002/D-013 | SPEC-004 | smoke instalado | G6 | Pendiente |
 | REQ-APP-002 | Runtime no realiza conexiones de red | R-008 | D-012 | SPEC-004 | capabilities/CSP + inspección | G6 | Pendiente |
 | REQ-CCX-002 | CCX usa comando estrecho, timeout y cancelación | R-007/R-008 | D-011 | SPEC-004 | tests Rust + smoke | G5/G6 | Pendiente |

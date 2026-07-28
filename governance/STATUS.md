@@ -9,12 +9,12 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Persistencia nativa y runtime — preparación de `SPEC-004` |
+| Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `specs/SPEC-004-native-runtime-persistence.md` |
-| Suite oficial | 736/736 Node; 8/8 componentes; laboratorio 35/35 |
+| Suite oficial | 741/741 Node; 8/8 componentes; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 714,70 kB |
-| Cobertura | core 93,63 %; store 97,77 % (gates 90 % / 85 %) |
+| Cobertura | core 93,59 %; store 97,77 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -144,6 +144,12 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   8.649 valores finitos. Playwright 1.62.0 ejecutó externamente el flujo crítico de revisión y
   descarga sobre `11962f3b114cd0a60262f0f21ae4a156a20855ed`: 1/1 esperado, sin reintentos, y
   publicó reporte JSON/HTML identificado por ese mismo SHA.
+- SPEC-004-A: cerrado. El contrato puro valida y serializa antes de I/O, y devuelve aperturas
+  preparadas sin recibir estado ni callback de commit. El adaptador Node de referencia escribe un
+  temporal hermano con `fsync`, respalda byte a byte la versión anterior y publica por `rename`;
+  un proceso muerto con `SIGKILL` antes del reemplazo conserva el SHA previo. Después de doce
+  versiones permanecen exactamente los diez backups reabribles más recientes. La UI web todavía
+  usa `localStorage`: el riesgo R-004 sigue en mitigación hasta integrar el contrato con Tauri.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -166,6 +172,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Definir e implementar un primer corte cerrable de `SPEC-004` para el contrato puro de persistencia
-y sus pruebas de filesystem temporal. No incorporar todavía packaging, instalación ni bundling de
-CalculiX.
+Definir e implementar `SPEC-004-B` para estado de documento —ruta, título, sucio y recientes— y la
+coordinación transaccional de abrir, guardar y guardar como sobre el puerto de A. No incorporar
+todavía packaging, instalación ni integración de CalculiX.

@@ -7,7 +7,7 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-001 | Ejecución de código desde fórmulas | 5 | 5 | 25 | Parser AST cerrado; corpus adversario y reversión; G2 | Mitigado |
 | R-002 | Pérdida de techumbre al importar legacy | 5 | 5 | 25 | Esquema, migración y roundtrip `casa-L`; G2 | Mitigado |
 | R-003 | Exportar derivados obsoletos como válidos | 4 | 5 | 20 | Registro central, dependencia vecinal L/T y hard gate cubren framing, OSB y cerchas con alcance probado; G3/G4 | Mitigado |
-| R-004 | Corrupción por guardado interrumpido | 3 | 5 | 15 | Escritura atómica, backups y ensayo de kill; G6 | Abierto |
+| R-004 | Corrupción por guardado interrumpido | 3 | 5 | 15 | SPEC-004-A fija puerto, escritura temporal+fsync+rename, diez backups y ensayo real de kill; falta adoptar el contrato en Tauri y cubrir recovery; G6 | En mitigación |
 | R-005 | Reglas constructivas incompletas producen planos incorrectos | 4 | 4 | 16 | R3–R8 cerrados; goldens semánticos y `audit:dxf` cubren 9 archivos de las 8 familias con 0 errores / 0 reparaciones; findings constructivos pendientes siguen abiertos antes de G4 | Abierto |
 | R-006 | Fixture duplicado oculta regresiones geométricas | 5 | 4 | 20 | FX-003/FX-004 difieren entre sí y de `casa-L`; manifiesto, esquema, perfiles, vanos, bounds y roundtrip quedan automatizados en `fixtureManifest.test.mjs` | Mitigado |
 | R-007 | INP sintácticamente válido pero estructuralmente inválido | 3 | 5 | 15 | C2 compacta sets, resuelve secciones, homogeneiza U1 y ejecuta global/cercha/fundaciones con CCX 2.23; parser exacto valida 1.486 nodos y 8.649 valores finitos, y sólo permite el warning global gobernado; G5 | Mitigado |
