@@ -9,9 +9,9 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — `SPEC-003-C1` solver, diagnóstico ampliado |
+| Etapa | Arnés de verificación — `SPEC-003-C2` solver, familia global homogénea |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-003-C1-solver-harness.md` |
+| Spec activa | `specs/SPEC-003-C2-solver-harness.md` |
 | Suite oficial | 709/709; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 701,70 kB |
 | Cobertura | core 93,45 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
@@ -24,7 +24,7 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; C1 gobierna la sección de fundaciones globales descubierta al ejecutar CCX |
+| Bloqueo actual | Ninguno; C2 gobierna la incompatibilidad B31/U1 descubierta al ejecutar C1 |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -121,6 +121,10 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   125 referencias de sección con `ELSET` mayor a 20 caracteres. Al compactarlas temporalmente,
   CCX descubre además barras `FUNDACIONES` sin sección y termina con código 201. C1 reemplaza el
   alcance anterior y prohíbe aceptar el falso positivo código 0 + `Job finished` con `*ERROR`.
+- SPEC-003-C1-DIAG: cerrado como sustituido. La corrección provisional dejó 133 sets de máximo
+  16 caracteres y 137 secciones resueltas, pero CCX falla al coexistir cuatro B31 con los U1,
+  incluso sin compartir nodos. La variante temporal toda U1 conserva 1.384 nodos/1.046 elementos
+  y produce 8.304 desplazamientos finitos. C2 reemplaza C1; el código provisional no se retuvo.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -135,18 +139,18 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   una prueba automatizada del CLI bajo el alcance de herramientas.
 - `validate-governance` sólo inspecciona specs en el primer nivel de `specs/`; las specs de
   `specs/domain/` requieren revisión manual hasta ampliar el validador bajo R-011.
-- El INP global tiene 125 referencias de sección con nombres `ELSET` mayores a 20 caracteres; tras
-  compactarlos sólo para diagnóstico, CCX revela además que las cuatro barras de fundación no
-  tienen sección. `SPEC-003-C1` corrige ambas precondiciones antes de G5.
+- El INP global necesita sets compactos, secciones de fundación y una familia de barra homogénea:
+  CalculiX 2.23 falla en `gen3delem` al mezclar B31/U1 aun sin nodos compartidos. `SPEC-003-C2`
+  corrige las tres precondiciones y clasifica el warning esperado de la sonda antes de G5.
 - La precondición mecánica de FX-004 quedó resuelta en `SPEC-003-C0` sin fallback del exportador:
   las propiedades persistidas coinciden con el catálogo y la cercha ya ejecuta con resultados
-  finitos. El parser y reporte comunes de tres jobs siguen correspondiendo a `SPEC-003-C1`.
+  finitos. El parser y reporte comunes de tres jobs siguen correspondiendo a `SPEC-003-C2`.
 - `resolveRoofPlane` intenta construir el resultado fallido con variables `let` aún no
   inicializadas cuando falta `canalWallId`; el fixture mínimo `model-v1-dual-roof` reproduce un
   `ReferenceError` si se expande. Seguimiento R-017 en un corte explícito, fuera de SPEC-003-A.
 
 ## Próximo cierre
 
-Implementar `SPEC-003-C1`: completar nombres/secciones del INP global, sonda cinemática explícita,
-smoke CalculiX de tres jobs, parser finito común y reporte por commit con IDs persistidos. No tocar
-Tauri, componentes ni umbrales de cobertura.
+Implementar `SPEC-003-C2`: completar nombres/secciones y homogeneizar U1 en el INP global, agregar
+sonda cinemática explícita, smoke CalculiX de tres jobs, parser finito común y reporte por commit
+con IDs persistidos. No tocar Tauri, componentes ni umbrales de cobertura.
