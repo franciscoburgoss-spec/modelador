@@ -12,9 +12,9 @@
 | Etapa | Persistencia nativa y runtime — preparación de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `specs/SPEC-004-native-runtime-persistence.md` |
-| Suite oficial | 732/732 Node; 4/4 componentes; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 703,69 kB |
-| Cobertura | core 93,55 %; store 97,85 % (gates 90 % / 85 %) |
+| Suite oficial | 736/736 Node; 8/8 componentes; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 714,70 kB |
+| Cobertura | core 93,63 %; store 97,77 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -67,6 +67,11 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `deepEqual`, presentación de tres severidades y navegación por cuatro IDs tipados.
 - R5-A/B/C: cerrados; contrato/migración, CRUD/asignación con historial, invalidación central,
   modulación efectiva, `osbGap` por muro, nesting por rol y coordinación UI completos.
+- R5-D: cerrado. `Elementos` expone un inventario filtrable de elementos y vanos; `casa-L`
+  produce 92 filas e identifica sus 45/45 muros sin tipo. La asignación individual o masiva exige
+  una elección explícita, valida antes de mutar, invalida framing+OSB de todo el lote y crea un
+  solo paso de historial. El inspector no modal de elemento, techumbre y faldón ahora se arrastra
+  dentro del viewport.
 - R6-A/B/C: cerrados; frame local normalizado y topología global pura reconocen en `casa-L` exactamente
   80 nodos/bandas (23 L, 35 T, 18 rectas y 4 terminales), con prioridad L estable, candidatos
   completos, host T interior, Z parcial/disjunto y ambigüedad explícita. Metalcon consume esa

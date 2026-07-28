@@ -30,8 +30,8 @@ Python/CalculiX sin rutas personales.
 
 | Comando | Contrato |
 |---|---|
-| `npm test` | suite oficial, 732 Node + 4 componentes |
-| `npm run test:components` | cuatro workflows críticos con DOM |
+| `npm test` | suite oficial, 736 Node + 8 componentes |
+| `npm run test:components` | ocho workflows críticos con DOM |
 | `npm run test:e2e` | build y Playwright; se ejecuta externamente en plataforma soportada |
 | `npm run test:lab` | laboratorio de faldones, 35 pruebas |
 | `npm run test:coverage` | umbrales separados para core y store |
@@ -92,9 +92,9 @@ repositorio para que una ausencia o versión distinta nunca sea silenciosa.
 
 ## Baselines visibles
 
-- Suite: 732/732 Node; componentes: 4/4; laboratorio: 35/35.
-- Cobertura de líneas: core 93,55 %; store 97,85 %.
-- Bundle inicial: 703,69 kB raw / 218,63 kB gzip.
+- Suite: 736/736 Node; componentes: 8/8; laboratorio: 35/35.
+- Cobertura de líneas: core 93,63 %; store 97,77 %.
+- Bundle inicial: 714,70 kB raw / 222,14 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

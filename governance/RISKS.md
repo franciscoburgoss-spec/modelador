@@ -15,7 +15,7 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-009 | Dependencia de macOS fuera de soporte | 5 | 4 | 20 | Offline, mínimo privilegio y riesgo aceptado; renovar hardware para eliminar | Aceptado |
 | R-010 | Rendimiento insuficiente en 8 GB/CPU dual core | 4 | 3 | 12 | Presupuestos medidos, lazy loading y perfiles; G7 | Abierto |
 | R-011 | Herramientas no reproducibles entre sesiones | 4 | 4 | 16 | Node, Playwright y `ezdxf` quedan fijados; `validate` integra goldens, DXF y CCX localmente, y Actions registra E2E por SHA; gobernanza aún debe recorrer `specs/domain/`; G0/G1 | Abierto |
-| R-012 | Errores sólo visibles en consola | 4 | 3 | 12 | SPEC-003-D cubre importación fallida visible y exportación stale bloqueada; error boundary y log local siguen en SPEC-005/G7 | Abierto |
+| R-012 | Errores sólo visibles en consola | 4 | 3 | 12 | SPEC-003-D cubre fallos críticos; R5-D hace visibles y resolubles en lote los muros sin rol; error boundary y log local siguen en SPEC-005/G7 | Abierto |
 | R-013 | Integrar o redistribuir CCX sin revisar licencia/dependencias | 2 | 4 | 8 | v1 usa ruta instalada; auditoría antes de bundling | Abierto |
 | R-014 | Cambios heredados se pierden durante la migración | 3 | 5 | 15 | 187 hashes verificados contra origen; SPEC-000 | Mitigado |
 | R-015 | Cobertura insuficiente del store oculta mutadores sin contrato | 4 | 3 | 12 | SPEC-003-D cubre contratos observables, componentes críticos y fija gates core/store 90/85; cobertura 93,55/97,85; G4 | Mitigado |

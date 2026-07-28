@@ -5,8 +5,9 @@ conserva completa porque contiene mediciones, alternativas descartadas y criteri
 
 Los cuatro cortes R3 están cerrados en `sessions/close-SPEC-R3-*.md`.
 Los tres cortes de `SPEC-R4-finding-catalog.md` están cerrados en
-`sessions/close-SPEC-R4-*.md`. Los tres cortes de `SPEC-R5-wall-types.md` están cerrados en
-`sessions/close-SPEC-R5-*.md`. Los tres cortes de `SPEC-R6-wall-junctions.md` están cerrados en
+`sessions/close-SPEC-R4-*.md`. Los cortes A/B/C de `SPEC-R5-wall-types.md` y el correctivo
+`../SPEC-R5-D-element-inventory.md` están cerrados en `sessions/close-SPEC-R5-*.md`. Los tres
+cortes de `SPEC-R6-wall-junctions.md` están cerrados en
 `sessions/close-SPEC-R6-*.md`. Los tres cortes de `SPEC-R7-checks.md` están cerrados en
 `sessions/close-SPEC-R7-A.md`, `sessions/close-SPEC-R7-B.md` y
 `sessions/close-SPEC-R7-C.md`. Los tres cortes de `SPEC-R8-report-markdown.md` están cerrados en
