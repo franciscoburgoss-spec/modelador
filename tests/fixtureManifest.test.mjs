@@ -10,6 +10,7 @@ import {
   prepareModelJsonImport
 } from '../src/core/modelSchema.js';
 import { resolveWallGeometry } from '../src/core/elementGeometry.js';
+import { METALCON_PROFILES } from '../src/core/metalconCatalog.js';
 import { getRoofSystems } from '../src/core/roofPlaneOutputs.js';
 
 const repositoryRoot = resolve(import.meta.dirname, '..');
@@ -243,4 +244,32 @@ test('SPEC-003-A: FX-004 persiste roofPlanes y deriva dos ledgers reproducibles 
   assert.deepEqual(reopened.appliedMigrations, []);
   assert.deepEqual(reopened.model.roofPlanes, model.roofPlanes);
   assert.deepEqual(ledgerSummary(reopened.model), before);
+});
+
+test('SPEC-003-C0: FX-004 persiste propiedades mecánicas canónicas para la cercha', () => {
+  const model = fixture('FX-004').prepared.model;
+  const projectProfiles = new Map(
+    model.library.metalconProfiles.map((profile) => [profile.code, profile])
+  );
+  const catalogProfiles = new Map(
+    METALCON_PROFILES.map((profile) => [profile.code, profile])
+  );
+
+  for (const code of ['90CA085', '40CA085', '60CA085']) {
+    const projectProfile = projectProfiles.get(code);
+    const catalogProfile = catalogProfiles.get(code);
+    assert.ok(projectProfile, `${code}: perfil persistido`);
+    assert.ok(catalogProfile, `${code}: perfil canónico`);
+    for (const property of ['areaCm2', 'ixCm4', 'iyCm4']) {
+      assert.equal(
+        projectProfile[property],
+        catalogProfile[property],
+        `${code}.${property}: debe coincidir literalmente con el catálogo`
+      );
+      assert.ok(
+        Number.isFinite(projectProfile[property]) && projectProfile[property] > 0,
+        `${code}.${property}: debe ser finita y positiva`
+      );
+    }
+  }
 });

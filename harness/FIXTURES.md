@@ -21,7 +21,7 @@ FX-001 y FX-002 cuentan como un solo caso para muros, OSB y fundaciones.
 | ID | Propósito | Requisitos | Estado |
 |---|---|---|---|
 | FX-003 | segunda vivienda independiente | planta distinta, muros X/Y, puertas/ventanas, tipos y perfiles 60/90 | Verificado; `SPEC-003-A` |
-| FX-004 | persistencia moderna de cubierta | `modelVersion: 2`, biblioteca propia, perfiles 60/90, `roofPlanes` resolubles y roundtrip | Verificado; `SPEC-003-A` |
+| FX-004 | persistencia moderna de cubierta | `modelVersion: 2`, biblioteca propia, perfiles 60/90, propiedades mecánicas de cercha, `roofPlanes` resolubles y roundtrip | Verificado; `SPEC-003-A/C0` |
 | FX-005 | migración mínima por versión | un archivo por cada versión histórica soportada | Disponible y registrado |
 | FX-006 | importaciones hostiles | `{}`, truncado, futuro, payloads de fórmula, exceso de tamaño | Pendiente |
 | FX-007 | cálculo de referencia | INP pequeño con resultado CCX estable | Pendiente |
@@ -42,7 +42,9 @@ node --test tests/fixtureManifest.test.mjs
 
 FX-003 contiene seis muros resolubles, tres puertas, tres ventanas y bounding box
 `0,0 → 8000,6000`. FX-004 contiene cuatro muros, un faldón moderno, un sistema derivado, seis
-posiciones de cercha y dos ledgers de 5.940 mm reproducibles después del roundtrip.
+posiciones de cercha y dos ledgers de 5.940 mm reproducibles después del roundtrip. Sus perfiles
+de miembros `90CA085`, `40CA085` y `60CA085` persisten área e inercias idénticas al catálogo
+canónico para que el INP no dependa de completar datos durante la exportación.
 
 ## Ficha obligatoria por entrada
 

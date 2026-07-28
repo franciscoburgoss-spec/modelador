@@ -319,14 +319,14 @@
         },
         "boundaryRows": 42,
         "loadRows": 6,
-        "nonFiniteTokens": 16,
+        "nonFiniteTokens": 0,
         "unitDeclarations": [
           "Unidades: mm, N, MPa. Vigas U1 (2 nodos, nudos rigidos). Modelo PLANO resuelto en 3D."
         ],
         "warnings": [
           "ADVERTENCIA: sistema FX4-RP-01__t0: el sistema no tiene costaneras — la carga se reparte en los nudos de la cuerda superior"
         ],
-        "semanticSha256": "92054bf2fd77e446c11355586e15e97f887c2d80e52359055840ca854a64cf0c"
+        "semanticSha256": "e6513747d69f1ff48d4f16e12957bc96724fe8c871b7a32cd7b4289da1bb7017"
       }
     }
   ]

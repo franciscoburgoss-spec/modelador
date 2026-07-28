@@ -9,10 +9,10 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — `SPEC-003-C` solver, precondición pendiente |
+| Etapa | Arnés de verificación — `SPEC-003-C` solver habilitado |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-003-verification-harness.md`; corte activo **B — Artefactos** |
-| Suite oficial | 708/708; laboratorio 35/35 |
+| Spec activa | `specs/SPEC-003-verification-harness.md`; corte activo **C — Solver** |
+| Suite oficial | 709/709; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 701,70 kB |
 | Cobertura | core 93,45 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
 | Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23 disponible |
@@ -24,7 +24,7 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Antes de ejecutar `SPEC-003-C`, decidir y documentar cómo completar las propiedades mecánicas faltantes de FX-004: su INP de cerchas contiene 16 tokens no finitos |
+| Bloqueo actual | Ninguno; C debe reproducir el defecto conocido de `ELSET` global y cerrar los tres jobs |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -114,6 +114,9 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - SPEC-003-B: cerrado. Dieciocho artefactos (4 JSON, 2 CSV, 9 DXF y 3 INP) tienen goldens
   semánticos compactos y normalización explícita; `audit:dxf` usa `ezdxf` 1.4.4 desde el entorno
   del repositorio y verifica las ocho familias completas con 0 errores / 0 reparaciones.
+- SPEC-003-C0: cerrado. FX-004 persiste área e inercias canónicas para `90CA085`, `40CA085` y
+  `60CA085`; su golden INP baja de 16 a cero tokens no finitos. CalculiX 2.23 termina la cercha
+  con 13 nodos de desplazamiento, 78 valores finitos y máximo absoluto de 0,590202 mm.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -131,15 +134,15 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - El INP global usa IDs persistidos dentro de nombres `ELSET`; en `casa-L` superan los 20
   caracteres que CalculiX conserva y las secciones no encuentran sus conjuntos. Seguimiento R-007
   antes de G5.
-- El INP de cerchas de FX-004 contiene 16 tokens `NaN`: sus perfiles propios tienen geometría
-  60/90 pero no `areaCm2`/inercias y sombrean el catálogo completo. El golden lo hace visible;
-  `SPEC-003-C` no puede ejecutar ese job hasta gobernar la corrección de fixture/exportador.
+- La precondición mecánica de FX-004 quedó resuelta en `SPEC-003-C0` sin fallback del exportador:
+  las propiedades persistidas coinciden con el catálogo y la cercha ya ejecuta con resultados
+  finitos. El parser y reporte comunes de tres jobs siguen correspondiendo a `SPEC-003-C`.
 - `resolveRoofPlane` intenta construir el resultado fallido con variables `let` aún no
   inicializadas cuando falta `canalWallId`; el fixture mínimo `model-v1-dual-roof` reproduce un
   `ReferenceError` si se expande. Seguimiento R-017 en un corte explícito, fuera de SPEC-003-A.
 
 ## Próximo cierre
 
-Preparar `SPEC-003-C` resolviendo explícitamente la precondición de propiedades mecánicas de
-FX-004; después implementar los tres smoke CalculiX y el parser finito con IDs persistidos. No
-tocar Tauri, componentes ni umbrales de cobertura.
+Implementar `SPEC-003-C`: smoke CalculiX de global, cercha y fundación, parser finito común y
+reporte por commit con IDs persistidos; corregir mínimamente los nombres `ELSET` sólo si el job
+global reproduce el defecto conocido. No tocar Tauri, componentes ni umbrales de cobertura.

@@ -10,7 +10,7 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-004 | Corrupción por guardado interrumpido | 3 | 5 | 15 | Escritura atómica, backups y ensayo de kill; G6 | Abierto |
 | R-005 | Reglas constructivas incompletas producen planos incorrectos | 4 | 4 | 16 | R3–R8 cerrados; goldens semánticos y `audit:dxf` cubren 9 archivos de las 8 familias con 0 errores / 0 reparaciones; findings constructivos pendientes siguen abiertos antes de G4 | Abierto |
 | R-006 | Fixture duplicado oculta regresiones geométricas | 5 | 4 | 20 | FX-003/FX-004 difieren entre sí y de `casa-L`; manifiesto, esquema, perfiles, vanos, bounds y roundtrip quedan automatizados en `fixtureManifest.test.mjs` | Mitigado |
-| R-007 | INP sintácticamente válido pero estructuralmente inválido | 3 | 5 | 15 | El golden B expone IDs largos en `ELSET` y 16 `NaN` en la cercha FX-004 por propiedades mecánicas faltantes; resolver esa precondición y ejecutar global/cercha/fundación con parser finito en `SPEC-003-C` antes de G5 | Abierto |
+| R-007 | INP sintácticamente válido pero estructuralmente inválido | 3 | 5 | 15 | C0 eliminó los 16 `NaN` y ejecutó la cercha con 13 nodos/78 desplazamientos finitos; `SPEC-003-C` debe reproducir los IDs largos en `ELSET` y ejecutar global/cercha/fundación con parser/reporte común antes de G5 | Abierto |
 | R-008 | Permisos Tauri demasiado amplios | 3 | 5 | 15 | Capabilities mínimas, CSP y revisión; G6 | Abierto |
 | R-009 | Dependencia de macOS fuera de soporte | 5 | 4 | 20 | Offline, mínimo privilegio y riesgo aceptado; renovar hardware para eliminar | Aceptado |
 | R-010 | Rendimiento insuficiente en 8 GB/CPU dual core | 4 | 3 | 12 | Presupuestos medidos, lazy loading y perfiles; G7 | Abierto |

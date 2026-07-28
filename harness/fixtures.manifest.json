@@ -91,7 +91,7 @@
     {
       "id": "FX-004",
       "file": "tests/fixtures/fx-004-cubierta-moderna.json",
-      "sha256": "d527a44145af7960a81f49e0fe61893d3729ab7e223a88c80ac810f36b0286a3",
+      "sha256": "17bd0f727dfa7b8b904a196537caf9e9b70cb5ac002f50145dfb518d937e76ed",
       "modelVersion": 2,
       "origin": "sintético",
       "anonymization": "no aplica; geometría creada para el arnés",

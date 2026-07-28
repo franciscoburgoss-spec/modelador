@@ -119,9 +119,10 @@ test('SPEC-003-B: existen ocho familias DXF y tres variantes INP con IDs persist
     summarizeInp(inp.find((artifact) => artifact.id === 'inp-foundations').content).nonFiniteTokens,
     0
   );
-  assert.ok(
-    summarizeInp(inp.find((artifact) => artifact.id === 'inp-truss').content).nonFiniteTokens > 0,
-    'el golden expone las propiedades mecánicas incompletas que SPEC-003-C debe resolver'
+  assert.equal(
+    summarizeInp(inp.find((artifact) => artifact.id === 'inp-truss').content).nonFiniteTokens,
+    0,
+    'FX-004 persiste las propiedades mecánicas exigidas por la cercha'
   );
 
   const manifest = JSON.parse(
