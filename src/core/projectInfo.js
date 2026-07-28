@@ -16,7 +16,7 @@ export function createProjectInfo() {
     aprobo: '',
     fecha: '',               // vacío = fecha de exportación
     revisiones: [],          // [{ rev, fecha, descripcion, autor }]
-    notas: {},               // { framing|osb|truss|foundations: [string] } — reemplaza las notas default
+    notas: {},               // { framing|osb|truss|foundations: [string] } — reemplaza sólo los defaults
     formato: DEFAULT_FORMAT, // formato por defecto al exportar láminas
     escala: null             // null = escala por defecto del formato (1:50 en A1, 1:100 en A3)
   };

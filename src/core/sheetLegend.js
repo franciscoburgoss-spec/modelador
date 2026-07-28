@@ -45,8 +45,8 @@ const SYMBOLS = {
   ]
 };
 
-/** Notas generales por tipo. Son el default del proyecto; `projectInfo.notas[tipo]` las
- * reemplaza por completo si el usuario define las suyas. */
+/** Notas generales por tipo. Son el default del proyecto; `projectInfo.notas[tipo]` reemplaza
+ * sólo este bloque si el usuario define el suyo. Los criterios R8 siempre se anteponen. */
 export const DEFAULT_NOTES = {
   framing: [
     'Cotas en milimetros. Niveles en metros respecto al N.P.T. = 0.00.',
@@ -76,6 +76,44 @@ export const DEFAULT_NOTES = {
   ]
 };
 
+function formatNumber(value) {
+  return Number.isInteger(value) ? String(value) : String(Number(value.toFixed(3)));
+}
+
+function formatCriterionLimit(limit) {
+  if (limit === null) return 'No resoluble con los datos actuales';
+  const unit = limit.unit;
+  if (Object.hasOwn(limit, 'equal')) {
+    return `= ${formatNumber(limit.equal)} ${unit}`;
+  }
+  if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max')) {
+    return `${formatNumber(limit.min)}-${formatNumber(limit.max)} ${unit}`;
+  }
+  if (Object.hasOwn(limit, 'min')) {
+    return `>= ${formatNumber(limit.min)} ${unit}`;
+  }
+  return `<= ${formatNumber(limit.max)} ${unit}`;
+}
+
+/**
+ * Convierte la colección R8 en notas compactas de una variante. Sólo entran criterios originados
+ * por tipos asignados: los agregados exclusivamente por findings pertenecen al informe.
+ */
+export function criteriaNotesForVariant(criteria = [], variant = 'framing') {
+  return criteria
+    .filter((criterion) => (
+      criterion.source === 'assigned-type'
+      && criterion.sheetVariants.includes(variant)
+    ))
+    .map((criterion) => {
+      const roleLabel = criterion.roles.length === 1 ? 'rol' : 'roles';
+      const typeLabel = criterion.wallTypeIds.length === 1 ? 'tipo' : 'tipos';
+      return `${criterion.ruleId}: ${formatCriterionLimit(criterion.limit)}; `
+        + `${roleLabel} ${criterion.roles.join('/')}; `
+        + `${typeLabel} ${criterion.wallTypeIds.join('/')}`;
+    });
+}
+
 /** Parte `str` en líneas que no superen `maxWidth` a la altura `h` (quiebre por palabra). */
 export function wrapText(str, h, maxWidth) {
   const words = sanitizeDxfText(str).split(' ');
@@ -94,20 +132,38 @@ export function wrapText(str, h, maxWidth) {
   return lines;
 }
 
-function column(entities, x, yTop, width, title, rows, k, maxRows) {
-  const h = 2.6 * k;
-  const step = 4.2 * k;
+function column(entities, x, yTop, width, title, rows, k, maxRows, { fitAll = false } = {}) {
+  const baseHeight = 2.6 * k;
+  const baseStep = 4.2 * k;
+  const availableHeight = maxRows * baseStep;
+  let rowScale = 1;
+  if (fitAll) {
+    for (let percent = 100; percent >= 60; percent -= 5) {
+      const candidateScale = percent / 100;
+      const candidateHeight = baseHeight * candidateScale;
+      const wrappedCount = rows.reduce(
+        (count, row) => count + wrapText(row, candidateHeight, width).length,
+        0
+      );
+      const capacity = Math.floor(availableHeight / (baseStep * candidateScale));
+      rowScale = candidateScale;
+      if (wrappedCount <= capacity) break;
+    }
+  }
+  const h = baseHeight * rowScale;
+  const step = baseStep * rowScale;
+  const rowLimit = Math.floor(availableHeight / step);
   let y = yTop;
   entities.push(text(L_TEXT, x, y, 3.2 * k, title));
-  y -= step * 1.6;
+  y -= baseStep * 1.6;
   let used = 0;
   for (const row of rows) {
-    if (used >= maxRows) {
+    if (used >= rowLimit) {
       entities.push(text(L_TEXT, x, y, h, '(...)'));
       break;
     }
     for (const wrapped of wrapText(row, h, width)) {
-      if (used >= maxRows) break;
+      if (used >= rowLimit) break;
       entities.push(text(L_TEXT, x, y, h, wrapped));
       y -= step;
       used++;
@@ -117,7 +173,13 @@ function column(entities, x, yTop, width, title, rows, k, maxRows) {
 }
 
 /** Banda de leyenda completa: recuadro + simbología + cuadro de vistas + notas generales. */
-export function legendEntities(layout, variant = 'framing', views = [], notesOverride = null) {
+export function legendEntities(
+  layout,
+  variant = 'framing',
+  views = [],
+  notesOverride = null,
+  criteria = []
+) {
   const box = layout.legend;
   const k = layout.k;
   const e = [];
@@ -133,13 +195,30 @@ export function legendEntities(layout, variant = 'framing', views = [], notesOve
 
   const colW = usableW / 3 - 4 * k;
   const symbolRows = (SYMBOLS[variant] || SYMBOLS.framing).map(([tag, desc]) => `${tag} = ${desc}`);
-  const notes = (notesOverride?.length ? notesOverride : (DEFAULT_NOTES[variant] || DEFAULT_NOTES.framing))
+  const effectiveNotes = notesOverride?.length
+    ? notesOverride
+    : (DEFAULT_NOTES[variant] || DEFAULT_NOTES.framing);
+  const criterionNotes = criteriaNotesForVariant(criteria, variant);
+  const notes = [
+    ...criterionNotes,
+    ...effectiveNotes
+  ]
     .map((n, i) => `${i + 1}. ${n}`);
   const viewRows = views.length ? views : ['(sin vistas)'];
 
   column(e, box.x0 + pad, yTop, colW, 'SIMBOLOGIA', symbolRows, k, maxRows);
   column(e, box.x0 + pad + usableW / 3, yTop, colW, 'CUADRO DE VISTAS', viewRows, k, maxRows);
-  column(e, box.x0 + pad + (2 * usableW) / 3, yTop, colW, 'NOTAS GENERALES', notes, k, maxRows);
+  column(
+    e,
+    box.x0 + pad + (2 * usableW) / 3,
+    yTop,
+    colW,
+    'NOTAS GENERALES',
+    notes,
+    k,
+    maxRows,
+    { fitAll: criterionNotes.length > 0 }
+  );
 
   return e;
 }

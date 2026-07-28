@@ -490,9 +490,9 @@
       "bytes": 20226,
       "sha256": "c252fd22276ef29da9510c53ac7d548d5de61d1a826d0c881322b056f20a6c19",
       "kind": "source",
-      "workspaceBytes": 20388,
-      "workspaceSha256": "3ec9920cc71680c853f57f483a6d33c9913b4213cdbfcd7b9e847634b4d0e27c",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 20426,
+      "workspaceSha256": "647d4ed736d66cf94b27555c502b1b9e0025c15cb41c34c64a954f46bfab0b44",
+      "changedBy": "SPEC-R8"
     },
     {
       "path": "src/core/exportFramingDxf.js",
@@ -517,9 +517,9 @@
       "bytes": 21862,
       "sha256": "b1c0c222eae9a0318ea4a70a6540711495e22ff638e0d0e66fba10d6d035d1b8",
       "kind": "source",
-      "workspaceBytes": 22095,
-      "workspaceSha256": "651875b647fcc6e9732e6ae6359c033c4f19b9cbc3e9464a3c86ff0e484c0ac3",
-      "changedBy": "SPEC-R5"
+      "workspaceBytes": 22375,
+      "workspaceSha256": "c3fa71aa845016401697bf81d8baaaa4d19a505250453c07adf0a8009a041797",
+      "changedBy": "SPEC-R8"
     },
     {
       "path": "src/core/exportTrussDxf.js",
@@ -636,7 +636,10 @@
       "path": "src/core/projectInfo.js",
       "bytes": 1936,
       "sha256": "d4b8a3f61dbf0c914ab8b6b1ef20557a31fc4f288e4d1d683826ba7be3f7c7a1",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 1937,
+      "workspaceSha256": "a38a39477e23a3d1365121bc1845ca97bf0aa9730f274190e62f95ab98fe6d36",
+      "changedBy": "SPEC-R8"
     },
     {
       "path": "src/core/projectParams.js",
@@ -724,9 +727,9 @@
       "bytes": 6293,
       "sha256": "d8e8abfb0ab83d806eef5e3bdcbadcaf1a049cca0aaaff8da85404b063d43f93",
       "kind": "source",
-      "workspaceBytes": 6418,
-      "workspaceSha256": "33c48a613da217be8f12ddb164a1b11ed608bef57959b4e36be3cc41be95ef2c",
-      "changedBy": "SPEC-R6"
+      "workspaceBytes": 8883,
+      "workspaceSha256": "9411804408a6801ddc831d7f95f03d11f2a65617070fc149f352398299dc3cc6",
+      "changedBy": "SPEC-R8"
     },
     {
       "path": "src/core/sheetTitleBlock.js",

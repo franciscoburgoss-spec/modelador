@@ -16,10 +16,10 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-DER-002 | Biblioteca y vanos invalidan derivados relacionados | R-003 | D-008 | SPEC-002 | `derivedStateContract.test.mjs` | G3 | Verificado |
 | REQ-EXP-001 | Ningún INP se exporta con datos stale | R-003/R-007 | D-009 | SPEC-002 | `exportPolicy.test.mjs` + smoke CCX | G3 | Verificado |
 | REQ-DOM-001 | Cadenetas son piezas reales y se metran | R-005 | legado D-020 | SPEC-R3 | cierres `SPEC-R3-A/B/C/D` + pruebas `r3Cadenetas*` y `takeoff.test.mjs` | G4 | Verificado |
-| REQ-DOM-002 | R4–R8 completan catálogo, roles, encuentros, checks e informe | R-005 | legado D-016–033 + gobernanza D-018–029 | SPEC-R4 + SPEC-R5 + SPEC-R6 + SPEC-R7 + SPEC-R8 | cierres `SPEC-R4-A/B/C`, `SPEC-R5-A/B/C`, `SPEC-R6-A/B/C`, `SPEC-R7-A/B/C`, `SPEC-R8-A/B`; `r8ReportMarkdown.test.mjs` 11/11; R8-C y pruebas de leyenda/DXF pendientes | G4 | En curso |
+| REQ-DOM-002 | R4–R8 completan catálogo, roles, encuentros, checks e informe | R-005 | legado D-016–033 + gobernanza D-018–029 | SPEC-R4 + SPEC-R5 + SPEC-R6 + SPEC-R7 + SPEC-R8 | cierres `SPEC-R4-A/B/C`, `SPEC-R5-A/B/C`, `SPEC-R6-A/B/C`, `SPEC-R7-A/B/C`, `SPEC-R8-A/B/C`; pruebas R8 16/16; cuatro DXF A3 0/0 | G4 | Verificado |
 | REQ-TST-001 | Existe fixture con planta y perfiles distintos | R-006 | — | SPEC-003 | fixture independiente auditado | G4 | Pendiente |
 | REQ-TST-002 | Existe fixture guardado con `roofPlanes` | R-006 | — | SPEC-003 | roundtrip persistido | G4 | Pendiente |
-| REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | — | SPEC-003 | reporte `ezdxf` | G4 | Pendiente |
+| REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | — | SPEC-003 | R8-C verifica cuatro variantes A3 0/0; arnés global reproducible pendiente | G4 | En curso |
 | REQ-CCX-001 | INP de referencia ejecuta y converge en CCX | R-007 | D-011 | SPEC-003/004 | log y resultado parseado | G5 | Pendiente |
 | REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010 | SPEC-004 | kill test + comparación | G6 | Pendiente |
 | REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010 | SPEC-004 | rotación y recovery test | G6 | Pendiente |

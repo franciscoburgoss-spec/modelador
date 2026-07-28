@@ -30,6 +30,7 @@ import {
 } from './sheetTitleBlock.js';
 import { legendEntities } from './sheetLegend.js';
 import { normalizeProjectInfo } from './projectInfo.js';
+import { collectApplicableCriteria } from './modelReview.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
 import { buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
@@ -230,6 +231,7 @@ export function generateSheetDxf(sheetEntries, sheetIndex, totalSheets, grid, op
     labelBuilder = (entry) => getWallDisplayName(entry.wall, grid),
     contentBuilder = null,
     projectInfo = null,
+    criteria = [],
     format = DEFAULT_FORMAT
   } = options;
   const info = resolveProjectInfo(projectInfo);
@@ -274,7 +276,13 @@ export function generateSheetDxf(sheetEntries, sheetIndex, totalSheets, grid, op
     ...foldMarksEntities(layout),
     ...titleBlockEntities(layout, data),
     ...revisionTableEntities(layout, info.revisiones),
-    ...legendEntities(layout, legendVariant, viewRows, info.notas?.[legendVariant]),
+    ...legendEntities(
+      layout,
+      legendVariant,
+      viewRows,
+      info.notas?.[legendVariant],
+      criteria
+    ),
     ...viewLabelRaw
   ];
   const paperSpaceEntities = upgradeAll(paperSpaceRaw, PAPER_SPACE_OWNER, true);
@@ -298,12 +306,18 @@ export function resolveSheetSetup(model, opts = {}) {
   const format = resolveFormat(opts.format || info.formato || DEFAULT_FORMAT);
   const layout = sheetLayout(format, info.revisiones.length);
   const scale = opts.scale || info.escala || layout.defaultScale;
-  return { info, format, layout, scale };
+  const criteria = collectApplicableCriteria(model, []);
+  return { info, format, layout, scale, criteria };
 }
 
 /** Arma la lista final de láminas (nombre de archivo + contenido) para un tipo de export. */
 function buildSheets(model, entries, { filePrefix, variant, options, setup }) {
-  const { layout, scale, info } = setup;
+  const {
+    layout,
+    scale,
+    info,
+    criteria
+  } = setup;
   const sheets = packWallsIntoSheets(entries, { layout, scale });
   const totalSheets = sheets.length;
   return sheets.map((sheetEntries, sheetIndex) => {
@@ -311,7 +325,13 @@ function buildSheets(model, entries, { filePrefix, variant, options, setup }) {
     return {
       filename: `${filePrefix}_${layout.key}_lamina${sheetIndex + 1}.dxf`,
       content: generateSheetDxf(sheetEntries, sheetIndex, totalSheets, model.grid, {
-        ...options, legendVariant: variant, projectInfo: info, layout, scale, format: layout.key
+        ...options,
+        legendVariant: variant,
+        projectInfo: info,
+        criteria,
+        layout,
+        scale,
+        format: layout.key
       })
     };
   });

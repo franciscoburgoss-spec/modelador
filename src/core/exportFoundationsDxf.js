@@ -442,7 +442,12 @@ export function generateFoundationSheets(model, opts = {}) {
   const entries = resolveFoundationSheetEntries(model);
   if (!entries.length) return [];
 
-  const { info, layout, scale } = resolveSheetSetup(model, opts);
+  const {
+    info,
+    layout,
+    scale,
+    criteria
+  } = resolveSheetSetup(model, opts);
   const sheets = packWallsIntoSheets(entries, { layout, scale });
   const totalSheets = sheets.length;
   const options = {
@@ -450,7 +455,7 @@ export function generateFoundationSheets(model, opts = {}) {
     legendVariant: 'foundations',
     title: 'FUNDACIONES - PLANTA Y CORTES TIPO',
     labelBuilder: (entry) => LABEL_BUILDERS[entry.kind](entry),
-    projectInfo: info, layout, scale, format: layout.key
+    projectInfo: info, criteria, layout, scale, format: layout.key
   };
 
   return sheets.map((sheetEntries, sheetIndex) => {

@@ -9,7 +9,6 @@ Los tres cortes de `SPEC-R4-finding-catalog.md` están cerrados en
 `sessions/close-SPEC-R5-*.md`. Los tres cortes de `SPEC-R6-wall-junctions.md` están cerrados en
 `sessions/close-SPEC-R6-*.md`. Los tres cortes de `SPEC-R7-checks.md` están cerrados en
 `sessions/close-SPEC-R7-A.md`, `sessions/close-SPEC-R7-B.md` y
-`sessions/close-SPEC-R7-C.md`. `SPEC-R8-report-markdown.md` está aprobada en tres cortes: A
-snapshot/renderer/cobertura quedó cerrado en `sessions/close-SPEC-R8-A.md`; B descarga/pantalla
-quedó cerrado en `sessions/close-SPEC-R8-B.md` y C está activo para criterios en láminas con
-auditoría DXF.
+`sessions/close-SPEC-R7-C.md`. Los tres cortes de `SPEC-R8-report-markdown.md` están cerrados en
+`sessions/close-SPEC-R8-A.md`, `sessions/close-SPEC-R8-B.md` y
+`sessions/close-SPEC-R8-C.md`.
