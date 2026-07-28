@@ -35,6 +35,10 @@ Los comandos disponibles en fase 0 forman parte de `npm run validate`. `audit:dx
 se incorporan en `SPEC-003`, cuando existan los fixtures y arneses correspondientes. Ningún comando
 de validación abre interfaces, modifica fixtures ni depende de rutas personales.
 
+El conjunto de referencia de `SPEC-003` cubre JSON y CSV semánticos; planta y fundaciones DXF;
+framing, OSB y cerchas en R12/A3; e INP global, de cerchas y de fundaciones. Los smoke INP usan los
+IDs persistidos del fixture, sin renumerarlos para acomodar al solver.
+
 ## Evidencia
 
 Los resultados generados van a `artifacts/<commit>/<harness>/` y no se versionan. El cierre registra:
@@ -52,6 +56,7 @@ Los resultados generados van a `artifacts/<commit>/<harness>/` y no se versionan
 
 - Comparar estructura y magnitudes contractuales, no timestamps ni orden incidental.
 - Normalizar ids generados sólo si no tienen semántica.
+- No normalizar IDs referenciados de muro, eje, perfil, tipo, faldón, `NSET` o `ELSET`.
 - Un cambio de golden exige explicar si es corrección o regresión aceptada.
 - DXF se audita además de comparar entidades.
 - INP se ejecuta además de comparar texto.

@@ -35,6 +35,7 @@ Estados: `vigente`, `derogada por D-xxx`, `descartada`.
 | D-027 | 27-jul-2026 | vigente | Las llegadas de cercha sólo se revisan cuando caen sobre vano; la coincidencia se limita a media ala `B/2` del perfil resoluble y nunca a 19 mm por default | El detalle exige coincidir con el pie derecho del dintel y 19 mm sólo deriva de la serie 90 con B=38 |
 | D-028 | 27-jul-2026 | vigente | La capacidad de corte separa resultados verificados, condicionados y excluidos por dirección; una condición desconocida impide sumar 417 kgf/m como capacidad verificada | El modelo aún no demuestra todas las fijaciones, caras de OSB ni dobles de extremo exigidos por §1.5.2.1 |
 | D-029 | 27-jul-2026 | vigente | Pantalla, informe markdown y criterios de lámina derivan de una evaluación pura compartida y de metadata explícita del catálogo; la cobertura no instrumentada se declara y nunca se infiere como cumplimiento | Evita divergencia entre entregables, asociaciones normativas por heurística y silencios ante checks que sólo producen findings |
+| D-030 | 27-jul-2026 | vigente | El arnés usa fixtures persistidos como autoridad, deriva `supportLedgers`, audita todas las familias DXF y ejecuta las tres variantes INP sin renumerar IDs | Persistir derivados o adaptar los IDs sólo para el smoke produciría evidencia verde que no representa un proyecto real |
 
 Las decisiones constructivas D-001 a D-033 del proyecto anterior se preservan como historia en
 `archive/LEGACY_DECISIONS.md`. Las reglas vigentes derivadas viven en `domain/DOMAIN_RULES.md`.

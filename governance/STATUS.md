@@ -9,11 +9,13 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — preparar `SPEC-003` |
+| Etapa | Arnés de verificación — `SPEC-003-A` fixtures |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-003-verification-harness.md`; corte explícito pendiente de preparación |
+| Spec activa | `specs/SPEC-003-verification-harness.md`; corte activo **A — Fixtures** |
 | Suite oficial | 701/701; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 701,70 kB |
+| Cobertura | core 93,04 %; store 72,76 % (objetivo 85 % en `SPEC-003-D`) |
+| Toolchain de verificación | Node 22.23.1; Python 3.14.5 sin `ezdxf` reproducible; CalculiX 2.23 disponible |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
@@ -21,7 +23,7 @@
 | DXF R8-C | 4 láminas A3 AC1015 representativas, 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno para preparar `SPEC-003`; debe cortarse antes de implementar por su alcance |
+| Bloqueo actual | Ninguno para implementar `SPEC-003-A`; los cortes B–E quedan bloqueados por orden |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -100,6 +102,10 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - R8-C: cerrado. Las láminas anteponen criterios de tipos asignados por variante, excluyen los
   agregados sólo por findings y conservan después las notas de usuario o defaults. El peor caso
   A3 con MP1/MP2/MP3/tabique mantiene todos los IDs sin `(...)`; cuatro DXF AC1015 pasan 0/0.
+- SPEC-003-PREP: cerrado. El baseline confirma que `casa-L`/`modelo-26` comparten los mismos 49
+  elementos y hash abreviado `d33ce29e466b`; los seis fixtures JSON actuales pasan el esquema,
+  pero ninguno prueba una cubierta moderna resoluble persistida. La ejecución se divide en
+  A fixtures, B artefactos/DXF, C solver, D store/componentes y E integración/E2E externo.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
@@ -121,5 +127,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Preparar cortes explícitos de `SPEC-003-verification-harness.md`: reconciliar sus mediciones con el
-baseline actual y separar fixtures, auditorías/goldens, cobertura y smoke real sin mezclar scopes.
+Implementar `SPEC-003-A`: FX-003/FX-004, manifiesto ejecutable, independencia de elementos/biblioteca,
+esquema, roundtrip de `roofPlanes` y equivalencia de `supportLedgers` derivados. No tocar todavía
+exportadores, goldens, Python/ezdxf, CalculiX, componentes ni umbrales de cobertura.
