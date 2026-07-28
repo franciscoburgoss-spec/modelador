@@ -11,7 +11,7 @@
 |---|---|
 | Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; próximo corte de `SPEC-004` pendiente de diagnóstico |
+| Spec activa | `specs/SPEC-004-D1-macos11-webview-render.md` |
 | Suite oficial | 765/765 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 727,24 kB |
 | Cobertura | core 93,59 %; store 96,97 % (gates 90 % / 85 %) |
@@ -24,11 +24,13 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno; `SPEC-003` cerrada y `SPEC-004` habilitada |
+| Bloqueo actual | F-008: Tauri abre una ventana sin renderizar el frontend en macOS 11 |
 
 ## Hallazgos bloqueantes confirmados
 
-Ninguno.
+| ID | Severidad | Hallazgo | Spec |
+|---|---|---|---|
+| F-008 | P1 | WebView macOS 11 carece de `Object.hasOwn`; React aborta antes del primer render | SPEC-004-D1 |
 
 ## Hallazgos resueltos
 
@@ -202,6 +204,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Diagnosticar el siguiente corte de `SPEC-004`: ejecución controlada de CalculiX mediante un comando
-Tauri estrecho, con timeout, cancelación y logs. No incorporar todavía instalación en
-`/Applications` ni packaging de release.
+Corregir `SPEC-004-D1`: compatibilidad del frontend y smoke de contenido real en el WebView de
+macOS 11. Después retomar la ejecución controlada de CalculiX, sin incorporar todavía instalación
+en `/Applications` ni packaging de release.
