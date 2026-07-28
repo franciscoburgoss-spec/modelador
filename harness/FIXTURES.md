@@ -20,9 +20,9 @@ FX-001 y FX-002 cuentan como un solo caso para muros, OSB y fundaciones.
 
 | ID | Propósito | Requisitos | Estado |
 |---|---|---|---|
-| FX-003 | segunda vivienda independiente | planta distinta, muros X/Y, puertas/ventanas, tipos y perfiles 60/90 | Pendiente; `SPEC-003-A` |
-| FX-004 | persistencia moderna de cubierta | `modelVersion: 2`, biblioteca propia, perfiles 60/90, `roofPlanes` resolubles y roundtrip | Pendiente; `SPEC-003-A` |
-| FX-005 | migración mínima por versión | un archivo por cada versión histórica soportada | Pendiente |
+| FX-003 | segunda vivienda independiente | planta distinta, muros X/Y, puertas/ventanas, tipos y perfiles 60/90 | Verificado; `SPEC-003-A` |
+| FX-004 | persistencia moderna de cubierta | `modelVersion: 2`, biblioteca propia, perfiles 60/90, `roofPlanes` resolubles y roundtrip | Verificado; `SPEC-003-A` |
+| FX-005 | migración mínima por versión | un archivo por cada versión histórica soportada | Disponible y registrado |
 | FX-006 | importaciones hostiles | `{}`, truncado, futuro, payloads de fórmula, exceso de tamaño | Pendiente |
 | FX-007 | cálculo de referencia | INP pequeño con resultado CCX estable | Pendiente |
 
@@ -30,18 +30,35 @@ FX-003, FX-004 y FX-001 deben diferir byte a byte en `elements` y biblioteca ent
 se persiste la configuración de `roofPlanes`, no `supportLedgers`: las soleras son derivadas y el
 roundtrip debe reproducirlas semánticamente.
 
-## Ficha obligatoria
+## Manifiesto ejecutable
+
+`harness/fixtures.manifest.json` registra los ocho fixtures JSON actuales. La prueba
+`tests/fixtureManifest.test.mjs` descubre ambos directorios de fixtures, exige que no falte ninguno,
+recalcula sus SHA-256, ejecuta `prepareModelImport` y compara las invariantes declaradas.
+
+```bash
+node --test tests/fixtureManifest.test.mjs
+```
+
+FX-003 contiene seis muros resolubles, tres puertas, tres ventanas y bounding box
+`0,0 → 8000,6000`. FX-004 contiene cuatro muros, un faldón moderno, un sistema derivado, seis
+posiciones de cercha y dos ledgers de 5.940 mm reproducibles después del roundtrip.
+
+## Ficha obligatoria por entrada
 
 ```text
 id:
-archivo:
+file:
 sha256:
 modelVersion:
-origen:
-anonimización:
-requisitos cubiertos:
-invariantes esperados:
-salidas doradas:
+origin:
+anonymization:
+purpose:
+requirements:
+coverage:
+appliedMigrations:
+invariants:
+goldenOutputs:
 ```
 
 ## Invariantes mínimas

@@ -1,0 +1,251 @@
+{
+  "modelVersion": 2,
+  "grid": {
+    "xAxes": [
+      { "id": "FX4-X0", "position": 0, "label": "1" },
+      { "id": "FX4-X1", "position": 6000, "label": "2" }
+    ],
+    "yAxes": [
+      { "id": "FX4-Y0", "position": 0, "label": "A" },
+      { "id": "FX4-Y1", "position": 3200, "label": "B" }
+    ],
+    "zLevels": [
+      { "id": "FX4-Z0", "elevation": 0, "label": "Fundación" },
+      { "id": "FX4-Z-CIELO", "elevation": 2450, "label": "Cielo" },
+      { "id": "FX4-Z-CORONA", "elevation": 3600, "label": "Coronación" }
+    ]
+  },
+  "elements": [
+    {
+      "id": "FX4-W-CANALETA",
+      "type": "wall",
+      "name": "Apoyo bajo",
+      "direction": "x",
+      "xStart": "FX4-X0",
+      "xEnd": "FX4-X1",
+      "yStart": "FX4-Y0",
+      "yEnd": "FX4-Y0",
+      "bottomZ": "FX4-Z0",
+      "topZ": "FX4-Z-CORONA",
+      "thickness": 90,
+      "wallTypeId": "FX4-T90",
+      "openings": []
+    },
+    {
+      "id": "FX4-W-ALTO",
+      "type": "wall",
+      "name": "Apoyo alto",
+      "direction": "x",
+      "xStart": "FX4-X1",
+      "xEnd": "FX4-X0",
+      "yStart": "FX4-Y1",
+      "yEnd": "FX4-Y1",
+      "bottomZ": "FX4-Z0",
+      "topZ": "FX4-Z-CORONA",
+      "thickness": 90,
+      "wallTypeId": "FX4-T90",
+      "openings": []
+    },
+    {
+      "id": "FX4-W-LATERAL-OESTE",
+      "type": "wall",
+      "name": "Cierre oeste",
+      "direction": "y",
+      "xStart": "FX4-X0",
+      "xEnd": "FX4-X0",
+      "yStart": "FX4-Y0",
+      "yEnd": "FX4-Y1",
+      "bottomZ": "FX4-Z0",
+      "topZ": "FX4-Z-CORONA",
+      "thickness": 60,
+      "wallTypeId": "FX4-T60",
+      "openings": []
+    },
+    {
+      "id": "FX4-W-LATERAL-ESTE",
+      "type": "wall",
+      "name": "Cierre este",
+      "direction": "y",
+      "xStart": "FX4-X1",
+      "xEnd": "FX4-X1",
+      "yStart": "FX4-Y1",
+      "yEnd": "FX4-Y0",
+      "bottomZ": "FX4-Z0",
+      "topZ": "FX4-Z-CORONA",
+      "thickness": 60,
+      "wallTypeId": "FX4-T60",
+      "openings": []
+    }
+  ],
+  "library": {
+    "wallSections": [],
+    "columnSections": [],
+    "beamSections": [],
+    "openingTemplates": [],
+    "foundationSections": [],
+    "metalconProfiles": [
+      {
+        "id": "90CA085",
+        "code": "90CA085",
+        "catalogDesignation": "C 2x4x0,85",
+        "shape": "C",
+        "H": 90,
+        "B": 38,
+        "C": 12,
+        "e": 0.85
+      },
+      {
+        "id": "92C085",
+        "code": "92C085",
+        "catalogDesignation": "U 2x4x0,85",
+        "shape": "U",
+        "H": 92,
+        "B": 30,
+        "e": 0.85
+      },
+      {
+        "id": "60CA085",
+        "code": "60CA085",
+        "catalogDesignation": "C 2x3x0,85",
+        "shape": "C",
+        "H": 60,
+        "B": 38,
+        "C": 6,
+        "e": 0.85
+      },
+      {
+        "id": "62C085",
+        "code": "62C085",
+        "catalogDesignation": "U 2x3x0,85",
+        "shape": "U",
+        "H": 62,
+        "B": 25,
+        "e": 0.85
+      },
+      {
+        "id": "40CA085",
+        "code": "40CA085",
+        "catalogDesignation": "C 2x2x0,85",
+        "shape": "C",
+        "H": 40,
+        "B": 40,
+        "C": 6,
+        "e": 0.85
+      },
+      {
+        "id": "35OMA085",
+        "code": "35OMA085",
+        "catalogDesignation": "OMA 0,85",
+        "shape": "OMA",
+        "H": 35,
+        "B": 38,
+        "C": 15,
+        "D": 8,
+        "e": 0.85
+      }
+    ],
+    "materials": [],
+    "trussTemplates": [
+      {
+        "id": "FX4-TRUSS-90",
+        "name": "Cercha de referencia 90/60",
+        "source": "fixture",
+        "postSpacing": 600,
+        "diagonalPattern": "W",
+        "profiles": {
+          "topChord": "90CA085",
+          "bottomChord": "90CA085",
+          "post": "40CA085",
+          "diagonal": "60CA085"
+        },
+        "purlinProfile": "35OMA085",
+        "purlinSpacing": 600
+      }
+    ]
+  },
+  "projectParams": [],
+  "dimensions": [],
+  "wallTypes": [
+    {
+      "id": "FX4-T90",
+      "name": "Apoyo estructural 90",
+      "role": "MP1",
+      "metalconDefaults": {
+        "spacing": 600,
+        "studProfileId": "90CA085",
+        "trackProfileId": "92C085",
+        "materialId": null
+      },
+      "osbDefaults": {
+        "panelWidth": 1220,
+        "panelHeight": 2440,
+        "minPanelWidth": 200,
+        "gap": 5
+      }
+    },
+    {
+      "id": "FX4-T60",
+      "name": "Cierre liviano 60",
+      "role": "tabique",
+      "metalconDefaults": {
+        "spacing": 400,
+        "studProfileId": "60CA085",
+        "trackProfileId": "62C085",
+        "materialId": null
+      },
+      "osbDefaults": {
+        "panelWidth": 1200,
+        "panelHeight": 2400,
+        "minPanelWidth": 250,
+        "gap": 3
+      }
+    }
+  ],
+  "osbDefaults": {
+    "panelWidth": 1220,
+    "panelHeight": 2440,
+    "minPanelWidth": 200,
+    "gap": 5
+  },
+  "metalconDefaults": null,
+  "roofSystems": [],
+  "roofPlanes": [
+    {
+      "id": "FX4-RP-01",
+      "name": "Agua principal",
+      "canalWallId": "FX4-W-CANALETA",
+      "supportLevelId": "FX4-Z-CIELO",
+      "supportOffset": 100,
+      "crownClearance": 250,
+      "heelHeight": 200,
+      "gutterNotchWidth": 200,
+      "trussSpacing": 1200,
+      "chainOrigin": "start",
+      "shortSpanThreshold": 500,
+      "supportMode": "lateral",
+      "supportProfile": "90CA085",
+      "templateId": "FX4-TRUSS-90",
+      "postSpacing": 600,
+      "diagonalPattern": "W",
+      "profiles": {
+        "topChord": "90CA085",
+        "bottomChord": "90CA085",
+        "post": "40CA085",
+        "diagonal": "60CA085"
+      },
+      "purlinCommercialLength": 6000,
+      "purlinOverlap": 100,
+      "polygon": [
+        { "x": 0, "y": 0 },
+        { "x": 6000, "y": 0 },
+        { "x": 6000, "y": 3200 },
+        { "x": 0, "y": 3200 }
+      ]
+    }
+  ],
+  "currentZLevelId": "FX4-Z0",
+  "selectedElementId": null,
+  "selectedRoofSystemId": null,
+  "selectedRoofPlaneId": null,
+  "viewMode": "plan"
+}

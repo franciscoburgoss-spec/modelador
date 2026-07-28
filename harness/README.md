@@ -39,6 +39,12 @@ El conjunto de referencia de `SPEC-003` cubre JSON y CSV semánticos; planta y f
 framing, OSB y cerchas en R12/A3; e INP global, de cerchas y de fundaciones. Los smoke INP usan los
 IDs persistidos del fixture, sin renumerarlos para acomodar al solver.
 
+El manifiesto de fixtures ya es parte de `npm test`. Para comprobar únicamente esa frontera:
+
+```bash
+node --test tests/fixtureManifest.test.mjs
+```
+
 ## Evidencia
 
 Los resultados generados van a `artifacts/<commit>/<harness>/` y no se versionan. El cierre registra:

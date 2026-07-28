@@ -1,0 +1,270 @@
+{
+  "modelVersion": 2,
+  "grid": {
+    "xAxes": [
+      { "id": "FX3-X0", "position": 0, "label": "1" },
+      { "id": "FX3-X1", "position": 2400, "label": "2" },
+      { "id": "FX3-X2", "position": 5000, "label": "3" },
+      { "id": "FX3-X3", "position": 8000, "label": "4" }
+    ],
+    "yAxes": [
+      { "id": "FX3-Y0", "position": 0, "label": "A" },
+      { "id": "FX3-Y1", "position": 3000, "label": "B" },
+      { "id": "FX3-Y2", "position": 6000, "label": "C" }
+    ],
+    "zLevels": [
+      { "id": "FX3-Z0", "elevation": 0, "label": "Fundación" },
+      { "id": "FX3-Z1", "elevation": 2400, "label": "Cielo" },
+      { "id": "FX3-Z2", "elevation": 3300, "label": "Coronación" }
+    ]
+  },
+  "elements": [
+    {
+      "id": "FX3-W-SUR",
+      "type": "wall",
+      "name": "Fachada sur",
+      "direction": "x",
+      "xStart": "FX3-X0",
+      "xEnd": "FX3-X3",
+      "yStart": "FX3-Y0",
+      "yEnd": "FX3-Y0",
+      "bottomZ": "FX3-Z0",
+      "topZ": "FX3-Z2",
+      "thickness": 90,
+      "wallTypeId": "FX3-T90",
+      "openings": [
+        {
+          "id": "FX3-O-PUERTA-ACCESO",
+          "axisType": "x",
+          "type": "door",
+          "position": 1800,
+          "width": 900,
+          "height": 2100
+        },
+        {
+          "id": "FX3-O-VENTANA-ESTAR",
+          "axisType": "x",
+          "type": "window",
+          "position": 6100,
+          "width": 1400,
+          "height": 1100,
+          "sillHeight": 850
+        }
+      ]
+    },
+    {
+      "id": "FX3-W-ESTE",
+      "type": "wall",
+      "name": "Fachada este",
+      "direction": "y",
+      "xStart": "FX3-X3",
+      "xEnd": "FX3-X3",
+      "yStart": "FX3-Y0",
+      "yEnd": "FX3-Y2",
+      "bottomZ": "FX3-Z0",
+      "topZ": "FX3-Z2",
+      "thickness": 90,
+      "wallTypeId": "FX3-T90",
+      "openings": [
+        {
+          "id": "FX3-O-VENTANA-COCINA",
+          "axisType": "y",
+          "type": "window",
+          "position": 1800,
+          "width": 1200,
+          "height": 900,
+          "sillHeight": 1050
+        }
+      ]
+    },
+    {
+      "id": "FX3-W-NORTE",
+      "type": "wall",
+      "name": "Fachada norte",
+      "direction": "x",
+      "xStart": "FX3-X3",
+      "xEnd": "FX3-X0",
+      "yStart": "FX3-Y2",
+      "yEnd": "FX3-Y2",
+      "bottomZ": "FX3-Z0",
+      "topZ": "FX3-Z2",
+      "thickness": 90,
+      "wallTypeId": "FX3-T90",
+      "openings": [
+        {
+          "id": "FX3-O-VENTANA-DORMITORIO",
+          "axisType": "x",
+          "type": "window",
+          "position": 3600,
+          "width": 1500,
+          "height": 1100,
+          "sillHeight": 900
+        }
+      ]
+    },
+    {
+      "id": "FX3-W-OESTE",
+      "type": "wall",
+      "name": "Fachada oeste",
+      "direction": "y",
+      "xStart": "FX3-X0",
+      "xEnd": "FX3-X0",
+      "yStart": "FX3-Y2",
+      "yEnd": "FX3-Y0",
+      "bottomZ": "FX3-Z0",
+      "topZ": "FX3-Z2",
+      "thickness": 90,
+      "wallTypeId": "FX3-T90",
+      "openings": []
+    },
+    {
+      "id": "FX3-W-INTERIOR-X",
+      "type": "wall",
+      "name": "Tabique longitudinal",
+      "direction": "x",
+      "xStart": "FX3-X1",
+      "xEnd": "FX3-X3",
+      "yStart": "FX3-Y1",
+      "yEnd": "FX3-Y1",
+      "bottomZ": "FX3-Z0",
+      "topZ": "FX3-Z1",
+      "thickness": 60,
+      "wallTypeId": "FX3-T60",
+      "openings": [
+        {
+          "id": "FX3-O-PUERTA-COCINA",
+          "axisType": "x",
+          "type": "door",
+          "position": 6500,
+          "width": 800,
+          "height": 2050
+        }
+      ]
+    },
+    {
+      "id": "FX3-W-INTERIOR-Y",
+      "type": "wall",
+      "name": "Tabique transversal",
+      "direction": "y",
+      "xStart": "FX3-X1",
+      "xEnd": "FX3-X1",
+      "yStart": "FX3-Y0",
+      "yEnd": "FX3-Y2",
+      "bottomZ": "FX3-Z0",
+      "topZ": "FX3-Z1",
+      "thickness": 60,
+      "wallTypeId": "FX3-T60",
+      "openings": [
+        {
+          "id": "FX3-O-PUERTA-DORMITORIO",
+          "axisType": "y",
+          "type": "door",
+          "position": 4300,
+          "width": 800,
+          "height": 2050
+        }
+      ]
+    }
+  ],
+  "library": {
+    "wallSections": [],
+    "columnSections": [],
+    "beamSections": [],
+    "openingTemplates": [],
+    "foundationSections": [],
+    "metalconProfiles": [
+      {
+        "id": "FX3-C90",
+        "code": "90CA085",
+        "catalogDesignation": "C 2x4x0,85",
+        "shape": "C",
+        "H": 90,
+        "B": 38,
+        "C": 12,
+        "e": 0.85
+      },
+      {
+        "id": "FX3-U90",
+        "code": "92C085",
+        "catalogDesignation": "U 2x4x0,85",
+        "shape": "U",
+        "H": 92,
+        "B": 30,
+        "e": 0.85
+      },
+      {
+        "id": "FX3-C60",
+        "code": "60CA085",
+        "catalogDesignation": "C 2x3x0,85",
+        "shape": "C",
+        "H": 60,
+        "B": 38,
+        "C": 6,
+        "e": 0.85
+      },
+      {
+        "id": "FX3-U60",
+        "code": "62C085",
+        "catalogDesignation": "U 2x3x0,85",
+        "shape": "U",
+        "H": 62,
+        "B": 25,
+        "e": 0.85
+      }
+    ],
+    "materials": [],
+    "trussTemplates": []
+  },
+  "projectParams": [],
+  "dimensions": [],
+  "wallTypes": [
+    {
+      "id": "FX3-T90",
+      "name": "Exterior 90",
+      "role": "MP1",
+      "metalconDefaults": {
+        "spacing": 600,
+        "studProfileId": "FX3-C90",
+        "trackProfileId": "FX3-U90",
+        "materialId": null
+      },
+      "osbDefaults": {
+        "panelWidth": 1220,
+        "panelHeight": 2440,
+        "minPanelWidth": 200,
+        "gap": 5
+      }
+    },
+    {
+      "id": "FX3-T60",
+      "name": "Interior 60",
+      "role": "tabique",
+      "metalconDefaults": {
+        "spacing": 400,
+        "studProfileId": "FX3-C60",
+        "trackProfileId": "FX3-U60",
+        "materialId": null
+      },
+      "osbDefaults": {
+        "panelWidth": 1200,
+        "panelHeight": 2400,
+        "minPanelWidth": 250,
+        "gap": 3
+      }
+    }
+  ],
+  "osbDefaults": {
+    "panelWidth": 1220,
+    "panelHeight": 2440,
+    "minPanelWidth": 200,
+    "gap": 5
+  },
+  "metalconDefaults": null,
+  "roofSystems": [],
+  "roofPlanes": [],
+  "currentZLevelId": "FX3-Z0",
+  "selectedElementId": null,
+  "selectedRoofSystemId": null,
+  "selectedRoofPlaneId": null,
+  "viewMode": "plan"
+}

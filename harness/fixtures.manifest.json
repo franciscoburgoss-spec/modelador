@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "fixtures": [
+    {
+      "id": "FX-001",
+      "file": "tests/fixtures/casa-L.json",
+      "sha256": "94c801d33a76cd4560011e7c1e3fbd3940e944934c2f986f78f61018adaaeafc",
+      "modelVersion": 0,
+      "origin": "modelo de usuario anonimizado",
+      "anonymization": "identificadores técnicos preservados; metadatos personales ausentes",
+      "purpose": "baseline legacy de vivienda, muros, vanos, fundaciones y roofSystems",
+      "requirements": ["REQ-DATA-003", "REQ-DER-001"],
+      "coverage": ["muros", "vanos", "fundaciones", "roofSystems legacy"],
+      "appliedMigrations": ["0->1", "1->2"],
+      "invariants": {
+        "elementCount": 49,
+        "elementTypes": { "wall": 45, "foundation": 4 },
+        "axisCounts": { "x": 18, "y": 17, "z": 6 },
+        "wallTypeCount": 0,
+        "roofSystemCount": 2,
+        "roofPlaneCount": 0,
+        "openingCounts": { "door": 32, "window": 11 },
+        "resolvableWallCount": 45,
+        "bounds": { "minX": 0, "minY": 0, "maxX": 29300, "maxY": 18750 }
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-002",
+      "file": "lab/roofPlane/fixtures/modelo-26.json",
+      "sha256": "54799be85e76c472ff10de216403118620853e074e6871abeb7a61b19e3b9ba9",
+      "modelVersion": 0,
+      "origin": "derivado legacy de FX-001",
+      "anonymization": "misma geometría anonimizada de FX-001",
+      "purpose": "baseline legacy de 19 roofSystems; no cuenta como segundo caso geométrico",
+      "requirements": ["REQ-DATA-003"],
+      "coverage": ["roofSystems legacy", "compatibilidad de techumbre"],
+      "appliedMigrations": ["0->1", "1->2"],
+      "invariants": {
+        "elementCount": 49,
+        "elementTypes": { "wall": 45, "foundation": 4 },
+        "axisCounts": { "x": 18, "y": 17, "z": 6 },
+        "wallTypeCount": 0,
+        "roofSystemCount": 19,
+        "roofPlaneCount": 0,
+        "openingCounts": { "door": 32, "window": 11 },
+        "resolvableWallCount": 45,
+        "bounds": { "minX": 0, "minY": 0, "maxX": 29300, "maxY": 18750 }
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-003",
+      "file": "tests/fixtures/fx-003-vivienda-independiente.json",
+      "sha256": "82edce82b7b65c0d465f12d0cfa626042d7ec715d1ced1840ae7f4d6c925dfcc",
+      "modelVersion": 2,
+      "origin": "sintético",
+      "anonymization": "no aplica; geometría creada para el arnés",
+      "purpose": "segunda vivienda independiente con vanos y familias 60/90",
+      "requirements": ["REQ-TST-001"],
+      "coverage": ["muros X/Y", "puertas", "ventanas", "wallTypes", "perfiles 60/90"],
+      "appliedMigrations": [],
+      "invariants": {
+        "elementCount": 6,
+        "elementTypes": { "wall": 6 },
+        "axisCounts": { "x": 4, "y": 3, "z": 3 },
+        "wallTypeCount": 2,
+        "roofSystemCount": 0,
+        "roofPlaneCount": 0,
+        "openingCounts": { "door": 3, "window": 3 },
+        "resolvableWallCount": 6,
+        "bounds": { "minX": 0, "minY": 0, "maxX": 8000, "maxY": 6000 }
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-004",
+      "file": "tests/fixtures/fx-004-cubierta-moderna.json",
+      "sha256": "d527a44145af7960a81f49e0fe61893d3729ab7e223a88c80ac810f36b0286a3",
+      "modelVersion": 2,
+      "origin": "sintético",
+      "anonymization": "no aplica; geometría creada para el arnés",
+      "purpose": "persistencia moderna de roofPlanes y regeneración de ledgers",
+      "requirements": ["REQ-TST-002"],
+      "coverage": ["roofPlanes", "wallTypes", "perfiles 60/90", "ledgers derivados", "roundtrip"],
+      "appliedMigrations": [],
+      "invariants": {
+        "elementCount": 4,
+        "elementTypes": { "wall": 4 },
+        "axisCounts": { "x": 2, "y": 2, "z": 3 },
+        "wallTypeCount": 2,
+        "roofSystemCount": 0,
+        "roofPlaneCount": 1,
+        "openingCounts": {},
+        "resolvableWallCount": 4,
+        "bounds": { "minX": 0, "minY": 0, "maxX": 6000, "maxY": 3200 }
+      },
+      "derived": {
+        "roofSystemCount": 1,
+        "ledgerCount": 2
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-005-V0",
+      "file": "tests/fixtures/model-v0.json",
+      "sha256": "ff0525313ebadab5612c335bef37e991e02ed39fb37cb169a56afab1414a02ba",
+      "modelVersion": 0,
+      "origin": "sintético",
+      "anonymization": "no aplica",
+      "purpose": "migración mínima desde el modelo legacy sin versión declarada",
+      "requirements": ["REQ-DATA-002"],
+      "coverage": ["migración 0->1->2"],
+      "appliedMigrations": ["0->1", "1->2"],
+      "invariants": {
+        "elementCount": 1,
+        "elementTypes": { "wall": 1 },
+        "axisCounts": { "x": 1, "y": 0, "z": 0 },
+        "wallTypeCount": 0,
+        "roofSystemCount": 1,
+        "roofPlaneCount": 0,
+        "openingCounts": {},
+        "resolvableWallCount": 0,
+        "bounds": null
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-005-V1-ROOF",
+      "file": "tests/fixtures/model-v1-dual-roof.json",
+      "sha256": "d6a2aea90d2642f0ddd19ee5457273101f8e1add19c1c40d0d60fc19d5e456c7",
+      "modelVersion": 1,
+      "origin": "sintético",
+      "anonymization": "no aplica",
+      "purpose": "migración v1 y preservación simultánea de roofSystems/roofPlanes",
+      "requirements": ["REQ-DATA-002", "REQ-DATA-003"],
+      "coverage": ["migración 1->2", "precedencia de fuente de techumbre"],
+      "appliedMigrations": ["1->2"],
+      "invariants": {
+        "elementCount": 0,
+        "elementTypes": {},
+        "axisCounts": { "x": 0, "y": 0, "z": 0 },
+        "wallTypeCount": 0,
+        "roofSystemCount": 1,
+        "roofPlaneCount": 1,
+        "openingCounts": {},
+        "resolvableWallCount": 0,
+        "bounds": null
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-005-V1-WALL",
+      "file": "tests/fixtures/model-v1-wall-defaults.json",
+      "sha256": "a4750c87408929a321fc931f80f8f2d99ac6f83186683851cda026e54db60c00",
+      "modelVersion": 1,
+      "origin": "sintético",
+      "anonymization": "no aplica",
+      "purpose": "migración v1 de defaults y overrides de muro sin inferir roles",
+      "requirements": ["REQ-DATA-002"],
+      "coverage": ["migración 1->2", "defaults legacy", "overrides legacy"],
+      "appliedMigrations": ["1->2"],
+      "invariants": {
+        "elementCount": 2,
+        "elementTypes": { "wall": 2 },
+        "axisCounts": { "x": 0, "y": 0, "z": 0 },
+        "wallTypeCount": 0,
+        "roofSystemCount": 0,
+        "roofPlaneCount": 0,
+        "openingCounts": {},
+        "resolvableWallCount": 0,
+        "bounds": null
+      },
+      "goldenOutputs": []
+    },
+    {
+      "id": "FX-R6-001",
+      "file": "tests/fixtures/r6-wall-junctions.json",
+      "sha256": "76779777e0a9df2f86eb4e2dc90efe63a0dcd1ca8c91d87a02b092d3c8e3d8e4",
+      "modelVersion": 0,
+      "origin": "sintético",
+      "anonymization": "no aplica",
+      "purpose": "topología mínima de encuentros de muro R6",
+      "requirements": ["REQ-DOM-002"],
+      "coverage": ["muros invertidos", "encuentro T", "vano", "topología"],
+      "appliedMigrations": ["0->1", "1->2"],
+      "invariants": {
+        "elementCount": 4,
+        "elementTypes": { "wall": 4 },
+        "axisCounts": { "x": 3, "y": 4, "z": 2 },
+        "wallTypeCount": 0,
+        "roofSystemCount": 0,
+        "roofPlaneCount": 0,
+        "openingCounts": { "window": 1 },
+        "resolvableWallCount": 4,
+        "bounds": { "minX": 0, "minY": 0, "maxX": 4000, "maxY": 6000 }
+      },
+      "goldenOutputs": []
+    }
+  ]
+}
