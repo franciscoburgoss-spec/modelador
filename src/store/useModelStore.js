@@ -570,9 +570,31 @@ export const useModelStore = create((set, get) => ({
       elements: nextElements
     }, 'library'));
   }),
-  removeLibraryItem: (key, id) => set((s) => withHistory(s, invalidateForMutation({
-    ...s.model, library: { ...s.model.library, [key]: s.model.library[key].filter(i => i.id !== id) }
-  }, 'library'))),
+  removeLibraryItem: (key, id) => {
+    if (key === 'metalconProfiles') {
+      const wallTypeIds = (get().model.wallTypes || [])
+        .filter((wallType) => (
+          String(wallType.metalconDefaults?.studProfileId) === String(id)
+          || String(wallType.metalconDefaults?.trackProfileId) === String(id)
+        ))
+        .map((wallType) => wallType.id);
+      if (wallTypeIds.length > 0) {
+        return {
+          ok: false,
+          error: `El perfil ${id} está referenciado por ${wallTypeIds.length} tipo(s) de muro.`,
+          wallTypeIds
+        };
+      }
+    }
+    set((s) => withHistory(s, invalidateForMutation({
+      ...s.model,
+      library: {
+        ...s.model.library,
+        [key]: s.model.library[key].filter((item) => item.id !== id)
+      }
+    }, 'library')));
+    return { ok: true, key, id };
+  },
   // ★ Carga (una vez) el catálogo de perfiles Metalcon Cintac en library.metalconProfiles.
   // No duplica: si un `code` ya existe en la librería, se omite. Un solo paso de historial.
   loadMetalconCatalog: () => set((s) => {
@@ -1113,8 +1135,18 @@ export const useModelStore = create((set, get) => ({
     URL.revokeObjectURL(url);
     return true;
   },
-  importModelFromFile: (file) => {
-    const reader = new FileReader();
+  importModelFromFile: (file, environment = {}) => {
+    const FileReaderCtor = environment.FileReader ?? globalThis.FileReader;
+    if (typeof FileReaderCtor !== 'function') {
+      return importErrorResult(
+        set,
+        new ModelImportError(
+          'FILE_READER_UNAVAILABLE',
+          'El entorno no permite leer el archivo seleccionado.'
+        )
+      );
+    }
+    const reader = new FileReaderCtor();
     reader.onload = (ev) => {
       get().importModelText(String(ev.target.result));
     };
@@ -1122,6 +1154,11 @@ export const useModelStore = create((set, get) => ({
       set,
       new ModelImportError('FILE_READ_FAILED', 'No se pudo leer el archivo seleccionado.')
     );
-    reader.readAsText(file);
+    try {
+      reader.readAsText(file);
+    } catch (error) {
+      return importErrorResult(set, error);
+    }
+    return { ok: true };
   }
 }));

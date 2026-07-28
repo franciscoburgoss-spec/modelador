@@ -198,7 +198,7 @@ export default function MenuBar({ onOpenModal, canvasSize }) {
         <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={() => { if (confirm('¿Crear un modelo nuevo? Se perderá lo no guardado.')) newModel(); }}>Nuevo modelo</Item>
         <Item onClick={saveModel}>Guardar</Item>
-        <Item onClick={loadModel}>Cargar</Item>
+        <Item onClick={() => loadModel()}>Cargar</Item>
         <Item onClick={exportModelToFile}>Exportar JSON…</Item>
         <Item onClick={() => fileInputRef.current?.click()}>Importar JSON…</Item>
         <div className="border-t border-[#e4e4e0] my-1" />

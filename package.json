@@ -9,11 +9,12 @@
   "packageManager": "npm@10.9.8",
   "scripts": {
     "dev": "vite",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/*.test.mjs && npm run test:components",
+    "test:components": "node --import tsx --test tests/*.component.test.jsx",
     "test:lab": "node --test lab/roofPlane/tests/*.test.mjs",
     "test:coverage": "npm run test:coverage:core && npm run test:coverage:store",
     "test:coverage:core": "node --test --experimental-test-coverage --test-coverage-include='src/core/**/*.js' --test-coverage-lines=90 tests/*.test.mjs",
-    "test:coverage:store": "node --test --experimental-test-coverage --test-coverage-include='src/store/**/*.js' --test-coverage-lines=50 tests/*.test.mjs",
+    "test:coverage:store": "node --test --experimental-test-coverage --test-coverage-include='src/store/**/*.js' --test-coverage-lines=85 tests/*.test.mjs",
     "lint": "eslint . --max-warnings=0",
     "format:check": "node scripts/check-format.mjs",
     "build": "vite build",
@@ -36,13 +37,17 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/react": "16.3.2",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.5.3",
     "eslint": "9.39.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
+    "jsdom": "29.1.1",
     "postcss": "^8.5.19",
     "tailwindcss": "^3.4.19",
+    "tsx": "4.19.4",
     "vite": "^5.4.0"
   }
 }
