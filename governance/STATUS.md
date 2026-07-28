@@ -9,9 +9,9 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — preparar R8 |
+| Etapa | Reglas de dominio — ejecutar R8-A |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna en implementación; próxima spec se redacta desde R8 del roadmap |
+| Spec activa | `specs/domain/SPEC-R8-report-markdown.md`, corte A |
 | Suite oficial | 684/684; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 690,96 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
@@ -20,7 +20,7 @@
 | DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno para redactar R8; la capacidad verificada seguirá en cero mientras existan condiciones constructivas no modeladas |
+| Bloqueo actual | Ninguno para R8-A; la cobertura legacy no instrumentada debe declararse, no completarse fuera de alcance |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -85,7 +85,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `verified`/`conditional`/`excluded`, individualiza catorce condiciones, mantiene cuatro como
   `unknown`, calcula 417 kgf/m sólo como capacidad condicionada y deja cero capacidad verificada.
   Los totales y findings por dirección nunca mezclan capacidad condicionada con verificada.
-- R8: pendiente de spec desde `domain/ROADMAP-R1-R8.md`; no se modifica código antes de aprobarla.
+- R8: spec aprobada en tres cortes. A fija snapshot/renderer/cobertura; B integra descarga y
+  pantalla; C agrega criterios de catálogo a `NOTAS GENERALES` con auditoría DXF.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
@@ -107,6 +108,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Redactar la spec R8 desde `domain/ROADMAP-R1-R8.md`: informe markdown, cobertura explícita y
-criterios filtrados por roles. Confirmar diagnóstico, formato, exclusiones y aceptación antes de
-modificar código.
+Implementar `SPEC-R8-report-markdown.md`, corte A: metadata de catálogo, snapshot compartido,
+cobertura/criterios y renderer markdown puro. No integrar UI ni modificar DXF en ese corte.
