@@ -9,9 +9,9 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — preparar checks R7 |
+| Etapa | Reglas de dominio — ejecutar R7-A |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; el siguiente trabajo debe redactar y aprobar `SPEC-R7-checks.md` |
+| Spec activa | `specs/domain/SPEC-R7-checks.md`, corte A |
 | Suite oficial | 657/657; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 671,56 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
@@ -20,7 +20,7 @@
 | DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | R7 no puede implementarse hasta emitir una spec con diagnóstico y aceptación verificable |
+| Bloqueo actual | Ninguno para R7-A; la capacidad verificada seguirá en cero mientras existan condiciones constructivas no modeladas |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -71,9 +71,11 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   invalida framing+OSB globalmente sin ampliar cerchas ajenas. OSB aplica la media cara firmada
   sólo en L: 408 piezas, 284 placas de compra y 845,4112 m²; 16 muros se prolongan y 18 se
   retranquean hasta −50,5/+50,6 mm, sin cambiar el largo estructural.
-- R7–R8: pendientes según `domain/ROADMAP-R1-R8.md`.
-- R7 debe decidir el tratamiento constructivo de las 6 piezas de cadeneta menores a 30 mm
-  detectadas en `casa-L`; R3-A no inventa una regla de absorción.
+- R7: spec activa en tres cortes. A cubre checks de muro; B cruza techumbre y hace visible
+  `MIN_TRAMO`; C separa capacidad verificada, condicionada y excluida por dirección.
+- Las 6 piezas de cadeneta menores a 30 mm de `casa-L` se harán visibles en R7-A, pero no se
+  absorberán ni eliminarán sin un detalle constructivo aprobado.
+- R8: pendiente según `domain/ROADMAP-R1-R8.md`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
@@ -95,6 +97,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Redactar `SPEC-R7-checks.md` desde el roadmap, resolviendo explícitamente alcance y aceptación de
-montante–jamba, holgura de manilla, apoyo de cercha en dintel, descarte `MIN_TRAMO`, largo MP2/MP3
-y capacidad de corte. No modificar código R7 antes de aprobar esa spec.
+Implementar `SPEC-R7-checks.md`, corte A: catálogo R7, cobertura pura, montante–jamba/paso,
+normalización conservadora, cadeneta corta, holgura contra cara perpendicular y largo MP2/MP3.
