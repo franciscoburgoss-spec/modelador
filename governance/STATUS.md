@@ -11,7 +11,7 @@
 |---|---|
 | Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-004-native-runtime-persistence.md` |
+| Spec activa | `specs/SPEC-004-D-native-autosave-recovery.md` |
 | Suite oficial | 759/759 Node; 12/12 componentes; 4/4 Rust; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 721,29 kB |
 | Cobertura | core 93,71 %; store 96,91 % (gates 90 % / 85 %) |
@@ -193,6 +193,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Diagnosticar y formalizar `SPEC-004-D` como corte de autosave y recuperación nativos, incluida la
-migración controlada desde `localStorage`. No incorporar todavía CalculiX, instalación en
+Implementar `SPEC-004-D`: autosave y recuperación nativos con marcador de crash, más migración
+controlada desde el `localStorage` accesible. No incorporar todavía CalculiX, instalación en
 `/Applications` ni packaging de release.
