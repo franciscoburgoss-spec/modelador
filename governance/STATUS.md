@@ -12,10 +12,10 @@
 | Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `specs/SPEC-004-native-runtime-persistence.md` |
-| Suite oficial | 750/750 Node; 12/12 componentes; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 719,32 kB |
-| Cobertura | core 93,67 %; store 96,98 % (gates 90 % / 85 %) |
-| Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
+| Suite oficial | 759/759 Node; 12/12 componentes; 4/4 Rust; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 721,29 kB |
+| Cobertura | core 93,71 %; store 96,91 % (gates 90 % / 85 %) |
+| Toolchain de verificación | Node 22.23.1; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
@@ -160,7 +160,14 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   atómico, recientes y seguridad estática compilan y pasan 4 Rust + 11 JS; Tauri 2.11.5/Wry 0.55.1
   aborta en macOS 11 antes de crear ventana al registrar un método WebKit disponible desde macOS
   12. D-040 exige Tauri 2.0.2/runtimes 2.0.1/Wry 0.44.1 y smoke real; Wry 0.48.1
-      también reprodujo el panic y descartó el primer candidato de C1.
+  también reprodujo el panic y descartó el primer candidato de C1.
+- SPEC-004-C1: cerrado. El shell conserva seis comandos estrechos, capability exclusiva de
+  `main`, CSP local y filesystem Rust autorizado con escritura atómica, backups y recientes.
+  `Cargo.lock` fija Tauri 2.0.2, ambos runtimes 2.0.1 y Wry 0.44.1 como única versión; la ventana
+  permaneció viva más de 15 segundos en macOS 11.7.11 x86_64 sin panic. La puerta local pasó
+  759 Node, 12 componentes, 4 Rust, 35 lab, DXF 0/0 y CCX 3/3; el E2E externo
+  [30396039167](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30396039167)
+  pasó 1/1 sobre `59bf6e67d2a5`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -180,9 +187,12 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 - GitHub Actions advierte que `checkout`, `setup-node` y `upload-artifact` v4 aún declaran runtime
   Node 20 y los fuerza a Node 24. El E2E permanece verde y la aplicación conserva Node 22; actualizar
   las acciones oficiales requiere un corte explícito de herramientas bajo R-011 antes del release.
+- La línea Tauri compatible con macOS 11 arrastra `block` 0.1.6, que Rust 1.97.1 marca como
+  incompatible con una versión futura del compilador. D-040 bloquea actualizaciones sin smoke real;
+  renovar runtime o toolchain exige resolver juntos R-009 y este aviso.
 
 ## Próximo cierre
 
-Implementar `SPEC-004-C1` para mantener el shell y sus contratos con la línea Tauri 2 compatible
-con macOS 11, y cerrar sólo después de un smoke nativo real. No incorporar todavía autosave,
-CalculiX, instalación en `/Applications` ni packaging de release.
+Diagnosticar y formalizar `SPEC-004-D` como corte de autosave y recuperación nativos, incluida la
+migración controlada desde `localStorage`. No incorporar todavía CalculiX, instalación en
+`/Applications` ni packaging de release.
