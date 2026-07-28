@@ -31,11 +31,13 @@ npm run audit:dxf
 npm run smoke:ccx
 npm run build
 npm run validate
+npm run test:e2e
 ```
 
 Los goldens y `audit:dxf` se incorporaron en `SPEC-003-B`; `smoke:ccx` se incorporó en
 `SPEC-003-C2`; las pruebas de componentes con DOM se incorporaron en `SPEC-003-D` y también forman
-parte de `npm test`. Antes de la primera auditoría se ejecuta
+parte de `npm test`. `SPEC-003-E` consolidó todos esos gates en `npm run validate`; `test:e2e`
+permanece externo por D-014. Antes de la primera auditoría se ejecuta
 `npm run setup:verification-python`. Ningún comando de validación abre interfaces, modifica
 fixtures ni depende de rutas personales.
 
@@ -79,4 +81,6 @@ Los resultados generados van a `artifacts/<commit>/<harness>/` y no se versionan
 
 El Mac objetivo debe ejecutar toda validación salvo E2E Playwright actual. Ese E2E se registra por el
 mismo commit desde CI u otro equipo soportado. La ausencia de CI no habilita una versión obsoleta del
-browser harness como sustituto silencioso.
+browser harness como sustituto silencioso. El workflow externo usa permisos de sólo lectura y
+publica `playwright-<sha>` con reportes JSON/HTML; la evidencia de SPEC-003-E es la
+[ejecución 30377254715](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30377254715).

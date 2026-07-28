@@ -9,13 +9,13 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Arnés de verificación — `SPEC-003-E` integración y E2E externo |
+| Etapa | Persistencia nativa y runtime — preparación de `SPEC-004` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/SPEC-003-verification-harness.md`, corte E |
-| Suite oficial | 730/730 Node; 4/4 componentes; laboratorio 35/35 |
+| Spec activa | `specs/SPEC-004-native-runtime-persistence.md` |
+| Suite oficial | 732/732 Node; 4/4 componentes; laboratorio 35/35 |
 | Build | OK, con warning medido de chunk inicial de 703,69 kB |
 | Cobertura | core 93,55 %; store 97,85 % (gates 90 % / 85 %) |
-| Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23 disponible |
+| Toolchain de verificación | Node 22.23.1; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
@@ -24,7 +24,7 @@
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Evidencia Playwright externa pendiente para cerrar SPEC-003-E |
+| Bloqueo actual | Ninguno; `SPEC-003` cerrada y `SPEC-004` habilitada |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -50,7 +50,7 @@
 | 0 | Repositorio y entorno reproducibles | Completada |
 | 1 | Seguridad, integridad e invalidación | Completada |
 | 2 | Reglas de dominio R3–R8 y formatos | En ejecución |
-| 3 | Persistencia y recuperación nativas | No iniciada |
+| 3 | Persistencia y recuperación nativas | En ejecución |
 | 4 | Aplicación Tauri y CalculiX integrado | No iniciada |
 | 5 | UX, rendimiento y observabilidad local | No iniciada |
 | 6 | Release `v1.0.0-local` | No iniciada |
@@ -134,6 +134,11 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   Cuatro pruebas con DOM cubren importación fallida visible, exportación stale bloqueada,
   carga persistida desde el menú y revisión/descarga. El store alcanza 97,85 % con gate de 85 %;
   core conserva 93,55 %. Eliminar un perfil Metalcon referenciado se bloquea explícitamente.
+- SPEC-003-E: cerrado. `npm run validate` ejecuta una sola vez todos los gates locales, incluidos
+  18 goldens, nueve DXF de ocho familias con auditoría 0/0 y tres jobs CalculiX con 1.486 nodos /
+  8.649 valores finitos. Playwright 1.62.0 ejecutó externamente el flujo crítico de revisión y
+  descarga sobre `11962f3b114cd0a60262f0f21ae4a156a20855ed`: 1/1 esperado, sin reintentos, y
+  publicó reporte JSON/HTML identificado por ese mismo SHA.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -153,6 +158,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Implementar el corte E de `SPEC-003`: incorporar goldens, auditoría DXF y smoke CCX a la puerta
-local única, consolidar reportes/trazabilidad por commit y registrar Playwright actual externamente
-sobre el mismo commit. No incorporar persistencia nativa, packaging ni release.
+Definir e implementar un primer corte cerrable de `SPEC-004` para el contrato puro de persistencia
+y sus pruebas de filesystem temporal. No incorporar todavía packaging, instalación ni bundling de
+CalculiX.

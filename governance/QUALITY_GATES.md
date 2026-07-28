@@ -20,8 +20,10 @@ La fase 0 debe proporcionar:
 npm run validate
 ```
 
-Su contrato mínimo será `format:check`, `lint`, tests, coverage con umbrales, build y validadores de
-artefactos que no requieran interacción.
+Su contrato incluye `format:check`, `lint`, suite Node/componentes/laboratorio, coverage con
+umbrales, goldens, auditoría DXF, smoke CalculiX, build, validadores de migración/artefactos/derivados
+y gobernanza. No abre GUI ni actualiza autoridades. Playwright actual es el único gate externo:
+Actions lo ejecuta en Chromium soportado y publica JSON/HTML identificado por el SHA.
 
 ## Pruebas por riesgo
 
@@ -39,4 +41,3 @@ artefactos que no requieran interacción.
 Un cambio está terminado cuando el código, pruebas, documentación y evidencia están en el mismo
 commit; no quedan logs accidentales; los mensajes de error son visibles; no hay supresiones sin
 justificación; y la reversión de cada fix crítico hace fallar su prueba.
-

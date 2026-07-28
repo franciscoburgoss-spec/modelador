@@ -7,7 +7,7 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-ENV-001 | Build con Node 22 fijado y dependencias reproducibles | R-011 | D-003/D-004 | SPEC-000 | `docs/DEVELOPMENT.md` + clean install | G1 | Verificado |
 | REQ-GOV-001 | Estado, decisiones, riesgos y specs validados | R-011 | D-015 | SPEC-000 | `make governance` + cierre SPEC-000 | G0 | Verificado |
 | REQ-MIG-001 | Fuentes y fixtures se migran sin pérdida ni artefactos | R-014 | D-015 | SPEC-000 | `MIGRATION_MANIFEST.json` + comparación con origen | G1 | Verificado |
-| REQ-TST-000 | Existe una puerta única de tests, cobertura, lint y build | R-011/R-015 | D-003/D-016 | SPEC-000 | `npm run validate` + cierre SPEC-000 | G1 | Verificado |
+| REQ-TST-000 | Existe una puerta única de tests, cobertura, lint, artefactos, solver y build | R-011/R-015 | D-003/D-016/D-036 | SPEC-000/003-E | `npm run validate` en `11962f3`: 732 Node, 4 componentes, 35 lab, 18 goldens, DXF 0/0, CCX 3/3 y build | G1/G4/G5 | Verificado |
 | REQ-SEC-001 | Ninguna fórmula puede ejecutar JavaScript | R-001 | D-005 | SPEC-001 | corpus adversario + 92 fórmulas de fixtures + reversión | G2 | Verificado |
 | REQ-DATA-001 | Modelo inválido no modifica el estado activo | R-002 | D-006 | SPEC-001 | `{}`, JSON truncado y versión futura transaccionales | G2 | Verificado |
 | REQ-DATA-002 | Modelos declaran versión y migran secuencialmente | R-002 | D-006 | SPEC-001 | fixtures v0/v1 + idempotencia | G2 | Verificado |
@@ -20,8 +20,9 @@ Estados: `Pendiente`, `En curso`, `Verificado`, `Aceptado`.
 | REQ-TST-001 | Existe fixture con planta y perfiles distintos | R-006 | D-030 | SPEC-003-A | `fixtures.manifest.json` + `fixtureManifest.test.mjs`: FX-003 independiente, X/Y, 3 puertas, 3 ventanas y perfiles 60/90 | G4 | Verificado |
 | REQ-TST-002 | Existe fixture guardado con `roofPlanes` | R-006 | D-007/D-030 | SPEC-003-A | FX-004 v2: roundtrip preserva faldón y reproduce 1 sistema / 2 ledgers derivados | G4 | Verificado |
 | REQ-TST-003 | Store y componentes críticos tienen contratos conductuales y gates 90/85 | R-012/R-015 | D-034/D-035 | SPEC-003-D | `storeContracts.test.mjs` 7/7; `criticalWorkflows.component.test.jsx` 4/4; core 93,55 %; store 97,85 %; cierre SPEC-003-D | G4 | Verificado |
-| REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | D-030 | SPEC-003-B | `artifactGoldens.test.mjs` + `artifacts/<commit>/audit-dxf.json`: 8 familias, 9 archivos, 0 errores / 0 reparaciones con ezdxf 1.4.4 | G4 | Verificado |
-| REQ-CCX-001 | INP de referencia ejecuta y converge en CCX | R-007 | D-011/D-030/D-031/D-032/D-033 | SPEC-003-C0/C2/004 | `artifacts/5ad8a22e0f64/smoke-ccx.json`: CCX 2.23, 3/3 jobs, 1.486 nodos, 8.649 valores finitos; parser y warnings contractuales en tests C2 | G5 | Verificado |
+| REQ-TST-004 | La puerta local es completa y Playwright actual registra el flujo crítico sobre el mismo commit | R-011/R-012 | D-014/D-030/D-036 | SPEC-003-E | `verificationPipeline.test.mjs` 2/2; [Actions 30377254715](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30377254715): SHA `11962f3`, 1/1 esperado; artefacto `playwright-11962f3b114cd0a60262f0f21ae4a156a20855ed` | G4/G5 | Verificado |
+| REQ-DXF-001 | Todo DXF generado tiene auditoría 0/0 | R-005 | D-030/D-036 | SPEC-003-B/E | `artifactGoldens.test.mjs` + `artifacts/11962f3b114c/audit-dxf.json`: 8 familias, 9 archivos, 0 errores / 0 reparaciones con ezdxf 1.4.4 | G4 | Verificado |
+| REQ-CCX-001 | INP de referencia ejecuta y converge en CCX | R-007 | D-011/D-030/D-031/D-032/D-033/D-036 | SPEC-003-C0/C2/004 | `artifacts/11962f3b114c/smoke-ccx.json`: CCX 2.23, 3/3 jobs, 1.486 nodos, 8.649 valores finitos; parser y warnings contractuales en tests C2 | G5 | Verificado |
 | REQ-FS-001 | Guardado es atómico y recuperable | R-004 | D-010 | SPEC-004 | kill test + comparación | G6 | Pendiente |
 | REQ-FS-002 | Existen diez backups y autosave separado | R-004 | D-010 | SPEC-004 | rotación y recovery test | G6 | Pendiente |
 | REQ-APP-001 | La app abre desde `/Applications` sin Terminal | R-008 | D-002/D-013 | SPEC-004 | smoke instalado | G6 | Pendiente |
