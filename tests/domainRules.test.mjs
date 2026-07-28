@@ -2,6 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   DOMAIN_RULES,
+  REPORT_SECTIONS,
+  SHEET_VARIANTS,
   assertValidDomainRules,
   getDomainRule,
   ruleAppliesToRole,
@@ -98,12 +100,34 @@ test('R4-A: catálogo, reglas, fuentes y dependencias son inmutables', () => {
   assert.equal(Object.isFrozen(manual.fuente), true);
   assert.equal(Object.isFrozen(derived.dependsOn), true);
   assert.equal(Object.isFrozen(derived.aplicaA), true);
+  assert.equal(Object.isFrozen(manual.sheetVariants), true);
   assert.throws(() => {
     manual.titulo = 'mutado';
   }, TypeError);
   assert.throws(() => {
     derived.dependsOn.push('otra.regla.falsa');
   }, TypeError);
+});
+
+test('R8-A: cada regla declara sección de informe y variantes de lámina válidas', () => {
+  assert.deepEqual(REPORT_SECTIONS, ['Muros', 'OSB', 'Techumbre', 'Modelo']);
+  assert.deepEqual(SHEET_VARIANTS, ['framing', 'osb', 'truss', 'foundations']);
+  assert.deepEqual(
+    Object.fromEntries(Object.entries(DOMAIN_RULES).map(([id, rule]) => [
+      id,
+      [rule.reportSection, rule.sheetVariants]
+    ])),
+    {
+      'osb.tornillo.borde': ['OSB', ['osb']],
+      'osb.cadeneta.ala': ['OSB', ['osb']],
+      'muro.vano.holguraManilla': ['Muros', ['framing']],
+      'muro.montante.paso': ['Muros', ['framing']],
+      'muro.jamba.distanciaMontante': ['Muros', ['framing']],
+      'muro.dintel.llegadaCercha': ['Techumbre', ['truss']],
+      'muro.panel.largo': ['Muros', ['framing']],
+      'muro.corte.capacidadOsb': ['OSB', ['osb']]
+    }
+  );
 });
 
 test('R5-A: aplicaA es explícito y no hereda reglas entre roles', () => {
@@ -171,6 +195,8 @@ test('R4-A: el catálogo rechaza ids, taxonomías, fuentes y dependencias invál
       origen: 'manual',
       severity: 'error',
       unidad: 'mm',
+      reportSection: 'Modelo',
+      sheetVariants: [],
       fuente: {
         doc: 'Documento',
         ed: '1',
@@ -222,6 +248,26 @@ test('R4-A: el catálogo rechaza ids, taxonomías, fuentes y dependencias invál
       }
     }),
     /aplicaA/i
+  );
+  assert.throws(
+    () => assertValidDomainRules({
+      ...valid,
+      'dominio.pieza.propiedad': {
+        ...valid['dominio.pieza.propiedad'],
+        reportSection: 'Estructura'
+      }
+    }),
+    /reportSection/i
+  );
+  assert.throws(
+    () => assertValidDomainRules({
+      ...valid,
+      'dominio.pieza.propiedad': {
+        ...valid['dominio.pieza.propiedad'],
+        sheetVariants: ['osb', 'osb']
+      }
+    }),
+    /sheetVariants/i
   );
   assert.throws(
     () => assertValidDomainRules({

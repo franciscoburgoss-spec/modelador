@@ -10,4 +10,5 @@ Los tres cortes de `SPEC-R4-finding-catalog.md` están cerrados en
 `sessions/close-SPEC-R6-*.md`. Los tres cortes de `SPEC-R7-checks.md` están cerrados en
 `sessions/close-SPEC-R7-A.md`, `sessions/close-SPEC-R7-B.md` y
 `sessions/close-SPEC-R7-C.md`. `SPEC-R8-report-markdown.md` está aprobada en tres cortes: A
-snapshot/renderer/cobertura, B descarga/pantalla y C criterios en láminas con auditoría DXF.
+snapshot/renderer/cobertura quedó cerrado en `sessions/close-SPEC-R8-A.md`; B descarga/pantalla
+está activo y C agregará criterios en láminas con auditoría DXF.

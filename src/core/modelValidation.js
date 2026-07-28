@@ -441,21 +441,19 @@ function checkFoundationLevels(elements, grid, paramsMap, elementsById) {
   return results;
 }
 
-/** Corre todas las verificaciones y devuelve la lista de hallazgos.
- *  extraMargin (mm): se suma a la tolerancia de conectividad derivada de anchos reales, para
- *  cubrir casos de diseño intencional (ménsulas, desfases) que la geometría no puede adivinar. */
-export function validateModel(model, extraMargin = 0) {
+/**
+ * Evalúa una sola vez la validación común y conserva las salidas estructuradas de R7.
+ * Los checks geométricos legacy siguen agrupados como cobertura no instrumentada.
+ */
+export function evaluateModelValidation(model, extraMargin = 0) {
   const { elements, grid } = model;
   const paramsMap = buildParamsMap(model.projectParams);
   const elementsById = buildElementsById(elements);
-  const domainChecks = evaluateWallDomainChecks(model);
-  const roofSupportChecks = evaluateRoofSupportChecks(model);
+  const wallTypeFindings = checkWallTypeConfiguration(model);
+  const wallDomain = evaluateWallDomainChecks(model);
+  const roofSupport = evaluateRoofSupportChecks(model);
   const shearCapacity = computeShearCapacityByDirection(model);
-  return [
-    ...checkWallTypeConfiguration(model),
-    ...domainChecks.findings,
-    ...roofSupportChecks.findings,
-    ...shearCapacity.findings,
+  const legacyGeometryFindings = [
     ...checkDanglingReferences(elements, grid, paramsMap, elementsById),
     ...checkZeroLength(elements, grid, paramsMap, elementsById),
     ...checkOpeningsOutsideWall(elements, grid, paramsMap, elementsById),
@@ -471,4 +469,27 @@ export function validateModel(model, extraMargin = 0) {
     ...checkExactDuplicates(elements),
     ...checkConnectivity(elements, grid, extraMargin, paramsMap, elementsById)
   ];
+  return {
+    findings: [
+      ...wallTypeFindings,
+      ...wallDomain.findings,
+      ...roofSupport.findings,
+      ...shearCapacity.findings,
+      ...legacyGeometryFindings
+    ],
+    components: {
+      wallTypeFindings,
+      wallDomain,
+      roofSupport,
+      shearCapacity,
+      legacyGeometryFindings
+    }
+  };
+}
+
+/** Corre todas las verificaciones y conserva el retorno array público histórico.
+ *  extraMargin (mm): se suma a la tolerancia de conectividad derivada de anchos reales, para
+ *  cubrir casos de diseño intencional (ménsulas, desfases) que la geometría no puede adivinar. */
+export function validateModel(model, extraMargin = 0) {
+  return evaluateModelValidation(model, extraMargin).findings;
 }

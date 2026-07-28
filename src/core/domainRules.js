@@ -6,6 +6,8 @@ import { isWallRole } from './wallRoles.js';
 export const RULE_SCOPES = Object.freeze(['sistema', 'proyecto', 'oficina', 'elemento']);
 export const RULE_ORIGINS = Object.freeze(['manual', 'derivado', 'obra']);
 export const FINDING_SEVERITIES = Object.freeze(['error', 'warning', 'info']);
+export const REPORT_SECTIONS = Object.freeze(['Muros', 'OSB', 'Techumbre', 'Modelo']);
+export const SHEET_VARIANTS = Object.freeze(['framing', 'osb', 'truss', 'foundations']);
 
 const RULE_ID = /^[a-z][A-Za-z0-9]*\.[a-z][A-Za-z0-9]*\.[a-z][A-Za-z0-9]*$/;
 const EDGE_DISTANCE_MM = 10;
@@ -92,6 +94,16 @@ export function assertValidDomainRules(catalog) {
     if (!FINDING_SEVERITIES.includes(rule.severity)) {
       throw new TypeError(`La regla ${rule.id} tiene severity inválido.`);
     }
+    if (!REPORT_SECTIONS.includes(rule.reportSection)) {
+      throw new TypeError(`La regla ${rule.id} tiene reportSection inválido.`);
+    }
+    if (
+      !Array.isArray(rule.sheetVariants)
+      || rule.sheetVariants.some((variant) => !SHEET_VARIANTS.includes(variant))
+      || new Set(rule.sheetVariants).size !== rule.sheetVariants.length
+    ) {
+      throw new TypeError(`La regla ${rule.id} requiere sheetVariants válidas y únicas.`);
+    }
     if (!nonEmptyString(rule.unidad)) throw new TypeError(`La regla ${rule.id} requiere unidad.`);
     if (
       !Array.isArray(rule.aplicaA)
@@ -135,6 +147,8 @@ const catalog = {
     scope: 'sistema',
     origen: 'manual',
     severity: 'error',
+    reportSection: 'OSB',
+    sheetVariants: ['osb'],
     unidad: 'mm',
     fuente: {
       doc: 'Manual Práctico de Construcción LP — Anexo 3 Metalcon',
@@ -154,6 +168,8 @@ const catalog = {
     scope: 'sistema',
     origen: 'derivado',
     severity: 'error',
+    reportSection: 'OSB',
+    sheetVariants: ['osb'],
     unidad: 'mm',
     fuente: null,
     aplicaA: ['MP1'],
@@ -171,6 +187,8 @@ const catalog = {
     scope: 'proyecto',
     origen: 'obra',
     severity: 'info',
+    reportSection: 'Muros',
+    sheetVariants: ['framing'],
     unidad: 'mm',
     fuente: null,
     aplicaA: ['MP1', 'MP2', 'MP3', 'tabique'],
@@ -184,6 +202,8 @@ const catalog = {
     scope: 'sistema',
     origen: 'manual',
     severity: 'error',
+    reportSection: 'Muros',
+    sheetVariants: ['framing'],
     unidad: 'mm',
     fuente: CINTAC_METALCON_SOURCE,
     aplicaA: ['MP1', 'MP2'],
@@ -203,6 +223,8 @@ const catalog = {
     scope: 'oficina',
     origen: 'obra',
     severity: 'info',
+    reportSection: 'Muros',
+    sheetVariants: ['framing'],
     unidad: 'mm',
     fuente: null,
     aplicaA: ['MP1', 'MP2', 'MP3', 'tabique'],
@@ -216,6 +238,8 @@ const catalog = {
     scope: 'sistema',
     origen: 'manual',
     severity: 'error',
+    reportSection: 'Techumbre',
+    sheetVariants: ['truss'],
     unidad: 'mm',
     fuente: CINTAC_METALCON_SOURCE,
     aplicaA: ['MP1', 'MP2', 'MP3'],
@@ -233,6 +257,8 @@ const catalog = {
     scope: 'elemento',
     origen: 'manual',
     severity: 'error',
+    reportSection: 'Muros',
+    sheetVariants: ['framing'],
     unidad: 'mm',
     fuente: CINTAC_METALCON_SOURCE,
     aplicaA: ['MP2', 'MP3'],
@@ -252,6 +278,8 @@ const catalog = {
     scope: 'proyecto',
     origen: 'manual',
     severity: 'info',
+    reportSection: 'OSB',
+    sheetVariants: ['osb'],
     unidad: 'kgf/m',
     fuente: CINTAC_METALCON_SOURCE,
     aplicaA: ['MP1'],

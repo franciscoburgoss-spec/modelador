@@ -598,9 +598,9 @@
       "bytes": 25815,
       "sha256": "ceaa2286722e57b342bc5a70a26bc4c7518f8ce03b734103d641e0df786f848f",
       "kind": "source",
-      "workspaceBytes": 26658,
-      "workspaceSha256": "85eda7b78891724159d3959e767506fff237d89015a7ee52658aeb0e068be40a",
-      "changedBy": "SPEC-R7"
+      "workspaceBytes": 27254,
+      "workspaceSha256": "dbcb1d8c092c06347146e9b249db798f57efae85b579a75ce70be59487528e1b",
+      "changedBy": "SPEC-R8"
     },
     {
       "path": "src/core/naming.js",

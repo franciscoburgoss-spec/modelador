@@ -9,11 +9,11 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Reglas de dominio — ejecutar R8-A |
+| Etapa | Reglas de dominio — ejecutar R8-B |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `specs/domain/SPEC-R8-report-markdown.md`, corte A |
-| Suite oficial | 684/684; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 690,96 kB |
+| Spec activa | `specs/domain/SPEC-R8-report-markdown.md`, corte B |
+| Suite oficial | 693/693; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 691,92 kB |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
@@ -87,6 +87,11 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   Los totales y findings por dirección nunca mezclan capacidad condicionada con verificada.
 - R8: spec aprobada en tres cortes. A fija snapshot/renderer/cobertura; B integra descarga y
   pantalla; C agrega criterios de catálogo a `NOTAS GENERALES` con auditoría DXF.
+- R8-A: cerrado. Las ocho reglas declaran sección/variantes; `evaluateModelValidation` preserva el
+  array histórico y `evaluateModelReview` reúne una sola vez los 54 findings de `casa-L`.
+  Cobertura R7, productores no instrumentados y criterios por rol explícito quedan visibles. El
+  renderer puro emite una fila por finding, distingue fuente/ausencia/null, neutraliza datos no
+  confiables y es determinista.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 - Hace falta un fixture realmente independiente y otro con `roofPlanes` persistidos.
 
@@ -108,5 +113,5 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Implementar `SPEC-R8-report-markdown.md`, corte A: metadata de catálogo, snapshot compartido,
-cobertura/criterios y renderer markdown puro. No integrar UI ni modificar DXF en ese corte.
+Implementar `SPEC-R8-report-markdown.md`, corte B: integrar `ValidationModal` al snapshot único y
+agregar descarga `revision-constructiva.md` con revocación de object URL. No modificar DXF.
