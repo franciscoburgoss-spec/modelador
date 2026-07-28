@@ -15,6 +15,9 @@
     "allow-read-project-text",
     "allow-write-project-text-atomic",
     "allow-load-recent-project-paths",
-    "allow-save-recent-project-paths"
+    "allow-save-recent-project-paths",
+    "allow-load-recovery-snapshot",
+    "allow-save-recovery-snapshot",
+    "allow-clear-recovery-snapshot"
   ]
 }

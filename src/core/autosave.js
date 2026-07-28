@@ -1,28 +1,77 @@
 // core/autosave.js
-// Lógica pura del autoguardado: serialización, decisión de recuperación y acceso a storage
-// con storage inyectable (localStorage en la app, un fake en los tests).
+// Lógica pura del autoguardado: sobre versionado, decisión de recuperación y compatibilidad
+// con storage web inyectable. El runtime nativo persiste el mismo sobre mediante comandos Rust.
 
 export const AUTOSAVE_KEY = 'modelador-autosave';
-export const AUTOSAVE_VERSION = 1;
+export const AUTOSAVE_VERSION = 2;
 export const AUTOSAVE_DEBOUNCE_MS = 2000;
 
-/** Snapshot serializado: {version, timestamp, model}. */
-export function serializeAutosave(model, timestamp = Date.now()) {
-  return JSON.stringify({ version: AUTOSAVE_VERSION, timestamp, model });
+export class AutosaveError extends Error {
+  constructor(code, message, cause = undefined) {
+    super(message, cause === undefined ? undefined : { cause });
+    this.name = 'AutosaveError';
+    this.code = code;
+  }
 }
 
-/** Devuelve {timestamp, model} o null si falta / está corrupto / es de otra versión. */
+/** Snapshot serializado: {version, timestamp, projectPath, model}. */
+export function serializeAutosave(model, timestamp = Date.now(), projectPath = null) {
+  return JSON.stringify({
+    version: AUTOSAVE_VERSION,
+    timestamp,
+    projectPath,
+    model
+  });
+}
+
+/** Devuelve el sobre v2 migrado, null si falta y error tipado si existe pero no es válido. */
 export function parseAutosave(raw) {
   if (!raw) return null;
+  let data;
   try {
-    const data = JSON.parse(raw);
-    if (!data || typeof data !== 'object') return null;
-    if (data.version !== AUTOSAVE_VERSION) return null;
-    if (!data.model || typeof data.model !== 'object') return null;
-    return { timestamp: Number(data.timestamp) || 0, model: data.model };
-  } catch {
-    return null;
+    data = JSON.parse(raw);
+  } catch (error) {
+    throw new AutosaveError(
+      'AUTOSAVE_INVALID_JSON',
+      'El snapshot de recuperación contiene JSON inválido.',
+      error
+    );
   }
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new AutosaveError(
+      'AUTOSAVE_ENVELOPE_INVALID',
+      'El snapshot de recuperación no tiene un sobre válido.'
+    );
+  }
+  if (data.version !== 1 && data.version !== AUTOSAVE_VERSION) {
+    throw new AutosaveError(
+      'AUTOSAVE_VERSION_UNSUPPORTED',
+      `La versión ${String(data.version)} del snapshot no es compatible.`
+    );
+  }
+  if (!data.model || typeof data.model !== 'object' || Array.isArray(data.model)) {
+    throw new AutosaveError(
+      'AUTOSAVE_MODEL_INVALID',
+      'El snapshot de recuperación no contiene un modelo válido.'
+    );
+  }
+  const projectPath = data.version === 1 ? null : data.projectPath ?? null;
+  if (
+    projectPath !== null
+    && (typeof projectPath !== 'string' || projectPath.length === 0)
+  ) {
+    throw new AutosaveError(
+      'AUTOSAVE_PATH_INVALID',
+      'La ruta asociada al snapshot de recuperación no es válida.'
+    );
+  }
+  return {
+    version: AUTOSAVE_VERSION,
+    timestamp: Number(data.timestamp) || 0,
+    projectPath,
+    model: data.model,
+    appliedMigrations: data.version === 1 ? ['1->2'] : []
+  };
 }
 
 /** Modelo "vacío": sin elementos, sin ejes y sin techumbres. No vale la pena ofrecerlo. */
@@ -66,10 +115,10 @@ export function formatAutosaveTimestamp(timestamp, locale = 'es-CL') {
  * Escribe el snapshot. Nunca lanza: si el storage está lleno (QuotaExceededError) devuelve
  * {ok:false} para que el llamador desactive el autosave en vez de romper la app.
  */
-export function writeAutosave(storage, model, timestamp = Date.now()) {
+export function writeAutosave(storage, model, timestamp = Date.now(), projectPath = null) {
   if (!storage) return { ok: false, error: new Error('storage no disponible') };
   try {
-    storage.setItem(AUTOSAVE_KEY, serializeAutosave(model, timestamp));
+    storage.setItem(AUTOSAVE_KEY, serializeAutosave(model, timestamp, projectPath));
     return { ok: true };
   } catch (err) {
     return { ok: false, error: err };

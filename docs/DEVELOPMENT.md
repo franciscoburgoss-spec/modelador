@@ -123,14 +123,25 @@ contrato:
   chooseOpenPath,
   chooseSavePath,
   loadRecentPaths,
-  saveRecentPaths
+  saveRecentPaths,
+  loadRecoverySnapshot,
+  saveRecoverySnapshot,
+  clearRecoverySnapshot
 }
 ```
 
-`SPEC-004-C/C1` implementa ese contrato en Tauri mediante seis comandos estrechos. En localhost
+`SPEC-004-C/C1/D` implementa ese contrato en Tauri mediante nueve comandos estrechos. En localhost
 no se publica un runtime nativo aparente: Abrir/Guardar/Guardar como aparecen deshabilitados,
 mientras `Guardar copia en navegador`, `Cargar copia del navegador` e importar/exportar JSON siguen
-operativos. Para probar selectores, archivos y recientes reales se debe usar:
+operativos. En Tauri, un marcador distingue crash de cierre limpio y el autosave vive separado en
+`<appDataDir>/Recovery`; recuperar nunca escribe el proyecto original hasta pulsar Guardar.
+
+Si el WebView encuentra las claves legacy de su propio origen, muestra acciones `Guardar …` que
+exigen destino y sólo consumen esas claves después de escribir y reabrir con éxito. Safari y Chrome
+mantienen almacenamiento por origen: sus copias se trasladan con Exportar JSON en el navegador e
+Importar JSON en la app nativa.
+
+Para probar selectores, archivos, recientes y recovery reales se debe usar:
 
 ```bash
 npm run tauri:dev -- --no-watch
@@ -141,9 +152,9 @@ No actualizar Tauri, sus runtimes o Wry sin repetir el smoke real en ese sistema
 
 ## Baselines visibles
 
-- Suite: 759/759 Node; componentes: 12/12; Rust: 4/4; laboratorio: 35/35.
-- Cobertura de líneas: core 93,67 %; store 96,98 %.
-- Bundle inicial: 721,29 kB raw / 224,38 kB gzip.
+- Suite: 765/765 Node; componentes: 18/18; Rust: 9/9; laboratorio: 35/35.
+- Cobertura de líneas: core 93,59 %; store 96,97 %.
+- Bundle inicial: 727,03 kB raw / 226,08 kB gzip.
 - El warning de chunk mayor a 600 kB se conserva visible y se resolverá en `SPEC-005`.
 
 Los umbrales y exclusiones heredadas están documentados en

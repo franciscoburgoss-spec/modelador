@@ -6,13 +6,16 @@ const root = new URL('../', import.meta.url);
 const expectedPermissions = [
   'allow-choose-open-project-path',
   'allow-choose-save-project-path',
+  'allow-clear-recovery-snapshot',
   'allow-load-recent-project-paths',
+  'allow-load-recovery-snapshot',
   'allow-read-project-text',
   'allow-save-recent-project-paths',
+  'allow-save-recovery-snapshot',
   'allow-write-project-text-atomic'
 ];
 
-test('SPEC-004-C: capability concede sólo los seis comandos a main', async () => {
+test('SPEC-004-D: capability concede sólo los nueve comandos a main', async () => {
   const capability = JSON.parse(await readFile(
     new URL('src-tauri/capabilities/main.json', root),
     'utf8'
@@ -46,12 +49,17 @@ test('SPEC-004-C: config release usa frontend local, CSP cerrada y no empaqueta 
 test('SPEC-004-C: dependencias Rust no incorporan plugins genéricos peligrosos', async () => {
   const cargo = await readFile(new URL('src-tauri/Cargo.toml', root), 'utf8');
   const build = await readFile(new URL('src-tauri/build.rs', root), 'utf8');
+  const commands = await readFile(new URL('src-tauri/src/commands.rs', root), 'utf8');
 
   assert.match(cargo, /tauri-plugin-dialog/);
   assert.doesNotMatch(cargo, /tauri-plugin-(shell|fs|http|opener)/);
   for (const command of expectedPermissions.map((permission) => permission.slice(6))) {
     assert.match(build, new RegExp(`"${command.replaceAll('-', '_')}"`));
   }
+  assert.match(
+    commands,
+    /load_recovery_snapshot[\s\S]*snapshot_project_path[\s\S]*authorized_paths\.authorize/
+  );
 });
 
 test('SPEC-004-C1: el lock fija la última línea Wry previa al quiebre de macOS 11', async () => {

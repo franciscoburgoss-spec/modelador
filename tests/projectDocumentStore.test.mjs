@@ -210,3 +210,55 @@ test('SPEC-004-B: guardar como registra ruta y sólo limpia el snapshot que term
   assert.equal(useModelStore.getState().projectDocument.path, '/p/lento.json');
   assert.equal(useModelStore.getState().projectDocument.dirty, true);
 });
+
+test('SPEC-004-D: recuperar valida y hace un solo commit sucio con ruta e historiales limpios', () => {
+  resetStore({
+    projectDocument: createProjectDocument({
+      path: '/p/anterior.json',
+      recentPaths: ['/p/anterior.json']
+    }),
+    past: [validModel({ persistenceProbe: 'past' })],
+    future: [validModel({ persistenceProbe: 'future' })]
+  });
+
+  const result = useModelStore.getState().restoreRecoveryCandidate({
+    version: 2,
+    timestamp: 1700000000000,
+    projectPath: '/p/recuperado.modelador.json',
+    model: validModel({ persistenceProbe: 'recovered' })
+  });
+
+  assert.equal(result.ok, true);
+  const state = useModelStore.getState();
+  assert.equal(state.model.persistenceProbe, 'recovered');
+  assert.deepEqual(state.projectDocument, {
+    path: '/p/recuperado.modelador.json',
+    title: 'recuperado.modelador.json',
+    dirty: true,
+    recentPaths: ['/p/anterior.json']
+  });
+  assert.deepEqual(state.past, []);
+  assert.deepEqual(state.future, []);
+});
+
+test('SPEC-004-D: recovery inválido preserva modelo, documento e historiales', () => {
+  resetStore({
+    projectDocument: createProjectDocument({
+      path: '/p/vigente.json',
+      dirty: true
+    }),
+    past: [validModel({ persistenceProbe: 'past' })]
+  });
+  const before = structuredClone(activeSnapshot());
+
+  const result = useModelStore.getState().restoreRecoveryCandidate({
+    version: 2,
+    timestamp: 1,
+    projectPath: '/p/roto.json',
+    model: { grid: 'inválida' }
+  });
+
+  assert.equal(result.ok, false);
+  assert.deepEqual(activeSnapshot(), before);
+  assert.equal(useModelStore.getState().modelImportFeedback.severity, 'error');
+});

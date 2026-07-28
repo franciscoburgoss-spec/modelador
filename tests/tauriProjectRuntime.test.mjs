@@ -14,7 +14,7 @@ test('SPEC-004-C: localhost no publica un runtime nativo aparente', () => {
   assert.equal(invokes, 0);
 });
 
-test('SPEC-004-C: el runtime usa sólo los seis comandos estrechos y argumentos estructurados', async () => {
+test('SPEC-004-D: el runtime usa sólo los nueve comandos estrechos y argumentos estructurados', async () => {
   const calls = [];
   const invoke = async (command, args) => {
     calls.push([command, args]);
@@ -22,6 +22,7 @@ test('SPEC-004-C: el runtime usa sólo los seis comandos estrechos y argumentos 
     if (command === 'choose_save_project_path') return '/p/copia.modelador.json';
     if (command === 'read_project_text') return '{"modelVersion":2}';
     if (command === 'load_recent_project_paths') return ['/p/reciente.modelador.json'];
+    if (command === 'load_recovery_snapshot') return '{"version":2}';
     return undefined;
   };
   const runtime = createTauriProjectRuntime({ isTauri: () => true, invoke });
@@ -42,6 +43,9 @@ test('SPEC-004-C: el runtime usa sólo los seis comandos estrechos y argumentos 
   );
   assert.deepEqual(await runtime.loadRecentPaths(), ['/p/reciente.modelador.json']);
   await runtime.saveRecentPaths(['/p/copia.modelador.json']);
+  assert.equal(await runtime.loadRecoverySnapshot(), '{"version":2}');
+  await runtime.saveRecoverySnapshot('{"version":2}');
+  await runtime.clearRecoverySnapshot();
 
   assert.deepEqual(calls, [
     ['choose_open_project_path', undefined],
@@ -53,6 +57,9 @@ test('SPEC-004-C: el runtime usa sólo los seis comandos estrechos y argumentos 
       backupLimit: 10
     }],
     ['load_recent_project_paths', undefined],
-    ['save_recent_project_paths', { recentPaths: ['/p/copia.modelador.json'] }]
+    ['save_recent_project_paths', { recentPaths: ['/p/copia.modelador.json'] }],
+    ['load_recovery_snapshot', undefined],
+    ['save_recovery_snapshot', { content: '{"version":2}' }],
+    ['clear_recovery_snapshot', undefined]
   ]);
 });

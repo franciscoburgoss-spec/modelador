@@ -36,7 +36,9 @@ import { useKeyboardShortcuts } from './core/useKeyboardShortcuts.js';
 import { useAutosave } from './core/useAutosave.js';
 import AutosaveBanner from './components/AutosaveBanner.jsx';
 import ModelImportBanner from './components/ModelImportBanner.jsx';
+import LegacyProjectMigrationBanner from './components/LegacyProjectMigrationBanner.jsx';
 import { hydrateProjectRuntimeRecents } from './adapters/projectRecentPersistence.js';
+import { useLegacyProjectMigration } from './core/useLegacyProjectMigration.js';
 
 export default function App({ projectRuntime = null }) {
   const [activeModal, setActiveModal] = useState(null); // 'wall' | 'column' | 'beam' | 'opening' | 'foundation' | 'grid' | 'audit' | 'validate' | 'viewer3d' | { name, ... } | null
@@ -64,14 +66,12 @@ export default function App({ projectRuntime = null }) {
 
   useKeyboardShortcuts();
 
-  // ★ Fix: autocarga el último modelo guardado al abrir la app. Antes, recargar la página
-  // (F5) perdía todo el trabajo porque solo se cargaba manualmente vía "Archivo > Cargar".
-  // Debe correr ANTES del efecto de useAutosave para que la comparación del snapshot sea
-  // contra el modelo ya cargado y no contra el modelo vacío inicial.
+  // Localhost conserva la autocarga web histórica. Tauri nunca la aplica implícitamente:
+  // useLegacyProjectMigration exige un destino nativo antes de adoptar esas claves.
   useEffect(() => {
-    loadModel();
+    if (!projectRuntime) loadModel();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [projectRuntime]);
 
   useEffect(() => {
     document.title = `${projectDocument.dirty ? '* ' : ''}${projectDocument.title} — Modelador`;
@@ -91,7 +91,8 @@ export default function App({ projectRuntime = null }) {
     });
   }, [hydrateProjectRecentPaths, projectRuntime, reportProjectOperationError]);
 
-  const autosave = useAutosave();
+  const autosave = useAutosave(projectRuntime);
+  const legacyMigration = useLegacyProjectMigration(projectRuntime);
 
   const isModal = (name) => typeof activeModal === 'object' && activeModal?.name === name;
   const editIdFor = (name) => (isModal(name) ? activeModal.editId : null);
@@ -115,6 +116,12 @@ export default function App({ projectRuntime = null }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       <AutosaveBanner pending={autosave.pending} onRestore={autosave.restore} onDismiss={autosave.dismiss} />
+      <LegacyProjectMigrationBanner
+        candidates={legacyMigration.candidates}
+        pendingId={legacyMigration.pendingId}
+        onMigrate={legacyMigration.migrate}
+        onDismiss={legacyMigration.dismiss}
+      />
       <ModelImportBanner feedback={modelImportFeedback} onDismiss={dismissModelImportFeedback} />
       <div className="flex items-center justify-between border-b border-[#e4e4e0]">
         <MenuBar

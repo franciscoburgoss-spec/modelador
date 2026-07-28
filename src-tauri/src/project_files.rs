@@ -79,7 +79,7 @@ fn unique_identifier() -> String {
     format!("{nanos:020}-{:010}-{counter:020}", std::process::id())
 }
 
-fn sync_directory(directory: &Path) -> io::Result<()> {
+pub(crate) fn sync_directory(directory: &Path) -> io::Result<()> {
     File::open(directory)?.sync_all()
 }
 

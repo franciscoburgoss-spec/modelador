@@ -112,8 +112,8 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 13208,
-      "workspaceSha256": "32301c7c6d04d102b8b79a3ea07947d4098afcada4b8ca3c56fdf48201c4eeb9",
+      "workspaceBytes": 13550,
+      "workspaceSha256": "219ce5b3967ca23c40fde1a7ae9361a0036b046d678d99c8bd0fa85cbcd89060",
       "changedBy": "SPEC-004"
     },
     {
@@ -375,7 +375,10 @@
       "path": "src/core/autosave.js",
       "bytes": 3163,
       "sha256": "707664504f8ef0c4b75857ba4f3c963190ce46970bfd88d71bd6e3200678fb9a",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 4552,
+      "workspaceSha256": "55ef9ddcf3745ba010cd6006cbcc395e40a1ed4ea278a2d5f2d552b13f9fe650",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "src/core/batchModulation.js",
@@ -789,7 +792,10 @@
       "path": "src/core/useAutosave.js",
       "bytes": 1857,
       "sha256": "14bd0f64d16db4a8175701e1292d2aa182c48847297dee93221893fa005e45a2",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 5424,
+      "workspaceSha256": "b4145d16b1b571ce4ceafbb8ef6379b0133473d1c71f6dd153026e60942bf14b",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "src/core/useKeyboardShortcuts.js",
@@ -907,8 +913,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 57236,
-      "workspaceSha256": "76f8bbd550edf7e27170f5de2457695673b33a1ee2b4f11597088f1115100cff",
+      "workspaceBytes": 57969,
+      "workspaceSha256": "e8d18485296bb786c9104cad1bd9dc02b626db5cec76f69124f8d1445ae08783",
       "changedBy": "SPEC-004"
     },
     {
@@ -927,7 +933,10 @@
       "path": "tests/autosave.test.mjs",
       "bytes": 3889,
       "sha256": "5e93e97f61627cfef1e58428e8118af9156f2cbd1690df690f0e857c2ff64ba3",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 5018,
+      "workspaceSha256": "f1fed2d6b67570e21afad4c9eb9648f419b8b2c885dd87f18a204d2f9164598e",
+      "changedBy": "SPEC-004"
     },
     {
       "path": "tests/batchModulation.test.mjs",

@@ -7,6 +7,9 @@ fn main() {
             "write_project_text_atomic",
             "load_recent_project_paths",
             "save_recent_project_paths",
+            "load_recovery_snapshot",
+            "save_recovery_snapshot",
+            "clear_recovery_snapshot",
         ]),
     ))
     .expect("no se pudo generar el manifiesto Tauri");

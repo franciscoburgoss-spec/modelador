@@ -80,7 +80,7 @@ claves, modelo y documento; repetir después de éxito no vuelve a ofrecer el mi
 
 ## Evidencia
 
-- `tests/fixtures/autosave-v1.json` y pruebas puras de sobre/migración.
+- `tests/data/autosave-v1.json` y pruebas puras de sobre/migración.
 - Pruebas Rust en directorio temporal para crash, cierre limpio, corrupción, atomicidad y límites.
 - Pruebas de store/componentes para recuperación, fallos, migración, destino y claves.
 - Inspección automática de capability, comandos, CSP y grafo fijado.

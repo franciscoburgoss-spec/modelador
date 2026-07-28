@@ -27,6 +27,7 @@ import {
   openNativeProject,
   saveNativeProject
 } from '../core/nativeProjectFile.js';
+import { LEGACY_PROJECT_STORAGE_KEY } from '../core/legacyProjectMigration.js';
 import { assertValidWallTypes, getWallType } from '../core/wallTypes.js';
 import {
   invalidateForMutation,
@@ -141,7 +142,6 @@ function commitPreparedImport(set, prepared) {
   };
 }
 
-const STORAGE_KEY = 'modelador-structural-v1';
 const HISTORY_LIMIT = 50;
 
 // ★ Familias con sustitución global: al editar una sección de librería, propaga sus campos
@@ -1253,9 +1253,33 @@ export const useModelStore = create((set, get) => ({
   hydrateProjectRecentPaths: (recentPaths) => set((state) => ({
     projectDocument: hydrateProjectDocumentRecents(state.projectDocument, recentPaths)
   })),
+  restoreRecoveryCandidate: (candidate) => {
+    let prepared;
+    try {
+      prepared = prepareModelImport(candidate?.model);
+    } catch (error) {
+      return importErrorResult(set, error);
+    }
+    set((state) => ({
+      model: mergeLoadedModel(prepared.model),
+      past: [],
+      future: [],
+      projectDocument: createProjectDocument({
+        path: candidate.projectPath ?? null,
+        dirty: true,
+        recentPaths: state.projectDocument.recentPaths
+      }),
+      modelImportFeedback: importFeedback(prepared)
+    }));
+    return {
+      ok: true,
+      warnings: prepared.warnings,
+      appliedMigrations: prepared.appliedMigrations
+    };
+  },
   reportProjectOperationError: (error) => projectOperationErrorResult(set, error),
   saveModel: () => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(get().model));
+    localStorage.setItem(LEGACY_PROJECT_STORAGE_KEY, JSON.stringify(get().model));
   },
   loadModel: (incoming) => {
     if (incoming !== undefined) {
@@ -1265,7 +1289,7 @@ export const useModelStore = create((set, get) => ({
         return importErrorResult(set, error);
       }
     }
-    const raw = globalThis.localStorage?.getItem(STORAGE_KEY);
+    const raw = globalThis.localStorage?.getItem(LEGACY_PROJECT_STORAGE_KEY);
     if (!raw) {
       return {
         ok: false,

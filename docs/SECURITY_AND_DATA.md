@@ -20,13 +20,16 @@ elegidas, resultados de CalculiX y cualquier texto que llegue desde un proyecto 
 
 ## Runtime Tauri de proyectos
 
-La ventana `main` recibe únicamente seis permisos propios: elegir ruta de apertura/guardado, leer
-y escribir el proyecto, y cargar/guardar recientes. No se incorporan plugins genéricos de shell,
-filesystem, HTTP u opener. El frontend sólo envía argumentos estructurados a esos comandos.
+La ventana `main` recibe únicamente nueve permisos propios: elegir ruta de apertura/guardado, leer
+y escribir el proyecto, cargar/guardar recientes y cargar/guardar/limpiar recovery. No se
+incorporan plugins genéricos de shell, filesystem, HTTP u opener. El frontend sólo envía argumentos
+estructurados a esos comandos.
 
 Una ruta de proyecto se autoriza únicamente cuando proviene de un selector nativo o del archivo de
-recientes previamente persistido. Lecturas y escrituras exigen coincidencia exacta con el registro
-en memoria; rutas relativas, vacías o con `..` son rechazadas antes de tocar el filesystem.
+recientes previamente persistido. Tras un crash también puede restituirse desde el snapshot privado
+que la propia aplicación escribió para una ruta previamente autorizada. Lecturas y escrituras
+exigen coincidencia exacta con el registro en memoria; rutas relativas, vacías o con `..` son
+rechazadas antes de tocar el filesystem.
 
 La escritura crea un temporal privado junto al archivo, sincroniza sus bytes, conserva hasta diez
 copias en `.<nombre>.backups`, publica con `rename` y sincroniza el directorio. Un error de recientes
@@ -39,7 +42,7 @@ silenciosa.
 |---|---|
 | Proyectos sugeridos | `~/Documents/Modelador/Proyectos` |
 | Configuración y recientes | `<appConfigDir>/recent-projects.json`, resuelto por Tauri |
-| Autosave y recuperación | `~/Library/Application Support/Modelador/Recovery` |
+| Autosave y recuperación | `<appDataDir>/Recovery`, resuelto por Tauri |
 | Logs rotativos | `~/Library/Logs/Modelador` |
 | Temporales de cálculo | directorio temporal privado por ejecución |
 
@@ -64,9 +67,20 @@ precedencia se aplica sólo al cálculo, no elimina el dato y registra una adver
 
 ## Recuperación
 
-La aplicación escribe un marcador de sesión sucia al primer cambio. Al cerrar correctamente lo
-retira. Si el siguiente inicio detecta marcador y autosave más reciente, ofrece comparar, recuperar
-o descartar. Ninguna opción sobrescribe el proyecto original antes de confirmar.
+La aplicación crea un marcador al iniciar y lo retira desde `RunEvent::Exit` al cerrar
+correctamente. Un marcador heredado identifica una sesión interrumpida; sólo entonces se lee
+`autosave-v2.json`. El snapshot v2 incluye timestamp, ruta asociada y modelo validable, se escribe
+de forma atómica y privada sólo cuando el documento está sucio, y se limpia al abrir, guardar o
+crear correctamente un estado limpio.
+
+Recuperar valida antes de un único commit, limpia undo/redo, conserva la ruta asociada y deja el
+documento sucio. Descartar el aviso no borra el snapshot y ninguna acción de recovery sobrescribe
+el proyecto original antes de que el usuario pulse Guardar.
+
+Las claves legacy accesibles del WebView se migran únicamente después de elegir destino, guardar
+atómicamente y reabrir. Cancelar o fallar conserva tanto las claves como el estado activo. El
+almacenamiento de navegadores externos no es accesible al WebView; para él se conserva el puente
+explícito Exportar JSON → Importar JSON.
 
 ## Respuesta a fallos
 

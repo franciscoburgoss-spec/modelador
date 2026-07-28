@@ -6,6 +6,7 @@ use crate::project_files::{
     read_authorized_text, write_authorized_text_atomic, AuthorizedProjectPaths,
 };
 use crate::recent_projects;
+use crate::recovery::RecoveryState;
 
 fn selected_path(
     file_path: FilePath,
@@ -117,4 +118,31 @@ pub fn save_recent_project_paths(
         recent_paths,
         &authorized_paths,
     )
+}
+
+#[tauri::command]
+pub fn load_recovery_snapshot(
+    recovery: State<'_, RecoveryState>,
+    authorized_paths: State<'_, AuthorizedProjectPaths>,
+) -> Result<Option<String>, CommandError> {
+    let snapshot = recovery.load_snapshot()?;
+    if let Some(raw) = snapshot.as_deref() {
+        if let Some(project_path) = crate::recovery::snapshot_project_path(raw)? {
+            authorized_paths.authorize(&project_path)?;
+        }
+    }
+    Ok(snapshot)
+}
+
+#[tauri::command]
+pub fn save_recovery_snapshot(
+    recovery: State<'_, RecoveryState>,
+    content: String,
+) -> Result<(), CommandError> {
+    recovery.save_snapshot(&content)
+}
+
+#[tauri::command]
+pub fn clear_recovery_snapshot(recovery: State<'_, RecoveryState>) -> Result<(), CommandError> {
+    recovery.clear_snapshot()
 }

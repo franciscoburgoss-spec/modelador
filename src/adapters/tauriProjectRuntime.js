@@ -24,6 +24,9 @@ export function createTauriProjectRuntime({
       invoke('choose_save_project_path', { currentPath })
     ),
     loadRecentPaths: () => invoke('load_recent_project_paths'),
-    saveRecentPaths: (recentPaths) => invoke('save_recent_project_paths', { recentPaths })
+    saveRecentPaths: (recentPaths) => invoke('save_recent_project_paths', { recentPaths }),
+    loadRecoverySnapshot: () => invoke('load_recovery_snapshot'),
+    saveRecoverySnapshot: (content) => invoke('save_recovery_snapshot', { content }),
+    clearRecoverySnapshot: () => invoke('clear_recovery_snapshot')
   };
 }

@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import {
-  AUTOSAVE_KEY, serializeAutosave, parseAutosave, isEmptyModel, shouldOfferRestore,
+  AUTOSAVE_KEY, AUTOSAVE_VERSION, AutosaveError,
+  serializeAutosave, parseAutosave, isEmptyModel, shouldOfferRestore,
   formatAutosaveTimestamp, writeAutosave, readAutosave, clearAutosave
 } from '../src/core/autosave.js';
 
@@ -25,18 +27,48 @@ function fakeStorage({ failOnSet = false } = {}) {
   };
 }
 
-test('serializeAutosave/parseAutosave: round-trip conserva modelo y timestamp', () => {
-  const parsed = parseAutosave(serializeAutosave(someModel(), 1700000000000));
+test('SPEC-004-D: sobre v2 conserva modelo, timestamp y ruta', () => {
+  const parsed = parseAutosave(serializeAutosave(
+    someModel(),
+    1700000000000,
+    '/p/casa.modelador.json'
+  ));
+  assert.equal(AUTOSAVE_VERSION, 2);
+  assert.equal(parsed.version, 2);
   assert.equal(parsed.timestamp, 1700000000000);
+  assert.equal(parsed.projectPath, '/p/casa.modelador.json');
   assert.equal(parsed.model.elements.length, 1);
+  assert.deepEqual(parsed.appliedMigrations, []);
 });
 
-test('parseAutosave: nulo ante vacío, JSON corrupto o versión distinta', () => {
+test('SPEC-004-D: fixture v1 migra a v2 sin perder el modelo', async () => {
+  const raw = await readFile(
+    new URL('data/autosave-v1.json', import.meta.url),
+    'utf8'
+  );
+  const parsed = parseAutosave(raw);
+  assert.equal(parsed.version, 2);
+  assert.equal(parsed.projectPath, null);
+  assert.equal(parsed.timestamp, 1700000000000);
+  assert.equal(parsed.model.elements[0].id, 'W-LEGACY');
+  assert.deepEqual(parsed.appliedMigrations, ['1->2']);
+});
+
+test('SPEC-004-D: ausencia es null; corrupción y versión futura son errores tipados', () => {
   assert.equal(parseAutosave(null), null);
   assert.equal(parseAutosave(''), null);
-  assert.equal(parseAutosave('{no json'), null);
-  assert.equal(parseAutosave(JSON.stringify({ version: 99, model: {} })), null);
-  assert.equal(parseAutosave(JSON.stringify({ version: 1 })), null);
+  assert.throws(
+    () => parseAutosave('{no json'),
+    (error) => error instanceof AutosaveError && error.code === 'AUTOSAVE_INVALID_JSON'
+  );
+  assert.throws(
+    () => parseAutosave(JSON.stringify({ version: 99, model: {} })),
+    (error) => error instanceof AutosaveError && error.code === 'AUTOSAVE_VERSION_UNSUPPORTED'
+  );
+  assert.throws(
+    () => parseAutosave(JSON.stringify({ version: 1 })),
+    (error) => error instanceof AutosaveError && error.code === 'AUTOSAVE_MODEL_INVALID'
+  );
 });
 
 test('isEmptyModel: vacío solo si no hay elementos, ejes ni techumbres', () => {
@@ -62,11 +94,12 @@ test('shouldOfferRestore: preserva roofSystems y library en la comparación', ()
 
 test('writeAutosave/readAutosave: escribe bajo AUTOSAVE_KEY y relee igual', () => {
   const st = fakeStorage();
-  const res = writeAutosave(st, someModel(), 42);
+  const res = writeAutosave(st, someModel(), 42, '/p/casa.json');
   assert.equal(res.ok, true);
   assert.ok(st.map.has(AUTOSAVE_KEY));
   const back = readAutosave(st);
   assert.equal(back.timestamp, 42);
+  assert.equal(back.projectPath, '/p/casa.json');
   assert.equal(back.model.elements[0].id, 'w1');
 });
 
