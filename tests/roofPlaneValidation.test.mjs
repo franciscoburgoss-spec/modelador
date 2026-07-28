@@ -30,6 +30,37 @@ test('mapea findings del faldón al shape del reporte con roofPlaneIds', () => {
   assert.ok(out[1].message.includes('coronación excedida')); // conserva el mensaje original
 });
 
+test('preserva campos extendidos, etapa e ids tipados al agregar el faldón', () => {
+  const resolveFn = () => ({
+    findings: [{
+      severity: 'error',
+      category: 'trussJambAlignment',
+      message: 'llegada fuera de jamba',
+      rule: 'muro.dintel.llegadaCercha',
+      measured: { value: 200, unit: 'mm' },
+      limit: { max: 19, unit: 'mm' },
+      stage: 'support-overlap',
+      wallIds: ['W1']
+    }]
+  });
+  const [finding] = validateRoofPlanes(
+    { ...model, roofPlanes: [{ id: 'F1', name: 'Eje A' }] },
+    resolveFn
+  );
+
+  assert.deepEqual(finding, {
+    severity: 'error',
+    category: 'trussJambAlignment',
+    message: 'faldón "Eje A": llegada fuera de jamba',
+    rule: 'muro.dintel.llegadaCercha',
+    measured: { value: 200, unit: 'mm' },
+    limit: { max: 19, unit: 'mm' },
+    stage: 'support-overlap',
+    wallIds: ['W1'],
+    roofPlaneIds: ['F1']
+  });
+});
+
 test('faldón sin nombre usa su id en la etiqueta', () => {
   const resolveFn = () => ({ findings: [{ severity: 'info', category: 'x', message: 'm' }] });
   const out = validateRoofPlanes({ ...model, roofPlanes: [{ id: 42 }] }, resolveFn);

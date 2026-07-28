@@ -30,6 +30,9 @@ function formatLimit(limit) {
   if (Object.hasOwn(limit, 'equal')) {
     return `= ${formatNumber(limit.equal)} ${limit.unit}`;
   }
+  if (Object.hasOwn(limit, 'exclusiveMin')) {
+    return `> ${formatNumber(limit.exclusiveMin)} ${limit.unit}`;
+  }
   if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max')) {
     return `${formatNumber(limit.min)}–${formatNumber(limit.max)} ${limit.unit}`;
   }

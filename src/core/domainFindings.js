@@ -31,16 +31,20 @@ function normalizeLimit(limit) {
   if (!isRecord(limit) || !nonEmptyString(limit.unit)) {
     throw new TypeError('limit debe ser null o un objeto numérico con unit.');
   }
-  const allowed = new Set(['min', 'max', 'equal', 'unit']);
+  const allowed = new Set(['min', 'max', 'equal', 'exclusiveMin', 'unit']);
   if (Object.keys(limit).some((field) => !allowed.has(field))) {
     throw new TypeError('limit contiene campos no reconocidos.');
   }
-  const bounds = ['min', 'max', 'equal'].filter((field) => Object.hasOwn(limit, field));
+  const bounds = ['min', 'max', 'equal', 'exclusiveMin']
+    .filter((field) => Object.hasOwn(limit, field));
   if (bounds.length === 0 || bounds.some((field) => !Number.isFinite(limit[field]))) {
-    throw new TypeError('limit requiere min, max o equal finito.');
+    throw new TypeError('limit requiere min, max, equal o exclusiveMin finito.');
   }
   if (Object.hasOwn(limit, 'equal') && bounds.length > 1) {
-    throw new TypeError('limit no puede mezclar equal con min/max.');
+    throw new TypeError('limit no puede mezclar equal con otros límites.');
+  }
+  if (Object.hasOwn(limit, 'exclusiveMin') && bounds.length > 1) {
+    throw new TypeError('limit no puede mezclar exclusiveMin con otros límites.');
   }
   if (Object.hasOwn(limit, 'min') && Object.hasOwn(limit, 'max') && limit.min > limit.max) {
     throw new TypeError('limit no puede tener min mayor que max.');
@@ -97,6 +101,13 @@ export function createFinding(input) {
   };
 
   if (rule) finding.rule = rule.id;
+
+  if (Object.hasOwn(input, 'stage')) {
+    if (!nonEmptyString(input.stage)) {
+      throw new TypeError('stage debe ser un string no vacío.');
+    }
+    finding.stage = input.stage;
+  }
 
   if (Object.hasOwn(input, 'measured')) {
     finding.measured = normalizeMeasured(input.measured);

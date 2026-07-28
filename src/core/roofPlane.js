@@ -30,9 +30,23 @@ import { buildRoofPurlins } from './roofPurlins.js';
 import { findRoofObstructions, applyObstructionsToRun } from './roofObstructions.js';
 import { runExtentOf, polygonBounds, edgeOverlapOnPerp } from './polygonClip.js';
 import { resolvePurlinParams } from './trussTemplates.js';
+import { createFinding } from './domainFindings.js';
 
 const EPS = 1;
 const MIN_TRAMO = 200;
+
+function shortRoofSpanFinding(wallId, stage, overlap) {
+  const measured = Math.round(Math.max(0, overlap) * 1000) / 1000;
+  return createFinding({
+    severity: 'info',
+    category: 'shortRoofSpan',
+    message: `muro ${wallId}: solape ${measured}mm en ${stage} no supera el umbral ${MIN_TRAMO}mm; candidato descartado`,
+    stage,
+    measured: { value: measured, unit: 'mm' },
+    limit: { exclusiveMin: MIN_TRAMO, unit: 'mm' },
+    wallIds: [wallId]
+  });
+}
 
 /** cos del ángulo de techo para una pendiente en % (proyección horizontal -> inclinada). */
 function cosSlope(slopePercent) {
@@ -99,10 +113,12 @@ export function resolveRoofPlane({ model, plane, paramsMap = {}, elementsById = 
     const perpValsHigh = runAxis === 'x' ? [pb.minY, pb.maxY] : [pb.minX, pb.maxX];
     const highPerp = perpValsHigh.reduce((a, b) => (Math.abs(b - perpCanal) > Math.abs(a - perpCanal) ? b : a));
     const spanDir0 = Math.sign(highPerp - perpCanal) || 1;
-    detectedHighWalls = detectHighWalls({
+    const detection = detectHighWalls({
       walls, grid, paramsMap, elementsById, runAxis, canal, perpCanal, spanDir0,
       supportElevation, polygon: plane.polygon
     });
+    detectedHighWalls = detection.wallIds;
+    findings.push(...detection.findings);
     if (!detectedHighWalls.length) {
       findings.push({ severity: 'error', category: 'highSupport', message: 'no se detectó ningún muro de apoyo alto dentro del polígono a la cota de apoyo' });
     }
@@ -137,7 +153,11 @@ export function resolveRoofPlane({ model, plane, paramsMap = {}, elementsById = 
       const [pFrom, pTo] = runExtentOf(plane.polygon, runAxis);
       tFrom = Math.max(tFrom, pFrom); tTo = Math.min(tTo, pTo);
     }
-    if (!(tTo - tFrom > MIN_TRAMO)) continue;
+    const overlap = tTo - tFrom;
+    if (!(overlap > MIN_TRAMO)) {
+      findings.push(shortRoofSpanFinding(wallId, 'support-overlap', overlap));
+      continue;
+    }
     // highThickness: se guarda para derivar la CARA INTERIOR del apoyo alto (perpHighInner) una vez
     // conocido spanDirOut, igual que perpInner hace con la canaleta.
     tramos.push({ wallHighId: wallId, runFrom: tFrom, runTo: tTo, span, perpHigh, highThickness: line.thickness });
@@ -294,6 +314,7 @@ function detectHighWalls({ walls, grid, paramsMap, elementsById, runAxis, canal,
   const [runLoP, runHiP] = runAxis === 'x' ? [pb.minX, pb.maxX] : [pb.minY, pb.maxY];
   const [perpLoP, perpHiP] = runAxis === 'x' ? [pb.minY, pb.maxY] : [pb.minX, pb.maxX];
   const ids = new Set();
+  const findings = [];
   for (const w of walls) {
     if (w.id === canal.id) continue;
     if (isWallXRun(w) !== isWallXRun(canal)) continue; // debe ser paralelo a la canaleta
@@ -313,12 +334,20 @@ function detectHighWalls({ walls, grid, paramsMap, elementsById, runAxis, canal,
     const a = runAxis === 'x' ? geo.p1.x : geo.p1.y;
     const b = runAxis === 'x' ? geo.p2.x : geo.p2.y;
     const wLo = Math.min(a, b), wHi = Math.max(a, b);
-    if (Math.min(wHi, runHiP) - Math.max(wLo, runLoP) <= MIN_TRAMO) continue;
+    const runOverlap = Math.min(wHi, runHiP) - Math.max(wLo, runLoP);
+    if (runOverlap <= MIN_TRAMO) {
+      findings.push(shortRoofSpanFinding(w.id, 'polygon-run', runOverlap));
+      continue;
+    }
     // ★ B4.6: además de caer en el bbox, el muro debe COINCIDIR con un borde real del polígono a
     // su perpendicular (un muro de un faldón vecino que asome dentro del bbox pero no forme parte
     // del contorno tiene solape 0 con el borde y se descarta).
-    if (edgeOverlapOnPerp(polygon, runAxis, perp, wLo, wHi) <= MIN_TRAMO) continue;
+    const edgeOverlap = edgeOverlapOnPerp(polygon, runAxis, perp, wLo, wHi);
+    if (edgeOverlap <= MIN_TRAMO) {
+      findings.push(shortRoofSpanFinding(w.id, 'polygon-edge', edgeOverlap));
+      continue;
+    }
     ids.add(w.id);
   }
-  return [...ids];
+  return { wallIds: [...ids], findings };
 }

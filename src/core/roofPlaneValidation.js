@@ -8,8 +8,12 @@ import { buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
 import { createFinding } from './domainFindings.js';
 
-function planeFinding(severity, category, message, roofPlaneIds) {
-  return createFinding({ severity, category, message, roofPlaneIds });
+function planeFinding(input, plane) {
+  return createFinding({
+    ...input,
+    message: `${planeLabel(plane)}: ${input.message}`,
+    roofPlaneIds: [plane.id]
+  });
 }
 
 /** Etiqueta legible del faldón: nombre si lo trae, si no su id. */
@@ -37,16 +41,15 @@ export function validateRoofPlanes(model, resolveFn = resolveRoofPlane) {
       resolved = resolveFn({ model, plane, paramsMap, elementsById, library });
     } catch (err) {
       // por qué: un findings mal formado no debe tumbar la verificación completa del modelo
-      results.push(planeFinding('error', 'plane', `${planeLabel(plane)}: error al resolver — ${err.message}`, [plane.id]));
+      results.push(planeFinding({
+        severity: 'error',
+        category: 'plane',
+        message: `error al resolver — ${err.message}`
+      }, plane));
       continue;
     }
     for (const f of resolved?.findings || []) {
-      results.push(planeFinding(
-        f.severity,
-        f.category,
-        `${planeLabel(plane)}: ${f.message}`,
-        [plane.id]
-      ));
+      results.push(planeFinding(f, plane));
     }
   }
   return results;

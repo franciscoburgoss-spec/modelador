@@ -598,8 +598,8 @@
       "bytes": 25815,
       "sha256": "ceaa2286722e57b342bc5a70a26bc4c7518f8ce03b734103d641e0df786f848f",
       "kind": "source",
-      "workspaceBytes": 26328,
-      "workspaceSha256": "c868edad16f7956ae14d9c5ec806bc34113d9ba20178c09a1ea99d448da83111",
+      "workspaceBytes": 26493,
+      "workspaceSha256": "9ea499f353b2faeaa2d653afb21eeab848cdf2cca259b84b77e367a98cf07b83",
       "changedBy": "SPEC-R7"
     },
     {
@@ -663,7 +663,10 @@
       "path": "src/core/roofPlane.js",
       "bytes": 19918,
       "sha256": "35a6673903174fc168d8425c0efb386f4f9cd4e275ade2375b7e2f49840e072b",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 20940,
+      "workspaceSha256": "8ae6a89279a851007422e203bd88c7c07c1533c7048e1a47dede541b0cf5a39a",
+      "changedBy": "SPEC-R7"
     },
     {
       "path": "src/core/roofPlaneAdapter.js",
@@ -688,9 +691,9 @@
       "bytes": 2067,
       "sha256": "8b478ab6bc6a2a06592bedb51d61c630f9430940ca96a585384a3f2aabf8d32f",
       "kind": "source",
-      "workspaceBytes": 2135,
-      "workspaceSha256": "68b4a78470a0b94fb57cf6d41b110737a2a8556a48baa34c7403cc6ecb11897b",
-      "changedBy": "SPEC-R4"
+      "workspaceBytes": 2096,
+      "workspaceSha256": "c2da851c4659ba92d856b532171eb0627ba20154f929909842d437403fcb141c",
+      "changedBy": "SPEC-R7"
     },
     {
       "path": "src/core/roofPurlins.js",
@@ -1146,7 +1149,10 @@
       "path": "tests/roofPlaneValidation.test.mjs",
       "bytes": 3055,
       "sha256": "e5774f6f3b185b852c636987e8fd5c75a0a7dd634336d8abe5de3aa1c110b97a",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 3951,
+      "workspaceSha256": "92fbf185b22fa76449a56a2aef8f3885c16aab189cb4ab3ab88e9f9f9e1f8dba",
+      "changedBy": "SPEC-R7"
     },
     {
       "path": "tests/roofPlane_polygonClip.test.mjs",
