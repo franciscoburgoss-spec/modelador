@@ -149,6 +149,55 @@ export function buildReferenceModels() {
   };
 }
 
+export function buildDxfQualityArtifacts(models = buildReferenceModels()) {
+  const {
+    casaL,
+    fx3Generated,
+    fx4Generated
+  } = models;
+  const groups = [
+    {
+      qualityFamily: 'foundations',
+      sourceFixture: 'FX-001',
+      sheets: generateFoundationSheets(casaL, { format: 'A1' })
+    },
+    {
+      qualityFamily: 'framing',
+      sourceFixture: 'FX-003',
+      sheets: generateFramingSheets(fx3Generated, { format: 'A1' })
+    },
+    {
+      qualityFamily: 'osb',
+      sourceFixture: 'FX-003',
+      sheets: generateOsbFramingSheets(fx3Generated, { format: 'A1' })
+    },
+    {
+      qualityFamily: 'truss',
+      sourceFixture: 'FX-004',
+      sheets: generateTrussSheets(fx4Generated, { format: 'A1' })
+    }
+  ];
+
+  return groups.flatMap(({ qualityFamily, sourceFixture, sheets }) => {
+    if (sheets.length === 0) {
+      throw new Error(`dxf-quality-${qualityFamily}-a1: el exportador no produjo láminas.`);
+    }
+    return sheets.map((sheet, index) => ({
+      ...artifact(
+        `dxf-quality-${qualityFamily}-a1-${index + 1}`,
+        'dxf',
+        `quality-${qualityFamily}-a1`,
+        'A1',
+        sourceFixture,
+        sheet.filename,
+        sheet.content
+      ),
+      qualityFamily,
+      sheetFormat: 'A1'
+    }));
+  });
+}
+
 export function buildReferenceArtifacts(models = buildReferenceModels()) {
   const {
     fx3,

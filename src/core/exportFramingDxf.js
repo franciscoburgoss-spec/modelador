@@ -13,6 +13,11 @@ import { assignOsbPieceCodes } from './osbModulation.js';
 import { guardExport } from './exportPolicy.js';
 import { getRoofSystems } from './roofPlaneOutputs.js';
 import { studFlangeSpan } from './trussLayout.js';
+import {
+  DXF_PAPER_MARGIN_MM,
+  estimateDxfTextWidth,
+  unionDxfEntityBounds
+} from './dxfGeometry.js';
 
 export const GAP_BETWEEN_WALLS = 1500; // mm, separación horizontal entre la elevación de un muro y el siguiente
 export const LABEL_OFFSET_Y = 300;     // mm, alto del texto de etiqueta de muro sobre su elevación
@@ -25,7 +30,6 @@ export const NIVEL_LABEL_MARGIN = 200; // mm, separación del texto de nivel Z a
 export const LEVEL_SYMBOL_W = 160;   // mm, ancho de la base del símbolo de nivel (triángulo)
 export const LEVEL_SYMBOL_H = 140;   // mm, alto del símbolo de nivel
 export const LEVEL_SYMBOL_GAP = 100; // mm, separación entre línea/símbolo/sigla/label
-const TEXT_CHAR_WIDTH_FACTOR = 0.65; // ancho aproximado de un carácter, como fracción de la altura de texto
 
 // --- jerarquía de tamaños de texto ---------------------------------------------------------
 // Valores en mm de ESPACIO MODELO. Los viewports de lámina (exportSheetsDxf.js) muestran esto a
@@ -38,50 +42,9 @@ export const TEXT_HEIGHT_TEXT = 150;     // tags de pieza, relleno agrupado
 export const TEXT_HEIGHT_COTA = 125;     // números de cota (el texto más denso/repetido)
 
 export function estimateTextWidth(str, height) {
-  return sanitizeDxfText(str).length * height * TEXT_CHAR_WIDTH_FACTOR;
+  return estimateDxfTextWidth(sanitizeDxfText(str), height);
 }
 export const TICK_HALF = 100;          // mm, media longitud de las marcas de cota
-
-// --- bbox real de entidades (Sesión 16, bug 2) -------------------------------------------------
-// Reemplaza las fórmulas de extent escritas a mano: recorre las entidades YA generadas (mismas
-// que se dibujan) y une sus cajas — así el extent nunca puede quedar más chico que lo dibujado.
-// Cada entidad es un string con pares código/valor DXF (line/text/circle/rectPolyline/
-// closedPolyline de este módulo); se parsea genéricamente por tipo de registro.
-const EXTENT_PADDING = 100; // mm, margen pequeño para que nada quede pegado al borde del viewport
-
-function parseDxfRecords(entityStr) {
-  const tokens = entityStr.split('\n');
-  const records = [];
-  let cur = null;
-  for (let i = 0; i + 1 < tokens.length; i += 2) {
-    const code = tokens[i], value = tokens[i + 1];
-    if (code === '0') { cur = { type: value, f: {} }; records.push(cur); continue; }
-    if (cur) cur.f[code] = value;
-  }
-  return records;
-}
-
-/** Bbox de UNA entidad (string DXF ya construido con line/text/circle/rectPolyline/
- * closedPolyline). Los textos se estiman con estimateTextWidth y su altura real (rotación 0/90,
- * los únicos ángulos usados hoy en estos exportadores). */
-function entityBBox(entityStr) {
-  let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-  const add = (x, y) => { if (x < xMin) xMin = x; if (x > xMax) xMax = x; if (y < yMin) yMin = y; if (y > yMax) yMax = y; };
-  for (const { type, f } of parseDxfRecords(entityStr)) {
-    if (type === 'TEXT') {
-      const x = parseFloat(f['10']), y = parseFloat(f['20']), h = parseFloat(f['40']) || 0;
-      const rot = ((parseFloat(f['50']) || 0) % 180 + 180) % 180;
-      const w = estimateTextWidth(f['1'] ?? '', h);
-      if (rot < 45 || rot > 135) { add(x, y); add(x + w, y + h); } else { add(x, y); add(x + h, y + w); }
-      continue;
-    }
-    for (const code of ['10', '11', '12', '13']) {
-      const yCode = String(Number(code) + 10);
-      if (f[code] !== undefined && f[yCode] !== undefined) add(parseFloat(f[code]), parseFloat(f[yCode]));
-    }
-  }
-  return { xMin, xMax, yMin, yMax };
-}
 
 // Códigos DXF de coordenada X / Y en las entidades que genera este módulo (LINE 10/11, TEXT 10,
 // CIRCLE 10, SOLID 10..13, VERTEX 10). Se usan para trasladar entidades YA generadas sin tener
@@ -106,19 +69,14 @@ export function translateEntities(entities, dx = 0, dy = 0) {
   });
 }
 
-/** Bbox de un conjunto de entidades (une todas las cajas), con padding — es el extent real de lo
- * que efectivamente se dibuja. Vacío → extent nulo en torno al origen. */
-export function unionEntitiesExtent(entities, padding = EXTENT_PADDING) {
-  let xMin = Infinity, xMax = -Infinity, yMin = Infinity, yMax = -Infinity;
-  for (const e of entities) {
-    const b = entityBBox(e);
-    if (b.xMin < xMin) xMin = b.xMin;
-    if (b.xMax > xMax) xMax = b.xMax;
-    if (b.yMin < yMin) yMin = b.yMin;
-    if (b.yMax > yMax) yMax = b.yMax;
-  }
-  if (!Number.isFinite(xMin)) return { xMin: -padding, xMax: padding, yMin: -padding, yMax: padding };
-  return { xMin: xMin - padding, xMax: xMax + padding, yMin: yMin - padding, yMax: yMax + padding };
+/** Bbox de las entidades ya dibujadas más un margen expresado en milímetros de papel. */
+export function unionEntitiesExtent(entities, options = {}) {
+  const normalized = typeof options === 'number' ? { padding: options } : options;
+  return unionDxfEntityBounds(entities, {
+    padding: normalized.padding ?? 0,
+    paperMargin: normalized.paperMargin ?? DXF_PAPER_MARGIN_MM,
+    scale: normalized.scale ?? 50
+  });
 }
 
 // --- estándar de capas: color ACI (AutoCAD Color Index) + tipo de línea + espesor -------------
@@ -665,9 +623,9 @@ export function wallFramingEntities(wall, grid, layout, studProfile, trackProfil
  * y relleno agrupado — para saber exactamente cuánto espacio real ocupa (y no superponer la
  * siguiente elevación, ni al dibujar todas juntas en un archivo ni al armar un viewport a 1:25).
  * Se calcula generando las mismas entidades a xOffset=0 y uniendo su bbox real (+ padding). */
-export function computeWallViewExtent(wall, layout, grid, studProfile, trackProfile, axesInfo) {
+export function computeWallViewExtent(wall, layout, grid, studProfile, trackProfile, axesInfo, scale = 50) {
   const entities = wallFramingEntities(wall, grid, layout, studProfile, trackProfile, 0, axesInfo);
-  return unionEntitiesExtent(entities);
+  return unionEntitiesExtent(entities, { scale });
 }
 
 /** Layout + geometría a partir de la geometría real del muro y su despiece YA GUARDADO
@@ -800,13 +758,13 @@ export function axisGroupEntities(group, grid, xOffset = 0) {
 }
 
 /** Bbox real de la elevación de un eje — mismas entidades que se dibujan, a xOffset=0. */
-export function computeAxisGroupExtent(group, grid) {
-  return unionEntitiesExtent(axisGroupEntities(group, grid, 0));
+export function computeAxisGroupExtent(group, grid, scale = 50) {
+  return unionEntitiesExtent(axisGroupEntities(group, grid, 0), { scale });
 }
 
 /** Resuelve un entry por muro con despiece generado (layout + perfiles + extent propio). Es el
  * insumo de `groupEntriesByAxis`; el extent por muro solo se usa como respaldo/diagnóstico. */
-export function resolveWallEntries(model) {
+export function resolveWallEntries(model, scale = 50) {
   const { grid, elements, library } = model;
   const paramsMap = buildParamsMap(model.projectParams);
   const elementsById = buildElementsById(elements);
@@ -823,7 +781,7 @@ export function resolveWallEntries(model) {
     const axesInfo = interveningAxes(grid, layout.isXRun, layout.worldMin, layout.worldMax);
     // ★ s5-B — el extent NO recibe las soleras: la banda cae dentro de la altura del muro, así
     // que no lo agranda (verificado con test, no asumido).
-    const extent = computeWallViewExtent(wall, layout, grid, studProfile, trackProfile, axesInfo);
+    const extent = computeWallViewExtent(wall, layout, grid, studProfile, trackProfile, axesInfo, scale);
     const ledgers = roofSystems.flatMap(s => (s.supportLedgers || []).filter(l => l.wallId === wall.id));
     entries.push({ wall, layout, studProfile, trackProfile, axesInfo, extent, ledgers });
   }
@@ -831,9 +789,9 @@ export function resolveWallEntries(model) {
 }
 
 /** Grupos de elevación por eje del modelo completo, ya con su extent de dibujo. */
-export function resolveAxisGroups(model) {
-  const groups = groupEntriesByAxis(resolveWallEntries(model), model.grid);
-  for (const g of groups) g.extent = computeAxisGroupExtent(g, model.grid);
+export function resolveAxisGroups(model, scale = 50) {
+  const groups = groupEntriesByAxis(resolveWallEntries(model, scale), model.grid);
+  for (const g of groups) g.extent = computeAxisGroupExtent(g, model.grid, scale);
   return groups;
 }
 

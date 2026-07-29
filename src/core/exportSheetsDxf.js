@@ -15,7 +15,7 @@
 // arrancan en 0x1000 — muy por sobre el máximo (0x330) usado en la plantilla fija, para no
 // colisionar nunca.
 import {
-  line, text, circle, rectPolyline, wallFramingEntities, resolveWallLayout,
+  line, text, wallFramingEntities, resolveWallLayout,
   estimateTextWidth, wallLevelsWithinRange, sanitizeDxfText, interveningAxes,
   resolveWallEntries, groupEntriesByAxis, axisGroupEntities,
   computeAxisGroupExtent, LAYERS, LABEL_OFFSET_Y, AXIS_MARGIN, H_COTA_Y,
@@ -38,6 +38,35 @@ import { getWallDisplayName } from './naming.js';
 import { wallOsbElevationEntities, computeOsbViewExtent } from './exportOsbDxf.js';
 import { trussElevationEntities, computeTrussViewExtent } from './exportTrussDxf.js';
 import { guardExport } from './exportPolicy.js';
+import {
+  DXF_PAPER_MARGIN_MM,
+  findDxfCollisions,
+  unionDxfEntityBounds
+} from './dxfGeometry.js';
+import {
+  DxfPreflightError,
+  assertPackableDxfEntries,
+  assertViewportContainsDxfEntities
+} from './dxfPreflight.js';
+
+export { DxfPreflightError };
+
+export function formatDxfPreflightError(error) {
+  if (!(error instanceof DxfPreflightError)) return null;
+  const details = error.issues.map((issue) => `- ${issue.message}`).join('\n');
+  return `No se generó la lámina DXF porque el preflight detectó problemas:\n${details}`;
+}
+
+function generateSheetsForDownload(generator) {
+  try {
+    return generator();
+  } catch (error) {
+    const message = formatDxfPreflightError(error);
+    if (!message) throw error;
+    alert(message);
+    return null;
+  }
+}
 
 // --- formato de lámina -------------------------------------------------------------------------
 // ★ Sesión 22: la geometría del papel (marco, cajetín, leyenda, área de dibujo) ya no vive acá
@@ -55,9 +84,10 @@ function nextHandle() { return (handleCounter++).toString(16).toUpperCase(); }
  * rótulo de vista y la escala gráfica. */
 export function packWallsIntoSheets(entries, opts = {}) {
   const layout = opts.layout || sheetLayout(DEFAULT_FORMAT);
-  const scale = opts.scale || SCALE;
+  const scale = opts.scale ?? SCALE;
   const { draw, viewLabelH, k } = layout;
   const gap = VIEWPORT_GAP * k;
+  assertPackableDxfEntries(entries, { layout, scale });
 
   const sheets = [];
   let sheet = [];
@@ -75,8 +105,6 @@ export function packWallsIntoSheets(entries, opts = {}) {
     const paperH = (extent.yMax - extent.yMin) / scale;
     const slotH = paperH + viewLabelH; // el rótulo de vista va debajo y no puede pisar la fila siguiente
 
-    // si ni siquiera cabe solo en el ancho de la lámina, se deja pasar igual (ocupa toda la fila) —
-    // mejor una lámina con un viewport que sobresale levemente que perder la vista silenciosamente.
     if (cursorX > draw.x0 && cursorX + paperW > draw.x1) {
       cursorTop -= (rowHeight + gap);
       cursorX = draw.x0;
@@ -148,6 +176,7 @@ function contentViewportEntity(id, paperX, paperY, paperW, paperH, viewCenterX, 
     '10', cx.toFixed(3), '20', cy.toFixed(3), '30', '0',
     '40', paperW.toFixed(3), '41', paperH.toFixed(3),
     '68', '1', '69', String(id),
+    '90', '16384',
     '12', viewCenterX.toFixed(3), '22', viewCenterY.toFixed(3), '13', '0', '23', '0',
     '14', '10', '24', '10', '15', '10', '25', '10',
     '16', '0', '26', '0', '36', '1', '17', '0', '27', '0', '37', '0',
@@ -156,17 +185,16 @@ function contentViewportEntity(id, paperX, paperY, paperW, paperH, viewCenterX, 
   ].join('\n');
 }
 
-/** Borde del viewport dibujado en el propio papel (además del "clip" del VIEWPORT) para que se
- * vea claramente el recuadro incluso si el visor no resalta los bordes de viewport por defecto. */
-function viewportBorder(paperX, paperY, paperW, paperH) {
-  return rectPolyline('VIEWPORTS', paperX, paperY, paperX + paperW, paperY + paperH);
-}
-
 // --- "upgrade" de entidades: nuestros helpers (line/text/circle/rectPolyline) generan texto
 // estilo R12 simple (sin handle/owner/subclass); el espacio papel de este archivo necesita esos
 // tres datos en cada entidad. rectPolyline se descompone en 4 LINE (mismo resultado visual: un
 // contorno cerrado) para no tener que lidiar con el formato de VERTEX/SEQEND en R2000. --------
-const SUBCLASS_BY_TYPE = { LINE: 'AcDbLine', TEXT: 'AcDbText', CIRCLE: 'AcDbCircle' };
+const SUBCLASS_BY_TYPE = {
+  LINE: 'AcDbLine',
+  TEXT: 'AcDbText',
+  CIRCLE: 'AcDbCircle',
+  SOLID: 'AcDbTrace'
+};
 
 function polylineToLineStrings(entityText) {
   const parts = entityText.split('\n');
@@ -194,10 +222,19 @@ function upgradeEntity(entityText, ownerHandle, isPaperSpace = false) {
   const layerName = parts[3];
   const rest = parts.slice(4);
   const paperFlag = isPaperSpace ? ['67', '1'] : [];
+  const subclass = SUBCLASS_BY_TYPE[type];
+  if (!subclass) {
+    throw new DxfPreflightError([{
+      severity: 'error',
+      code: 'UNSUPPORTED_ENTITY',
+      message: `La entidad DXF ${type} no tiene promoción AC1015.`,
+      entityType: type
+    }]);
+  }
   return [
     '0', type, '5', nextHandle(), '330', ownerHandle, '100', 'AcDbEntity',
     ...paperFlag,
-    '8', layerName, '100', SUBCLASS_BY_TYPE[type],
+    '8', layerName, '100', subclass,
     ...rest
   ].join('\n');
 }
@@ -232,11 +269,12 @@ export function generateSheetDxf(sheetEntries, sheetIndex, totalSheets, grid, op
     contentBuilder = null,
     projectInfo = null,
     criteria = [],
+    qualityReport = null,
     format = DEFAULT_FORMAT
   } = options;
   const info = resolveProjectInfo(projectInfo);
   const layout = options.layout || sheetLayout(resolveFormat(format), info.revisiones.length);
-  const scale = options.scale || layout.defaultScale;
+  const scale = options.scale ?? layout.defaultScale;
   handleCounter = 0x1000; // handles nuevos por archivo — cada lámina es un archivo independiente
 
   // espacio modelo: geometría real de cada vista, desplazada para no superponerse entre sí
@@ -246,10 +284,23 @@ export function generateSheetDxf(sheetEntries, sheetIndex, totalSheets, grid, op
   const viewRows = [];
   const wallLabels = [];
   const viewLabelRaw = [];
+  const collisionReport = [];
 
   sheetEntries.forEach((entry, i) => {
     const { extent, paperX, paperY, paperW, paperH } = entry;
-    modelSpaceRaw.push(...entitiesBuilder(entry, modelCursorX));
+    const builtEntities = entitiesBuilder(entry, modelCursorX);
+    const placedExtent = {
+      xMin: modelCursorX + extent.xMin,
+      xMax: modelCursorX + extent.xMax,
+      yMin: extent.yMin,
+      yMax: extent.yMax
+    };
+    assertViewportContainsDxfEntities(builtEntities, placedExtent, { entryIndex: i });
+    collisionReport.push(...findDxfCollisions(builtEntities).map((collision) => ({
+      ...collision,
+      entryIndex: i
+    })));
+    modelSpaceRaw.push(...builtEntities);
     const label = labelBuilder(entry);
     const viewTag = `D${i + 1}`;
     wallLabels.push(label);
@@ -259,9 +310,6 @@ export function generateSheetDxf(sheetEntries, sheetIndex, totalSheets, grid, op
     const viewCenterY = (extent.yMin + extent.yMax) / 2;
     const viewHeight = extent.yMax - extent.yMin;
     viewportEntities.push(contentViewportEntity(entry.viewportId, paperX, paperY, paperW, paperH, viewCenterX, viewCenterY, viewHeight));
-    for (const borderLine of polylineToLineStrings(viewportBorder(paperX, paperY, paperW, paperH))) {
-      viewportEntities.push(upgradeEntity(borderLine, PAPER_SPACE_OWNER, true));
-    }
     viewLabelRaw.push(...viewLabelEntities(viewTag, label, paperX, paperY, paperW, scale, layout.k));
 
     modelCursorX += (extent.xMax - extent.xMin) + MODEL_GAP_BETWEEN_WALLS;
@@ -296,7 +344,18 @@ export function generateSheetDxf(sheetEntries, sheetIndex, totalSheets, grid, op
     '0', 'ENDSEC'
   ].join('\n');
 
-  return [buildPrefix(scale), entitiesSection, buildSuffix(layout.paperW, layout.paperH)].join('\n');
+  const modelBounds = unionDxfEntityBounds(modelSpaceRaw, {
+    paperMargin: DXF_PAPER_MARGIN_MM,
+    scale
+  });
+  if (qualityReport) {
+    qualityReport.collisionCount = collisionReport.length;
+    qualityReport.collisionsByKind = collisionReport.reduce((counts, collision) => ({
+      ...counts,
+      [collision.kind]: (counts[collision.kind] ?? 0) + 1
+    }), {});
+  }
+  return [buildPrefix(scale, modelBounds), entitiesSection, buildSuffix(layout.paperW, layout.paperH)].join('\n');
 }
 
 /** Resuelve formato + escala + layout una sola vez por exportación: el empaquetado y el dibujo
@@ -305,7 +364,7 @@ export function resolveSheetSetup(model, opts = {}) {
   const info = resolveProjectInfo(model.projectInfo);
   const format = resolveFormat(opts.format || info.formato || DEFAULT_FORMAT);
   const layout = sheetLayout(format, info.revisiones.length);
-  const scale = opts.scale || info.escala || layout.defaultScale;
+  const scale = opts.scale ?? info.escala ?? layout.defaultScale;
   const criteria = collectApplicableCriteria(model, []);
   return { info, format, layout, scale, criteria };
 }
@@ -322,6 +381,7 @@ function buildSheets(model, entries, { filePrefix, variant, options, setup }) {
   const totalSheets = sheets.length;
   return sheets.map((sheetEntries, sheetIndex) => {
     sheetEntries.forEach((e, i) => { e.viewportId = i + 2; }); // id=1 es el viewport principal
+    const quality = {};
     return {
       filename: `${filePrefix}_${layout.key}_lamina${sheetIndex + 1}.dxf`,
       content: generateSheetDxf(sheetEntries, sheetIndex, totalSheets, model.grid, {
@@ -329,27 +389,29 @@ function buildSheets(model, entries, { filePrefix, variant, options, setup }) {
         legendVariant: variant,
         projectInfo: info,
         criteria,
+        qualityReport: quality,
         layout,
         scale,
         format: layout.key
-      })
+      }),
+      quality
     };
   });
 }
 
 /** Resuelve un entry por EJE (no por muro): todos los muros que corren sobre el mismo eje van a
  * una sola elevación, con su extent de dibujo real (ver exportFramingDxf.js, sesión 18). */
-function resolveEntriesForSheets(model) {
-  const groups = groupEntriesByAxis(resolveWallEntries(model), model.grid);
-  return groups.map(group => ({ group, extent: computeAxisGroupExtent(group, model.grid) }));
+function resolveEntriesForSheets(model, scale) {
+  const groups = groupEntriesByAxis(resolveWallEntries(model, scale), model.grid);
+  return groups.map(group => ({ group, extent: computeAxisGroupExtent(group, model.grid, scale) }));
 }
 
 /** Genera todas las láminas necesarias — un archivo DXF por lámina, nunca dos láminas en el
  * mismo espacio papel. Devuelve `[]` si ningún muro tiene despiece de metalcon generado. */
 export function generateFramingSheets(model, opts = {}) {
-  const entries = resolveEntriesForSheets(model);
-  if (!entries.length) return [];
   const setup = resolveSheetSetup(model, opts);
+  const entries = resolveEntriesForSheets(model, setup.scale);
+  if (!entries.length) return [];
   return buildSheets(model, entries, {
     filePrefix: 'tabiqueria', variant: 'framing', setup,
     options: {
@@ -364,7 +426,8 @@ export function generateFramingSheets(model, opts = {}) {
 export function downloadFramingSheets(model, opts = {}) {
   const policy = guardExport(model, 'dxf-framing-sheets');
   if (!policy.allowed) return false;
-  const sheets = generateFramingSheets(model, opts);
+  const sheets = generateSheetsForDownload(() => generateFramingSheets(model, opts));
+  if (!sheets) return false;
   if (!sheets.length) {
     alert('No hay muros con despiece de metalcon generado (Modulación de metalcon → Generar despiece).');
     return false;
@@ -387,7 +450,7 @@ export function downloadFramingSheets(model, opts = {}) {
  * y misma plantilla de lámina que la tabiquería, pero solo para muros con wall.osbCourses
  * generado, sin studProfile/trackProfile (no aplica: la elevación OSB dibuja el contorno de
  * referencia del muro, no montantes reales — ver core/exportOsbDxf.js). */
-function resolveOsbEntriesForSheets(model) {
+function resolveOsbEntriesForSheets(model, scale) {
   const { grid, elements } = model;
   const paramsMap = buildParamsMap(model.projectParams);
   const elementsById = buildElementsById(elements);
@@ -398,7 +461,7 @@ function resolveOsbEntriesForSheets(model) {
     if (!layout) continue;
     const gap = wall.osbGap ?? model.osbDefaults?.gap ?? 5;
     const axesInfo = interveningAxes(grid, layout.isXRun, layout.worldMin, layout.worldMax);
-    const extent = computeOsbViewExtent(wall, layout, grid, axesInfo, gap);
+    const extent = computeOsbViewExtent(wall, layout, grid, axesInfo, gap, scale);
     entries.push({ wall, layout, axesInfo, extent, gap });
   }
   return entries;
@@ -408,9 +471,9 @@ function resolveOsbEntriesForSheets(model) {
  * tabiquería (mismo criterio que exportOsbDxf.js: elevación aparte, sin montantes/dintel/
  * antepecho reales). Devuelve `[]` si ningún muro tiene modulación de placas OSB generada. */
 export function generateOsbFramingSheets(model, opts = {}) {
-  const entries = resolveOsbEntriesForSheets(model);
-  if (!entries.length) return [];
   const setup = resolveSheetSetup(model, opts);
+  const entries = resolveOsbEntriesForSheets(model, setup.scale);
+  if (!entries.length) return [];
   return buildSheets(model, entries, {
     filePrefix: 'osb', variant: 'osb', setup,
     options: {
@@ -431,7 +494,8 @@ export function generateOsbFramingSheets(model, opts = {}) {
 export function downloadOsbFramingSheets(model, opts = {}) {
   const policy = guardExport(model, 'dxf-osb-sheets');
   if (!policy.allowed) return false;
-  const sheets = generateOsbFramingSheets(model, opts);
+  const sheets = generateSheetsForDownload(() => generateOsbFramingSheets(model, opts));
+  if (!sheets) return false;
   if (!sheets.length) {
     alert('No hay muros con modulación de placas OSB generada (Modulación de placas OSB → Generar).');
     return false;
@@ -455,20 +519,20 @@ export function downloadOsbFramingSheets(model, opts = {}) {
  * sistemas con `trussGeometry.resolved` y al menos una cercha posicionada. `systemIndex` es el
  * índice dentro de esta lista filtrada — lo necesita `trussElevationEntities` para el título
  * "CERCHA TIPO - SISTEMA N". */
-function resolveTrussEntriesForSheets(model) {
+function resolveTrussEntriesForSheets(model, scale) {
   const systems = getRoofSystems(model).filter((s) => s.trussGeometry?.resolved && s.trussPositions?.length);
   return systems.map((system, systemIndex) => ({
     system, systemIndex,
-    extent: computeTrussViewExtent(system, systemIndex, model.library, model)
+    extent: computeTrussViewExtent(system, systemIndex, model.library, model, scale)
   }));
 }
 
 /** Genera todas las láminas de cerchas — un archivo DXF por lámina, separado de tabiquería/OSB.
  * Devuelve `[]` si ningún sistema de techumbre tiene geometría generada. */
 export function generateTrussSheets(model, opts = {}) {
-  const entries = resolveTrussEntriesForSheets(model);
-  if (!entries.length) return [];
   const setup = resolveSheetSetup(model, opts);
+  const entries = resolveTrussEntriesForSheets(model, setup.scale);
+  if (!entries.length) return [];
   return buildSheets(model, entries, {
     filePrefix: 'cerchas', variant: 'truss', setup,
     options: {
@@ -482,7 +546,8 @@ export function generateTrussSheets(model, opts = {}) {
 export function downloadTrussSheets(model, opts = {}) {
   const policy = guardExport(model, 'dxf-truss-sheets');
   if (!policy.allowed) return false;
-  const sheets = generateTrussSheets(model, opts);
+  const sheets = generateSheetsForDownload(() => generateTrussSheets(model, opts));
+  if (!sheets) return false;
   if (!sheets.length) {
     alert('No hay sistemas de techumbre generados (Techumbre — cerchas de un agua → Generar).');
     return false;

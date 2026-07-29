@@ -14,14 +14,19 @@
 // `text()` pasa por sanitizeDxfText).
 
 import {
-  line, text, circle, closedPolyline, drawTable, estimateTextWidth,
+  line, text, circle, closedPolyline, drawTable,
   TEXT_HEIGHT_TITLE, TEXT_HEIGHT_SUBTITLE, TEXT_HEIGHT_TEXT, TEXT_HEIGHT_COTA,
-  TICK_HALF, BUBBLE_R
+  TICK_HALF, BUBBLE_R, unionEntitiesExtent
 } from './exportFramingDxf.js';
 import { resolveFoundation } from './foundationGeometry.js';
 import { buildParamsMap } from './projectParams.js';
 import { buildElementsById } from './elementReferences.js';
-import { generateSheetDxf, packWallsIntoSheets, resolveSheetSetup } from './exportSheetsDxf.js';
+import {
+  formatDxfPreflightError,
+  generateSheetDxf,
+  packWallsIntoSheets,
+  resolveSheetSetup
+} from './exportSheetsDxf.js';
 import { guardExport } from './exportPolicy.js';
 
 // --- constantes de dibujo (mm, espacio modelo) ------------------------------------------------
@@ -252,18 +257,6 @@ function planEntities(entry, xOffset) {
   return entities;
 }
 
-function planExtent(entry) {
-  const { bounds } = entry;
-  const w = bounds.xMax - bounds.xMin, h = bounds.yMax - bounds.yMin;
-  const back = BUBBLE_OFF + BUBBLE_R + 200;
-  return {
-    xMin: -back,
-    xMax: Math.max(w + AXIS_EXT + 400, estimateTextWidth('PLANTA DE FUNDACIONES', TEXT_HEIGHT_TITLE)),
-    yMin: -back,
-    yMax: h + AXIS_EXT + TITLE_GAP + TEXT_HEIGHT_TITLE + 200
-  };
-}
-
 // --- vista 2: cortes tipo ---------------------------------------------------------------------
 
 /** Rectángulos del corte tipo (relativos al NPT: y=0 es el NPT del nivel base). */
@@ -336,24 +329,6 @@ function sectionEntities(entry, xOffset) {
   return entities;
 }
 
-function sectionExtent(type) {
-  const { rects, halfMax, yBottom, yTop } = sectionGeom(type);
-  const width = 2 * halfMax + 2 * SECTION_MARGIN;
-  const sc = rects.find((r) => r.name === 'sobrecimiento');
-  const titleY = yTop + (sc ? 1100 : 700);
-  const labelWidth = Math.max(
-    estimateTextWidth(`CORTE TIPO ${type.tag}`, TEXT_HEIGHT_TITLE),
-    estimateTextWidth(`Cimiento corrido - ${type.section} (${type.count} un.)`, TEXT_HEIGHT_TEXT),
-    estimateTextWidth(`DIM. ${type.dimensions}`, TEXT_HEIGHT_TEXT)
-  );
-  return {
-    xMin: 0,
-    xMax: Math.max(width, labelWidth),
-    yMin: yBottom - 900,
-    yMax: titleY + TEXT_HEIGHT_TITLE + 400
-  };
-}
-
 // --- vista 3: cuadro de fundaciones -----------------------------------------------------------
 
 const SCHEDULE_COLUMNS = [
@@ -396,16 +371,6 @@ function scheduleEntities(entry, xOffset) {
   ];
 }
 
-function scheduleExtent(types) {
-  const { width, height } = scheduleTable(types, 0, 0);
-  return {
-    xMin: 0,
-    xMax: Math.max(width, estimateTextWidth('CUADRO DE FUNDACIONES', TEXT_HEIGHT_TITLE)),
-    yMin: -height - 300 - TEXT_HEIGHT_TEXT - 200,
-    yMax: TEXT_HEIGHT_TITLE * 2 + 300
-  };
-}
-
 // --- armado de láminas ------------------------------------------------------------------------
 
 const ENTITY_BUILDERS = {
@@ -421,33 +386,34 @@ const LABEL_BUILDERS = {
 };
 
 /** Entries (uno por viewport) de la lámina de fundaciones: planta + un corte por tipo + cuadro. */
-export function resolveFoundationSheetEntries(model) {
+export function resolveFoundationSheetEntries(model, scale = 50) {
   const { items, types } = resolveFoundationTypes(model);
   if (!items.length) return [];
 
   const bounds = planBounds(items);
   const plan = { kind: 'plan', items, bounds, grid: model.grid };
-  plan.extent = planExtent(plan);
-
-  return [
+  const entries = [
     plan,
-    ...types.map((type) => ({ kind: 'section', type, extent: sectionExtent(type) })),
-    { kind: 'schedule', types, extent: scheduleExtent(types) }
+    ...types.map((type) => ({ kind: 'section', type })),
+    { kind: 'schedule', types }
   ];
+  return entries.map((entry) => ({
+    ...entry,
+    extent: unionEntitiesExtent(ENTITY_BUILDERS[entry.kind](entry, 0), { scale })
+  }));
 }
 
 /** Genera las láminas A1 de fundaciones — un archivo DXF por lámina. `[]` si no hay fundaciones
  *  resolubles en el modelo. */
 export function generateFoundationSheets(model, opts = {}) {
-  const entries = resolveFoundationSheetEntries(model);
-  if (!entries.length) return [];
-
   const {
     info,
     layout,
     scale,
     criteria
   } = resolveSheetSetup(model, opts);
+  const entries = resolveFoundationSheetEntries(model, scale);
+  if (!entries.length) return [];
   const sheets = packWallsIntoSheets(entries, { layout, scale });
   const totalSheets = sheets.length;
   const options = {
@@ -460,9 +426,14 @@ export function generateFoundationSheets(model, opts = {}) {
 
   return sheets.map((sheetEntries, sheetIndex) => {
     sheetEntries.forEach((e, i) => { e.viewportId = i + 2; });
+    const quality = {};
     return {
       filename: `fundaciones_${layout.key}_lamina${sheetIndex + 1}.dxf`,
-      content: generateSheetDxf(sheetEntries, sheetIndex, totalSheets, model.grid, options)
+      content: generateSheetDxf(sheetEntries, sheetIndex, totalSheets, model.grid, {
+        ...options,
+        qualityReport: quality
+      }),
+      quality
     };
   });
 }
@@ -470,7 +441,15 @@ export function generateFoundationSheets(model, opts = {}) {
 export function downloadFoundationSheets(model, opts = {}) {
   const policy = guardExport(model, 'dxf-foundation');
   if (!policy.allowed) return false;
-  const sheets = generateFoundationSheets(model, opts);
+  let sheets;
+  try {
+    sheets = generateFoundationSheets(model, opts);
+  } catch (error) {
+    const message = formatDxfPreflightError(error);
+    if (!message) throw error;
+    alert(message);
+    return false;
+  }
   if (!sheets.length) {
     alert('No hay fundaciones en el modelo (Agregar fundacion o Herramientas -> Generar fundaciones desde muros).');
     return false;

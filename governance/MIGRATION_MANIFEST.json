@@ -432,7 +432,10 @@
       "path": "src/core/dxfTemplateAC1015.js",
       "bytes": 13296,
       "sha256": "ef3b717c8de1c7bcafea63cac42b161b2f4e005db84013b75296de2670eb9d2e",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 13914,
+      "workspaceSha256": "f3832968ca9510414a43c9134e72715f442bb7889b1a80d4ff3c7cc3605dee02",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "src/core/elementBounds.js",
@@ -502,45 +505,45 @@
       "bytes": 20226,
       "sha256": "c252fd22276ef29da9510c53ac7d548d5de61d1a826d0c881322b056f20a6c19",
       "kind": "source",
-      "workspaceBytes": 20426,
-      "workspaceSha256": "647d4ed736d66cf94b27555c502b1b9e0025c15cb41c34c64a954f46bfab0b44",
-      "changedBy": "SPEC-R8"
+      "workspaceBytes": 19443,
+      "workspaceSha256": "d272b774153489e1c194218e85a246d18a124f40938f6b6c729dd5fd51ae8152",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "src/core/exportFramingDxf.js",
       "bytes": 44393,
       "sha256": "e1cde465298beb02ae6110c29881f384211bbfd7cc9529270df85658b0c16289",
       "kind": "source",
-      "workspaceBytes": 45226,
-      "workspaceSha256": "2a8bdc6f0ca81dd55d30423f4dc1860c6e1ea1910b64e76d1df9ad19fe738a96",
-      "changedBy": "SPEC-R6"
+      "workspaceBytes": 42883,
+      "workspaceSha256": "a132ec6180af01b4f72dc558762fc5ac8a9c3d6a2787b6959c54df2130d4fb18",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "src/core/exportOsbDxf.js",
       "bytes": 7114,
       "sha256": "6581868d5aa1735b1a479c68ee1f727c21aaf3d06632d86d2e642573923e2fc0",
       "kind": "source",
-      "workspaceBytes": 7157,
-      "workspaceSha256": "735c922a125574c4e05bab3a884762814e72c09bb5e2205157cf7d39406f2243",
-      "changedBy": "SPEC-R5"
+      "workspaceBytes": 7180,
+      "workspaceSha256": "607d569ca20802692992f0234f43a25c7e105cb6a9bc184e8650708fc8a3148a",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "src/core/exportSheetsDxf.js",
       "bytes": 21862,
       "sha256": "b1c0c222eae9a0318ea4a70a6540711495e22ff638e0d0e66fba10d6d035d1b8",
       "kind": "source",
-      "workspaceBytes": 22375,
-      "workspaceSha256": "c3fa71aa845016401697bf81d8baaaa4d19a505250453c07adf0a8009a041797",
-      "changedBy": "SPEC-R8"
+      "workspaceBytes": 23942,
+      "workspaceSha256": "25500a7cd317c3ef0fdb5e076babf4b43f4a239ef80599fd6e9673ee1e91f55d",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "src/core/exportTrussDxf.js",
       "bytes": 15738,
       "sha256": "e22dcaa441eb974efa8d18e0c54fbc3b1b0626920c0b88137c50f84f2f776b16",
       "kind": "source",
-      "workspaceBytes": 15789,
-      "workspaceSha256": "a87dfef5d9547f4f28db3632bd1f1431ad9435f05bf7eab9114c6a1a071bd4c1",
-      "changedBy": "SPEC-002"
+      "workspaceBytes": 15812,
+      "workspaceSha256": "ae194ef85f9329272b1455c3571ab2360357088ebb153f7756369261f763b0ff",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "src/core/foundationGeneration.js",
@@ -1026,7 +1029,10 @@
       "path": "tests/exportSheetsDxf.test.mjs",
       "bytes": 5609,
       "sha256": "141c45742e2c7a0887f41fe3bed0c258051689d6e3299be6948fa72db4d75e08",
-      "kind": "test"
+      "kind": "test",
+      "workspaceBytes": 9138,
+      "workspaceSha256": "9ec59a32e4f74cc1170ae5097e3644712a34a5010623dd09c0566db4913ca84d",
+      "changedBy": "SPEC-R9"
     },
     {
       "path": "tests/exportTrussSheetsDxf.test.mjs",

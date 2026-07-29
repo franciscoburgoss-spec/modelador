@@ -1,6 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { generateFramingSheets } from '../src/core/exportSheetsDxf.js';
+import {
+  DxfPreflightError,
+  formatDxfPreflightError,
+  generateFramingSheets,
+  generateSheetDxf,
+  packWallsIntoSheets
+} from '../src/core/exportSheetsDxf.js';
+import { line } from '../src/core/exportFramingDxf.js';
+import { sheetLayout } from '../src/core/sheetFormats.js';
 import { computeStudLayout } from '../src/core/metalconModulation.js';
 import { METALCON_PROFILES } from '../src/core/metalconCatalog.js';
 
@@ -47,6 +55,8 @@ test('exportSheetsDxf: un muro simple genera una lámina con nombre de archivo c
   assert.equal(sheets[0].filename, 'tabiqueria_A1_lamina1.dxf');
   assert.match(sheets[0].content, /SECTION\n2\nENTITIES/);
   assert.match(sheets[0].content, /Lamina1/);
+  assert.ok(Number.isInteger(sheets[0].quality.collisionCount));
+  assert.ok(sheets[0].quality.collisionCount >= 0);
 });
 
 test('exportSheetsDxf: muros que no caben en una lámina generan una segunda (nunca superpuestas)', () => {
@@ -108,4 +118,91 @@ test('exportSheetsDxf: los viewports quedan a escala exacta 1:50 y no se superpo
   const overlapX = Math.min(a.cx + a.w / 2, b.cx + b.w / 2) - Math.max(a.cx - a.w / 2, b.cx - b.w / 2);
   const overlapY = Math.min(a.cy + a.h / 2, b.cy + b.h / 2) - Math.max(a.cy - a.h / 2, b.cy - b.h / 2);
   assert.ok(overlapX <= 0 || overlapY <= 0, 'los viewports no deberían superponerse');
+});
+
+test('SPEC-R9-A: una vista que no cabe sola se rechaza en vez de sobresalir', () => {
+  const layout = sheetLayout('A3');
+  assert.throws(
+    () => packWallsIntoSheets([
+      { extent: { xMin: 0, xMax: 100000, yMin: 0, yMax: 1000 } }
+    ], { layout, scale: 100 }),
+    (error) => {
+      assert.ok(error instanceof DxfPreflightError);
+      assert.equal(error.issues[0].code, 'VIEW_TOO_LARGE');
+      return true;
+    }
+  );
+});
+
+test('SPEC-R9-A: escala y extent inválidos fallan antes del empaquetado', () => {
+  const layout = sheetLayout('A1');
+  assert.throws(
+    () => packWallsIntoSheets([], { layout, scale: 0 }),
+    (error) => error instanceof DxfPreflightError && error.issues[0].code === 'INVALID_SCALE'
+  );
+  assert.throws(
+    () => packWallsIntoSheets([
+      { extent: { xMin: 0, xMax: Number.NaN, yMin: 0, yMax: 100 } }
+    ], { layout, scale: 50 }),
+    (error) => error instanceof DxfPreflightError && error.issues[0].code === 'INVALID_EXTENT'
+  );
+});
+
+test('SPEC-R9-A: el preflight compara el viewport con las entidades efectivamente dibujadas', () => {
+  const layout = sheetLayout('A3');
+  const entry = {
+    viewportId: 2,
+    extent: { xMin: 0, xMax: 100, yMin: 0, yMax: 100 },
+    paperX: layout.draw.x0,
+    paperY: layout.draw.y1 - 1,
+    paperW: 1,
+    paperH: 1
+  };
+  assert.throws(
+    () => generateSheetDxf([entry], 0, 1, baseGrid(), {
+      layout,
+      scale: 100,
+      entitiesBuilder: () => [line('EJES', 0, 0, 1000, 1000)],
+      labelBuilder: () => 'Vista'
+    }),
+    (error) => error instanceof DxfPreflightError && error.issues[0].code === 'VIEWPORT_CLIPPING'
+  );
+});
+
+test('SPEC-R9-A: el error de preflight conserva un diagnóstico visible', () => {
+  const error = new DxfPreflightError([
+    { code: 'VIEW_TOO_LARGE', message: 'La vista excede el área de dibujo.' }
+  ]);
+  assert.equal(
+    formatDxfPreflightError(error),
+    'No se generó la lámina DXF porque el preflight detectó problemas:\n- La vista excede el área de dibujo.'
+  );
+  assert.equal(formatDxfPreflightError(new Error('otro')), null);
+});
+
+test('SPEC-R9-A: la lámina declara milímetros, escala de línea y viewports bloqueados', () => {
+  const grid = baseGrid();
+  const profiles = loadedMetalconProfiles();
+  const wall = makeWallWithLayout(grid, 'w1', 'x0', 'x2', profiles);
+  const model = { grid, elements: [wall], library: { metalconProfiles: profiles }, projectParams: [] };
+  const content = generateFramingSheets(model)[0].content;
+
+  for (const [variable, code, value] of [
+    ['$INSUNITS', '70', '4'],
+    ['$MEASUREMENT', '70', '1'],
+    ['$LTSCALE', '40', '1.0'],
+    ['$CELTSCALE', '40', '1.0'],
+    ['$PSLTSCALE', '70', '1'],
+    ['$MSLTSCALE', '70', '1']
+  ]) {
+    assert.match(content, new RegExp(`\\$${variable.slice(1)}\\n${code}\\n${value}`));
+  }
+
+  const contentViewports = content.split('0\nVIEWPORT\n').slice(1)
+    .filter((block) => !/\n69\n1(?:\\.0+)?\n/.test(`\n${block}`));
+  assert.ok(contentViewports.length > 0);
+  for (const block of contentViewports) assert.match(block, /\n90\n16384\n/);
+
+  const viewportLayer = content.match(/\n\s*2\nVIEWPORTS\n[\s\S]*?\n\s*0\nLAYER\n/)?.[0] ?? '';
+  assert.match(viewportLayer, /\n290\n0\n/);
 });

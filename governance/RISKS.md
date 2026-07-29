@@ -21,6 +21,7 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-015 | Cobertura insuficiente del store oculta mutadores sin contrato | 4 | 3 | 12 | SPEC-003-D cubre contratos observables, componentes críticos y fija gates core/store 90/85; cobertura 93,55/97,85; G4 | Mitigado |
 | R-016 | Dependencias incompletas de hooks producen UI con estado obsoleto | 3 | 3 | 9 | Baseline acotado a cinco archivos y pruebas UI; SPEC-005/G7 | Abierto |
 | R-017 | Un `roofPlane` incompleto puede romper el pipeline antes de devolver un resultado no resuelto | 3 | 4 | 12 | `model-v1-dual-roof` reproduce el acceso TDZ de `resolveRoofPlane.fail`; requiere corte explícito con regresión antes de G4, sin ampliar SPEC-003-A | Abierto |
+| R-018 | Un DXF válido sintácticamente puede recortar u ocultar información necesaria para ejecutar la obra | 4 | 5 | 20 | R9-A bloquea recortes/overflow y audita 10 láminas A1/A3 con fallas técnicas 0; R9-B/R9-C resolverán colisiones y composición por familia antes de liberar planos | En mitigación |
 
 ## Política
 

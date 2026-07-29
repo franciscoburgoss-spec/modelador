@@ -9,12 +9,12 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | Persistencia nativa y runtime — ejecución de `SPEC-004` |
+| Etapa | Calidad de planos de ejecución — R9-A cerrada; composición visual pendiente |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; `SPEC-004-D1` cerrada |
-| Suite oficial | 770/770 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 728,17 kB |
-| Cobertura | core 93,39 %; store 96,97 % (gates 90 % / 85 %) |
+| Spec activa | Ninguna; `SPEC-R9-A` cerrada |
+| Suite oficial | 780/780 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 732,41 kB |
+| Cobertura | core 93,31 %; store 96,97 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.1; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -22,15 +22,16 @@
 | DXF R6-C | 8 archivos OSB (`casa-L`: 1 R12 + 7 AC1015), 0 errores / 0 reparaciones |
 | DXF R8-C | 4 láminas A3 AC1015 representativas, 0 errores / 0 reparaciones |
 | DXF SPEC-003-B | 9 archivos de 8 familias (3 R12 + 6 AC1015), 0 errores / 0 reparaciones |
+| DXF R9-A | Matriz A1/A3 de cuatro familias: 10 láminas AC1015; clipping/overflow/unlocked 0; 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | Ninguno |
+| Bloqueo actual | F-009: las láminas DXF aún requieren resolver colisiones y composición antes de considerarse aptas para ejecución |
 
 ## Hallazgos bloqueantes confirmados
 
 | ID | Severidad | Hallazgo | Spec |
 |---|---|---|---|
-Ninguno.
+| F-009 | P1 | Las colisiones de rótulos/burbujas y la composición por familia aún comprometen la legibilidad de los DXF | `SPEC-R9-B/R9-C` |
 
 ## Hallazgos resueltos
 
@@ -188,6 +189,13 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   35 lab, DXF 0/0 y CCX 3/3; el E2E externo
   [30403943338](https://github.com/franciscoburgoss-spec/modelador/actions/runs/30403943338)
   pasó 1/1 sobre `f78c8404e5b9`.
+- SPEC-R9-A: cerrado. Un motor geométrico puro calcula cajas conservadoras de línea, texto rotado,
+  círculo, sólido y polilínea, reserva 3 mm de papel y rechaza escala, extent, capacidad o
+  encuadre inválidos antes de descargar. Las láminas declaran milímetros/escala de línea, extents
+  reales, `SOLID` válido, capa de viewports no imprimible y viewports bloqueados. La matriz oficial
+  A1/A3 audita 10 láminas de fundaciones, tabiquería, OSB y cerchas con clipping, overflow,
+  unlocked y fallas técnicas en cero, además de `ezdxf` 0/0. Las colisiones detectadas no se
+  corrigen todavía y mantienen F-009 abierto para R9-B/R9-C.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -213,5 +221,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Retomar la ejecución controlada de CalculiX prevista por `SPEC-004`, sin incorporar todavía
-instalación en `/Applications` ni packaging de release.
+Abrir `SPEC-R9-B` para resolver colisiones de anotaciones, burbujas y cotas en las elevaciones;
+después ejecutar R9-C para composición, jerarquía gráfica y layout por familia. La ejecución
+controlada de CalculiX prevista por `SPEC-004` permanece temporalmente detrás de F-009.

@@ -84,9 +84,9 @@ export function wallOsbElevationEntities(wall, grid, layout, xOffset, axesInfo, 
 /** Igual que computeWallViewExtent pero para la elevación OSB: genera las mismas entidades
  * (referencia de muro + placas + tabla de despiece bajo la burbuja de eje) a xOffset=0 y une su
  * bbox real — así la tabla de despiece nunca queda cortada ni superpuesta con el muro siguiente. */
-export function computeOsbViewExtent(wall, layout, grid, axesInfo, gap = 5) {
+export function computeOsbViewExtent(wall, layout, grid, axesInfo, gap = 5, scale = 50) {
   const entities = wallOsbElevationEntities(wall, grid, layout, 0, axesInfo, gap);
-  return unionEntitiesExtent(entities);
+  return unionEntitiesExtent(entities, { scale });
 }
 
 /** Genera el DXF (R12) con la elevación de revestimiento OSB de todos los muros del modelo que

@@ -21,13 +21,21 @@ export const SCALE = 50;                    // 1:50 (antes 1:25 — muy grande s
 // ★ Sesión 22: los patrones ISO dependen de la escala de la lámina, que ahora es un parámetro
 // (A3 se dibuja a 1:100, A1 a 1:50). Por eso el prefijo pasó de constante a función; FIXED_PREFIX
 // se mantiene como el prefijo a la escala por defecto, para los llamadores antiguos.
-export function buildPrefix(scale = SCALE) {
+export function buildPrefix(scale = SCALE, modelBounds = null) {
 const isoDashed = isoDashedPattern(scale);
 const isoCenter = isoCenterPattern(scale);
 const isoDashedTotal = isoDashed.total.toFixed(1);
 const [isoDashedSeg0, isoDashedSeg1] = isoDashed.segments.map(v => v.toFixed(1));
 const isoCenterTotal = isoCenter.total.toFixed(1);
 const [isoCenterSeg0, isoCenterSeg1, isoCenterSeg2, isoCenterSeg3] = isoCenter.segments.map(v => v.toFixed(1));
+const finiteBounds = modelBounds
+  && Object.values(modelBounds).every(Number.isFinite)
+  && modelBounds.xMax >= modelBounds.xMin
+  && modelBounds.yMax >= modelBounds.yMin;
+const extMinX = finiteBounds ? modelBounds.xMin.toFixed(3) : '0.000';
+const extMinY = finiteBounds ? modelBounds.yMin.toFixed(3) : '0.000';
+const extMaxX = finiteBounds ? modelBounds.xMax.toFixed(3) : '1000.000';
+const extMaxY = finiteBounds ? modelBounds.yMax.toFixed(3) : '1000.000';
 
 // --- plantilla DXF fija, validada con ezdxf (0 errores de auditoria) ------------------------
 return `0
@@ -38,6 +46,30 @@ HEADER
 $ACADVER
 1
 AC1015
+9
+$INSUNITS
+70
+4
+9
+$MEASUREMENT
+70
+1
+9
+$LTSCALE
+40
+1.0
+9
+$CELTSCALE
+40
+1.0
+9
+$PSLTSCALE
+70
+1
+9
+$MSLTSCALE
+70
+1
 9
 $LWDISPLAY
 290
@@ -53,17 +85,17 @@ $INSBASE
 9
 $EXTMIN
 10
-0.0
+${extMinX}
 20
-0.0
+${extMinY}
 30
 0.0
 9
 $EXTMAX
 10
-1000.0
+${extMaxX}
 20
-1000.0
+${extMaxY}
 30
 0.0
 0
@@ -596,6 +628,8 @@ VIEWPORTS
 CONTINUOUS
 370
 18
+290
+0
 390
 13
   0

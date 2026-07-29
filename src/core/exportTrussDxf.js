@@ -244,9 +244,9 @@ function trussScheduleTableEntities(xOffset, system, library) {
 /** Bounding box local de todo lo que dibuja una elevación de cercha (para no superponer sistemas).
  * Genera las mismas entidades a xOffset=0 y une su bbox real (+ padding) — igual criterio que
  * computeWallViewExtent/computeOsbViewExtent. */
-export function computeTrussViewExtent(system, index, library, model) {
+export function computeTrussViewExtent(system, index, library, model, scale = 50) {
   const entities = trussElevationEntities(system, 0, index, library, model);
-  return unionEntitiesExtent(entities);
+  return unionEntitiesExtent(entities, { scale });
 }
 
 /** Genera el DXF (R12) con la cercha tipo de todos los sistemas con geometría generada.
