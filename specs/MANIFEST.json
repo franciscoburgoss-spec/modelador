@@ -1,0 +1,51 @@
+{
+  "package": "specs-intencion-estructural-soluciones",
+  "created": "2026-08-04",
+  "files": [
+    {
+      "name": "README-SERIE-015-016.md",
+      "bytes": 3745,
+      "sha256": "c647b5eef2cd4d86f1510ef9a10d80dbd5f517e846d26e9dd7a3a99de30da2ad"
+    },
+    {
+      "name": "SPEC-015-A-contrato-intencion-estructural-agnostica.md",
+      "bytes": 9283,
+      "sha256": "ccfda451332f8f0d943126967e026856f0eadbd6d329a25b9292dfa54be3135e"
+    },
+    {
+      "name": "SPEC-015-B-intencion-techumbre-y-bordes-canonicos.md",
+      "bytes": 7499,
+      "sha256": "f86466c9f7d9b5cc0f7efc4c6592a33c800460df6f1fd3540fe14db60f8fffd5"
+    },
+    {
+      "name": "SPEC-015-C-interfaz-declaracion-y-decisiones-explicitas.md",
+      "bytes": 6783,
+      "sha256": "588356042e86fd0716ddbe9f6d22bd8e78c2e9b65eb714b3f69b4b4db537e845"
+    },
+    {
+      "name": "SPEC-015-D-propuestas-y-caminos-carga-candidatos.md",
+      "bytes": 8917,
+      "sha256": "de86615de5e58b211faa8a489a91eefa25050c9848f7ea99087394db94a05bec"
+    },
+    {
+      "name": "SPEC-015-E-requisitos-estructurales-agnosticos-R6-R12.md",
+      "bytes": 8176,
+      "sha256": "50a5f642685cfe8a63242c5c1058603ea828ca2ca2480a7647f4673563202eb2"
+    },
+    {
+      "name": "SPEC-016-A-arquitectura-soluciones-constructivas.md",
+      "bytes": 6218,
+      "sha256": "908f8fa5c4933de77d7b8a29aefbd59e98caa1e6b063e2e50e6d97263bbd3d4f"
+    },
+    {
+      "name": "SPEC-016-B-adaptador-metalcon.md",
+      "bytes": 6462,
+      "sha256": "d670231fc895eaabae6e66fb0453915a93323031daead037f4213ef1da2c8a1d"
+    },
+    {
+      "name": "SPEC-016-C-comparador-soluciones.md",
+      "bytes": 5042,
+      "sha256": "3f936d2df62aa4adecd059959b107c4a4917b568fe26a4db4fa27e74fe24e3a9"
+    }
+  ]
+}
