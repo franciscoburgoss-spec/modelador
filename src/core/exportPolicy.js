@@ -4,11 +4,17 @@ import { formatStaleWarning } from './derivedInvalidation.js';
 // entidades vigentes y no consume cachés persistidas; `explicit` permite la salida informativa
 // sólo si el archivo declara el estado; `block` es una guarda dura, sin confirmación anulable.
 export const EXPORT_POLICIES = Object.freeze({
-  'model-json': Object.freeze({
-    label: 'modelo JSON',
+  'agnostic-geometry-json': Object.freeze({
+    label: 'geometría agnóstica JSON',
     format: 'JSON',
-    scope: 'all',
-    staleBehavior: 'explicit'
+    scope: 'none',
+    staleBehavior: 'live'
+  }),
+  'agnostic-geometry-audit-json': Object.freeze({
+    label: 'auditoría geométrica agnóstica JSON',
+    format: 'JSON',
+    scope: 'none',
+    staleBehavior: 'live'
   }),
   'takeoff-csv': Object.freeze({
     label: 'metrado CSV',

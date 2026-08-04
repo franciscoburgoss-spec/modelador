@@ -44,6 +44,9 @@ Python/CalculiX sin rutas personales.
 | `npm run build` | bundle Vite de producción |
 | `npm run tauri:check` | compila el shell nativo y su manifiesto con `Cargo.lock` |
 | `npm run tauri:dev` | abre la aplicación Tauri; detener con `Ctrl+C` |
+| `npm run codex:dry-run -- "…"` | valida la spec activa y muestra el lanzamiento sin ejecutar ni registrar |
+| `npm run codex:spec -- "…"` | inicia `codex exec` con el esfuerzo planificado y registra inicio/cierre |
+| `npm run codex:audit` | audita el registro consolidado de ejecuciones Codex |
 | `npm run verify:migration` | hashes originales y cambios posteriores registrados por spec |
 | `npm run verify:artifacts` | ausencia de artefactos generados en el inventario |
 | `npm run verify:derived` | matriz de mutadores e inventario de guardas de exportación |
@@ -51,6 +54,34 @@ Python/CalculiX sin rutas personales.
 | `npm run audit:dxf` | genera y audita las ocho familias DXF con el entorno Python del repo |
 | `npm run smoke:ccx` | ejecuta global, cercha y fundaciones con CalculiX real |
 | `npm run validate` | todos los gates locales anteriores y gobernanza, sin E2E |
+
+## Ejecuciones Codex gobernadas
+
+Una spec debe estar redactada y activa en `governance/STATUS.md` antes de usar el lanzador. Primero
+se inspecciona la invocación sin efectos:
+
+```bash
+npm run codex:dry-run -- "Ejecuta la spec activa como un único corte"
+```
+
+Si la spec y su esfuerzo son correctos, se inicia una ejecución nueva:
+
+```bash
+npm run codex:spec -- "Ejecuta la spec activa como un único corte"
+```
+
+El lanzador no acepta un esfuerzo alternativo. Lee `## Ejecución Codex`, pasa
+`model_reasoning_effort` a `codex exec` como argumento separado y usa `shell: false`. El prompt no
+se escribe en disco: el registro append-only `governance/CODEX_EXECUTIONS.jsonl` conserva su hash y
+longitud. Al terminar el proceso, exige `sessions/close-<SPEC>.md` y agrega la comparación entre
+esfuerzo planificado, enviado y efectivo. Un proceso fallido o un cierre ausente/discrepante deja
+evidencia `fail` y hace fallar `npm run codex:audit` y G0; no se borra ni reescribe el evento.
+
+Para revisar el consolidado independientemente:
+
+```bash
+npm run codex:audit
+```
 
 ## Entorno Python de verificación
 

@@ -544,8 +544,8 @@ test('SPEC-003-D: persistencia y archivo usan fronteras controladas y errores ti
     revokeObjectURL: (url) => { revoked = url; }
   };
   try {
-    assert.equal(actions.exportModelToFile(), true);
-    assert.equal(anchor.download, 'modelo.json');
+    assert.equal(actions.exportModelToFile().status, 'pass');
+    assert.equal(anchor.download, 'geometria-agnostica.json');
     assert.equal(anchor.href, 'blob:model');
     assert.equal(revoked, 'blob:model');
   } finally {

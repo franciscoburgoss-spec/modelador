@@ -15,7 +15,8 @@ if (actualMatrix !== expectedMatrix) {
 }
 
 const guardedSources = new Map([
-  ['model-json', 'src/store/useModelStore.js'],
+  ['agnostic-geometry-json', 'src/core/agnosticGeometry.js'],
+  ['agnostic-geometry-audit-json', 'src/core/agnosticGeometry.js'],
   ['takeoff-csv', 'src/core/takeoff.js'],
   ['dxf-plan', 'src/core/exportDxf.js'],
   ['dxf-framing', 'src/core/exportFramingDxf.js'],

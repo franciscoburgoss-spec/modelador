@@ -2,7 +2,7 @@
 
 | Gate | Momento | Condición de aprobación |
 |---|---|---|
-| G0 Gobernanza | toda sesión | validador documental verde; spec y trazabilidad completas |
+| G0 Gobernanza | toda sesión | validador documental verde; spec, esfuerzo Codex y trazabilidad completos |
 | G1 Reproducibilidad | fin fase 0 | clon limpio, `npm ci`, suite y build sin pasos manuales |
 | G2 Seguridad de modelo | fin fase 1 | exploit bloqueado; import inválido no muta; roundtrip legacy sin pérdida |
 | G3 Derivados | fin fase 1 | todos los mutadores invalidan; ninguna salida estructural stale |
@@ -21,8 +21,9 @@ npm run validate
 ```
 
 Su contrato incluye `format:check`, `lint`, suite Node/componentes/laboratorio, coverage con
-umbrales, goldens, auditoría DXF, smoke CalculiX, build, validadores de migración/artefactos/derivados
-y gobernanza. No abre GUI ni actualiza autoridades. Playwright actual es el único gate externo:
+umbrales, goldens, auditoría DXF, smoke CalculiX, build, validadores de migración/artefactos/derivados,
+auditoría de ejecuciones Codex y gobernanza. No abre GUI ni actualiza autoridades. Playwright actual
+es el único gate externo:
 Actions lo ejecuta en Chromium soportado y publica JSON/HTML identificado por el SHA.
 
 ## Pruebas por riesgo

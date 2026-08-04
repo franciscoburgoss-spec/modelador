@@ -1,0 +1,69 @@
+{
+  "schema": "imported-spec-bodies/v1",
+  "entries": [
+    {
+      "specId": "SPEC-08",
+      "variant": "base",
+      "originalName": "SPEC-08   Transformaciones criterios estructurales v2 0.md",
+      "normalizedName": "SPEC-08-transformaciones-estructurales-modulacion-v2.0.md",
+      "bytes": 9876,
+      "sha256": "3fc94c9691dbd16cc7c5e9c96b0a26c5204b05c1e108b1eea8439c145126524b"
+    },
+    {
+      "specId": "SPEC-08",
+      "variant": "addendum",
+      "originalName": "SPEC-08___Addendum_criterios_estructurales_v2_0.md",
+      "normalizedName": "SPEC-08-addendum-criterios-estructurales-v2.0.md",
+      "bytes": 4104,
+      "sha256": "261cbeb415fff42a24a2d8dd4da0a5a9d534156ac4db1b655165e749c6df8425"
+    },
+    {
+      "specId": "SPEC-09",
+      "variant": "base",
+      "originalName": "SPEC-09___Reglas_representacion_DXF_v1_2.md",
+      "normalizedName": "SPEC-09-reglas-representacion-dxf-v1.2.md",
+      "bytes": 4141,
+      "sha256": "ba923404ac92c88de1984a82d0fa12e7a306219ea8565b3d3b182d5345ccec6d"
+    },
+    {
+      "specId": "SPEC-10",
+      "variant": "base",
+      "originalName": "SPEC-10   Composicion elevaciones por eje v1 0.md",
+      "normalizedName": "SPEC-10-composicion-elevaciones-por-eje-v1.0.md",
+      "bytes": 3871,
+      "sha256": "bc6df874a9ea9bdf19843656c65753435064c139b563dd652c6e610a6c1794b8"
+    },
+    {
+      "specId": "SPEC-11",
+      "variant": "base",
+      "originalName": "SPEC-11___Pipeline_modulacion_v1_1.md",
+      "normalizedName": "SPEC-11-pipeline-modulacion-v1.1.md",
+      "bytes": 4481,
+      "sha256": "068f2770bba77e9169ee17e8a3bee4ce0a690128015545cc69b1dc08c7ec0489"
+    },
+    {
+      "specId": "SPEC-12",
+      "variant": "base",
+      "originalName": "SPEC-12___Convencion_coordenadas_representacion_DXF_v1_0.md",
+      "normalizedName": "SPEC-12-convencion-coordenadas-representacion-dxf-v1.0.md",
+      "bytes": 3955,
+      "sha256": "5f39e1c4e96a0fd02e319355770df8a038b5fd144a01cc320b1b2ebff56228c6"
+    },
+    {
+      "specId": "SPEC-13",
+      "variant": "base",
+      "originalName": "SPEC-13___Layout_espacio_modelo_y_papel_v1_0.md",
+      "normalizedName": "SPEC-13-layout-espacio-modelo-y-papel-v1.0.md",
+      "bytes": 3658,
+      "sha256": "ef4b0ebed1bd05ef979258e9ca88d55735878714f7e0e52b4c2423a6ea64c38c"
+    },
+    {
+      "specId": "SPEC-14",
+      "variant": "base",
+      "originalName": "Spec-14.md",
+      "normalizedName": "SPEC-14-reconocimiento-topologico-clasificacion-estructural-v0.3.md",
+      "bytes": 46182,
+      "sha256": "6e13b9b3f99bc9117c8f8521ddd76ff6013a82b5f2c84dd899f728b5bcd1d538"
+    }
+  ]
+}

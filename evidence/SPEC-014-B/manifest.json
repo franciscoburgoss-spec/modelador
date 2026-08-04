@@ -1,0 +1,53 @@
+{
+  "schema": "spec14-visual-evidence/v1",
+  "specId": "SPEC-014-B",
+  "sourceFixture": "tests/fixtures/casa-L.json",
+  "generator": "npm run evidence:spec14",
+  "topologySchema": "recognized-structural-topology-v1.0",
+  "phasesExecuted": [
+    "R0",
+    "R1",
+    "R2",
+    "R3",
+    "R4",
+    "R5"
+  ],
+  "eligibleForSpec08": false,
+  "canonicalSha256": "ba783496503c0f9d1da5ebb0cf18a603169e239eba1b07306f02502630cb09e6",
+  "counts": {
+    "walls": 45,
+    "openings": 43,
+    "supportLines": 32,
+    "relations": 79,
+    "stackedRelations": 0,
+    "intersections": 60,
+    "chains": 8,
+    "nodes": 201,
+    "findings": 26
+  },
+  "targetWall": {
+    "wallId": 1784670218571,
+    "nodeIds": [
+      "node|wall:n:1784670218571|localS:0.000",
+      "node|wall:n:1784670218571|localS:800.000",
+      "node|wall:n:1784670218571|localS:2800.000",
+      "node|wall:n:1784670218571|localS:4200.000",
+      "node|wall:n:1784670218571|localS:5100.000",
+      "node|wall:n:1784670218571|localS:5700.000",
+      "node|wall:n:1784670218571|localS:6400.000",
+      "node|wall:n:1784670218571|localS:7400.000",
+      "node|wall:n:1784670218571|localS:8000.000",
+      "node|wall:n:1784670218571|localS:8600.000",
+      "node|wall:n:1784670218571|localS:10050.000",
+      "node|wall:n:1784670218571|localS:12050.000",
+      "node|wall:n:1784670218571|localS:12800.000"
+    ]
+  },
+  "partialZExample": "relation|CORNER_END_END|wall:n:1784669652371|wall:n:1784833573292",
+  "files": [
+    {
+      "path": "casa-L-r0-r5.svg",
+      "sha256": "f19cdada256546f691217cf1ba1c0675bfc5859d0dfb51c19e80fec09cb23824"
+    }
+  ]
+}

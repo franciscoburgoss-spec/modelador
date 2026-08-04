@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 
 import {
   NativeProjectError,
@@ -112,4 +113,22 @@ test('SPEC-004-A: errores del puerto son tipados y el contrato exige ambas opera
     openNativeProject({ readText: async () => '{}' }, '/projects/incompleto.modelador.json'),
     (error) => error instanceof NativeProjectError && error.code === 'INVALID_PROJECT_PORT'
   );
+});
+
+test('SPEC-006-A: el roundtrip nativo conserva edición, Metalcon y OSB con modelVersion 2', async () => {
+  const source = JSON.parse(await readFile(
+    new URL('fixtures/casa-L.json', import.meta.url),
+    'utf8'
+  ));
+  const native = JSON.parse(serializeNativeProject(source));
+  const sourceWall = source.elements.find((element) => element.type === 'wall');
+  const nativeWall = native.elements.find((element) => element.id === sourceWall.id);
+
+  assert.equal(native.modelVersion, 2);
+  assert.deepEqual(nativeWall.studs, sourceWall.studs);
+  assert.deepEqual(nativeWall.osbCourses, sourceWall.osbCourses);
+  assert.equal(nativeWall.framingStudProfileId, sourceWall.framingStudProfileId);
+  assert.deepEqual(native.library.metalconProfiles, source.library.metalconProfiles);
+  assert.deepEqual(native.roofSystems, source.roofSystems);
+  assert.deepEqual(native.grid, source.grid);
 });

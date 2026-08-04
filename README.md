@@ -34,6 +34,9 @@ make governance   # integridad documental y trazabilidad
 make doctor       # prerrequisitos estrictos de la estación de trabajo
 make foundation   # gobernanza + diagnóstico informativo
 npm ci             # instalación exacta desde package-lock.json
+npm run codex:dry-run -- "Ejecuta la spec activa" # valida el próximo lanzamiento sin ejecutarlo
+npm run codex:spec -- "Ejecuta la spec activa"    # inicia Codex con el esfuerzo de la spec
+npm run codex:audit # compara lanzamientos y cierres registrados
 npm run validate   # formato, lint, tests, cobertura, build y validadores
 npm run tauri:dev  # aplicación de escritorio en desarrollo
 ```

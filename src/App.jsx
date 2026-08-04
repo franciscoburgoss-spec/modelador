@@ -14,6 +14,7 @@ import TakeoffModal from './components/modals/TakeoffModal.jsx';
 import ValidationModal from './components/modals/ValidationModal.jsx';
 import AnalysisReadinessModal from './components/modals/AnalysisReadinessModal.jsx';
 import Viewer3DModal from './components/modals/Viewer3DModal.jsx';
+import AgnosticGeometryComparisonModal from './components/modals/AgnosticGeometryComparisonModalLazy.jsx';
 import LibraryModal from './components/modals/LibraryModal.jsx';
 import AddAuxAxisModal from './components/modals/AddAuxAxisModal.jsx';
 import ProjectParamsModal from './components/modals/ProjectParamsModal.jsx';
@@ -200,6 +201,10 @@ export default function App({ projectRuntime = null }) {
       <ValidationModal open={activeModal === 'validate'} onClose={() => setActiveModal(null)} canvasSize={canvasSize} />
       <AnalysisReadinessModal open={activeModal === 'analysis-readiness'} onClose={() => setActiveModal(null)} canvasSize={canvasSize} />
       <Viewer3DModal open={activeModal === 'viewer3d'} onClose={() => setActiveModal(null)} />
+      <AgnosticGeometryComparisonModal
+        open={activeModal === 'agnosticGeometryComparison'}
+        onClose={() => setActiveModal(null)}
+      />
       <LibraryModal
         open={isModal('library')}
         initialType={isModal('library') ? activeModal.type : 'wall'}

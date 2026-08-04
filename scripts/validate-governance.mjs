@@ -1,6 +1,9 @@
 import { readFile, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { parseAuditLog, validateAuditEvents } from './lib/codex-spec-launcher.mjs';
+import { validateReasoningEffortGovernance } from './lib/reasoning-effort-governance.mjs';
+import { validateSpecDocumentContract } from './lib/spec-document-contract.mjs';
 
 const root = process.cwd();
 const required = [
@@ -11,7 +14,9 @@ const required = [
   'governance/STATUS.md',
   'governance/PROTOCOL.md',
   'governance/DECISIONS.md',
+  'governance/CODEX_EXECUTIONS.jsonl',
   'governance/RISKS.md',
+  'governance/REASONING_EFFORT.md',
   'governance/TRACEABILITY.md',
   'governance/QUALITY_GATES.md',
   'governance/ROADMAP.md',
@@ -82,19 +87,42 @@ if (decisionIds.length !== new Set(decisionIds).size) {
   errors.push('DECISIONS.md contiene ids duplicados');
 }
 
+const effortPolicy = await readFile(
+  path.join(root, 'governance/REASONING_EFFORT.md'),
+  'utf8'
+);
+const status = await readFile(path.join(root, 'governance/STATUS.md'), 'utf8');
+const specTemplate = await readFile(path.join(root, 'templates/SPEC.md'), 'utf8');
+const closeTemplate = await readFile(path.join(root, 'templates/SESSION_CLOSE.md'), 'utf8');
+const specEntries = Object.fromEntries(await Promise.all(
+  (await readdir(path.join(root, 'specs')))
+    .filter((filename) => filename.endsWith('.md'))
+    .map(async (filename) => [
+      filename,
+      await readFile(path.join(root, 'specs', filename), 'utf8'),
+    ])
+));
+errors.push(...validateReasoningEffortGovernance({
+  effortPolicy,
+  status,
+  specs: specEntries,
+  specTemplate,
+  closeTemplate,
+}));
+
+try {
+  const codexAudit = await readFile(path.join(root, 'governance/CODEX_EXECUTIONS.jsonl'), 'utf8');
+  errors.push(...validateAuditEvents(parseAuditLog(codexAudit)).map((error) => (
+    `CODEX_EXECUTIONS.jsonl: ${error}`
+  )));
+} catch (error) {
+  errors.push(`CODEX_EXECUTIONS.jsonl: ${error.message}`);
+}
+
 for (const filename of await readdir(path.join(root, 'specs'))) {
   if (!filename.startsWith('SPEC-') || !filename.endsWith('.md')) continue;
   const content = await readFile(path.join(root, 'specs', filename), 'utf8');
-  for (const heading of [
-    '## Diagnóstico',
-    '## Decisión',
-    '## Alcance',
-    '## Fuera de alcance',
-    '## Criterios de aceptación',
-    '## Evidencia',
-  ]) {
-    if (!content.includes(heading)) errors.push(`${filename}: falta "${heading}"`);
-  }
+  errors.push(...validateSpecDocumentContract(filename, content));
 }
 
 if (errors.length > 0) {
@@ -107,4 +135,3 @@ console.log(
   `Gobernanza válida: ${required.length} archivos requeridos, ` +
   `${requirementIds.length} requisitos y ${decisionIds.length} decisiones.`,
 );
-

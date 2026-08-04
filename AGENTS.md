@@ -5,9 +5,13 @@ Estas reglas aplican a toda persona o agente que modifique este repositorio.
 ## Antes de trabajar
 
 1. Leer `governance/STATUS.md`, `governance/PROTOCOL.md` y la spec activa.
-2. Confirmar que la spec tiene diagnóstico, decisión, alcance, exclusiones y aceptación verificable.
-3. Ejecutar `make governance`.
-4. Leer el código y los fixtures afectados antes de proponer cambios.
+2. Leer `governance/REASONING_EFFORT.md` y confirmar que el esfuerzo efectivo de la sesión coincide
+   exactamente con el planificado por la spec activa. Si difiere, detenerse y abrir una ejecución
+   nueva mediante `npm run codex:spec -- "…"`.
+3. Confirmar que la spec tiene diagnóstico, decisión, ejecución Codex, alcance, exclusiones y
+   aceptación verificable.
+4. Ejecutar `make governance`.
+5. Leer el código y los fixtures afectados antes de proponer cambios.
 
 ## Durante
 
@@ -19,6 +23,9 @@ Estas reglas aplican a toda persona o agente que modifique este repositorio.
 - Toda mutación que afecte derivados debe invalidarlos de forma centralizada.
 - Un exportador no puede omitir silenciosamente geometría ni resultados obsoletos.
 - Preservar cambios ajenos y evitar refactors no requeridos por la spec.
+- `high` es el techo ordinario. Nunca iniciar en `xhigh`; sólo escalar desde una ejecución `high`
+  insuficiente, con evidencia registrada, aprobación explícita del usuario y una sesión nueva.
+- `max` está prohibido mientras una decisión posterior no lo habilite.
 
 ## Evidencia
 
@@ -32,4 +39,3 @@ Estas reglas aplican a toda persona o agente que modifique este repositorio.
 
 Usar `templates/SESSION_CLOSE.md`. Actualizar `STATUS.md`, `TRACEABILITY.md`, `RISKS.md` y
 `DECISIONS.md` sólo cuando corresponda. Los cierres son inmutables y no reemplazan el estado.
-

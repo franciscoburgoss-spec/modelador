@@ -10,6 +10,7 @@ Cada dato tiene un dueño:
 | `TRACEABILITY.md` | requisito a evidencia | se actualiza con cada spec |
 | `RISKS.md` | exposición y mitigación | revisar en cada cambio de fase |
 | `DECISIONS.md` | decisiones estables | append-only |
+| `REASONING_EFFORT.md` | matriz y reglas de esfuerzo de Codex | se revisa antes de abrir cada spec |
 | `specs/*.md` | contrato de una unidad de trabajo | inmutable al comenzar |
 | `sessions/*.md` | evidencia de una sesión | inmutable al cerrar |
 
@@ -18,11 +19,23 @@ activa para el alcance.
 
 ## Apertura
 
-1. Ejecutar `make governance`.
-2. Leer estado, riesgos vinculados y spec activa.
-3. Confirmar baseline de suite, build y artefactos.
-4. Crear una rama con nombre `spec/<id>-<resumen>`.
-5. Registrar cualquier desviación previa antes de editar.
+1. Leer estado, riesgos vinculados, `REASONING_EFFORT.md` y spec activa.
+2. Confirmar que la spec declara `low`, `medium` o `high` y registrar en `STATUS.md` el esfuerzo
+   efectivo de la sesión.
+3. Si esfuerzo planificado y efectivo difieren, detenerse y relanzar la tarea con el override o
+   perfil correcto.
+4. Ejecutar `make governance`.
+5. Confirmar baseline de suite, build y artefactos.
+6. Crear una rama con nombre `spec/<id>-<resumen>`.
+7. Registrar cualquier desviación previa antes de editar.
+
+Las ejecuciones nuevas se abren con `npm run codex:dry-run -- "…"` y después
+`npm run codex:spec -- "…"`. El lanzador es la frontera oficial para enviar el esfuerzo al CLI y
+`governance/CODEX_EXECUTIONS.jsonl` conserva la comparación append-only con el cierre. No se editan
+ni eliminan eventos para hacer pasar la auditoría.
+
+`xhigh` no es un nivel inicial. Sólo puede abrirse como una ejecución nueva después de documentar
+la insuficiencia de `high` y obtener aprobación explícita del usuario. `max` está prohibido.
 
 ## Reglas de alcance
 
@@ -44,6 +57,8 @@ activa para el alcance.
 ## Puertas de cierre
 
 - Todos los criterios de la spec tienen evidencia.
+- El cierre registra esfuerzo planificado, efectivo y escalamiento; cualquier `xhigh` cita la
+  evidencia previa y la aprobación del usuario.
 - `npm run validate` termina con código 0.
 - DXF tocado: `ezdxf doc.audit()` = 0 errores / 0 reparaciones.
 - INP tocado: smoke test real de CalculiX y parser de resultados.
@@ -65,4 +80,3 @@ Una spec iniciada no se reescribe para coincidir con la implementación. Si el d
 
 Sólo una versión que supere todos los gates `G0` a `G8` puede etiquetarse. El tag apunta al commit
 probado y los artefactos registran commit, Node, Rust, Tauri, CalculiX y macOS usados.
-

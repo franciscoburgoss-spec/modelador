@@ -8,6 +8,12 @@ Estado actual medido, reproducción y referencias exactas.
 
 Comportamiento elegido, razón y decisiones relacionadas.
 
+## Ejecución Codex
+
+- Esfuerzo planificado: `low|medium|high`
+- Escalamiento xhigh: `prohibido|condicionado`
+- Motivo:
+
 ## Alternativas descartadas
 
 | Alternativa | Motivo |
@@ -36,4 +42,3 @@ Comportamiento elegido, razón y decisiones relacionadas.
 ## Corte sugerido
 
 Punto transaccional donde detener sin dejar contratos a medias.
-

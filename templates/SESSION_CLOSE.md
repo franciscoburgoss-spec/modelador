@@ -10,6 +10,9 @@
 | Commit | |
 | Spec | |
 | Toolchain | |
+| Esfuerzo planificado | low/medium/high |
+| Esfuerzo efectivo | low/medium/high/xhigh |
+| Escalamiento | No / evidencia y aprobación |
 
 ## Alcance ejecutado
 
@@ -42,4 +45,3 @@
 - [ ] `governance/TRACEABILITY.md`
 - [ ] `governance/RISKS.md`
 - [ ] `governance/DECISIONS.md`, si hubo decisión
-

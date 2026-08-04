@@ -34,6 +34,8 @@ function model(stale = false) {
 
 test('el inventario cubre JSON, CSV, todos los DXF y las tres variantes INP', () => {
   assert.deepEqual(Object.keys(EXPORT_POLICIES).sort(), [
+    'agnostic-geometry-audit-json',
+    'agnostic-geometry-json',
     'calculix-foundation',
     'calculix-global',
     'calculix-truss',
@@ -45,7 +47,6 @@ test('el inventario cubre JSON, CSV, todos los DXF y las tres variantes INP', ()
     'dxf-plan',
     'dxf-truss',
     'dxf-truss-sheets',
-    'model-json',
     'takeoff-csv'
   ]);
 });

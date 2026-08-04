@@ -1,0 +1,28 @@
+{
+  "schema": "spec14-visual-evidence/v1",
+  "specId": "SPEC-014-A",
+  "sourceFixture": "tests/fixtures/casa-L.json",
+  "generator": "npm run evidence:spec14",
+  "topologySchema": "recognized-structural-topology-v1.0",
+  "phasesExecuted": [
+    "R0",
+    "R1",
+    "R2"
+  ],
+  "eligibleForSpec08": false,
+  "canonicalSha256": "e73ca10984f18e94b345fbc427ce06dfcf246bcc963ae182c671a59fd6ef08a7",
+  "counts": {
+    "walls": 45,
+    "openings": 43,
+    "supportLines": 32,
+    "relations": 19,
+    "chains": 8,
+    "findings": 0
+  },
+  "files": [
+    {
+      "path": "casa-L-r0-r2.svg",
+      "sha256": "814c66f14e44b5f545bfe1b0af2a4ec5d1a23cecce62ae03306af9b3e36ef8d5"
+    }
+  ]
+}

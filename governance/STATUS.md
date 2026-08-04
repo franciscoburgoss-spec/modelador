@@ -3,19 +3,20 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **28-jul-2026**
+Última actualización: **03-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | Calidad de planos de ejecución — R9-A cerrada; composición visual pendiente |
+| Etapa | SPEC-14 R3–R5 cerrada; R6–R7 pendiente de contrato agnóstico `structuralIntent` |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; `SPEC-R9-A` cerrada |
-| Suite oficial | 780/780 Node; 18/18 componentes; 9/9 Rust; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 732,41 kB |
-| Cobertura | core 93,31 %; store 96,97 % (gates 90 % / 85 %) |
-| Toolchain de verificación | Node 22.23.1; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
+| Spec activa | `SPEC-014-B` — `specs/SPEC-014-B-apilamientos-intersecciones-y-nodos.md` |
+| Esfuerzo activo | `high` planificado; debe ser `high` efectivo; `xhigh` prohibido |
+| Suite oficial | 842/842 Node; 21/21 componentes; 9/9 Rust; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 767,05 kB |
+| Cobertura | core 93,10 %; store 95,48 % (gates 90 % / 85 %) |
+| Toolchain de verificación | Node 22.23.2; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
@@ -25,7 +26,7 @@
 | DXF R9-A | Matriz A1/A3 de cuatro familias: 10 láminas AC1015; clipping/overflow/unlocked 0; 0 errores / 0 reparaciones |
 | CalculiX R6-B | 45 muros regenerados con IDs cortos; 1.362 nodos / 1.012 elementos; `Job finished` |
 | Objetivo de release | `v1.0.0-local` |
-| Bloqueo actual | F-009: las láminas DXF aún requieren resolver colisiones y composición antes de considerarse aptas para ejecución |
+| Bloqueo actual | F-009 bloquea afirmar que los planos están listos para ejecución |
 
 ## Hallazgos bloqueantes confirmados
 
@@ -45,6 +46,10 @@
 | F-005 | Las tres variantes CalculiX tienen guarda dura y no descargan stale | `sessions/close-SPEC-002.md` |
 | F-006 | Recovery nativo distingue crash/cierre limpio y muestra errores sin tocar el original | `sessions/close-SPEC-004-D.md` |
 | F-008 | Frontend compatible con el WebView de macOS 11 y fallo de bootstrap visible | `sessions/close-SPEC-004-D1.md` |
+| F-010 | Ocho cuerpos importados tienen nombres canónicos, envolvente G0 y recuperación byte a byte por SHA-256 | `sessions/close-SPEC-GOV-C.md` |
+| F-011 | `agnostic-geometry-v1.0` expone una autoridad `elements[]` tipada y `roofGeometry[]`; el consumidor contractual de SPEC-14 recupera 45 muros y 43 vanos | `sessions/close-SPEC-006-B.md` |
+| F-012 | `projectRoofPlane` usa la menor coronación colineal compatible, conserva el rechazo de pendiente negativa y no exporta solución constructiva | `sessions/close-SPEC-006-C.md` |
+| F-013 | Cada descarga geométrica exige un informe independiente con biyección y comparación por ruta a 0,001 mm; las diferencias bloquean antes del DOM | `sessions/close-SPEC-006-D.md` |
 
 ## Fases
 
@@ -196,6 +201,65 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   A1/A3 audita 10 láminas de fundaciones, tabiquería, OSB y cerchas con clipping, overflow,
   unlocked y fallas técnicas en cero, además de `ezdxf` 0/0. Las colisiones detectadas no se
   corrigen todavía y mantienen F-009 abierto para R9-B/R9-C.
+- SPEC-GOV-A: cerrado. Cada spec declara esfuerzo `low`, `medium` o `high`; G0 compara el esfuerzo
+  planificado con el efectivo, impide iniciar en `xhigh` y mantiene `max` prohibido. Cinco pruebas
+  enfocadas cubren coincidencia, discrepancia, declaración ausente, nivel excepcional y sesión
+  inactiva; al retirar la comparación, la prueba de discrepancia falla. La puerta completa pasó
+  todos los gates técnicos y reprodujo sólo los 42 errores documentales de F-010 al llegar a G0.
+- SPEC-GOV-B: cerrado. El lanzador oficial lee la spec activa, envía su esfuerzo a `codex exec`
+  mediante argumentos separados y `shell: false`, y no persiste el prompt. Dry-run no ejecuta ni
+  registra. Los eventos JSONL append-only conservan inicio incluso ante fallo y comparan al final
+  planificado, enviado y cierre; G0 audita el consolidado. Ocho pruebas enfocadas y dos reversiones
+  cubren seguridad y discrepancias. La puerta técnica quedó verde y F-010 conserva sus 42 errores.
+- SPEC-GOV-C: cerrado. Los ocho documentos importados tienen nombres canónicos `SPEC-`, las seis
+  secciones contractuales y esfuerzo futuro `high`. Un manifiesto registra nombres, longitudes y
+  SHA-256; el extractor recupera exactamente los 80.268 bytes normativos originales. Tres pruebas
+  enfocadas cubren correspondencia uno a uno, hashes, contrato y reversión de `## Diagnóstico`.
+  No se implementó ninguna regla constructiva ni se modificó código de aplicación, DXF o INP.
+- SPEC-006-A: cerrado con esfuerzo `high` planificado y efectivo, sin escalamiento.
+  `agnostic-geometry-v1.0` proyecta mediante allowlist ejes/niveles cartesianos, 45 muros y 43
+  vanos de `casa-L`, cuatro fundaciones multicapa y cubiertas legacy/modernas como superficies
+  límite. La descarga es `live`, determinista y atómica; el archivo nativo continúa en
+  `modelVersion` 2 y conserva Metalcon/OSB. F-009 permanece abierto sin cambios.
+- SPEC-006-B: cerrado con esfuerzo `medium` planificado y efectivo, sin escalamiento. La misma
+  versión no liberada usa una sola colección `elements[]` con discriminantes geométricos y
+  `roofGeometry[]`; un consumidor puro de la entrada mínima de SPEC-14 recupera los 45 muros y 43
+  vanos de `casa-L` y rechaza tanto la forma separada como una entrada con cero muros. El volumen
+  resuelto, la separación constructiva y el archivo nativo v2 permanecen intactos.
+- SPEC-006-C: cerrado con esfuerzo `medium` planificado y efectivo, sin escalamiento. Dos apoyos
+  altos colineales a distinta cota gobiernan `roofGeometry[]` por la menor coronación descontada;
+  la permutación es idéntica, la pendiente negativa sigue fallando antes del DOM y los campos
+  constructivos se excluyen por allowlist. F-012 y R-023 quedan resueltos; A/B y F-009 se conservan.
+- SPEC-006-D: cerrado con esfuerzo `high` planificado y efectivo, sin escalamiento.
+  `agnostic-geometry-audit/v1` reconstruye por un camino independiente grilla, elementos, vanos,
+  capas y cubiertas; compara biyección, miembros y números a 0,001 mm. La geometría se bloquea
+  antes del DOM ante diferencias y el menú descarga un informe JSON separado. `casa-L` conserva
+  45 muros, 43 vanos, cuatro fundaciones y dos cubiertas; A/B/C y F-009 no cambian.
+- SPEC-GOV-D: cerrado con esfuerzo `medium` planificado y efectivo, sin escalamiento. El auditor
+  separa estructura, resultado y recuperación; reconoce el fallo histórico de SPEC-006-D sólo por
+  su aprobación posterior de identidad exacta; al cierre informa 7 ejecuciones completas / 1 fallo recuperado
+- SPEC-006-E: cerrado con esfuerzo `medium` planificado y efectivo, sin escalamiento. Un preparador
+  puro reúne snapshots independientes de fuente/exportada, informe, IDs fallidos, escena y bounds;
+  la única frontera cartesiana usa `{x, y:z, z:y}`. El modal lazy ofrece Fuente, Exportada y
+  Superposición con métricas y error visible, sin importar `build3d.js` ni tocar `Viewer3D`.
+  `casa-L`, FX-003, FX-004 y el modelo mínimo pasan; F-009 permanece abierto sin cambios.
+  / 0 fallos no recuperados y conserva intacto el prefijo histórico append-only. F-009 no cambia y
+  el visor comparativo permanece fuera de alcance.
+- SPEC-014-A: cerrado con esfuerzo `high` planificado y efectivo, sin escalamiento.
+  `recognized-structural-topology-v1.0` consume literalmente `agnostic-geometry-v1.0`, valida y
+  canonicaliza R0/R1, agrupa R2 en 32 líneas y construye 19 relaciones / 8 cadenas sin fusionar
+  muros. `casa-L` conserva 45 muros, 43 vanos, cero findings R0–R2 y SHA-256 canónico
+  `e73ca10984f18e94b345fbc427ce06dfcf246bcc963ae182c671a59fd6ef08a7`; el SVG y su manifiesto
+  son reproducibles byte a byte. R3–R12 siguen pendientes, `eligibleForSpec08=false` y F-009 no
+  cambia.
+- SPEC-014-B: cerrado con esfuerzo `high` planificado y efectivo, sin escalamiento. R3 clasifica
+  apilamientos exactos, parciales, superpuestos y con gap; R4 fija A=X/B=Y, conserva cuatro tipos
+  de cobertura y bandas Z; R5 unifica extremos, vanos, encuentros y límites de apilamiento sin
+  perder roles ni IDs fuente. `casa-L` conserva 45 muros/43 vanos, produce 60 encuentros, 201
+  nodos, 25 warnings de cobertura parcial y un cruce MID–MID bloqueante, con SHA-256 canónico
+  `ba783496503c0f9d1da5ebb0cf18a603169e239eba1b07306f02502630cb09e6`. El fixture real no
+  contiene pares R3. R6–R12 siguen pendientes, `eligibleForSpec08=false`, F-009 permanece P1 y
+  ninguna solución constructiva consumió esta salida.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -221,6 +285,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Abrir `SPEC-R9-B` para resolver colisiones de anotaciones, burbujas y cotas en las elevaciones;
-después ejecutar R9-C para composición, jerarquía gráfica y layout por familia. La ejecución
-controlada de CalculiX prevista por `SPEC-004` permanece temporalmente detrás de F-009.
+Emitir una spec nueva antes de iniciar R6–R7 para definir el contrato agnóstico y separado
+`structuralIntent`; no traducir roles constructivos ni consumir todavía la salida desde Metalcon.
+R6–R12, modelo v3 y R9-B/R9-C permanecen fuera del corte. SPEC-08 continúa deshabilitada hasta
+completar R12 sin errores. F-009 sigue como baseline conocido y bloquea afirmar que los planos
+están listos para ejecución.

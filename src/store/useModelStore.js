@@ -39,7 +39,10 @@ import {
   assertNoDerivedWrites,
   DERIVED_WRITE_FIELDS
 } from '../core/derivedInvalidation.js';
-import { guardExport } from '../core/exportPolicy.js';
+import {
+  downloadAgnosticGeometry,
+  downloadAgnosticGeometryAudit
+} from '../core/agnosticGeometry.js';
 
 // Sólo un cambio de posición/elevación reubica geometría; renombrar un eje no invalida nada.
 function maybeGlobalInvalidate(model, patch, field) {
@@ -1310,18 +1313,34 @@ export const useModelStore = create((set, get) => ({
       return importErrorResult(set, error);
     }
   },
-  exportModelToFile: () => {
+  exportModelToFile: (environment = {}) => {
     const model = get().model;
-    const policy = guardExport(model, 'model-json');
-    if (!policy.allowed) return false;
-    const blob = new Blob([JSON.stringify(model, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'modelo.json';
-    a.click();
-    URL.revokeObjectURL(url);
-    return true;
+    try {
+      return downloadAgnosticGeometry(model, environment);
+    } catch (error) {
+      const notify = environment.notify
+        || (typeof globalThis.alert === 'function' ? globalThis.alert : null);
+      if (notify) notify(`No se pudo exportar la geometría agnóstica: ${error.message}`);
+      return false;
+    }
+  },
+  exportAgnosticGeometryAudit: (environment = {}) => {
+    const model = get().model;
+    try {
+      const report = downloadAgnosticGeometryAudit(model, environment);
+      if (report?.status === 'fail') {
+        const failure = report.checks.find(({ status }) => status === 'fail');
+        const notify = environment.notify
+          || (typeof globalThis.alert === 'function' ? globalThis.alert : null);
+        if (notify) notify(`La auditoría geométrica detectó una diferencia en ${failure?.path ?? '$'}.`);
+      }
+      return report;
+    } catch (error) {
+      const notify = environment.notify
+        || (typeof globalThis.alert === 'function' ? globalThis.alert : null);
+      if (notify) notify(`No se pudo exportar la auditoría geométrica: ${error.message}`);
+      return false;
+    }
   },
   importModelFromFile: (file, environment = {}) => {
     const FileReaderCtor = environment.FileReader ?? globalThis.FileReader;

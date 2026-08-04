@@ -25,15 +25,19 @@
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
     "tauri:check": "bash scripts/cargo.sh check --manifest-path src-tauri/Cargo.toml --locked",
+    "codex:spec": "node scripts/codex-spec.mjs",
+    "codex:dry-run": "node scripts/codex-spec.mjs --dry-run",
+    "codex:audit": "node scripts/codex-spec.mjs --audit",
     "verify:migration": "node scripts/migration-manifest.mjs",
     "verify:artifacts": "node scripts/check-artifacts.mjs",
     "verify:derived": "node scripts/check-derived-contract.mjs",
     "verify:goldens": "node scripts/verify-artifact-goldens.mjs",
     "update:goldens": "node scripts/verify-artifact-goldens.mjs --write",
+    "evidence:spec14": "node scripts/generate-spec14-evidence.mjs",
     "setup:verification-python": "bash scripts/setup-verification-python.sh",
     "audit:dxf": "node scripts/audit-dxf.mjs",
     "smoke:ccx": "node scripts/smoke-ccx.mjs",
-    "validate": "npm run format:check && npm run format:rust && npm run lint && npm test && npm run test:rust && npm run tauri:check && npm run test:lab && npm run test:coverage && npm run verify:goldens && npm run audit:dxf && npm run smoke:ccx && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && make governance"
+    "validate": "npm run format:check && npm run format:rust && npm run lint && npm test && npm run test:rust && npm run tauri:check && npm run test:lab && npm run test:coverage && npm run verify:goldens && npm run audit:dxf && npm run smoke:ccx && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && npm run codex:audit && make governance"
   },
   "dependencies": {
     "@tauri-apps/api": "2.0.3",

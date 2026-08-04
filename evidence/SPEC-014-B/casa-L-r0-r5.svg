@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="960" viewBox="0 0 1500 960" role="img" aria-labelledby="title description">
+  <title id="title">SPEC-014-B · evidencia visual R0–R5 · casa-L</title>
+  <desc id="description">Encuentros, cobertura vertical y nodos topológicos sobre geometría agnóstica. Esta evidencia parcial no habilita SPEC-08.</desc>
+  <metadata>{&quot;schema&quot;:&quot;recognized-structural-topology-v1.0&quot;,&quot;phasesExecuted&quot;:[&quot;R0&quot;,&quot;R1&quot;,&quot;R2&quot;,&quot;R3&quot;,&quot;R4&quot;,&quot;R5&quot;],&quot;eligibleForSpec08&quot;:false,&quot;canonicalSha256&quot;:&quot;ba783496503c0f9d1da5ebb0cf18a603169e239eba1b07306f02502630cb09e6&quot;}</metadata>
+  <style>
+    .page { fill: #f7f7f4; }
+    .panel { fill: #ffffff; stroke: #c9ccd1; stroke-width: 1; }
+    .support-line { stroke: #c8c4ea; stroke-width: 1; stroke-dasharray: 5 5; }
+    .wall { stroke: #243447; stroke-width: 5; stroke-linecap: square; }
+    .wall-x { stroke: #176b87; }
+    .wall-y { stroke: #b36a24; }
+    .wall-chain { stroke-width: 7; }
+    .wall-target { stroke: #c9362b; stroke-width: 10; }
+    .opening-cut { stroke: #ffffff; stroke-width: 11; }
+    .opening { stroke: #111827; stroke-width: 2; stroke-dasharray: 4 3; }
+    .continuity { fill: #26a269; stroke: #ffffff; stroke-width: 1.5; }
+    .intersection { fill: #7950b5; stroke: #ffffff; stroke-width: 1.5; }
+    .intersection-ambiguous { fill: #d9480f; stroke: #7c2d12; stroke-width: 2.5; }
+    .target-node { fill: #ffffff; stroke: #111827; stroke-width: 2; }
+    .leader { fill: none; stroke: #c9362b; stroke-width: 1.5; }
+    .title { font: 700 26px system-ui, sans-serif; fill: #18212b; }
+    .subtitle { font: 14px system-ui, sans-serif; fill: #56606b; }
+    .section { font: 700 16px system-ui, sans-serif; fill: #18212b; }
+    .metric-label, .relation-label { font: 13px system-ui, sans-serif; fill: #47515c; }
+    .relation-label { font: 11px ui-monospace, monospace; }
+    .metric-value { font: 700 14px ui-monospace, monospace; text-anchor: end; fill: #18212b; }
+    .hash { font: 11px ui-monospace, monospace; fill: #313a44; }
+    .target-label { font: 700 11px system-ui, sans-serif; fill: #a9231b; }
+    .target-detail { font: 10px ui-monospace, monospace; fill: #6a2b27; }
+    .warning { font: 700 13px system-ui, sans-serif; fill: #8a2f18; }
+    .legend { font: 12px system-ui, sans-serif; fill: #3f4954; }
+    .coverage-type, .coverage-label { font: 11px ui-monospace, monospace; fill: #3f4954; }
+    .band-intersectionActive { fill: #7950b5; }
+    .band-wallAOnly { fill: #176b87; }
+    .band-wallBOnly { fill: #b36a24; }
+  </style>
+  <rect class="page" width="1500" height="960"/>
+  <text x="60" y="48" class="title">SPEC-014-B · casa-L · evidencia visual R0–R5</text>
+  <text x="60" y="76" class="subtitle">Geometría agnóstica, encuentros 3D y nodos; R6–R12 permanecen pendientes.</text>
+  <rect x="40" y="96" width="1040" height="824" rx="8" class="panel"/>
+  <rect x="1090" y="96" width="370" height="824" rx="8" class="panel"/>
+  <g id="support-lines">
+<line x1="162.39" y1="819.97" x2="554.88" y2="819.97" class="support-line"/>
+<line x1="496.86" y1="470.14" x2="530.99" y2="470.14" class="support-line"/>
+<line x1="872.29" y1="413.82" x2="1060.00" y2="413.82" class="support-line"/>
+<line x1="60.00" y1="779.01" x2="496.86" y2="779.01" class="support-line"/>
+<line x1="708.46" y1="260.24" x2="1060.00" y2="260.24" class="support-line"/>
+<line x1="496.86" y1="180.03" x2="708.46" y2="180.03" class="support-line"/>
+<line x1="496.86" y1="751.71" x2="851.81" y2="751.71" class="support-line"/>
+<line x1="203.34" y1="717.58" x2="353.52" y2="717.58" class="support-line"/>
+<line x1="667.51" y1="710.75" x2="793.79" y2="710.75" class="support-line"/>
+<line x1="851.81" y1="676.62" x2="906.42" y2="676.62" class="support-line"/>
+<line x1="906.42" y1="644.20" x2="1029.28" y2="644.20" class="support-line"/>
+<line x1="60.00" y1="635.67" x2="496.86" y2="635.67" class="support-line"/>
+<line x1="496.86" y1="594.71" x2="906.42" y2="594.71" class="support-line"/>
+<line x1="708.46" y1="536.69" x2="1060.00" y2="536.69" class="support-line"/>
+<line x1="708.46" y1="488.91" x2="986.62" y2="488.91" class="support-line"/>
+<line x1="60.00" y1="779.01" x2="60.00" y2="635.67" class="support-line"/>
+<line x1="496.86" y1="779.01" x2="496.86" y2="180.03" class="support-line"/>
+<line x1="554.88" y1="819.97" x2="554.88" y2="751.71" class="support-line"/>
+<line x1="667.51" y1="710.75" x2="667.51" y2="594.71" class="support-line"/>
+<line x1="708.46" y1="622.01" x2="708.46" y2="180.03" class="support-line"/>
+<line x1="793.79" y1="710.75" x2="793.79" y2="536.69" class="support-line"/>
+<line x1="824.51" y1="536.69" x2="824.51" y2="260.24" class="support-line"/>
+<line x1="851.81" y1="751.71" x2="851.81" y2="536.69" class="support-line"/>
+<line x1="872.29" y1="488.91" x2="872.29" y2="413.82" class="support-line"/>
+<line x1="906.42" y1="676.62" x2="906.42" y2="536.69" class="support-line"/>
+<line x1="986.62" y1="536.69" x2="986.62" y2="413.82" class="support-line"/>
+<line x1="1029.28" y1="644.20" x2="1029.28" y2="536.69" class="support-line"/>
+<line x1="1060.00" y1="536.69" x2="1060.00" y2="260.24" class="support-line"/>
+<line x1="162.39" y1="819.97" x2="162.39" y2="779.01" class="support-line"/>
+<line x1="203.34" y1="779.01" x2="203.34" y2="635.67" class="support-line"/>
+<line x1="278.43" y1="779.01" x2="278.43" y2="635.67" class="support-line"/>
+<line x1="353.52" y1="779.01" x2="353.52" y2="635.67" class="support-line"/>
+  </g>
+  <g id="walls">
+<line x1="162.39" y1="819.97" x2="554.88" y2="819.97" class="wall wall-x" data-wall-id="1784600403613"/>
+<line x1="60.00" y1="779.01" x2="496.86" y2="779.01" class="wall wall-x" data-wall-id="1784604634483"/>
+<line x1="554.88" y1="751.71" x2="851.81" y2="751.71" class="wall wall-x wall-chain" data-wall-id="1784605101040"/>
+<line x1="203.34" y1="717.58" x2="353.52" y2="717.58" class="wall wall-x" data-wall-id="1784606313849"/>
+<line x1="667.51" y1="710.75" x2="793.79" y2="710.75" class="wall wall-x" data-wall-id="1784607987483"/>
+<line x1="851.81" y1="676.62" x2="906.42" y2="676.62" class="wall wall-x" data-wall-id="1784647611157"/>
+<line x1="906.42" y1="644.20" x2="1029.28" y2="644.20" class="wall wall-x" data-wall-id="1784669652371"/>
+<line x1="60.00" y1="635.67" x2="496.86" y2="635.67" class="wall wall-x wall-target" data-wall-id="1784670218571"/>
+<line x1="496.86" y1="594.71" x2="708.46" y2="594.71" class="wall wall-x" data-wall-id="1784686784467"/>
+<line x1="708.46" y1="536.69" x2="793.79" y2="536.69" class="wall wall-x wall-chain" data-wall-id="1784728640167"/>
+<line x1="851.81" y1="536.69" x2="1060.00" y2="536.69" class="wall wall-x wall-chain" data-wall-id="1784728683761"/>
+<line x1="496.86" y1="470.14" x2="530.99" y2="470.14" class="wall wall-x" data-wall-id="1784749661502"/>
+<line x1="872.29" y1="413.82" x2="1060.00" y2="413.82" class="wall wall-x" data-wall-id="1784749705535"/>
+<line x1="708.46" y1="260.24" x2="824.51" y2="260.24" class="wall wall-x wall-chain" data-wall-id="1784749888610"/>
+<line x1="824.51" y1="260.24" x2="1060.00" y2="260.24" class="wall wall-x wall-chain" data-wall-id="1784749942810"/>
+<line x1="496.86" y1="180.03" x2="708.46" y2="180.03" class="wall wall-x" data-wall-id="1784750181891"/>
+<line x1="60.00" y1="779.01" x2="60.00" y2="635.67" class="wall wall-y" data-wall-id="1784750954119"/>
+<line x1="162.39" y1="819.97" x2="162.39" y2="779.01" class="wall wall-y" data-wall-id="1784751024158"/>
+<line x1="203.34" y1="779.01" x2="203.34" y2="635.67" class="wall wall-y" data-wall-id="1784751397992"/>
+<line x1="278.43" y1="779.01" x2="278.43" y2="635.67" class="wall wall-y" data-wall-id="1784752583321"/>
+<line x1="353.52" y1="779.01" x2="353.52" y2="635.67" class="wall wall-y" data-wall-id="1784752639636"/>
+<line x1="496.86" y1="779.01" x2="496.86" y2="594.71" class="wall wall-y wall-chain" data-wall-id="1784753322528"/>
+<line x1="496.86" y1="594.71" x2="496.86" y2="180.03" class="wall wall-y wall-chain" data-wall-id="1784753357217"/>
+<line x1="554.88" y1="819.97" x2="554.88" y2="751.71" class="wall wall-y" data-wall-id="1784754251210"/>
+<line x1="667.51" y1="710.75" x2="667.51" y2="594.71" class="wall wall-y" data-wall-id="1784754427246"/>
+<line x1="708.46" y1="622.01" x2="708.46" y2="594.71" class="wall wall-y wall-chain" data-wall-id="1784755083288"/>
+<line x1="708.46" y1="594.71" x2="708.46" y2="470.14" class="wall wall-y wall-chain" data-wall-id="1784755106854"/>
+<line x1="708.46" y1="342.15" x2="708.46" y2="180.03" class="wall wall-y wall-chain" data-wall-id="1784755505070"/>
+<line x1="793.79" y1="710.75" x2="793.79" y2="536.69" class="wall wall-y" data-wall-id="1784756325325"/>
+<line x1="824.51" y1="488.91" x2="824.51" y2="260.24" class="wall wall-y wall-chain" data-wall-id="1784756626924"/>
+<line x1="851.81" y1="751.71" x2="851.81" y2="536.69" class="wall wall-y" data-wall-id="1784756700772"/>
+<line x1="872.29" y1="488.91" x2="872.29" y2="413.82" class="wall wall-y" data-wall-id="1784756728679"/>
+<line x1="986.62" y1="536.69" x2="986.62" y2="413.82" class="wall wall-y" data-wall-id="1784757406814"/>
+<line x1="1029.28" y1="644.20" x2="1029.28" y2="536.69" class="wall wall-y" data-wall-id="1784757439976"/>
+<line x1="1060.00" y1="536.69" x2="1060.00" y2="260.24" class="wall wall-y" data-wall-id="1784757472733"/>
+<line x1="851.81" y1="594.71" x2="906.42" y2="594.71" class="wall wall-x" data-wall-id="1784757952953"/>
+<line x1="824.51" y1="536.69" x2="824.51" y2="488.91" class="wall wall-y wall-chain" data-wall-id="1784759799178"/>
+<line x1="793.79" y1="536.69" x2="824.51" y2="536.69" class="wall wall-x wall-chain" data-wall-id="1784759848518"/>
+<line x1="708.46" y1="470.14" x2="708.46" y2="342.15" class="wall wall-y wall-chain" data-wall-id="1784818076062"/>
+<line x1="496.86" y1="751.71" x2="554.88" y2="751.71" class="wall wall-x wall-chain" data-wall-id="1784819708086"/>
+<line x1="824.51" y1="536.69" x2="851.81" y2="536.69" class="wall wall-x wall-chain" data-wall-id="1784820397268"/>
+<line x1="906.42" y1="676.62" x2="906.42" y2="644.20" class="wall wall-y wall-chain" data-wall-id="1784833573291"/>
+<line x1="906.42" y1="644.20" x2="906.42" y2="536.69" class="wall wall-y wall-chain" data-wall-id="1784833573292"/>
+<line x1="708.46" y1="488.91" x2="824.51" y2="488.91" class="wall wall-x wall-chain" data-wall-id="1784833709805"/>
+<line x1="824.51" y1="488.91" x2="986.62" y2="488.91" class="wall wall-x wall-chain" data-wall-id="1784833709806"/>
+  </g>
+  <g id="openings">
+<line x1="206.76" y1="819.97" x2="391.06" y2="819.97" class="opening-cut"/>
+<line x1="206.76" y1="819.97" x2="391.06" y2="819.97" class="opening" data-opening-id="1784601935181"/>
+<line x1="206.76" y1="819.97" x2="391.06" y2="819.97" class="opening-cut"/>
+<line x1="206.76" y1="819.97" x2="391.06" y2="819.97" class="opening" data-opening-id="1784601988506"/>
+<line x1="174.51" y1="779.01" x2="201.81" y2="779.01" class="opening-cut"/>
+<line x1="174.51" y1="779.01" x2="201.81" y2="779.01" class="opening" data-opening-id="1784604771014"/>
+<line x1="355.05" y1="779.01" x2="382.35" y2="779.01" class="opening-cut"/>
+<line x1="355.05" y1="779.01" x2="382.35" y2="779.01" class="opening" data-opening-id="1784604806833"/>
+<line x1="578.77" y1="751.71" x2="640.20" y2="751.71" class="opening-cut"/>
+<line x1="578.77" y1="751.71" x2="640.20" y2="751.71" class="opening" data-opening-id="1784605151802"/>
+<line x1="674.33" y1="751.71" x2="732.35" y2="751.71" class="opening-cut"/>
+<line x1="674.33" y1="751.71" x2="732.35" y2="751.71" class="opening" data-opening-id="1784605173145"/>
+<line x1="766.48" y1="751.71" x2="827.92" y2="751.71" class="opening-cut"/>
+<line x1="766.48" y1="751.71" x2="827.92" y2="751.71" class="opening" data-opening-id="1784605196342"/>
+<line x1="858.63" y1="676.62" x2="899.59" y2="676.62" class="opening-cut"/>
+<line x1="858.63" y1="676.62" x2="899.59" y2="676.62" class="opening" data-opening-id="1784647651890"/>
+<line x1="698.23" y1="710.75" x2="759.66" y2="710.75" class="opening-cut"/>
+<line x1="698.23" y1="710.75" x2="759.66" y2="710.75" class="opening" data-opening-id="1784669556533"/>
+<line x1="945.67" y1="644.20" x2="990.03" y2="644.20" class="opening-cut"/>
+<line x1="945.67" y1="644.20" x2="990.03" y2="644.20" class="opening" data-opening-id="1784669702153"/>
+<line x1="87.30" y1="635.67" x2="155.56" y2="635.67" class="opening-cut"/>
+<line x1="87.30" y1="635.67" x2="155.56" y2="635.67" class="opening" data-opening-id="1784670297732"/>
+<line x1="234.06" y1="635.67" x2="254.54" y2="635.67" class="opening-cut"/>
+<line x1="234.06" y1="635.67" x2="254.54" y2="635.67" class="opening" data-opening-id="1784670387562"/>
+<line x1="312.56" y1="635.67" x2="333.04" y2="635.67" class="opening-cut"/>
+<line x1="312.56" y1="635.67" x2="333.04" y2="635.67" class="opening" data-opening-id="1784670415115"/>
+<line x1="403.00" y1="635.67" x2="471.26" y2="635.67" class="opening-cut"/>
+<line x1="403.00" y1="635.67" x2="471.26" y2="635.67" class="opening" data-opening-id="1784670455067"/>
+<line x1="677.75" y1="594.71" x2="705.05" y2="594.71" class="opening-cut"/>
+<line x1="677.75" y1="594.71" x2="705.05" y2="594.71" class="opening" data-opening-id="1784686896942"/>
+<line x1="853.34" y1="536.69" x2="882.35" y2="536.69" class="opening-cut"/>
+<line x1="853.34" y1="536.69" x2="882.35" y2="536.69" class="opening" data-opening-id="1784728716248"/>
+<line x1="907.95" y1="536.69" x2="936.96" y2="536.69" class="opening-cut"/>
+<line x1="907.95" y1="536.69" x2="936.96" y2="536.69" class="opening" data-opening-id="1784728742033"/>
+<line x1="710.00" y1="488.91" x2="754.37" y2="488.91" class="opening-cut"/>
+<line x1="710.00" y1="488.91" x2="754.37" y2="488.91" class="opening" data-opening-id="1784749500137"/>
+<line x1="826.04" y1="488.91" x2="855.05" y2="488.91" class="opening-cut"/>
+<line x1="826.04" y1="488.91" x2="855.05" y2="488.91" class="opening" data-opening-id="1784749538447"/>
+<line x1="1029.28" y1="413.82" x2="1056.59" y2="413.82" class="opening-cut"/>
+<line x1="1029.28" y1="413.82" x2="1056.59" y2="413.82" class="opening" data-opening-id="1784749775802"/>
+<line x1="735.77" y1="260.24" x2="790.38" y2="260.24" class="opening-cut"/>
+<line x1="735.77" y1="260.24" x2="790.38" y2="260.24" class="opening" data-opening-id="1784750034514"/>
+<line x1="843.28" y1="260.24" x2="911.54" y2="260.24" class="opening-cut"/>
+<line x1="843.28" y1="260.24" x2="911.54" y2="260.24" class="opening" data-opening-id="1784750102609"/>
+<line x1="979.80" y1="260.24" x2="1048.05" y2="260.24" class="opening-cut"/>
+<line x1="979.80" y1="260.24" x2="1048.05" y2="260.24" class="opening" data-opening-id="1784750150630"/>
+<line x1="500.27" y1="180.03" x2="606.08" y2="180.03" class="opening-cut"/>
+<line x1="500.27" y1="180.03" x2="606.08" y2="180.03" class="opening" data-opening-id="1784750373293"/>
+<line x1="626.55" y1="180.03" x2="647.03" y2="180.03" class="opening-cut"/>
+<line x1="626.55" y1="180.03" x2="647.03" y2="180.03" class="opening" data-opening-id="1784750408892"/>
+<line x1="667.51" y1="180.03" x2="687.99" y2="180.03" class="opening-cut"/>
+<line x1="667.51" y1="180.03" x2="687.99" y2="180.03" class="opening" data-opening-id="1784750438725"/>
+<line x1="162.39" y1="809.73" x2="162.39" y2="789.25" class="opening-cut"/>
+<line x1="162.39" y1="809.73" x2="162.39" y2="789.25" class="opening" data-opening-id="1784751086658"/>
+<line x1="203.34" y1="744.71" x2="203.34" y2="719.11" class="opening-cut"/>
+<line x1="203.34" y1="744.71" x2="203.34" y2="719.11" class="opening" data-opening-id="1784751914308"/>
+<line x1="203.34" y1="662.80" x2="203.34" y2="637.20" class="opening-cut"/>
+<line x1="203.34" y1="662.80" x2="203.34" y2="637.20" class="opening" data-opening-id="1784751950971"/>
+<line x1="353.52" y1="744.71" x2="353.52" y2="719.11" class="opening-cut"/>
+<line x1="353.52" y1="744.71" x2="353.52" y2="719.11" class="opening" data-opening-id="1784753020206"/>
+<line x1="353.52" y1="661.26" x2="353.52" y2="635.67" class="opening-cut"/>
+<line x1="353.52" y1="661.26" x2="353.52" y2="635.67" class="opening" data-opening-id="1784753038420"/>
+<line x1="496.86" y1="623.55" x2="496.86" y2="596.25" class="opening-cut"/>
+<line x1="496.86" y1="623.55" x2="496.86" y2="596.25" class="opening" data-opening-id="1784753427946"/>
+<line x1="496.86" y1="572.53" x2="496.86" y2="511.09" class="opening-cut"/>
+<line x1="496.86" y1="572.53" x2="496.86" y2="511.09" class="opening" data-opening-id="1784753762858"/>
+<line x1="496.86" y1="468.60" x2="496.86" y2="378.16" class="opening-cut"/>
+<line x1="496.86" y1="468.60" x2="496.86" y2="378.16" class="opening" data-opening-id="1784753990100"/>
+<line x1="496.86" y1="350.85" x2="496.86" y2="282.59" class="opening-cut"/>
+<line x1="496.86" y1="350.85" x2="496.86" y2="282.59" class="opening" data-opening-id="1784754025607"/>
+<line x1="496.86" y1="261.95" x2="496.86" y2="183.45" class="opening-cut"/>
+<line x1="496.86" y1="261.95" x2="496.86" y2="183.45" class="opening" data-opening-id="1784754068991"/>
+<line x1="554.88" y1="809.73" x2="554.88" y2="789.25" class="opening-cut"/>
+<line x1="554.88" y1="809.73" x2="554.88" y2="789.25" class="opening" data-opening-id="1784754328385"/>
+<line x1="708.46" y1="565.53" x2="708.46" y2="538.23" class="opening-cut"/>
+<line x1="708.46" y1="565.53" x2="708.46" y2="538.23" class="opening" data-opening-id="1784755150251"/>
+<line x1="793.79" y1="703.92" x2="793.79" y2="676.62" class="opening-cut"/>
+<line x1="793.79" y1="703.92" x2="793.79" y2="676.62" class="opening" data-opening-id="1784756441227"/>
+<line x1="872.29" y1="463.31" x2="872.29" y2="436.01" class="opening-cut"/>
+<line x1="872.29" y1="463.31" x2="872.29" y2="436.01" class="opening" data-opening-id="1784756803027"/>
+<line x1="1060.00" y1="500.85" x2="1060.00" y2="436.01" class="opening-cut"/>
+<line x1="1060.00" y1="500.85" x2="1060.00" y2="436.01" class="opening" data-opening-id="1784757620769"/>
+<line x1="1060.00" y1="355.12" x2="1060.00" y2="338.05" class="opening-cut"/>
+<line x1="1060.00" y1="355.12" x2="1060.00" y2="338.05" class="opening" data-opening-id="1784757648548"/>
+<line x1="853.34" y1="594.71" x2="880.65" y2="594.71" class="opening-cut"/>
+<line x1="853.34" y1="594.71" x2="880.65" y2="594.71" class="opening" data-opening-id="1784758019141"/>
+  </g>
+  <g id="continuities">
+<circle cx="554.88" cy="751.71" r="4" class="continuity"/>
+<circle cx="793.79" cy="536.69" r="4" class="continuity"/>
+<circle cx="851.81" cy="536.69" r="4" class="continuity"/>
+<circle cx="824.51" cy="260.24" r="4" class="continuity"/>
+<circle cx="496.86" cy="594.71" r="4" class="continuity"/>
+<circle cx="708.46" cy="594.71" r="4" class="continuity"/>
+<circle cx="708.46" cy="470.14" r="4" class="continuity"/>
+<circle cx="708.46" cy="342.15" r="4" class="continuity"/>
+<circle cx="824.51" cy="488.91" r="4" class="continuity"/>
+<circle cx="824.51" cy="536.69" r="4" class="continuity"/>
+<circle cx="906.42" cy="644.20" r="4" class="continuity"/>
+<circle cx="824.51" cy="488.91" r="4" class="continuity"/>
+  </g>
+  <g id="intersections">
+<circle cx="162.39" cy="819.97" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784600403613|wall:n:1784751024158"/>
+<circle cx="554.88" cy="819.97" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784600403613|wall:n:1784754251210"/>
+<circle cx="60.00" cy="779.01" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784604634483|wall:n:1784750954119"/>
+<circle cx="496.86" cy="779.01" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784604634483|wall:n:1784753322528"/>
+<circle cx="554.88" cy="751.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784605101040|wall:n:1784754251210"/>
+<circle cx="851.81" cy="751.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784605101040|wall:n:1784756700772"/>
+<circle cx="667.51" cy="710.75" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784607987483|wall:n:1784754427246"/>
+<circle cx="793.79" cy="710.75" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784607987483|wall:n:1784756325325"/>
+<circle cx="906.42" cy="676.62" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784647611157|wall:n:1784833573291"/>
+<circle cx="1029.28" cy="644.20" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784669652371|wall:n:1784757439976"/>
+<circle cx="906.42" cy="644.20" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784669652371|wall:n:1784833573291"/>
+<circle cx="906.42" cy="644.20" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784669652371|wall:n:1784833573292"/>
+<circle cx="60.00" cy="635.67" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784670218571|wall:n:1784750954119"/>
+<circle cx="496.86" cy="594.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784686784467|wall:n:1784753322528"/>
+<circle cx="496.86" cy="594.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784686784467|wall:n:1784753357217"/>
+<circle cx="708.46" cy="594.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784686784467|wall:n:1784755083288"/>
+<circle cx="708.46" cy="594.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784686784467|wall:n:1784755106854"/>
+<circle cx="793.79" cy="536.69" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784728640167|wall:n:1784756325325"/>
+<circle cx="851.81" cy="536.69" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784728683761|wall:n:1784756700772"/>
+<circle cx="1060.00" cy="536.69" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784728683761|wall:n:1784757472733"/>
+<circle cx="872.29" cy="413.82" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784749705535|wall:n:1784756728679"/>
+<circle cx="824.51" cy="260.24" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784749888610|wall:n:1784756626924"/>
+<circle cx="824.51" cy="260.24" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784749942810|wall:n:1784756626924"/>
+<circle cx="1060.00" cy="260.24" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784749942810|wall:n:1784757472733"/>
+<circle cx="496.86" cy="180.03" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784750181891|wall:n:1784753357217"/>
+<circle cx="708.46" cy="180.03" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784750181891|wall:n:1784755505070"/>
+<circle cx="554.88" cy="751.71" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784754251210|wall:n:1784819708086"/>
+<circle cx="824.51" cy="488.91" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784756626924|wall:n:1784833709805"/>
+<circle cx="824.51" cy="488.91" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784756626924|wall:n:1784833709806"/>
+<circle cx="851.81" cy="536.69" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784756700772|wall:n:1784820397268"/>
+<circle cx="824.51" cy="536.69" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784759799178|wall:n:1784759848518"/>
+<circle cx="824.51" cy="536.69" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784759799178|wall:n:1784820397268"/>
+<circle cx="824.51" cy="488.91" r="5" class="intersection" data-relation-id="relation|CORNER_END_END|wall:n:1784759799178|wall:n:1784833709805"/>
+<circle cx="278.43" cy="717.58" r="5" class="intersection intersection-ambiguous" data-relation-id="relation|CROSS_MID_MID|wall:n:1784606313849|wall:n:1784752583321"/>
+<circle cx="203.34" cy="717.58" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784606313849|wall:n:1784751397992"/>
+<circle cx="353.52" cy="717.58" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784606313849|wall:n:1784752639636"/>
+<circle cx="851.81" cy="676.62" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784647611157|wall:n:1784756700772"/>
+<circle cx="496.86" cy="635.67" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784670218571|wall:n:1784753322528"/>
+<circle cx="708.46" cy="536.69" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784728640167|wall:n:1784755106854"/>
+<circle cx="496.86" cy="470.14" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784749661502|wall:n:1784753357217"/>
+<circle cx="1060.00" cy="413.82" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784749705535|wall:n:1784757472733"/>
+<circle cx="708.46" cy="260.24" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784749888610|wall:n:1784755505070"/>
+<circle cx="496.86" cy="751.71" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784753322528|wall:n:1784819708086"/>
+<circle cx="708.46" cy="488.91" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784755106854|wall:n:1784833709805"/>
+<circle cx="851.81" cy="594.71" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784756700772|wall:n:1784757952953"/>
+<circle cx="986.62" cy="488.91" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784757406814|wall:n:1784833709806"/>
+<circle cx="906.42" cy="594.71" r="5" class="intersection" data-relation-id="relation|T_END_MID|wall:n:1784757952953|wall:n:1784833573292"/>
+<circle cx="162.39" cy="779.01" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784604634483|wall:n:1784751024158"/>
+<circle cx="203.34" cy="779.01" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784604634483|wall:n:1784751397992"/>
+<circle cx="278.43" cy="779.01" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784604634483|wall:n:1784752583321"/>
+<circle cx="353.52" cy="779.01" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784604634483|wall:n:1784752639636"/>
+<circle cx="203.34" cy="635.67" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784670218571|wall:n:1784751397992"/>
+<circle cx="278.43" cy="635.67" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784670218571|wall:n:1784752583321"/>
+<circle cx="353.52" cy="635.67" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784670218571|wall:n:1784752639636"/>
+<circle cx="667.51" cy="594.71" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784686784467|wall:n:1784754427246"/>
+<circle cx="986.62" cy="536.69" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784728683761|wall:n:1784757406814"/>
+<circle cx="1029.28" cy="536.69" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784728683761|wall:n:1784757439976"/>
+<circle cx="906.42" cy="536.69" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784728683761|wall:n:1784833573292"/>
+<circle cx="986.62" cy="413.82" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784749705535|wall:n:1784757406814"/>
+<circle cx="872.29" cy="488.91" r="5" class="intersection" data-relation-id="relation|T_MID_END|wall:n:1784756728679|wall:n:1784833709806"/>
+  </g>
+  <g id="target-wall-nodes">
+<circle cx="60.00" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:0.000"/>
+<circle cx="87.30" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:800.000"/>
+<circle cx="155.56" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:2800.000"/>
+<circle cx="203.34" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:4200.000"/>
+<circle cx="234.06" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:5100.000"/>
+<circle cx="254.54" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:5700.000"/>
+<circle cx="278.43" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:6400.000"/>
+<circle cx="312.56" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:7400.000"/>
+<circle cx="333.04" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:8000.000"/>
+<circle cx="353.52" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:8600.000"/>
+<circle cx="403.00" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:10050.000"/>
+<circle cx="471.26" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:12050.000"/>
+<circle cx="496.86" cy="635.67" r="4" class="target-node" data-node-id="node|wall:n:1784670218571|localS:12800.000"/>
+  </g>
+  <g id="regression-reference">
+<path d="M 278.43 635.67 l 24 -36 h 148" class="leader"/>
+<text x="308.43" y="593.67" class="target-label">R-VIS-05 · muro 1784670218571</text>
+<text x="308.43" y="609.67" class="target-detail">axis=x|fixed=5400.000 · 13 nodos R5</text>
+  </g>
+  <text x="1100" y="132" class="section">Resumen verificable</text>
+<text x="1100" y="170" class="metric-label">Muros canónicos</text><text x="1450" y="170" class="metric-value">45</text>
+<text x="1100" y="200" class="metric-label">Vanos canónicos</text><text x="1450" y="200" class="metric-value">43</text>
+<text x="1100" y="230" class="metric-label">Apilamientos R3</text><text x="1450" y="230" class="metric-value">0</text>
+<text x="1100" y="260" class="metric-label">Encuentros R4</text><text x="1450" y="260" class="metric-value">60</text>
+<text x="1100" y="290" class="metric-label">Nodos R5</text><text x="1450" y="290" class="metric-value">201</text>
+<text x="1100" y="320" class="metric-label">Findings R0–R5</text><text x="1450" y="320" class="metric-value">26</text>
+  <text x="1100" y="350" class="section">Relaciones R3–R4</text>
+<text x="1100" y="386" class="relation-label">CORNER_END_END</text><text x="1450" y="386" class="metric-value">33</text>
+<text x="1100" y="411" class="relation-label">T_END_MID</text><text x="1450" y="411" class="metric-value">13</text>
+<text x="1100" y="436" class="relation-label">T_MID_END</text><text x="1450" y="436" class="metric-value">13</text>
+<text x="1100" y="461" class="relation-label">CROSS_MID_MID</text><text x="1450" y="461" class="metric-value">1</text>
+<text x="1100" y="486" class="relation-label">STACKED_PARTIAL</text><text x="1450" y="486" class="metric-value">0</text>
+  <text x="1100" y="540" class="section">Leyenda</text>
+  <line x1="1104" y1="570" x2="1144" y2="570" class="wall wall-target"/><text x="1156" y="575" class="legend">muro R-VIS-05</text>
+  <circle cx="1124" cy="600" r="5" class="intersection"/><text x="1156" y="605" class="legend">encuentro R4</text>
+  <circle cx="1324" cy="600" r="4" class="target-node"/><text x="1338" y="605" class="legend">nodo R5</text>
+  <text x="1100" y="650" class="section">Cobertura Z R4</text>
+  <text x="1100" y="676" class="coverage-type">CORNER_END_END</text>
+  <text x="1100" y="696" class="coverage-type">PARTIAL_A_FULL_B</text>
+  <rect x="1120" y="742.11" width="48" height="99.89" class="band-intersectionActive" data-band-state="intersectionActive"/>
+<rect x="1120" y="710.00" width="48" height="32.11" class="band-wallAOnly" data-band-state="wallAOnly"/>
+  <text x="1182" y="730" class="coverage-label">wallAOnly</text>
+  <text x="1182" y="780" class="coverage-label">intersectionActive</text>
+  <text x="1182" y="824" class="coverage-label">zOverlap 450–3250 mm</text>
+  <text x="1260" y="860" class="warning">eligibleForSpec08 = false</text>
+  <text x="1100" y="886" class="hash">canonicalSha256 ba783496503c0f9d…</text>
+  <text x="60" y="944" class="subtitle">Fuente: tests/fixtures/casa-L.json · Generación: npm run evidence:spec14 · Evidencia topológica. No es un plano de ejecución.</text>
+</svg>

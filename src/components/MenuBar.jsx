@@ -131,6 +131,7 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
   const reportProjectOperationError = useModelStore((s) => s.reportProjectOperationError);
   const projectDocument = useModelStore((s) => s.projectDocument);
   const exportModelToFile = useModelStore((s) => s.exportModelToFile);
+  const exportAgnosticGeometryAudit = useModelStore((s) => s.exportAgnosticGeometryAudit);
   const zoomIn = useModelStore((s) => s.zoomIn);
   const zoomOut = useModelStore((s) => s.zoomOut);
   const toggleAxes = useModelStore((s) => s.toggleAxes);
@@ -318,7 +319,8 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
         <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={saveModel}>Guardar copia en navegador</Item>
         <Item onClick={() => loadModel()}>Cargar copia del navegador</Item>
-        <Item onClick={exportModelToFile}>Exportar JSON…</Item>
+        <Item onClick={exportModelToFile}>Exportar geometría JSON…</Item>
+        <Item onClick={exportAgnosticGeometryAudit}>Exportar auditoría geométrica…</Item>
         <Item onClick={() => fileInputRef.current?.click()}>Importar JSON…</Item>
         <div className="border-t border-[#e4e4e0] my-1" />
         <Flyout label="Exportar DXF">
@@ -399,6 +401,9 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
         <Item onClick={toggleGhostLayer}>{showGhostLayer ? 'Ocultar capa fantasma' : 'Mostrar capa fantasma'}</Item>
         <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={() => onOpenModal('viewer3d')}>Vista 3D…</Item>
+        <Item onClick={() => onOpenModal('agnosticGeometryComparison')}>
+          Comparar geometría agnóstica…
+        </Item>
         <div className="border-t border-[#e4e4e0] my-1" />
         <Item onClick={() => setLayout(layout === 'split' ? 'single' : 'split')}>{layout === 'split' ? 'Vista única' : 'Vista dividida (2 paneles)'}</Item>
       </Dropdown>

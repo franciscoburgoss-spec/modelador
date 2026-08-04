@@ -115,9 +115,9 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 13595,
-      "workspaceSha256": "41f87f4ec323d127b6497a9e8e9b6ad2076d5756f29ff529321a4e0220fe004a",
-      "changedBy": "SPEC-004"
+      "workspaceBytes": 13855,
+      "workspaceSha256": "09d92a4ee8eab3c4cf77c7ca1b5cf44f5bf712bb3f1f369dd85804e2185ed247",
+      "changedBy": "SPEC-006"
     },
     {
       "path": "src/components/AutosaveBanner.jsx",
@@ -142,9 +142,9 @@
       "bytes": 16614,
       "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
       "kind": "source",
-      "workspaceBytes": 21839,
-      "workspaceSha256": "c2e32fa50b27ce8bb64b1199aba11b61dea421aef39ed4db5c15b25917738d1d",
-      "changedBy": "SPEC-004"
+      "workspaceBytes": 22168,
+      "workspaceSha256": "4bfbcfa7ca335dc8d60837956b7b90a7d9b74b049f8936d07d319be7f6f1fdb0",
+      "changedBy": "SPEC-006"
     },
     {
       "path": "src/components/PropertiesPanel.jsx",
@@ -919,9 +919,9 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 57985,
-      "workspaceSha256": "851b7367de7f406c52560caa06d5a5db6546d0eb434062d3c10f930b1f1d137f",
-      "changedBy": "SPEC-004"
+      "workspaceBytes": 58812,
+      "workspaceSha256": "69398f1fc0ed9772dc98697d889dcde72ea7d500ae83ba34c12bd62cf98d15a5",
+      "changedBy": "SPEC-006"
     },
     {
       "path": "tailwind.config.js",
