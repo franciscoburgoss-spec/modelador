@@ -9,13 +9,15 @@ import {
   serializeNativeProject
 } from '../src/core/nativeProjectFile.js';
 import { ModelImportError } from '../src/core/modelSchema.js';
+import { createEmptyStructuralIntent } from '../src/core/structuralIntent.js';
 
 function validModel(overrides = {}) {
   return {
-    modelVersion: 2,
+    modelVersion: 3,
     grid: { xAxes: [], yAxes: [], zLevels: [] },
     elements: [],
     wallTypes: [],
+    structuralIntent: createEmptyStructuralIntent(),
     library: {
       wallSections: [],
       columnSections: [],
@@ -115,7 +117,7 @@ test('SPEC-004-A: errores del puerto son tipados y el contrato exige ambas opera
   );
 });
 
-test('SPEC-006-A: el roundtrip nativo conserva edición, Metalcon y OSB con modelVersion 2', async () => {
+test('SPEC-006-A: el roundtrip nativo migra a v3 y conserva edición, Metalcon y OSB', async () => {
   const source = JSON.parse(await readFile(
     new URL('fixtures/casa-L.json', import.meta.url),
     'utf8'
@@ -124,7 +126,8 @@ test('SPEC-006-A: el roundtrip nativo conserva edición, Metalcon y OSB con mode
   const sourceWall = source.elements.find((element) => element.type === 'wall');
   const nativeWall = native.elements.find((element) => element.id === sourceWall.id);
 
-  assert.equal(native.modelVersion, 2);
+  assert.equal(native.modelVersion, 3);
+  assert.deepEqual(native.structuralIntent, createEmptyStructuralIntent());
   assert.deepEqual(nativeWall.studs, sourceWall.studs);
   assert.deepEqual(nativeWall.osbCourses, sourceWall.osbCourses);
   assert.equal(nativeWall.framingStudProfileId, sourceWall.framingStudProfileId);

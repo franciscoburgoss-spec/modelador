@@ -1,6 +1,6 @@
 # SPEC-015-A — Contrato persistente de intención estructural agnóstica
 
-**Estado:** borrador de planificación · 2026-08-04
+**Estado:** cerrada · 2026-08-05
 
 ## Diagnóstico
 
@@ -272,14 +272,28 @@ La eliminación no modifica soluciones constructivas de otros elementos.
 
 ## Evidencia
 
-- Tests de contrato y migración.
-- Fixture v2 con tipos Metalcon y salida v3 exacta.
-- Corpus adversario de referencias, IDs y combinaciones inválidas.
-- Comparación byte a byte de la exportación agnóstica antes/después.
-- Inspección de dependencias prohibidas.
-- Aplicación al fixture real.
-- Prueba de reversión.
-- Cierre `sessions/close-SPEC-015-A.md`.
+- `tests/structuralIntent.test.mjs`, `tests/structuralIntentStore.test.mjs` y
+  `tests/structuralIntentIntegration.test.mjs` cubren contrato, migración, acciones explícitas,
+  historial, canonicalización y persistencia nativa.
+- El fixture legacy `tests/fixtures/casa-L.json` prueba la cadena pura
+  `0→1→2→3`, conserva 45 muros, 43 vanos, cuatro fundaciones y dos cubiertas legacy, y no
+  infiere intención desde `wallTypes` ni Metalcon.
+- El fixture real `FX-008`, `tests/fixtures/casa-L-completa-v3.json`, entra sin migraciones,
+  conserva 45 muros, 43 vanos, 32 fundaciones y 7 `roofPlanes`, y parte con
+  `structuralIntent` vacío.
+- El golden `json-fx008-agnostic-geometry` fija una exportación de 81.875 bytes y SHA-256
+  `966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a`.
+- Agregar intención estructural explícita a `FX-008` conserva exactamente los mismos bytes y
+  SHA-256 de `agnostic-geometry-v1.0`.
+- El corpus adversario rechaza referencias inexistentes, IDs duplicados, valores desconocidos y
+  combinaciones inválidas antes de mutar el modelo.
+- La inspección estática bloquea dependencias con `wallTypes.js`, `wallRoles.js`, Metalcon,
+  OSB y módulos de modulación.
+- La prueba de reversión demuestra que traducir automáticamente `wallType.role` a intención
+  hace fallar la suite.
+- D-055, R-028 y REQ-DOM-006 registran decisión, riesgo y trazabilidad.
+- Cierre registrado en `sessions/close-SPEC-015-A.md` después de aprobar todos los gates
+  oficiales.
 
 ## Corte sugerido
 

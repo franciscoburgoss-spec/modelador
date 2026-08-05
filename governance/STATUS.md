@@ -3,19 +3,19 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **03-ago-2026**
+Última actualización: **04-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-14 R3–R5 cerrada; R6–R7 pendiente de contrato agnóstico `structuralIntent` |
+| Etapa | SPEC-015-A cerrada: contrato agnóstico `structuralIntent` y modelo nativo v3 |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `SPEC-014-B` — `specs/SPEC-014-B-apilamientos-intersecciones-y-nodos.md` |
-| Esfuerzo activo | `high` planificado; debe ser `high` efectivo; `xhigh` prohibido |
-| Suite oficial | 842/842 Node; 21/21 componentes; 9/9 Rust; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 767,05 kB |
-| Cobertura | core 93,10 %; store 95,48 % (gates 90 % / 85 %) |
+| Spec activa | Ninguna; `SPEC-015-B` permanece pendiente de apertura en un corte separado |
+| Esfuerzo activo | Ninguno |
+| Suite oficial | 855/855 Node; 21/21 componentes; 9/9 Rust; laboratorio 35/35 |
+| Build | OK, con warning medido de chunk inicial de 780,52 kB |
+| Cobertura | core 93,21 %; store 95,68 % (gates 90 % / 85 %) |
 | Toolchain de verificación | Node 22.23.2; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -260,6 +260,14 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `ba783496503c0f9d1da5ebb0cf18a603169e239eba1b07306f02502630cb09e6`. El fixture real no
   contiene pares R3. R6–R12 siguen pendientes, `eligibleForSpec08=false`, F-009 permanece P1 y
   ninguna solución constructiva consumió esta salida.
+- SPEC-015-A: cerrada con esfuerzo `high` planificado y efectivo, sin escalamiento. D-055,
+  R-028 y REQ-DOM-006 registran la autoridad persistente `structural-intent-v1.0`. El modelo
+  nativo usa `modelVersion: 3`; la migración añade intención vacía sin inferir roles
+  constructivos y las mutaciones explícitas participan del historial. FX-008 conserva 45 muros,
+  43 vanos, 32 fundaciones y 7 `roofPlanes`; `agnostic-geometry-v1.0` mantiene 81.875 bytes y
+  SHA-256 `966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a` antes y después de
+  agregar intención. Suite oficial, cobertura, build, 19 goldens, auditorías y gobernanza pasan.
+  Evidencia: `sessions/close-SPEC-015-A.md`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -285,8 +293,7 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Emitir una spec nueva antes de iniciar R6–R7 para definir el contrato agnóstico y separado
-`structuralIntent`; no traducir roles constructivos ni consumir todavía la salida desde Metalcon.
-R6–R12, modelo v3 y R9-B/R9-C permanecen fuera del corte. SPEC-08 continúa deshabilitada hasta
-completar R12 sin errores. F-009 sigue como baseline conocido y bloquea afirmar que los planos
-están listos para ejecución.
+Abrir SPEC-015-B sólo en un corte nuevo y explícito para definir intención de techumbre,
+orientación y bordes canónicos. No implementar todavía interfaz, propuestas automáticas, caminos
+de carga ni R6–R12. F-009 permanece como baseline conocido y SPEC-08 continúa deshabilitada hasta
+completar R12 sin errores.

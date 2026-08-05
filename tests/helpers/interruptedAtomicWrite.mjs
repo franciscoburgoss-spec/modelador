@@ -15,6 +15,7 @@ const replacement = `${JSON.stringify({
 }, null, 2)}\n`;
 const fileSystem = createNodeProjectFileSystem({
   afterTempFileSynced: async ({ tempPath }) => {
+    process.channel?.ref();
     process.send({ status: 'temp-synced', tempPath });
     await new Promise(() => {});
   }

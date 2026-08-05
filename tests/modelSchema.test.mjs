@@ -6,6 +6,7 @@ import {
   CURRENT_MODEL_VERSION, ModelImportError, migrateModel, parseModelJson,
   prepareModelImport
 } from '../src/core/modelSchema.js';
+import { createEmptyStructuralIntent } from '../src/core/structuralIntent.js';
 
 function fixture(name) {
   return JSON.parse(fs.readFileSync(
@@ -14,16 +15,17 @@ function fixture(name) {
   ));
 }
 
-test('R5-A: migración v0→v1→v2 es secuencial, pura e idempotente', () => {
+test('R5-A: migración v0→v1→v2→v3 es secuencial, pura e idempotente', () => {
   const v0 = fixture('model-v0.json');
   const original = JSON.stringify(v0);
   const first = migrateModel(v0);
   const second = migrateModel(first.model);
 
   assert.equal(first.model.modelVersion, CURRENT_MODEL_VERSION);
-  assert.deepEqual(first.appliedMigrations, ['0->1', '1->2']);
+  assert.deepEqual(first.appliedMigrations, ['0->1', '1->2', '2->3']);
   assert.equal(first.model.roofSystems.length, 1);
   assert.deepEqual(first.model.wallTypes, []);
+  assert.deepEqual(first.model.structuralIntent, createEmptyStructuralIntent());
   assert.equal(Object.hasOwn(first.model.elements[0], 'wallTypeId'), false);
   assert.equal(Object.hasOwn(first.model.elements[0], 'role'), false);
   assert.equal(JSON.stringify(v0), original, 'la migración no muta la entrada');
@@ -36,8 +38,9 @@ test('R5-A: fixture v1 conserva defaults, overrides y derivados sin inferir tipo
   const original = structuredClone(v1);
   const result = migrateModel(v1);
 
-  assert.deepEqual(result.appliedMigrations, ['1->2']);
-  assert.equal(result.model.modelVersion, 2);
+  assert.deepEqual(result.appliedMigrations, ['1->2', '2->3']);
+  assert.equal(result.model.modelVersion, 3);
+  assert.deepEqual(result.model.structuralIntent, createEmptyStructuralIntent());
   assert.deepEqual(result.model.wallTypes, []);
   assert.deepEqual(result.model.metalconDefaults, original.metalconDefaults);
   assert.deepEqual(result.model.osbDefaults, original.osbDefaults);

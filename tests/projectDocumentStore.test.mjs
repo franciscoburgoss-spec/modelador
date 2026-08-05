@@ -6,7 +6,16 @@ import { useModelStore } from '../src/store/useModelStore.js';
 
 function validModel(overrides = {}) {
   return {
-    modelVersion: 2,
+    modelVersion: 3,
+    structuralIntent: {
+      schema: 'structural-intent-v1.0',
+      elementIntents: [],
+      roofIntents: [],
+      intersectionIntents: [],
+      supportIntents: [],
+      diaphragmIntents: [],
+      overrides: []
+    },
     grid: {
       xAxes: [{ id: 'X0', position: 0 }],
       yAxes: [{ id: 'Y0', position: 0 }],
@@ -146,7 +155,7 @@ test('SPEC-004-B: abrir aplica modelo/documento y limpia ambos historiales en un
   );
 
   assert.equal(result.ok, true);
-  assert.deepEqual(result.appliedMigrations, ['1->2']);
+  assert.deepEqual(result.appliedMigrations, ['1->2', '2->3']);
   assert.equal(result.warnings[0].code, 'LEGACY_MODEL_MIGRATED');
   const state = useModelStore.getState();
   assert.equal(state.model.persistenceProbe, 'opened');

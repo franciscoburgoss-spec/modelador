@@ -38,7 +38,16 @@ async function temporaryProjectPath() {
 
 function project(sequence) {
   return {
-    modelVersion: 2,
+    modelVersion: 3,
+    structuralIntent: {
+      schema: 'structural-intent-v1.0',
+      elementIntents: [],
+      roofIntents: [],
+      intersectionIntents: [],
+      supportIntents: [],
+      diaphragmIntents: [],
+      overrides: []
+    },
     grid: { xAxes: [], yAxes: [], zLevels: [] },
     elements: [],
     wallTypes: [],

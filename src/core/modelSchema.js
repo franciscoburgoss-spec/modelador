@@ -1,8 +1,15 @@
 import { hasOwn } from './hasOwn.js';
 import { isValidParamName } from './projectParams.js';
 import { assertValidWallTypes } from './wallTypes.js';
+import {
+  canonicalizeStructuralIntent,
+  canonicalizeStructuralIntentFindings,
+  createEmptyStructuralIntent,
+  validateStructuralIntent,
+  validateStructuralIntentFindings
+} from './structuralIntent.js';
 
-export const CURRENT_MODEL_VERSION = 2;
+export const CURRENT_MODEL_VERSION = 3;
 export const LEGACY_MODEL_VERSION = 0;
 
 export class ModelImportError extends Error {
@@ -74,9 +81,18 @@ function migrateV1ToV2(model) {
   };
 }
 
+function migrateV2ToV3(model) {
+  return {
+    ...model,
+    modelVersion: 3,
+    structuralIntent: createEmptyStructuralIntent()
+  };
+}
+
 const MIGRATIONS = new Map([
   [0, migrateV0ToV1],
-  [1, migrateV1ToV2]
+  [1, migrateV1ToV2],
+  [2, migrateV2ToV3]
 ]);
 
 function declaredVersion(model) {
@@ -251,6 +267,14 @@ export function validateModel(model) {
     });
   }
 
+  issues.push(...validateStructuralIntent(
+    model.structuralIntent,
+    validElements ? model.elements : []
+  ));
+  issues.push(...validateStructuralIntentFindings(
+    model.structuralIntentFindings,
+    validElements ? model.elements : []
+  ));
   for (const field of ['projectParams', 'dimensions', 'roofSystems', 'roofPlanes']) {
     if (model[field] !== undefined && requireArray(model[field], field, issues)) {
       if (field !== 'projectParams') validateUniqueIds(model[field], field, issues);
@@ -321,10 +345,21 @@ export function prepareModelImport(input) {
       issues
     );
   }
+  const canonicalModel = {
+    ...model,
+    structuralIntent: canonicalizeStructuralIntent(model.structuralIntent),
+    ...(model.structuralIntentFindings !== undefined
+      ? {
+          structuralIntentFindings: canonicalizeStructuralIntentFindings(
+            model.structuralIntentFindings
+          )
+        }
+      : {})
+  };
   return {
-    model,
+    model: canonicalModel,
     appliedMigrations,
-    warnings: modelWarnings(model, appliedMigrations)
+    warnings: modelWarnings(canonicalModel, appliedMigrations)
   };
 }
 

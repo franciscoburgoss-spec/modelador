@@ -25,6 +25,7 @@ FX-001 y FX-002 cuentan como un solo caso para muros, OSB y fundaciones.
 | FX-005 | migración mínima por versión | un archivo por cada versión histórica soportada | Disponible y registrado |
 | FX-006 | importaciones hostiles | `{}`, truncado, futuro, payloads de fórmula, exceso de tamaño | Pendiente |
 | FX-007 | cálculo de referencia | INP pequeño con resultado CCX estable | Pendiente |
+| FX-008 | vivienda real completa para intención estructural | modelo nativo v3, 45 muros, 43 vanos, 32 fundaciones, 7 roofPlanes y exportación agnóstica estable | Verificado; `SPEC-015-A` |
 
 FX-003, FX-004 y FX-001 deben diferir byte a byte en `elements` y biblioteca entre sí. En FX-004
 se persiste la configuración de `roofPlanes`, no `supportLedgers`: las soleras son derivadas y el
@@ -32,7 +33,7 @@ roundtrip debe reproducirlas semánticamente.
 
 ## Manifiesto ejecutable
 
-`harness/fixtures.manifest.json` registra los ocho fixtures JSON actuales. La prueba
+`harness/fixtures.manifest.json` registra los nueve fixtures JSON actuales. La prueba
 `tests/fixtureManifest.test.mjs` descubre ambos directorios de fixtures, exige que no falte ninguno,
 recalcula sus SHA-256, ejecuta `prepareModelImport` y compara las invariantes declaradas.
 
@@ -45,6 +46,13 @@ FX-003 contiene seis muros resolubles, tres puertas, tres ventanas y bounding bo
 posiciones de cercha y dos ledgers de 5.940 mm reproducibles después del roundtrip. Sus perfiles
 de miembros `90CA085`, `40CA085` y `60CA085` persisten área e inercias idénticas al catálogo
 canónico para que el INP no dependa de completar datos durante la exportación.
+
+FX-008 conserva el modelo completo extraído desde el autosave de la aplicación como archivo
+nativo `modelVersion: 3`, sin migraciones pendientes y con `structuralIntent` vacío. Su golden
+`json-fx008-agnostic-geometry` fija una exportación de 81.875 bytes, SHA-256
+`966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a` y las cantidades
+45 muros, 43 vanos, 32 fundaciones y 7 superficies de cubierta. FX-008 complementa y no
+reemplaza a FX-001, que permanece como evidencia de migraciones legacy.
 
 ## Ficha obligatoria por entrada
 

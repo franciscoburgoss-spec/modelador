@@ -86,8 +86,74 @@ function finiteSum(items, valueOf) {
   }, 0);
 }
 
+function summarizeAgnosticGeometry(model) {
+  const elements = model.elements || [];
+  const walls = elements.filter((element) => element.type === 'wall');
+  const foundations = elements.filter((element) => element.type === 'foundation');
+  const openings = walls.flatMap((wall) => wall.openings || []);
+  const foundationSolids = foundations.flatMap((foundation) => foundation.solids || []);
+  const roofGeometry = model.roofGeometry || [];
+
+  return {
+    schema: model.schema,
+    semanticSha256: sha256(canonicalJson(model)),
+    rootKeys: Object.keys(model),
+    units: model.units ?? null,
+    coordinates: model.coordinates ?? null,
+    grid: {
+      x: (model.grid?.xAxes || []).map(({ id, x }) => ({ id, x })),
+      y: (model.grid?.yAxes || []).map(({ id, y }) => ({ id, y })),
+      z: (model.grid?.zLevels || []).map(({ id, z }) => ({ id, z }))
+    },
+    counts: {
+      elements: countBy(elements, (element) => element.type),
+      openings: countBy(openings, (opening) => opening.kind),
+      foundationSolids: countBy(foundationSolids, (solid) => solid.role),
+      roofGeometry: roofGeometry.length,
+      roofSources: countBy(roofGeometry, (roof) => roof.source),
+      surfaceKinds: countBy(roofGeometry, (roof) => roof.surface?.kind)
+    },
+    references: {
+      elements: elements.map(({ id, type }) => ({ id, type })),
+      openings: openings.map(({ id, kind, hostWallId }) => ({
+        id,
+        kind,
+        hostWallId
+      })),
+      foundations: foundations.map(({ id, kind, solids }) => ({
+        id,
+        kind,
+        solidRoles: (solids || []).map(({ role }) => role)
+      })),
+      roofGeometry: roofGeometry.map(({ id, source, surface }) => ({
+        id,
+        source,
+        surfaceKind: surface?.kind ?? null
+      }))
+    },
+    magnitudes: {
+      wallPrisms: walls.map(({ id, prism }) => ({ id, prism })),
+      openingVoids: openings.map(({ id, void: openingVoid }) => ({
+        id,
+        void: openingVoid
+      })),
+      foundationSolids: foundations.map(({ id, solids }) => ({
+        id,
+        solids
+      })),
+      roofBoundaries: roofGeometry.map(({ id, surface }) => ({
+        id,
+        boundary: surface?.boundary || []
+      }))
+    }
+  };
+}
+
 export function summarizeJson(content) {
   const model = JSON.parse(content);
+  if (model?.schema === 'agnostic-geometry-v1.0') {
+    return summarizeAgnosticGeometry(model);
+  }
   const elements = model.elements || [];
   const walls = elements.filter((element) => element.type === 'wall');
   const openings = walls.flatMap((wall) => wall.openings || []);

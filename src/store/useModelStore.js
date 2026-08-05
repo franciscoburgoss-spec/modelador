@@ -31,6 +31,15 @@ import {
 import { LEGACY_PROJECT_STORAGE_KEY } from '../core/legacyProjectMigration.js';
 import { assertValidWallTypes, getWallType } from '../core/wallTypes.js';
 import {
+  checkStructuralIntentBeforeMerge,
+  clearStructuralIntent as clearStructuralIntentInModel,
+  createEmptyStructuralIntent,
+  reconcileStructuralIntentAfterSplit,
+  removeElementAndStructuralReferences,
+  removeElementIntent as removeElementIntentInModel,
+  setElementIntent as setElementIntentInModel
+} from '../core/structuralIntent.js';
+import {
   invalidateForMutation,
   applyWallRegeneration,
   applyWallRegenerationPatch,
@@ -66,6 +75,10 @@ function mergeLoadedModel(data) {
     // combinado desde el menú sin abrir el modal). null hasta que el usuario guarde uno.
     metalconDefaults: null,
     ...data,
+    structuralIntent: data.structuralIntent ?? createEmptyStructuralIntent(),
+    structuralIntentFindings: Array.isArray(data.structuralIntentFindings)
+      ? data.structuralIntentFindings
+      : [],
     roofSystems: Array.isArray(data.roofSystems) ? data.roofSystems : [],
     roofPlanes: Array.isArray(data.roofPlanes) ? data.roofPlanes : [],
     // ★ Sesión 22: datos de proyecto del cajetín — normalizados para que un modelo guardado
@@ -197,6 +210,8 @@ function emptyModel() {
     projectParams: [],
     dimensions: [],
     wallTypes: [],
+    structuralIntent: createEmptyStructuralIntent(),
+    structuralIntentFindings: [],
     // ★ default de proyecto para modulación OSB (core/osbModulation.js). minPanelWidth tiene
     // piso duro de 200mm (ver setOsbDefaults) — por debajo no hay dónde atornillar borde+interior.
     osbDefaults: { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 5 },
@@ -855,6 +870,40 @@ export const useModelStore = create((set, get) => ({
     ...s.model, dimensions: (s.model.dimensions || []).filter(d => d.id !== id)
   })),
 
+  // ---- intención estructural agnóstica (SPEC-015-A) ----
+  setElementIntent: (elementId, intent) => {
+    let outcome;
+    set((s) => {
+      outcome = setElementIntentInModel(s.model, elementId, intent);
+      return withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
+  removeElementIntent: (elementId) => {
+    let outcome;
+    set((s) => {
+      outcome = removeElementIntentInModel(s.model, elementId);
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
+  clearStructuralIntent: () => {
+    let outcome;
+    set((s) => {
+      outcome = clearStructuralIntentInModel(s.model);
+      return withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
   // ---- elementos ----
   addElement: (element) => set((s) => {
     const entry = { ...element, id: generateId() };
@@ -909,6 +958,7 @@ export const useModelStore = create((set, get) => ({
   splitWall: (wallId, options = {}) => {
     const plan = planWallSplit(get().model, wallId, options);
     if (!plan.ok) return plan;
+    let intentOutcome = null;
     set((s) => {
       let { xAxes, yAxes } = s.model.grid;
       let cutAxisId = plan.cutAxisId;
@@ -929,17 +979,34 @@ export const useModelStore = create((set, get) => ({
       const idx = s.model.elements.findIndex((el) => el.id === wallId);
       const elements = [...s.model.elements];
       elements.splice(idx, 1, ...segments);
-      return withHistory(s, invalidateForMutation({
+      const splitModel = {
         ...s.model,
         grid: { ...s.model.grid, xAxes, yAxes },
         elements,
         selectedElementId: segments[0].id
-      }, 'wallTopology', { wallIds: [wallId] }));
+      };
+      intentOutcome = reconcileStructuralIntentAfterSplit(
+        s.model,
+        splitModel,
+        wallId,
+        segments.map((segment) => segment.id)
+      );
+      return withHistory(s, invalidateForMutation(
+        intentOutcome.model,
+        'wallTopology',
+        { wallIds: [wallId] }
+      ));
     });
-    return plan;
+    return {
+      ...plan,
+      affectedElementIds: intentOutcome.affectedElementIds,
+      structuralIntentFinding: intentOutcome.finding
+    };
   },
   // ★ Sesión 15 — unir muros colineales contiguos en uno solo (id nuevo), un solo undo.
   mergeWalls: (wallIds, options = {}) => {
+    const intentCheck = checkStructuralIntentBeforeMerge(get().model, wallIds);
+    if (!intentCheck.ok) return intentCheck;
     const plan = planWallMerge(get().model, wallIds, options);
     if (!plan.ok) return plan;
     set((s) => {
@@ -1150,11 +1217,8 @@ export const useModelStore = create((set, get) => ({
 
     const topLevel = s.model.elements.find(el => el.id === id);
     if (topLevel) {
-      const next = {
-        ...s.model,
-        elements: s.model.elements.filter(el => el.id !== id),
-        selectedElementId: null
-      };
+      const intentOutcome = removeElementAndStructuralReferences(s.model, id);
+      const next = { ...intentOutcome.model, selectedElementId: null };
       return withHistory(
         s,
         topLevel.type === 'wall'

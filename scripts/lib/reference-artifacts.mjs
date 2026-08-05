@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 
+import { serializeAgnosticGeometry } from '../../src/core/agnosticGeometry.js';
 import { modulateAllWallsFull } from '../../src/core/batchModulation.js';
 import {
   applyWallRegenerationPatch,
@@ -29,7 +30,11 @@ export const REFERENCE_DATE = '2026-07-28';
 const FIXTURES = {
   fx3: new URL('../../tests/fixtures/fx-003-vivienda-independiente.json', import.meta.url),
   fx4: new URL('../../tests/fixtures/fx-004-cubierta-moderna.json', import.meta.url),
-  casaL: new URL('../../tests/fixtures/casa-L.json', import.meta.url)
+  casaL: new URL('../../tests/fixtures/casa-L.json', import.meta.url),
+  casaLCompleta: new URL(
+    '../../tests/fixtures/casa-L-completa-v3.json',
+    import.meta.url
+  )
 };
 
 function loadFixture(url) {
@@ -132,6 +137,7 @@ export function buildReferenceModels() {
   const fx3 = loadFixture(FIXTURES.fx3);
   const fx4 = loadFixture(FIXTURES.fx4);
   const casaL = loadFixture(FIXTURES.casaL);
+  const casaLCompleta = loadFixture(FIXTURES.casaLCompleta);
   const fx3Generated = withReferenceSheetMetadata(regenerateWalls(fx3));
   const fx4Generated = withReferenceSheetMetadata(regenerateWalls(fx4));
   const casaLGenerated = withReferenceSheetMetadata(regenerateWalls(casaL));
@@ -142,6 +148,7 @@ export function buildReferenceModels() {
     fx3,
     fx4,
     casaL: withReferenceSheetMetadata(casaL),
+    casaLCompleta,
     casaLGenerated,
     fx3Generated,
     fx4Generated,
@@ -203,6 +210,7 @@ export function buildReferenceArtifacts(models = buildReferenceModels()) {
     fx3,
     fx4,
     casaL,
+    casaLCompleta,
     casaLGenerated,
     fx3Generated,
     fx4Generated,
@@ -227,6 +235,15 @@ export function buildReferenceArtifacts(models = buildReferenceModels()) {
       'FX-004',
       'fx-004-roundtrip.json',
       JSON.stringify(roundtrip(fx4), null, 2)
+    ),
+    artifact(
+      'json-fx008-agnostic-geometry',
+      'json',
+      'agnostic-geometry',
+      'v1.0',
+      'FX-008',
+      'geometria-agnostica-base.json',
+      serializeAgnosticGeometry(casaLCompleta)
     ),
     artifact(
       'json-fx003-derived-fresh',
