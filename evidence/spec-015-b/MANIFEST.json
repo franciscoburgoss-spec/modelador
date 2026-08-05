@@ -1,0 +1,15 @@
+{
+  "schema": "spec-015-b-evidence-manifest-v1.0",
+  "files": [
+    {
+      "path": "FX-008-roof-intent.json",
+      "bytes": 9479,
+      "sha256": "39801acc267bce44db3fe672212eaf7ec0104b6139c7280daaa4417e20cf1db0"
+    },
+    {
+      "path": "FX-008-roof-intent.svg",
+      "bytes": 5087,
+      "sha256": "5aa52f027bc4c329285908ca8f5df4127370040047528d3ccdca45ddb7b26781"
+    }
+  ]
+}

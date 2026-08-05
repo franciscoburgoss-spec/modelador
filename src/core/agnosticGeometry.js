@@ -717,6 +717,59 @@ function assertFiniteOutput(value, path = '$') {
   }
 }
 
+export function projectAgnosticRoofGeometry(model, requestedRoofGeometryIds = null) {
+  if (!model || typeof model !== 'object' || Array.isArray(model)) {
+    fail('INVALID_MODEL', 'El modelo debe ser un objeto.', '$');
+  }
+  if (!model.grid || typeof model.grid !== 'object') {
+    fail('INVALID_COLLECTION', 'El modelo debe declarar grid.', 'grid');
+  }
+  const normalized = {
+    ...model,
+    grid: {
+      ...model.grid,
+      xAxes: requireArray(model.grid.xAxes, 'grid.xAxes'),
+      yAxes: requireArray(model.grid.yAxes, 'grid.yAxes'),
+      zLevels: requireArray(model.grid.zLevels, 'grid.zLevels')
+    },
+    elements: requireArray(model.elements, 'elements'),
+    projectParams: requireArray(model.projectParams ?? [], 'projectParams'),
+    roofSystems: requireArray(model.roofSystems ?? [], 'roofSystems'),
+    roofPlanes: requireArray(model.roofPlanes ?? [], 'roofPlanes')
+  };
+  registerIds(normalized);
+
+  const requested = requestedRoofGeometryIds == null
+    ? null
+    : new Set(requireArray(requestedRoofGeometryIds, 'requestedRoofGeometryIds').map(idKey));
+  const selected = (entry) => requested == null || requested.has(idKey(entry?.id));
+  const context = {
+    model: normalized,
+    paramsMap: buildStrictParamsMap(normalized.projectParams),
+    elementsById: buildElementsById(normalized.elements)
+  };
+  const wallFrames = new Map();
+  normalized.elements.forEach((element, index) => {
+    if (element?.type !== 'wall') return;
+    const projected = projectWall(element, context, `elements[${index}]`);
+    wallFrames.set(idKey(element.id), { id: element.id, ...projected.frame });
+  });
+  const roofGeometry = [
+    ...normalized.roofSystems.flatMap((system, index) => (
+      selected(system)
+        ? [projectLegacyRoof(system, context, wallFrames, `roofSystems[${index}]`)]
+        : []
+    )),
+    ...normalized.roofPlanes.flatMap((plane, index) => (
+      selected(plane)
+        ? [projectRoofPlane(plane, context, wallFrames, `roofPlanes[${index}]`)]
+        : []
+    ))
+  ].sort(compareIds);
+  assertFiniteOutput(roofGeometry, 'roofGeometry');
+  return roofGeometry;
+}
+
 export function projectAgnosticGeometry(model) {
   if (!model || typeof model !== 'object' || Array.isArray(model)) {
     fail('INVALID_MODEL', 'El modelo debe ser un objeto.', '$');

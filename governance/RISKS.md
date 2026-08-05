@@ -33,6 +33,8 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 | R-027 | Un encuentro reducido a planta o clasificado desde roles Metalcon propaga conexión, jerarquía o segmentación fuera de su cobertura vertical real | 4 | 5 | 20 | D-053/D-054; SPEC-014-B conserva cuatro coberturas y bandas Z, deja el cruce MID–MID real como finding bloqueante, prueba que datos `wallType` no alteran la salida y difiere toda intención a un contrato agnóstico posterior; G2/G4 | En mitigación |
 | R-028 | La intención estructural se infiere, pierde durante migraciones o contamina la geometría agnóstica y las soluciones constructivas | 4 | 5 | 20 | D-055; migración v2→v3 pura e idempotente, acciones explícitas con historial, roundtrip nativo, aislamiento byte a byte de `agnostic-geometry-v1.0` y fixture real FX-008; G2/G4/G6 | En mitigación |
 
+| R-029 | Una intención de techumbre puede quedar asociada al borde equivocado tras editar geometría, inferir apoyos desde muros o contaminar derivados constructivos | 4 | 5 | 20 | D-056; IDs SHA-256 sobre extremos XY tipados, validación de pertenencia, prohibición de reasignación, finding persistente, reconciliación en la misma entrada de historial, byte identity y corpus FX-008/adversario; G2/G4/G6 | En mitigación |
+
 ## Política
 
 - Exposición 20–25: bloquea cualquier release y se revisa en cada sesión.

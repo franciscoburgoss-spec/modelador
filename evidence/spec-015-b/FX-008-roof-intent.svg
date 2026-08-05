@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 950" role="img" aria-labelledby="title description">
+  <title id="title">SPEC-015-B — FX-008 intención de techumbre y bordes canónicos</title>
+  <description id="description">Siete cubiertas reales. Cuatro muestran un borde declarado, dirección resistente cuando existe y estados explícitos sin clasificar muros.</description>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1d4ed8"/></marker>
+  </defs>
+  <style>
+    .roof { fill: #eff6ff; fill-opacity: .65; stroke: #334155; stroke-width: 2; }
+    .declared-edge { stroke: #dc2626; stroke-width: 8; stroke-linecap: round; }
+    .direction { stroke: #1d4ed8; stroke-width: 4; }
+    .roof-id { font: 700 16px Arial, sans-serif; fill: #0f172a; paint-order: stroke; stroke: white; stroke-width: 4px; }
+    .intent { font: 700 13px Arial, sans-serif; fill: #7f1d1d; paint-order: stroke; stroke: white; stroke-width: 3px; }
+    .status { font: 12px Arial, sans-serif; fill: #334155; paint-order: stroke; stroke: white; stroke-width: 3px; }
+    .heading { font: 700 24px Arial, sans-serif; fill: #0f172a; }
+    .subheading { font: 14px Arial, sans-serif; fill: #334155; }
+    .legend { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; fill: #0f172a; }
+  </style>
+  <rect width="1500" height="950" fill="white"/>
+  <text x="70" y="42" class="heading">FX-008 · bordes canónicos e intención de techumbre</text>
+  <text x="70" y="67" class="subheading">Rojo: borde declarado · Azul: dirección resistente global · Los muros sólo son contexto y no se clasifican.</text>
+  <path d="M 206.4 870 L 690.933 870 L 690.933 785.733 L 619.307 785.733 L 619.307 819.44 L 206.4 819.44 Z" class="roof"/>
+<line x1="206.4" y1="819.44" x2="619.307" y2="819.44" class="declared-edge"/>
+<text x="505.547" y="825.058" class="roof-id" text-anchor="middle">1785030887081</text>
+<text x="505.547" y="857.058" class="intent" text-anchor="middle">oneWay · gravitySupport</text>
+<text x="505.547" y="875.058" class="status" text-anchor="middle">diafragma: candidate · declared</text>
+<line x1="505.547" y1="840.058" x2="505.547" y2="785.058" class="direction" marker-end="url(#arrow)"/>
+<path d="M 80 819.44 L 619.307 819.44 L 619.307 642.48 L 80 642.48 Z" class="roof"/>
+
+<text x="349.653" y="730.96" class="roof-id" text-anchor="middle">1785158713616</text>
+
+
+
+<path d="M 619.307 785.733 L 1057.493 785.733 L 1057.493 520.293 L 880.533 520.293 L 880.533 591.92 L 619.307 591.92 Z" class="roof"/>
+<line x1="1057.493" y1="785.733" x2="1057.493" y2="520.293" class="declared-edge"/>
+<text x="852.444" y="632.649" class="roof-id" text-anchor="middle">1785161146258</text>
+<text x="852.444" y="664.649" class="intent" text-anchor="middle">oneWay · lateralSupport</text>
+<text x="852.444" y="682.649" class="status" text-anchor="middle">diafragma: notIntended · declared</text>
+<line x1="852.444" y1="647.649" x2="907.444" y2="647.649" class="direction" marker-end="url(#arrow)"/>
+<path d="M 1057.493 693.04 L 1124.907 693.04 L 1124.907 653.013 L 1276.587 653.013 L 1276.587 520.293 L 1057.493 520.293 Z" class="roof"/>
+
+<text x="1152.996" y="622.116" class="roof-id" text-anchor="middle">1785161198226</text>
+
+
+
+<path d="M 1023.787 520.293 L 1314.507 520.293 L 1314.507 179.013 L 1023.787 179.013 Z" class="roof"/>
+
+<text x="1169.147" y="349.653" class="roof-id" text-anchor="middle">1785161271814</text>
+
+
+
+<path d="M 880.533 520.293 L 1023.787 520.293 L 1023.787 179.013 L 880.533 179.013 Z" class="roof"/>
+<line x1="880.533" y1="520.293" x2="1023.787" y2="520.293" class="declared-edge"/>
+<text x="952.16" y="349.653" class="roof-id" text-anchor="middle">1785161396221</text>
+<text x="952.16" y="381.653" class="intent" text-anchor="middle">local · geometricBoundary</text>
+<text x="952.16" y="399.653" class="status" text-anchor="middle">diafragma: undetermined · declared</text>
+
+<path d="M 619.307 591.92 L 880.533 591.92 L 880.533 80 L 619.307 80 Z" class="roof"/>
+<line x1="619.307" y1="591.92" x2="880.533" y2="591.92" class="declared-edge"/>
+<text x="749.92" y="335.96" class="roof-id" text-anchor="middle">1785161662029</text>
+<text x="749.92" y="367.96" class="intent" text-anchor="middle">undetermined · undetermined</text>
+<text x="749.92" y="385.96" class="status" text-anchor="middle">diafragma: undetermined · declared</text>
+
+  <rect x="70" y="684" width="1360" height="210" rx="12" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="90" y="720" class="legend">1785030887081 · borde 496f66fd67de · (0, 1) · gravitySupport · candidate</text>
+<text x="90" y="762" class="legend">1785161146258 · borde c1149bc30412 · (1, 0) · lateralSupport · notIntended</text>
+<text x="90" y="804" class="legend">1785161396221 · borde 2d9700399951 · sin dirección global · geometricBoundary · undetermined</text>
+<text x="90" y="846" class="legend">1785161662029 · borde 793e310b0540 · sin dirección global · undetermined · undetermined</text>
+</svg>

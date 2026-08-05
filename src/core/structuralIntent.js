@@ -1,3 +1,29 @@
+import {
+  ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE,
+  RoofStructuralIntentError,
+  buildRoofIntent,
+  canonicalizeRoofBoundaryFinding,
+  canonicalizeRoofIntent,
+  compareRoofIds,
+  reconcileRoofIntentsAfterGeometryChange,
+  resolveRoofGeometryForIntent,
+  roofIdToken,
+  validateRoofBoundaryFinding,
+  validateRoofIntents
+} from './roofStructuralIntent.js';
+
+export {
+  ROOF_BOUNDARY_CONFIG,
+  ROOF_BOUNDARY_FUNCTIONS,
+  ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE,
+  ROOF_DIAPHRAGM_BEHAVIORS,
+  ROOF_LOAD_DISTRIBUTIONS,
+  RoofStructuralIntentError,
+  canonicalizeResistanceDirection,
+  canonicalizeRoofBoundaries,
+  intentIdForRoof
+} from './roofStructuralIntent.js';
+
 export const STRUCTURAL_INTENT_SCHEMA = 'structural-intent-v1.0';
 export const STRUCTURAL_INTENT_SPLIT_REVIEW = 'SI-INTENT-REVIEW-AFTER-SPLIT';
 
@@ -165,6 +191,11 @@ export function canonicalizeStructuralIntent(structuralIntent) {
         : cloneJson(intent)))
       .sort((a, b) => compareIds(a?.elementId, b?.elementId));
   }
+  if (Array.isArray(canonical.roofIntents)) {
+    canonical.roofIntents = canonical.roofIntents
+      .map((intent) => canonicalizeRoofIntent(intent))
+      .sort((a, b) => compareRoofIds(a?.roofGeometryId, b?.roofGeometryId));
+  }
   return canonical;
 }
 
@@ -312,7 +343,7 @@ function validateElementIntent(intent, index, ids, intentIds, issues) {
   }
 }
 
-export function validateStructuralIntent(structuralIntent, elements = []) {
+export function validateStructuralIntent(structuralIntent, elements = [], roofGeometry = []) {
   const issues = [];
   if (!isRecord(structuralIntent)) {
     return [{
@@ -354,7 +385,6 @@ export function validateStructuralIntent(structuralIntent, elements = []) {
   }
 
   for (const collection of [
-    'roofIntents',
     'intersectionIntents',
     'supportIntents',
     'diaphragmIntents',
@@ -378,6 +408,7 @@ export function validateStructuralIntent(structuralIntent, elements = []) {
       validateElementIntent(intent, index, ids, intentIds, issues);
     });
   }
+  issues.push(...validateRoofIntents(structuralIntent.roofIntents, roofGeometry));
 
   return issues;
 }
@@ -387,6 +418,9 @@ export function canonicalizeStructuralIntentFindings(findings) {
   if (!Array.isArray(findings)) return findings;
   return findings.map((finding) => {
     if (!isRecord(finding)) return cloneJson(finding);
+    if (finding.code === ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE) {
+      return canonicalizeRoofBoundaryFinding(finding);
+    }
     return {
       ...cloneJson(finding),
       ...(Array.isArray(finding.targetElementIds)
@@ -396,7 +430,7 @@ export function canonicalizeStructuralIntentFindings(findings) {
   }).sort((a, b) => compareText(String(a?.findingId), String(b?.findingId)));
 }
 
-export function validateStructuralIntentFindings(findings, elements = []) {
+export function validateStructuralIntentFindings(findings, elements = [], roofGeometry = []) {
   if (findings === undefined) return [];
   const issues = [];
   if (!Array.isArray(findings)) {
@@ -407,6 +441,7 @@ export function validateStructuralIntentFindings(findings, elements = []) {
     }];
   }
   const targets = elementIdSet(elements);
+  const roofGeometryIds = new Set((Array.isArray(roofGeometry) ? roofGeometry : []).map((roof) => roofIdToken(roof?.id)));
   const findingIds = new Set();
   findings.forEach((finding, index) => {
     const path = `structuralIntentFindings[${index}]`;
@@ -420,8 +455,9 @@ export function validateStructuralIntentFindings(findings, elements = []) {
       addIssue(issues, `${path}.findingId`, 'SI-DUPLICATE-FINDING-ID', `findingId ${finding.findingId} está duplicado.`);
     }
     findingIds.add(finding.findingId);
+    if (validateRoofBoundaryFinding(finding, path, roofGeometryIds, issues)) return;
     if (finding.code !== STRUCTURAL_INTENT_SPLIT_REVIEW) {
-      addIssue(issues, `${path}.code`, 'SI-INVALID-FINDING-CODE', 'Código de finding no permitido en SPEC-015-A.');
+      addIssue(issues, `${path}.code`, 'SI-INVALID-FINDING-CODE', 'Código de finding no permitido.');
     }
     if (finding.status !== 'open' || finding.severity !== 'warning') {
       addIssue(issues, path, 'SI-INVALID-FINDING-STATE', 'El finding de división debe permanecer open/warning.');
@@ -447,8 +483,8 @@ export function validateStructuralIntentFindings(findings, elements = []) {
   return issues;
 }
 
-export function assertValidStructuralIntent(structuralIntent, elements = []) {
-  const issues = validateStructuralIntent(structuralIntent, elements);
+export function assertValidStructuralIntent(structuralIntent, elements = [], roofGeometry = []) {
+  const issues = validateStructuralIntent(structuralIntent, elements, roofGeometry);
   if (issues.length > 0) {
     throw new StructuralIntentError(
       'SI-VALIDATION-FAILED',
@@ -513,7 +549,8 @@ function result(model, affectedElementIds, extra = {}) {
     model,
     affectedElementIds: [...affectedElementIds],
     invalidatedStructuralDerivatives: [],
-    ...extra
+    ...extra,
+    affectedRoofGeometryIds: [...(extra.affectedRoofGeometryIds || [])]
   };
 }
 
@@ -526,7 +563,11 @@ export function setElementIntent(model, elementId, input) {
       `No existe el elemento ${String(elementId)}.`
     );
   }
-  const root = assertValidStructuralIntent(currentRoot(model), model.elements);
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
   const candidate = buildElementIntent(target.id, input);
   const nextRoot = canonicalizeStructuralIntent({
     ...root,
@@ -535,13 +576,17 @@ export function setElementIntent(model, elementId, input) {
       candidate
     ]
   });
-  assertValidStructuralIntent(nextRoot, model.elements);
+  assertValidStructuralIntent(nextRoot, model.elements, roofGeometryForCurrentIntents(model, nextRoot));
   return result({ ...model, structuralIntent: nextRoot }, [target.id]);
 }
 
 export function removeElementIntent(model, elementId) {
   requireModel(model);
-  const root = assertValidStructuralIntent(currentRoot(model), model.elements);
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
   const existing = root.elementIntents.find((intent) => hasSameId(intent.elementId, elementId));
   if (!existing) return result(model, []);
   const nextRoot = canonicalizeStructuralIntent({
@@ -553,13 +598,18 @@ export function removeElementIntent(model, elementId) {
 
 export function clearStructuralIntent(model) {
   requireModel(model);
-  const root = assertValidStructuralIntent(currentRoot(model), model.elements);
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
   const affectedElementIds = root.elementIntents.map((intent) => intent.elementId);
+  const affectedRoofGeometryIds = root.roofIntents.map((intent) => intent.roofGeometryId);
   return result({
     ...model,
     structuralIntent: createEmptyStructuralIntent(),
     structuralIntentFindings: []
-  }, affectedElementIds);
+  }, affectedElementIds, { affectedRoofGeometryIds });
 }
 
 function splitFindingId(sourceElementId, targetElementIds) {
@@ -581,7 +631,11 @@ export function reconcileStructuralIntentAfterSplit(
       'La división debe declarar exactamente dos elementos nuevos.'
     );
   }
-  const originalRoot = assertValidStructuralIntent(currentRoot(originalModel), originalModel.elements);
+  const originalRoot = assertValidStructuralIntent(
+    currentRoot(originalModel),
+    originalModel.elements,
+    roofGeometryForCurrentIntents(originalModel)
+  );
   const originalIntent = originalRoot.elementIntents.find((intent) => (
     hasSameId(intent.elementId, sourceElementId)
   ));
@@ -591,7 +645,7 @@ export function reconcileStructuralIntentAfterSplit(
       !hasSameId(intent.elementId, sourceElementId)
     ))
   });
-  assertValidStructuralIntent(nextRoot, nextModel.elements);
+  assertValidStructuralIntent(nextRoot, nextModel.elements, roofGeometryForCurrentIntents(nextModel, nextRoot));
   if (!originalIntent) {
     return result({ ...nextModel, structuralIntent: nextRoot }, [sourceElementId, ...targetElementIds], {
       finding: null
@@ -632,7 +686,11 @@ export function reconcileStructuralIntentAfterSplit(
 
 export function checkStructuralIntentBeforeMerge(model, elementIds) {
   requireModel(model);
-  const root = assertValidStructuralIntent(currentRoot(model), model.elements);
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
   const requested = new Set((Array.isArray(elementIds) ? elementIds : []).map(idKey));
   const sourceIntents = root.elementIntents.filter((intent) => requested.has(idKey(intent.elementId)));
   if (sourceIntents.length === 0) return { ok: true, sourceIntents: [] };
@@ -653,13 +711,21 @@ export function removeElementAndStructuralReferences(model, elementId) {
       `No existe el elemento ${String(elementId)}.`
     );
   }
-  const root = assertValidStructuralIntent(currentRoot(model), model.elements);
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
   const nextElements = model.elements.filter((element) => !hasSameId(element?.id, elementId));
   const nextRoot = canonicalizeStructuralIntent({
     ...root,
     elementIntents: root.elementIntents.filter((intent) => !hasSameId(intent.elementId, elementId))
   });
-  assertValidStructuralIntent(nextRoot, nextElements);
+  assertValidStructuralIntent(
+    nextRoot,
+    nextElements,
+    roofGeometryForCurrentIntents({ ...model, elements: nextElements }, nextRoot)
+  );
   const findings = (Array.isArray(model.structuralIntentFindings)
     ? model.structuralIntentFindings
     : []).filter((finding) => (
@@ -672,4 +738,88 @@ export function removeElementAndStructuralReferences(model, elementId) {
     structuralIntent: nextRoot,
     structuralIntentFindings: findings
   }, [target.id]);
+}
+
+
+function roofGeometryForCurrentIntents(model, root = currentRoot(model)) {
+  const ids = Array.isArray(root.roofIntents)
+    ? root.roofIntents.map((intent) => intent?.roofGeometryId)
+    : [];
+  if (ids.length === 0) return [];
+  return ids.map((id) => resolveRoofGeometryForIntent(model, id));
+}
+
+export function setRoofIntent(model, roofGeometryId, input) {
+  requireModel(model);
+  const roofGeometry = resolveRoofGeometryForIntent(model, roofGeometryId);
+  const rootRoofGeometry = roofGeometryForCurrentIntents(model);
+  const root = assertValidStructuralIntent(currentRoot(model), model.elements, rootRoofGeometry);
+  const candidate = buildRoofIntent(roofGeometry.id, input);
+  const nextRoot = canonicalizeStructuralIntent({
+    ...root,
+    roofIntents: [
+      ...root.roofIntents.filter((intent) => !hasSameId(intent.roofGeometryId, roofGeometry.id)),
+      candidate
+    ]
+  });
+  const validationGeometry = [
+    ...rootRoofGeometry.filter((roof) => !hasSameId(roof.id, roofGeometry.id)),
+    roofGeometry
+  ];
+  assertValidStructuralIntent(nextRoot, model.elements, validationGeometry);
+  return result({ ...model, structuralIntent: nextRoot }, [], {
+    affectedRoofGeometryIds: [roofGeometry.id]
+  });
+}
+
+export function removeRoofIntent(model, roofGeometryId) {
+  requireModel(model);
+  const rootRoofGeometry = roofGeometryForCurrentIntents(model);
+  const root = assertValidStructuralIntent(currentRoot(model), model.elements, rootRoofGeometry);
+  const existing = root.roofIntents.find((intent) => hasSameId(intent.roofGeometryId, roofGeometryId));
+  if (!existing) return result(model, []);
+  const nextRoot = canonicalizeStructuralIntent({
+    ...root,
+    roofIntents: root.roofIntents.filter((intent) => !hasSameId(intent.roofGeometryId, roofGeometryId))
+  });
+  const findings = (Array.isArray(model.structuralIntentFindings)
+    ? model.structuralIntentFindings
+    : []).filter((finding) => (
+    finding?.code !== ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE
+    || !hasSameId(finding.roofGeometryId, roofGeometryId)
+  ));
+  return result({ ...model, structuralIntent: nextRoot, structuralIntentFindings: findings }, [], {
+    affectedRoofGeometryIds: [existing.roofGeometryId]
+  });
+}
+
+export function reconcileStructuralIntentAfterGeometryChange(originalModel, nextModel) {
+  requireModel(originalModel);
+  requireModel(nextModel);
+  try {
+    const reconciled = reconcileRoofIntentsAfterGeometryChange(originalModel, nextModel, {
+      currentRoot,
+      canonicalizeRoot: canonicalizeStructuralIntent
+    });
+    const roofGeometry = roofGeometryForCurrentIntents(reconciled);
+    assertValidStructuralIntent(currentRoot(reconciled), reconciled.elements, roofGeometry);
+    const findingIssues = validateStructuralIntentFindings(
+      reconciled.structuralIntentFindings,
+      reconciled.elements,
+      roofGeometry
+    );
+    if (findingIssues.length > 0) {
+      throw new StructuralIntentError(
+        'SI-FINDING-VALIDATION-FAILED',
+        'La reconciliación produjo findings estructurales inválidos.',
+        findingIssues
+      );
+    }
+    return reconciled;
+  } catch (error) {
+    if (error instanceof RoofStructuralIntentError) {
+      throw new StructuralIntentError(error.code, error.message, error.details);
+    }
+    throw error;
+  }
 }

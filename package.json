@@ -34,6 +34,7 @@
     "verify:goldens": "node scripts/verify-artifact-goldens.mjs",
     "update:goldens": "node scripts/verify-artifact-goldens.mjs --write",
     "evidence:spec14": "node scripts/generate-spec14-evidence.mjs",
+    "evidence:spec015b": "node scripts/generate-spec015b-evidence.mjs",
     "setup:verification-python": "bash scripts/setup-verification-python.sh",
     "audit:dxf": "node scripts/audit-dxf.mjs",
     "smoke:ccx": "node scripts/smoke-ccx.mjs",

@@ -1,3 +1,4 @@
+import { projectAgnosticRoofGeometry } from './agnosticGeometry.js';
 import { hasOwn } from './hasOwn.js';
 import { isValidParamName } from './projectParams.js';
 import { assertValidWallTypes } from './wallTypes.js';
@@ -267,19 +268,45 @@ export function validateModel(model) {
     });
   }
 
-  issues.push(...validateStructuralIntent(
-    model.structuralIntent,
-    validElements ? model.elements : []
-  ));
-  issues.push(...validateStructuralIntentFindings(
-    model.structuralIntentFindings,
-    validElements ? model.elements : []
-  ));
   for (const field of ['projectParams', 'dimensions', 'roofSystems', 'roofPlanes']) {
     if (model[field] !== undefined && requireArray(model[field], field, issues)) {
       if (field !== 'projectParams') validateUniqueIds(model[field], field, issues);
     }
   }
+  const structuralRoofIds = [
+    ...(Array.isArray(model.structuralIntent?.roofIntents)
+      ? model.structuralIntent.roofIntents.map((intent) => intent?.roofGeometryId)
+      : []),
+    ...(Array.isArray(model.structuralIntentFindings)
+      ? model.structuralIntentFindings
+        .filter((finding) => finding?.roofGeometryId !== undefined)
+        .map((finding) => finding.roofGeometryId)
+      : [])
+  ];
+  let structuralRoofGeometry = [];
+  if (structuralRoofIds.length > 0) {
+    try {
+      structuralRoofGeometry = projectAgnosticRoofGeometry(model, structuralRoofIds);
+    } catch (error) {
+      addIssue(
+        issues,
+        'structuralIntent.roofIntents',
+        error?.code || 'SI-ROOF-GEOMETRY-UNRESOLVABLE',
+        error instanceof Error ? error.message : 'La geometría de cubierta declarada no es resoluble.'
+      );
+    }
+  }
+  issues.push(...validateStructuralIntent(
+    model.structuralIntent,
+    validElements ? model.elements : [],
+    structuralRoofGeometry
+  ));
+  issues.push(...validateStructuralIntentFindings(
+    model.structuralIntentFindings,
+    validElements ? model.elements : [],
+    structuralRoofGeometry
+  ));
+
   if (Array.isArray(model.projectParams)) {
     model.projectParams.forEach((parameter, index) => {
       if (!isRecord(parameter)) {

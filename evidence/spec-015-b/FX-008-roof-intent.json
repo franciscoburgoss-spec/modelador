@@ -1,0 +1,363 @@
+{
+  "schema": "spec-015-b-evidence-v1.0",
+  "caseId": "FX-008",
+  "sourceFixture": "tests/fixtures/casa-L-completa-v3.json",
+  "counts": {
+    "walls": 45,
+    "openings": 43,
+    "foundations": 32,
+    "roofs": 7
+  },
+  "agnosticGeometry": {
+    "bytesBefore": 81875,
+    "sha256Before": "966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a",
+    "bytesAfter": 81875,
+    "sha256After": "966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a",
+    "byteIdentical": true
+  },
+  "declarations": [
+    {
+      "roofGeometryId": 1785030887081,
+      "geometry": {
+        "id": 1785030887081,
+        "source": "roof-plane",
+        "surface": {
+          "kind": "planar-polygon",
+          "boundary": [
+            {
+              "x": 3000,
+              "y": 0,
+              "z": 3650
+            },
+            {
+              "x": 14500,
+              "y": 0,
+              "z": 3650
+            },
+            {
+              "x": 14500,
+              "y": 2000,
+              "z": 3950
+            },
+            {
+              "x": 12800,
+              "y": 2000,
+              "z": 3950
+            },
+            {
+              "x": 12800,
+              "y": 1200,
+              "z": 3830
+            },
+            {
+              "x": 3000,
+              "y": 1200,
+              "z": 3830
+            }
+          ]
+        }
+      },
+      "boundary": {
+        "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+        "roofGeometryId": 1785030887081,
+        "start": {
+          "x": 3000,
+          "y": 1200,
+          "z": 3830
+        },
+        "end": {
+          "x": 12800,
+          "y": 1200,
+          "z": 3830
+        },
+        "length3d": 9800,
+        "planDirection": {
+          "x": 1,
+          "y": 0
+        },
+        "zRange": [
+          3830,
+          3830
+        ]
+      },
+      "boundaryIntent": {
+        "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+        "function": "gravitySupport",
+        "source": "userDeclared"
+      },
+      "intent": {
+        "intentId": "intent:roof:1785030887081",
+        "roofGeometryId": 1785030887081,
+        "loadDistribution": "oneWay",
+        "primaryResistanceDirection": {
+          "x": 0,
+          "y": 1
+        },
+        "secondaryResistanceDirection": null,
+        "diaphragmBehavior": "candidate",
+        "boundaryIntents": [
+          {
+            "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+            "function": "gravitySupport",
+            "source": "userDeclared"
+          }
+        ],
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    },
+    {
+      "roofGeometryId": 1785161146258,
+      "geometry": {
+        "id": 1785161146258,
+        "source": "roof-plane",
+        "surface": {
+          "kind": "planar-polygon",
+          "boundary": [
+            {
+              "x": 12800,
+              "y": 2000,
+              "z": 3650
+            },
+            {
+              "x": 23200,
+              "y": 2000,
+              "z": 3650
+            },
+            {
+              "x": 23200,
+              "y": 8299.999999999998,
+              "z": 3950
+            },
+            {
+              "x": 18999.999999999996,
+              "y": 8300,
+              "z": 3950
+            },
+            {
+              "x": 18999.999999999996,
+              "y": 6600,
+              "z": 3869.0476190476193
+            },
+            {
+              "x": 12800,
+              "y": 6600,
+              "z": 3869.0476190476193
+            }
+          ]
+        }
+      },
+      "boundary": {
+        "boundaryId": "roof:1785161146258:edge:5f786a211ab45ee420469f2f6a311484f24666bee229ba34fbd6c1149bc30412",
+        "roofGeometryId": 1785161146258,
+        "start": {
+          "x": 23200,
+          "y": 2000,
+          "z": 3650
+        },
+        "end": {
+          "x": 23200,
+          "y": 8300,
+          "z": 3950
+        },
+        "length3d": 6307.139,
+        "planDirection": {
+          "x": 0,
+          "y": 1
+        },
+        "zRange": [
+          3650,
+          3950
+        ]
+      },
+      "boundaryIntent": {
+        "boundaryId": "roof:1785161146258:edge:5f786a211ab45ee420469f2f6a311484f24666bee229ba34fbd6c1149bc30412",
+        "function": "lateralSupport",
+        "source": "userDeclared"
+      },
+      "intent": {
+        "intentId": "intent:roof:1785161146258",
+        "roofGeometryId": 1785161146258,
+        "loadDistribution": "oneWay",
+        "primaryResistanceDirection": {
+          "x": 1,
+          "y": 0
+        },
+        "secondaryResistanceDirection": null,
+        "diaphragmBehavior": "notIntended",
+        "boundaryIntents": [
+          {
+            "boundaryId": "roof:1785161146258:edge:5f786a211ab45ee420469f2f6a311484f24666bee229ba34fbd6c1149bc30412",
+            "function": "lateralSupport",
+            "source": "userDeclared"
+          }
+        ],
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    },
+    {
+      "roofGeometryId": 1785161396221,
+      "geometry": {
+        "id": 1785161396221,
+        "source": "roof-plane",
+        "surface": {
+          "kind": "planar-polygon",
+          "boundary": [
+            {
+              "x": 18999.999999999996,
+              "y": 8300,
+              "z": 4550
+            },
+            {
+              "x": 22400,
+              "y": 8299.999999999998,
+              "z": 4250
+            },
+            {
+              "x": 22400,
+              "y": 16400,
+              "z": 4250
+            },
+            {
+              "x": 19000,
+              "y": 16400,
+              "z": 4550
+            }
+          ]
+        }
+      },
+      "boundary": {
+        "boundaryId": "roof:1785161396221:edge:bc87339e2a696c7222893e9bdc279d565acf5b9af38d27b80e832d9700399951",
+        "roofGeometryId": 1785161396221,
+        "start": {
+          "x": 19000,
+          "y": 8300,
+          "z": 4550
+        },
+        "end": {
+          "x": 22400,
+          "y": 8300,
+          "z": 4250
+        },
+        "length3d": 3413.21,
+        "planDirection": {
+          "x": 1,
+          "y": 0
+        },
+        "zRange": [
+          4250,
+          4550
+        ]
+      },
+      "boundaryIntent": {
+        "boundaryId": "roof:1785161396221:edge:bc87339e2a696c7222893e9bdc279d565acf5b9af38d27b80e832d9700399951",
+        "function": "geometricBoundary",
+        "source": "userDeclared"
+      },
+      "intent": {
+        "intentId": "intent:roof:1785161396221",
+        "roofGeometryId": 1785161396221,
+        "loadDistribution": "local",
+        "primaryResistanceDirection": null,
+        "secondaryResistanceDirection": null,
+        "diaphragmBehavior": "undetermined",
+        "boundaryIntents": [
+          {
+            "boundaryId": "roof:1785161396221:edge:bc87339e2a696c7222893e9bdc279d565acf5b9af38d27b80e832d9700399951",
+            "function": "geometricBoundary",
+            "source": "userDeclared"
+          }
+        ],
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    },
+    {
+      "roofGeometryId": 1785161662029,
+      "geometry": {
+        "id": 1785161662029,
+        "source": "roof-plane",
+        "surface": {
+          "kind": "planar-polygon",
+          "boundary": [
+            {
+              "x": 12800,
+              "y": 6600,
+              "z": 4250
+            },
+            {
+              "x": 18999.999999999996,
+              "y": 6600,
+              "z": 4550
+            },
+            {
+              "x": 19000,
+              "y": 18749.999999999996,
+              "z": 4550
+            },
+            {
+              "x": 12800,
+              "y": 18750,
+              "z": 4250
+            }
+          ]
+        }
+      },
+      "boundary": {
+        "boundaryId": "roof:1785161662029:edge:4e6aaaa965001662666690373d4a252c819c772e7ee598878b5c793e310b0540",
+        "roofGeometryId": 1785161662029,
+        "start": {
+          "x": 12800,
+          "y": 6600,
+          "z": 4250
+        },
+        "end": {
+          "x": 19000,
+          "y": 6600,
+          "z": 4550
+        },
+        "length3d": 6207.254,
+        "planDirection": {
+          "x": 1,
+          "y": 0
+        },
+        "zRange": [
+          4250,
+          4550
+        ]
+      },
+      "boundaryIntent": {
+        "boundaryId": "roof:1785161662029:edge:4e6aaaa965001662666690373d4a252c819c772e7ee598878b5c793e310b0540",
+        "function": "undetermined",
+        "source": "userDeclared"
+      },
+      "intent": {
+        "intentId": "intent:roof:1785161662029",
+        "roofGeometryId": 1785161662029,
+        "loadDistribution": "undetermined",
+        "primaryResistanceDirection": null,
+        "secondaryResistanceDirection": null,
+        "diaphragmBehavior": "undetermined",
+        "boundaryIntents": [
+          {
+            "boundaryId": "roof:1785161662029:edge:4e6aaaa965001662666690373d4a252c819c772e7ee598878b5c793e310b0540",
+            "function": "undetermined",
+            "source": "userDeclared"
+          }
+        ],
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    }
+  ],
+  "interpretation": {
+    "wallClassification": "not-performed",
+    "automaticSupportInference": false,
+    "omittedBoundaries": "not-declared"
+  }
+}

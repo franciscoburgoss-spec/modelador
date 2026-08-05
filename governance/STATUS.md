@@ -3,20 +3,20 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **04-ago-2026**
+Última actualización: **05-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-015-A cerrada: contrato agnóstico `structuralIntent` y modelo nativo v3 |
+| Etapa | SPEC-015-B cerrada; SPEC-015-C pendiente de apertura formal |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna; `SPEC-015-B` permanece pendiente de apertura en un corte separado |
-| Esfuerzo activo | Ninguno |
-| Suite oficial | 855/855 Node; 21/21 componentes; 9/9 Rust; laboratorio 35/35 |
-| Build | OK, con warning medido de chunk inicial de 780,52 kB |
-| Cobertura | core 93,21 %; store 95,68 % (gates 90 % / 85 %) |
-| Toolchain de verificación | Node 22.23.2; Rust/Cargo 1.97.1 x86_64; Tauri CLI 2.11.4; Python 3.14.5 + `ezdxf` 1.4.4 en `.venv-verification`; CalculiX 2.23; Playwright 1.62.0 externo |
+| Spec activa | ninguna |
+| Esfuerzo activo | ninguno |
+| Suite oficial | PASS local: 24/24 gates del validador único SPEC-015-B |
+| Build | PASS local en el validador único; warning heredado de chunk inicial permanece documentado |
+| Cobertura | PASS local; evidencia web: core 93,34 % y store 95,77 % (gates 90 % / 85 %) |
+| Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
 | DXF R6-B | 6 archivos (`casa-L`: 1 R12 + 5 AC1015), 0 errores / 0 reparaciones |
@@ -268,6 +268,14 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   SHA-256 `966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a` antes y después de
   agregar intención. Suite oficial, cobertura, build, 19 goldens, auditorías y gobernanza pasan.
   Evidencia: `sessions/close-SPEC-015-A.md`.
+- SPEC-015-B: cerrada con esfuerzo `high` planificado y efectivo, sin escalamiento. Los bordes
+  canónicos SHA-256 se derivan exclusivamente de `projectAgnosticGeometry(model).roofGeometry`;
+  las direcciones resistentes son ejes no orientados y `roofIntents[]` queda persistente en v3
+  mediante APIs explícitas y reconciliación atómica dentro del historial. FX-008 conserva 45
+  muros, 43 vanos, 32 fundaciones, 7 cubiertas y el golden agnóstico de 81.875 bytes con SHA-256
+  `966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a`. El validador único
+  pasó 24/24 gates en el Mac; logs: `artifacts/validation-spec-015-b/20260805-170823`.
+  Evidencia: `sessions/close-SPEC-015-B.md`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -293,7 +301,7 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo cierre
 
-Abrir SPEC-015-B sólo en un corte nuevo y explícito para definir intención de techumbre,
-orientación y bordes canónicos. No implementar todavía interfaz, propuestas automáticas, caminos
-de carga ni R6–R12. F-009 permanece como baseline conocido y SPEC-08 continúa deshabilitada hasta
-completar R12 sin errores.
+No existe una spec activa. La siguiente apertura prevista es SPEC-015-C, mediante su sesión formal
+separada, para implementar la interfaz de declaración sin mezclar propuestas, caminos de carga,
+miembros ni soluciones constructivas. F-009 permanece como baseline conocido y SPEC-08 continúa
+deshabilitada hasta completar R12 sin errores.

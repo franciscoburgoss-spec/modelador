@@ -34,10 +34,13 @@ import {
   checkStructuralIntentBeforeMerge,
   clearStructuralIntent as clearStructuralIntentInModel,
   createEmptyStructuralIntent,
+  reconcileStructuralIntentAfterGeometryChange,
   reconcileStructuralIntentAfterSplit,
   removeElementAndStructuralReferences,
   removeElementIntent as removeElementIntentInModel,
-  setElementIntent as setElementIntentInModel
+  removeRoofIntent as removeRoofIntentInModel,
+  setElementIntent as setElementIntentInModel,
+  setRoofIntent as setRoofIntentInModel
 } from '../core/structuralIntent.js';
 import {
   invalidateForMutation,
@@ -367,8 +370,9 @@ function computeFitView(view, grid, canvasW, canvasH, modeStr = 'plan') {
 
 /** Envuelve un cambio de modelo para que quede en el historial de deshacer/rehacer. */
 function withHistory(s, nextModel) {
+  const reconciledModel = reconcileStructuralIntentAfterGeometryChange(s.model, nextModel);
   return {
-    model: nextModel,
+    model: reconciledModel,
     past: [...s.past, s.model].slice(-HISTORY_LIMIT),
     future: [],
     projectDocument: markProjectDocumentDirty(s.projectDocument)
@@ -870,7 +874,7 @@ export const useModelStore = create((set, get) => ({
     ...s.model, dimensions: (s.model.dimensions || []).filter(d => d.id !== id)
   })),
 
-  // ---- intención estructural agnóstica (SPEC-015-A) ----
+  // ---- intención estructural agnóstica (SPEC-015-A/B) ----
   setElementIntent: (elementId, intent) => {
     let outcome;
     set((s) => {
@@ -879,6 +883,7 @@ export const useModelStore = create((set, get) => ({
     });
     return {
       affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
   },
@@ -890,6 +895,31 @@ export const useModelStore = create((set, get) => ({
     });
     return {
       affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
+  setRoofIntent: (roofGeometryId, intent) => {
+    let outcome;
+    set((s) => {
+      outcome = setRoofIntentInModel(s.model, roofGeometryId, intent);
+      return withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
+  removeRoofIntent: (roofGeometryId) => {
+    let outcome;
+    set((s) => {
+      outcome = removeRoofIntentInModel(s.model, roofGeometryId);
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
   },
@@ -901,6 +931,7 @@ export const useModelStore = create((set, get) => ({
     });
     return {
       affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
   },
