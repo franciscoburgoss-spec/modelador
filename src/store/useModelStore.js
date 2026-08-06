@@ -38,8 +38,10 @@ import {
   reconcileStructuralIntentAfterSplit,
   removeElementAndStructuralReferences,
   removeElementIntent as removeElementIntentInModel,
+  removeElementIntentsBatch as removeElementIntentsBatchInModel,
   removeRoofIntent as removeRoofIntentInModel,
   setElementIntent as setElementIntentInModel,
+  setElementIntentsBatch as setElementIntentsBatchInModel,
   setRoofIntent as setRoofIntentInModel
 } from '../core/structuralIntent.js';
 import {
@@ -878,8 +880,8 @@ export const useModelStore = create((set, get) => ({
   setElementIntent: (elementId, intent) => {
     let outcome;
     set((s) => {
-      outcome = setElementIntentInModel(s.model, elementId, intent);
-      return withHistory(s, outcome.model);
+      outcome = setElementIntentInModel(s.model, elementId, intent, { recordUserAction: true });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
     });
     return {
       affectedElementIds: outcome.affectedElementIds,
@@ -890,7 +892,7 @@ export const useModelStore = create((set, get) => ({
   removeElementIntent: (elementId) => {
     let outcome;
     set((s) => {
-      outcome = removeElementIntentInModel(s.model, elementId);
+      outcome = removeElementIntentInModel(s.model, elementId, { recordUserAction: true });
       return outcome.model === s.model ? s : withHistory(s, outcome.model);
     });
     return {
@@ -899,11 +901,43 @@ export const useModelStore = create((set, get) => ({
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
   },
+  setElementIntentsBatch: (elementIds, intent, options = {}) => {
+    let outcome;
+    set((s) => {
+      outcome = setElementIntentsBatchInModel(s.model, elementIds, intent, {
+        ...options,
+        recordUserAction: true
+      });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives,
+      changes: outcome.changes || []
+    };
+  },
+  removeElementIntentsBatch: (elementIds, options = {}) => {
+    let outcome;
+    set((s) => {
+      outcome = removeElementIntentsBatchInModel(s.model, elementIds, {
+        ...options,
+        recordUserAction: true
+      });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedElementIds: outcome.affectedElementIds,
+      affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives,
+      changes: outcome.changes || []
+    };
+  },
   setRoofIntent: (roofGeometryId, intent) => {
     let outcome;
     set((s) => {
-      outcome = setRoofIntentInModel(s.model, roofGeometryId, intent);
-      return withHistory(s, outcome.model);
+      outcome = setRoofIntentInModel(s.model, roofGeometryId, intent, { recordUserAction: true });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
     });
     return {
       affectedElementIds: outcome.affectedElementIds,
@@ -914,7 +948,7 @@ export const useModelStore = create((set, get) => ({
   removeRoofIntent: (roofGeometryId) => {
     let outcome;
     set((s) => {
-      outcome = removeRoofIntentInModel(s.model, roofGeometryId);
+      outcome = removeRoofIntentInModel(s.model, roofGeometryId, { recordUserAction: true });
       return outcome.model === s.model ? s : withHistory(s, outcome.model);
     });
     return {
@@ -927,7 +961,7 @@ export const useModelStore = create((set, get) => ({
     let outcome;
     set((s) => {
       outcome = clearStructuralIntentInModel(s.model);
-      return withHistory(s, outcome.model);
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
     });
     return {
       affectedElementIds: outcome.affectedElementIds,

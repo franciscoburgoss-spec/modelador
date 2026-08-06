@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SPEC-015-C · FX-008</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color:#20231f;background:#eceee9}*{box-sizing:border-box}body{margin:0}header{padding:32px 5vw;background:#173c35;color:#fff}header h1{margin:.2rem 0;font-size:clamp(1.8rem,4vw,3.5rem)}header p{max-width:900px}.warning{background:#fff3cd;color:#5e4700;padding:12px 5vw;font-weight:700}.layout{display:grid;grid-template-columns:minmax(240px,330px) 1fr;gap:20px;padding:24px 5vw}.card{background:#fff;border:1px solid #d7dbd4;border-radius:14px;padding:18px;box-shadow:0 8px 28px #18312912}.metrics{display:grid;grid-template-columns:repeat(5,minmax(100px,1fr));gap:12px;padding:0 5vw 22px}.metric strong{font-size:1.8rem;display:block}.step{display:flex;width:100%;gap:10px;align-items:center;text-align:left;border:0;border-bottom:1px solid #e5e8e2;background:transparent;padding:10px;cursor:pointer}.step span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#dfe9e5}.step.active{background:#eaf3ef;font-weight:700}.step-panel{display:none}.step-panel.active{display:block}.eyebrow{text-transform:uppercase;letter-spacing:.1em;color:#52655e;font-size:.75rem}pre{overflow:auto;background:#17201d;color:#eaf4ef;padding:14px;border-radius:10px;font-size:.78rem}table{border-collapse:collapse;width:100%;font-size:.86rem}th,td{border-bottom:1px solid #e1e4de;padding:8px;text-align:left}code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.78rem;word-break:break-all}.roof-polygon{fill:#edf3f0;stroke:#3f514b;stroke-width:3}.edge{stroke:#1e6a59;stroke-width:8;stroke-linecap:round}.edge-label{font-weight:800;font-size:16px;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:5px}.direction{stroke:#bf4d32;stroke-width:5}.direction+defs path{fill:#bf4d32}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}.status{display:inline-block;border:1px solid #87968f;border-radius:999px;padding:3px 8px;font-size:.8rem}.ok{color:#176344}.pending{color:#885c00}footer{padding:30px 5vw;color:#52605b}@media(max-width:900px){.layout,.grid2{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
+</style></head><body>
+<header><p class="eyebrow">Evidencia reproducible · structural-intent-v1.0</p><h1>SPEC-015-C · FX-008</h1><p>Flujo macro → micro de declaraciones estructurales explícitas. Geometría e intención permanecen como autoridades separadas.</p></header>
+<div class="warning">Esta evidencia no verifica capacidad resistente ni construye caminos de carga.</div>
+<section class="metrics"><div class="card metric"><span>walls</span><strong>45</strong></div><div class="card metric"><span>openings</span><strong>43</strong></div><div class="card metric"><span>foundations</span><strong>32</strong></div><div class="card metric"><span>roofs</span><strong>7</strong></div><div class="card metric"><span>elements</span><strong>77</strong></div></section>
+<section class="layout"><aside class="card"><h2>Flujo</h2><button class="step" data-step="1"><span>1</span>Abrir Estructura</button><button class="step" data-step="2"><span>2</span>Revisar frontón</button><button class="step" data-step="3"><span>3</span>Declarar techumbre</button><button class="step" data-step="4"><span>4</span>Declarar muro interior</button><button class="step" data-step="5"><span>5</span>Asignar lote</button><button class="step" data-step="6"><span>6</span>Modificar secundario</button><button class="step" data-step="7"><span>7</span>Undo / redo</button><button class="step" data-step="8"><span>8</span>Guardar y reabrir</button><button class="step" data-step="9"><span>9</span>Comprobar identidad</button></aside><main class="card"><article class="step-panel" data-panel="1"><p class="eyebrow">Paso 1</p><h3>Abrir Estructura</h3><p>Resumen inicial sin declaraciones.</p><pre>{
+  &quot;elementsTotal&quot;: 77,
+  &quot;wallsTotal&quot;: 45,
+  &quot;foundationsTotal&quot;: 32,
+  &quot;elementsDeclared&quot;: 0,
+  &quot;elementsUndefined&quot;: 77,
+  &quot;roofsTotal&quot;: 7,
+  &quot;roofsDeclared&quot;: 0,
+  &quot;roofsUndefined&quot;: 7,
+  &quot;undetermined&quot;: 0,
+  &quot;pending&quot;: 0,
+  &quot;userOperations&quot;: 0
+}</pre></article><article class="step-panel" data-panel="2"><p class="eyebrow">Paso 2</p><h3>Revisar frontón</h3><p>Se observa, no se guarda y permanece No definido.</p><pre>{
+  &quot;elementId&quot;: 1784819708086,
+  &quot;finalIntent&quot;: null
+}</pre></article><article class="step-panel" data-panel="3"><p class="eyebrow">Paso 3</p><h3>Declarar techumbre</h3><p>Dirección, distribución, diafragma y seis bordes explícitos.</p><pre>{
+  &quot;roofGeometryId&quot;: 1785030887081,
+  &quot;boundaries&quot;: [
+    {
+      &quot;label&quot;: &quot;B1&quot;,
+      &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:af5e6f56b14117e2b5da48a5124851e057b9724ba03f4098e92c286d5b8c18f2&quot;,
+      &quot;function&quot;: &quot;gutterSupport&quot;
+    },
+    {
+      &quot;label&quot;: &quot;B2&quot;,
+      &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:7d4546a22697a25da345ad760531685c851e0ae70572147307a8bc2fed0893dc&quot;,
+      &quot;function&quot;: &quot;geometricBoundary&quot;
+    },
+    {
+      &quot;label&quot;: &quot;B3&quot;,
+      &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6&quot;,
+      &quot;function&quot;: &quot;gravitySupport&quot;
+    },
+    {
+      &quot;label&quot;: &quot;B4&quot;,
+      &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:433a7e755d1f977e25d6d9be14c592f6c23203c2cdc55505565772766cc6ebb6&quot;,
+      &quot;function&quot;: &quot;geometricBoundary&quot;
+    },
+    {
+      &quot;label&quot;: &quot;B5&quot;,
+      &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de&quot;,
+      &quot;function&quot;: &quot;gravitySupport&quot;
+    },
+    {
+      &quot;label&quot;: &quot;B6&quot;,
+      &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:b8dfa7cace70323aee5a2f3ef31b6bbff1c83d5e503462f003bdd2658a9b587b&quot;,
+      &quot;function&quot;: &quot;lateralSupport&quot;
+    }
+  ]
+}</pre></article><article class="step-panel" data-panel="4"><p class="eyebrow">Paso 4</p><h3>Declarar muro interior</h3><p>Resistencia lateral prevista sin fabricar conexión con cubierta.</p><pre>{
+  &quot;intentId&quot;: &quot;intent:element:1784606313849&quot;,
+  &quot;elementId&quot;: 1784606313849,
+  &quot;participation&quot;: &quot;resistant&quot;,
+  &quot;functions&quot;: [
+    &quot;inPlaneLateralResistance&quot;
+  ],
+  &quot;secondaryInteraction&quot;: &quot;notApplicable&quot;,
+  &quot;status&quot;: &quot;declared&quot;,
+  &quot;source&quot;: &quot;userDeclared&quot;,
+  &quot;notes&quot;: null
+}</pre></article><article class="step-panel" data-panel="5"><p class="eyebrow">Paso 5</p><h3>Asignar lote</h3><p>Tres secundarios solidarios en una sola operación.</p><pre>{
+  &quot;selection&quot;: [
+    1784751397992,
+    1784752583321,
+    1784752639636
+  ],
+  &quot;previousGroups&quot;: [
+    {
+      &quot;intent&quot;: null,
+      &quot;elementIds&quot;: [
+        1784751397992,
+        1784752583321,
+        1784752639636
+      ]
+    }
+  ],
+  &quot;effectiveChanges&quot;: 3
+}</pre></article><article class="step-panel" data-panel="6"><p class="eyebrow">Paso 6</p><h3>Modificar secundario</h3><p>Un objetivo cambia de solidary a floating.</p><pre>{
+  &quot;intentId&quot;: &quot;intent:element:1784752583321&quot;,
+  &quot;elementId&quot;: 1784752583321,
+  &quot;participation&quot;: &quot;secondary&quot;,
+  &quot;functions&quot;: [
+    &quot;spaceDivision&quot;
+  ],
+  &quot;secondaryInteraction&quot;: &quot;floating&quot;,
+  &quot;status&quot;: &quot;declared&quot;,
+  &quot;source&quot;: &quot;userDeclared&quot;,
+  &quot;notes&quot;: null
+}</pre></article><article class="step-panel" data-panel="7"><p class="eyebrow">Paso 7</p><h3>Undo / redo</h3><p>Mutación y evento se revierten/restauran juntos.</p><pre>{
+  &quot;before&quot;: 3,
+  &quot;after&quot;: 4,
+  &quot;undo&quot;: &quot;solidary&quot;,
+  &quot;redo&quot;: &quot;floating&quot;
+}</pre></article><article class="step-panel" data-panel="8"><p class="eyebrow">Paso 8</p><h3>Guardar y reabrir</h3><p>Modelo v3, declaraciones y trace se reproducen.</p><pre>{
+  &quot;deepEqual&quot;: true,
+  &quot;modelVersion&quot;: 3
+}</pre></article><article class="step-panel" data-panel="9"><p class="eyebrow">Paso 9</p><h3>Comprobar identidad</h3><p>La geometría agnóstica permanece byte-identical.</p><pre>{
+  &quot;bytes&quot;: 81875,
+  &quot;sha256&quot;: &quot;966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a&quot;
+}</pre></article></main></section>
+<section class="grid2" style="padding:0 5vw 22px"><div class="card"><h2>Techumbre y bordes</h2><svg viewBox="0 0 600 380" role="img" aria-label="Cubierta 1785030887081 con seis bordes canónicos"><polygon points="50.000,330.000 550.000,330.000 550.000,70.000 476.087,70.000 476.087,174.000 50.000,174.000" class="roof-polygon"/><g><line x1="50.000" y1="330.000" x2="550.000" y2="330.000" class="edge"/><text x="300.000" y="323.000" class="edge-label">B1</text></g><g><line x1="550.000" y1="330.000" x2="550.000" y2="70.000" class="edge"/><text x="550.000" y="193.000" class="edge-label">B2</text></g><g><line x1="476.087" y1="70.000" x2="550.000" y2="70.000" class="edge"/><text x="513.043" y="63.000" class="edge-label">B3</text></g><g><line x1="476.087" y1="174.000" x2="476.087" y2="70.000" class="edge"/><text x="476.087" y="115.000" class="edge-label">B4</text></g><g><line x1="50.000" y1="174.000" x2="476.087" y2="174.000" class="edge"/><text x="263.043" y="167.000" class="edge-label">B5</text></g><g><line x1="50.000" y1="330.000" x2="50.000" y2="174.000" class="edge"/><text x="50.000" y="245.000" class="edge-label">B6</text></g><line x1="300" y1="210" x2="300" y2="125" class="direction" marker-end="url(#arrow)"/><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z"/></marker></defs></svg><table><thead><tr><th>Visual</th><th>boundaryId canónico</th><th>Función declarada</th></tr></thead><tbody><tr><td>B1</td><td><code>roof:1785030887081:edge:af5e6f56b14117e2b5da48a5124851e057b9724ba03f4098e92c286d5b8c18f2</code></td><td>gutterSupport</td></tr><tr><td>B2</td><td><code>roof:1785030887081:edge:7d4546a22697a25da345ad760531685c851e0ae70572147307a8bc2fed0893dc</code></td><td>geometricBoundary</td></tr><tr><td>B3</td><td><code>roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6</code></td><td>gravitySupport</td></tr><tr><td>B4</td><td><code>roof:1785030887081:edge:433a7e755d1f977e25d6d9be14c592f6c23203c2cdc55505565772766cc6ebb6</code></td><td>geometricBoundary</td></tr><tr><td>B5</td><td><code>roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de</code></td><td>gravitySupport</td></tr><tr><td>B6</td><td><code>roof:1785030887081:edge:b8dfa7cace70323aee5a2f3ef31b6bbff1c83d5e503462f003bdd2658a9b587b</code></td><td>lateralSupport</td></tr></tbody></table></div>
+<div class="card"><h2>Estados finales</h2><p><span class="status">No definido</span> Frontón <code>1784819708086</code></p><p><span class="status ok">Declarado</span> Muro interior <code>1784606313849</code></p><p><span class="status ok">Declarados</span> 3 secundarios; uno termina <strong>floating</strong>.</p><p><span class="status pending">Pendiente</span> Transferencia de cargas fuera del corte.</p><h3>Prueba aislada</h3><p><code>1784818076062</code> admite <strong>undetermined</strong> como declaración persistente, sin incorporarse al estado final.</p><h3>Errores controlados</h3><ul><li><strong>Inválido</strong>: SI-VALIDATION-FAILED — cero cambios, cero eventos</li><li><strong>Referencia rota</strong>: brokenReference — borrador transitorio; no se persiste</li><li><strong>Previsualización obsoleta</strong>: SI-BATCH-PREVIEW-STALE — lote completo rechazado</li><li><strong>Cancelado</strong>: SI-USER-CANCELLED — modelo original conservado</li></ul></div></section>
+<section style="padding:0 5vw 22px"><div class="card"><h2>Trazabilidad vigente</h2><table><thead><tr><th>#</th><th>Operación</th><th>Objetivo</th><th>Cambios</th><th>IDs</th></tr></thead><tbody><tr><td>1</td><td>set</td><td>roof</td><td>1</td><td><code>1785030887081</code></td></tr><tr><td>2</td><td>set</td><td>element</td><td>1</td><td><code>1784606313849</code></td></tr><tr><td>3</td><td>batchSet</td><td>element</td><td>3</td><td><code>1784751397992, 1784752583321, 1784752639636</code></td></tr><tr><td>4</td><td>set</td><td>element</td><td>1</td><td><code>1784752583321</code></td></tr></tbody></table><p>Undo elimina el evento 4 junto con la modificación <em>floating</em>; redo restaura ambos.</p></div></section>
+<section style="padding:0 5vw 22px"><div class="card"><h2>Identidad y persistencia</h2><p>Geometría antes/después: <strong class="ok">byte-identical=true</strong></p><p><code>966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a</code></p><p>Roundtrip nativo: <strong class="ok">PASS</strong></p><p>Colecciones futuras: intersection=0, support=0, diaphragm=0, overrides=0</p></div></section>
+<footer>Generado de forma determinista desde <code>tests/fixtures/casa-L-completa-v3.json</code>. Caso FX-008.</footer>
+<script>const buttons=[...document.querySelectorAll('[data-step]')];const panels=[...document.querySelectorAll('[data-panel]')];function show(id){buttons.forEach(b=>b.classList.toggle('active',b.dataset.step===id));panels.forEach(p=>p.classList.toggle('active',p.dataset.panel===id));}buttons.forEach(b=>b.addEventListener('click',()=>show(b.dataset.step)));show('1');</script></body></html>

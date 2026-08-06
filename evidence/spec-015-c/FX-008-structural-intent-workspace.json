@@ -1,0 +1,595 @@
+{
+  "schema": "spec-015-c-evidence-v1.0",
+  "caseId": "FX-008",
+  "sourceFixture": "tests/fixtures/casa-L-completa-v3.json",
+  "counts": {
+    "walls": 45,
+    "openings": 43,
+    "foundations": 32,
+    "roofs": 7,
+    "elements": 77
+  },
+  "targets": {
+    "frontonUndefined": 1784819708086,
+    "undeterminedIsolated": 1784818076062,
+    "interiorLateral": 1784606313849,
+    "secondaryBatch": [
+      1784751397992,
+      1784752583321,
+      1784752639636
+    ],
+    "secondaryFloating": 1784752583321,
+    "roof": 1785030887081
+  },
+  "initial": {
+    "elementsDeclared": 0,
+    "roofsDeclared": 0,
+    "tracePresent": false
+  },
+  "isolatedUndetermined": {
+    "integratedIntoFinalState": false,
+    "intent": {
+      "intentId": "intent:element:1784818076062",
+      "elementId": 1784818076062,
+      "participation": "undetermined",
+      "functions": [],
+      "secondaryInteraction": "notApplicable",
+      "status": "declared",
+      "source": "userDeclared",
+      "notes": null
+    }
+  },
+  "roof": {
+    "roofGeometryId": 1785030887081,
+    "polygon": [
+      {
+        "x": 3000,
+        "y": 0,
+        "z": 3650
+      },
+      {
+        "x": 14500,
+        "y": 0,
+        "z": 3650
+      },
+      {
+        "x": 14500,
+        "y": 2000,
+        "z": 3950
+      },
+      {
+        "x": 12800,
+        "y": 2000,
+        "z": 3950
+      },
+      {
+        "x": 12800,
+        "y": 1200,
+        "z": 3830
+      },
+      {
+        "x": 3000,
+        "y": 1200,
+        "z": 3830
+      }
+    ],
+    "loadDistribution": "oneWay",
+    "primaryResistanceDirection": {
+      "x": 0,
+      "y": 1
+    },
+    "diaphragmBehavior": "candidate",
+    "boundaries": [
+      {
+        "label": "B1",
+        "boundaryId": "roof:1785030887081:edge:af5e6f56b14117e2b5da48a5124851e057b9724ba03f4098e92c286d5b8c18f2",
+        "start": {
+          "x": 3000,
+          "y": 0,
+          "z": 3650
+        },
+        "end": {
+          "x": 14500,
+          "y": 0,
+          "z": 3650
+        },
+        "function": "gutterSupport"
+      },
+      {
+        "label": "B2",
+        "boundaryId": "roof:1785030887081:edge:7d4546a22697a25da345ad760531685c851e0ae70572147307a8bc2fed0893dc",
+        "start": {
+          "x": 14500,
+          "y": 0,
+          "z": 3650
+        },
+        "end": {
+          "x": 14500,
+          "y": 2000,
+          "z": 3950
+        },
+        "function": "geometricBoundary"
+      },
+      {
+        "label": "B3",
+        "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6",
+        "start": {
+          "x": 12800,
+          "y": 2000,
+          "z": 3950
+        },
+        "end": {
+          "x": 14500,
+          "y": 2000,
+          "z": 3950
+        },
+        "function": "gravitySupport"
+      },
+      {
+        "label": "B4",
+        "boundaryId": "roof:1785030887081:edge:433a7e755d1f977e25d6d9be14c592f6c23203c2cdc55505565772766cc6ebb6",
+        "start": {
+          "x": 12800,
+          "y": 1200,
+          "z": 3830
+        },
+        "end": {
+          "x": 12800,
+          "y": 2000,
+          "z": 3950
+        },
+        "function": "geometricBoundary"
+      },
+      {
+        "label": "B5",
+        "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+        "start": {
+          "x": 3000,
+          "y": 1200,
+          "z": 3830
+        },
+        "end": {
+          "x": 12800,
+          "y": 1200,
+          "z": 3830
+        },
+        "function": "gravitySupport"
+      },
+      {
+        "label": "B6",
+        "boundaryId": "roof:1785030887081:edge:b8dfa7cace70323aee5a2f3ef31b6bbff1c83d5e503462f003bdd2658a9b587b",
+        "start": {
+          "x": 3000,
+          "y": 0,
+          "z": 3650
+        },
+        "end": {
+          "x": 3000,
+          "y": 1200,
+          "z": 3830
+        },
+        "function": "lateralSupport"
+      }
+    ]
+  },
+  "final": {
+    "frontonIntent": null,
+    "elementIntents": [
+      {
+        "intentId": "intent:element:1784606313849",
+        "elementId": 1784606313849,
+        "participation": "resistant",
+        "functions": [
+          "inPlaneLateralResistance"
+        ],
+        "secondaryInteraction": "notApplicable",
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      },
+      {
+        "intentId": "intent:element:1784751397992",
+        "elementId": 1784751397992,
+        "participation": "secondary",
+        "functions": [
+          "spaceDivision"
+        ],
+        "secondaryInteraction": "solidary",
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      },
+      {
+        "intentId": "intent:element:1784752583321",
+        "elementId": 1784752583321,
+        "participation": "secondary",
+        "functions": [
+          "spaceDivision"
+        ],
+        "secondaryInteraction": "floating",
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      },
+      {
+        "intentId": "intent:element:1784752639636",
+        "elementId": 1784752639636,
+        "participation": "secondary",
+        "functions": [
+          "spaceDivision"
+        ],
+        "secondaryInteraction": "solidary",
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    ],
+    "roofIntents": [
+      {
+        "intentId": "intent:roof:1785030887081",
+        "roofGeometryId": 1785030887081,
+        "loadDistribution": "oneWay",
+        "primaryResistanceDirection": {
+          "x": 0,
+          "y": 1
+        },
+        "secondaryResistanceDirection": null,
+        "diaphragmBehavior": "candidate",
+        "boundaryIntents": [
+          {
+            "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+            "function": "gravitySupport",
+            "source": "userDeclared"
+          },
+          {
+            "boundaryId": "roof:1785030887081:edge:433a7e755d1f977e25d6d9be14c592f6c23203c2cdc55505565772766cc6ebb6",
+            "function": "geometricBoundary",
+            "source": "userDeclared"
+          },
+          {
+            "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6",
+            "function": "gravitySupport",
+            "source": "userDeclared"
+          },
+          {
+            "boundaryId": "roof:1785030887081:edge:7d4546a22697a25da345ad760531685c851e0ae70572147307a8bc2fed0893dc",
+            "function": "geometricBoundary",
+            "source": "userDeclared"
+          },
+          {
+            "boundaryId": "roof:1785030887081:edge:af5e6f56b14117e2b5da48a5124851e057b9724ba03f4098e92c286d5b8c18f2",
+            "function": "gutterSupport",
+            "source": "userDeclared"
+          },
+          {
+            "boundaryId": "roof:1785030887081:edge:b8dfa7cace70323aee5a2f3ef31b6bbff1c83d5e503462f003bdd2658a9b587b",
+            "function": "lateralSupport",
+            "source": "userDeclared"
+          }
+        ],
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    ],
+    "summary": {
+      "elementsTotal": 77,
+      "wallsTotal": 45,
+      "foundationsTotal": 32,
+      "elementsDeclared": 4,
+      "elementsUndefined": 73,
+      "roofsTotal": 7,
+      "roofsDeclared": 1,
+      "roofsUndefined": 6,
+      "undetermined": 0,
+      "pending": 0,
+      "userOperations": 4
+    },
+    "pending": [
+      {
+        "code": "SI-TRANSFER-OUT-OF-SCOPE",
+        "state": "pending",
+        "message": "La transferencia de cargas se resolverá en un corte posterior."
+      }
+    ]
+  },
+  "trace": {
+    "schema": "structural-intent-trace-v1.0",
+    "events": [
+      {
+        "sequence": 1,
+        "action": "structuralIntentUpdated",
+        "operation": "set",
+        "targetType": "roof",
+        "changes": [
+          {
+            "targetType": "roof",
+            "targetId": 1785030887081,
+            "changeKind": "created",
+            "previousFingerprint": "1b28d42acaf01efb2173719ff5b43bcd36be159b23a5f56233cda46822c8ec77",
+            "nextFingerprint": "dbe34676c1eee0cbe0feb7af2327030c916a9ff078155cdd3a302006b8c579e3"
+          }
+        ],
+        "source": "userAction"
+      },
+      {
+        "sequence": 2,
+        "action": "structuralIntentUpdated",
+        "operation": "set",
+        "targetType": "element",
+        "changes": [
+          {
+            "targetType": "element",
+            "targetId": 1784606313849,
+            "changeKind": "created",
+            "previousFingerprint": "98aab9c7af6ede3ebb542510d25257d54979f02f4f52f677885f5e40c1123c0a",
+            "nextFingerprint": "82005acbddc0d146436578e70b83b17156193e1272c1233530d78e8f6a917438"
+          }
+        ],
+        "source": "userAction"
+      },
+      {
+        "sequence": 3,
+        "action": "structuralIntentUpdated",
+        "operation": "batchSet",
+        "targetType": "element",
+        "changes": [
+          {
+            "targetType": "element",
+            "targetId": 1784751397992,
+            "changeKind": "created",
+            "previousFingerprint": "4559399b7a6963f58041996b10c3eb5373955530e09e755a45bfefa60a7619c6",
+            "nextFingerprint": "7b9de8ad3f6a43614d89b993548a39c88c79789887aec1335b1a16c404987c49"
+          },
+          {
+            "targetType": "element",
+            "targetId": 1784752583321,
+            "changeKind": "created",
+            "previousFingerprint": "3d13eee66e92d39e4e48ba4bffdb4463e3e6f317af48f54479ba91b033beca01",
+            "nextFingerprint": "412e77988f34bcf2cd2685b6c1a8e7201e37df494d29b726644225da99a02d6e"
+          },
+          {
+            "targetType": "element",
+            "targetId": 1784752639636,
+            "changeKind": "created",
+            "previousFingerprint": "a44274699faab63ea625910e77faa822f6e34c4a2a23446145d8b182605b1e3d",
+            "nextFingerprint": "1ae08709b2753e163d63056517465aad8a88152806bb4105561755dd8f3b2703"
+          }
+        ],
+        "source": "userAction"
+      },
+      {
+        "sequence": 4,
+        "action": "structuralIntentUpdated",
+        "operation": "set",
+        "targetType": "element",
+        "changes": [
+          {
+            "targetType": "element",
+            "targetId": 1784752583321,
+            "changeKind": "modified",
+            "previousFingerprint": "412e77988f34bcf2cd2685b6c1a8e7201e37df494d29b726644225da99a02d6e",
+            "nextFingerprint": "beeafd98169a104d69d101b428b9f3d2f962ee46053bcde4c643354810ac89c4"
+          }
+        ],
+        "source": "userAction"
+      }
+    ]
+  },
+  "history": {
+    "beforeFloatingTraceEvents": 3,
+    "afterFloatingTraceEvents": 4,
+    "undoRemovesFloating": true,
+    "redoRestoresFloating": true
+  },
+  "persistence": {
+    "modelVersion": 3,
+    "deepEqual": true,
+    "tracePreserved": true
+  },
+  "agnosticGeometry": {
+    "bytesBefore": 81875,
+    "sha256Before": "966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a",
+    "bytesAfter": 81875,
+    "sha256After": "966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a",
+    "byteIdentical": true
+  },
+  "inactiveCollections": {
+    "intersectionIntents": 0,
+    "supportIntents": 0,
+    "diaphragmIntents": 0,
+    "overrides": 0
+  },
+  "errorScenarios": [
+    {
+      "state": "Inválido",
+      "code": "SI-VALIDATION-FAILED",
+      "effect": "cero cambios, cero eventos"
+    },
+    {
+      "state": "Referencia rota",
+      "code": "brokenReference",
+      "effect": "borrador transitorio; no se persiste"
+    },
+    {
+      "state": "Previsualización obsoleta",
+      "code": "SI-BATCH-PREVIEW-STALE",
+      "effect": "lote completo rechazado"
+    },
+    {
+      "state": "Cancelado",
+      "code": "SI-USER-CANCELLED",
+      "effect": "modelo original conservado"
+    }
+  ],
+  "flow": [
+    {
+      "order": 1,
+      "title": "Abrir Estructura",
+      "result": "Resumen inicial sin declaraciones.",
+      "data": {
+        "elementsTotal": 77,
+        "wallsTotal": 45,
+        "foundationsTotal": 32,
+        "elementsDeclared": 0,
+        "elementsUndefined": 77,
+        "roofsTotal": 7,
+        "roofsDeclared": 0,
+        "roofsUndefined": 7,
+        "undetermined": 0,
+        "pending": 0,
+        "userOperations": 0
+      }
+    },
+    {
+      "order": 2,
+      "title": "Revisar frontón",
+      "result": "Se observa, no se guarda y permanece No definido.",
+      "data": {
+        "elementId": 1784819708086,
+        "finalIntent": null
+      }
+    },
+    {
+      "order": 3,
+      "title": "Declarar techumbre",
+      "result": "Dirección, distribución, diafragma y seis bordes explícitos.",
+      "data": {
+        "roofGeometryId": 1785030887081,
+        "boundaries": [
+          {
+            "label": "B1",
+            "boundaryId": "roof:1785030887081:edge:af5e6f56b14117e2b5da48a5124851e057b9724ba03f4098e92c286d5b8c18f2",
+            "function": "gutterSupport"
+          },
+          {
+            "label": "B2",
+            "boundaryId": "roof:1785030887081:edge:7d4546a22697a25da345ad760531685c851e0ae70572147307a8bc2fed0893dc",
+            "function": "geometricBoundary"
+          },
+          {
+            "label": "B3",
+            "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6",
+            "function": "gravitySupport"
+          },
+          {
+            "label": "B4",
+            "boundaryId": "roof:1785030887081:edge:433a7e755d1f977e25d6d9be14c592f6c23203c2cdc55505565772766cc6ebb6",
+            "function": "geometricBoundary"
+          },
+          {
+            "label": "B5",
+            "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+            "function": "gravitySupport"
+          },
+          {
+            "label": "B6",
+            "boundaryId": "roof:1785030887081:edge:b8dfa7cace70323aee5a2f3ef31b6bbff1c83d5e503462f003bdd2658a9b587b",
+            "function": "lateralSupport"
+          }
+        ]
+      }
+    },
+    {
+      "order": 4,
+      "title": "Declarar muro interior",
+      "result": "Resistencia lateral prevista sin fabricar conexión con cubierta.",
+      "data": {
+        "intentId": "intent:element:1784606313849",
+        "elementId": 1784606313849,
+        "participation": "resistant",
+        "functions": [
+          "inPlaneLateralResistance"
+        ],
+        "secondaryInteraction": "notApplicable",
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    },
+    {
+      "order": 5,
+      "title": "Asignar lote",
+      "result": "Tres secundarios solidarios en una sola operación.",
+      "data": {
+        "selection": [
+          1784751397992,
+          1784752583321,
+          1784752639636
+        ],
+        "previousGroups": [
+          {
+            "intent": null,
+            "elementIds": [
+              1784751397992,
+              1784752583321,
+              1784752639636
+            ]
+          }
+        ],
+        "effectiveChanges": 3
+      }
+    },
+    {
+      "order": 6,
+      "title": "Modificar secundario",
+      "result": "Un objetivo cambia de solidary a floating.",
+      "data": {
+        "intentId": "intent:element:1784752583321",
+        "elementId": 1784752583321,
+        "participation": "secondary",
+        "functions": [
+          "spaceDivision"
+        ],
+        "secondaryInteraction": "floating",
+        "status": "declared",
+        "source": "userDeclared",
+        "notes": null
+      }
+    },
+    {
+      "order": 7,
+      "title": "Undo / redo",
+      "result": "Mutación y evento se revierten/restauran juntos.",
+      "data": {
+        "before": 3,
+        "after": 4,
+        "undo": "solidary",
+        "redo": "floating"
+      }
+    },
+    {
+      "order": 8,
+      "title": "Guardar y reabrir",
+      "result": "Modelo v3, declaraciones y trace se reproducen.",
+      "data": {
+        "deepEqual": true,
+        "modelVersion": 3
+      }
+    },
+    {
+      "order": 9,
+      "title": "Comprobar identidad",
+      "result": "La geometría agnóstica permanece byte-identical.",
+      "data": {
+        "bytes": 81875,
+        "sha256": "966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a"
+      }
+    }
+  ],
+  "interpretation": {
+    "capacityVerification": false,
+    "loadPathVerification": false,
+    "wallClassificationInference": false,
+    "boundaryWallLinkCreated": false
+  },
+  "intermediateChecks": {
+    "frontonAfterRoof": null,
+    "finalOperations": [
+      "set",
+      "set",
+      "batchSet",
+      "set"
+    ]
+  }
+}

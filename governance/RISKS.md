@@ -35,6 +35,8 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 
 | R-029 | Una intención de techumbre puede quedar asociada al borde equivocado tras editar geometría, inferir apoyos desde muros o contaminar derivados constructivos | 4 | 5 | 20 | D-056; IDs SHA-256 sobre extremos XY tipados, validación de pertenencia, prohibición de reasignación, finding persistente, reconciliación en la misma entrada de historial, byte identity y corpus FX-008/adversario; G2/G4/G6 | En mitigación |
 
+| R-030 | La interfaz puede inferir decisiones, mutar lotes parcialmente, registrar navegación como hecho o perder sincronía entre intención, trace e historial | 4 | 5 | 20 | D-057; workspace independiente, presentador puro, previsualización con fingerprints, batch de una transacción, no-op sin evento, trace opcional, undo/redo por instantánea, accesibilidad, independencia recursiva y evidencia FX-008; G2/G4/G6/G7 | En mitigación |
+
 ## Política
 
 - Exposición 20–25: bloquea cualquier release y se revisa en cada sesión.

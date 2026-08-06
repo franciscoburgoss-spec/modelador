@@ -1,0 +1,15 @@
+{
+  "schema": "spec-015-c-evidence-manifest-v1.0",
+  "files": [
+    {
+      "path": "FX-008-structural-intent-workspace.html",
+      "bytes": 13894,
+      "sha256": "f66bfe6081de42924e7fced09a4d64077c5df6d00c9a322278257d34510fb7a2"
+    },
+    {
+      "path": "FX-008-structural-intent-workspace.json",
+      "bytes": 16595,
+      "sha256": "bbe6ab1dd4111b300625b17f5157bea30936a5db534b5b15ed94f0f9c3b05b9f"
+    }
+  ]
+}

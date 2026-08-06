@@ -66,3 +66,4 @@ Estados: `vigente`, `derogada por D-xxx`, `descartada`.
 
 Las decisiones constructivas D-001 a D-033 del proyecto anterior se preservan como historia en
 `archive/LEGACY_DECISIONS.md`. Las reglas vigentes derivadas viven en `domain/DOMAIN_RULES.md`.
+| D-057 | 06-ago-2026 | vigente | SPEC-015-C expone la intención mediante un workspace separado con selección local; las mutaciones unitarias y masivas son atómicas y no-op aware, y un registro superior opcional `structuralIntentTrace-v1.0` nace sólo con la primera acción efectiva del usuario y sigue las instantáneas de undo/redo | Evita mezclar intención con tipos o soluciones constructivas, impide pasos parciales de historial, distingue ausencia de `undetermined` y conserva trazabilidad determinista sin fabricar eventos al importar, migrar, navegar o reconciliar geometría |

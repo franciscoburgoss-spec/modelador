@@ -1,3 +1,5 @@
+import { appendStructuralIntentUserEvent, fingerprintStructuralIntentTarget } from './structuralIntentTrace.js';
+
 import {
   ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE,
   RoofStructuralIntentError,
@@ -118,6 +120,24 @@ function compareIds(a, b) {
   return compareText(idKey(a), idKey(b));
 }
 
+function sameCanonicalValue(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function elementIntentFor(root, elementId) {
+  return root.elementIntents.find((intent) => hasSameId(intent.elementId, elementId)) ?? null;
+}
+
+function roofIntentFor(root, roofGeometryId) {
+  return root.roofIntents.find((intent) => hasSameId(intent.roofGeometryId, roofGeometryId)) ?? null;
+}
+
+function maybeTrace(model, options, eventInput) {
+  return options?.recordUserAction
+    ? appendStructuralIntentUserEvent(model, eventInput)
+    : model;
+}
+
 function addIssue(issues, path, code, message) {
   issues.push({ path, code, message });
 }
@@ -172,7 +192,9 @@ export function createEmptyStructuralIntent() {
 }
 
 export function intentIdForElement(elementId) {
-  return `intent:element:${String(elementId)}`;
+  return typeof elementId === 'string'
+    ? `intent:element:string:${encodeURIComponent(elementId)}`
+    : `intent:element:${String(elementId)}`;
 }
 
 export function canonicalizeStructuralIntent(structuralIntent) {
@@ -554,7 +576,7 @@ function result(model, affectedElementIds, extra = {}) {
   };
 }
 
-export function setElementIntent(model, elementId, input) {
+export function setElementIntent(model, elementId, input, options = {}) {
   requireModel(model);
   const target = model.elements.find((element) => hasSameId(element?.id, elementId));
   if (!target) {
@@ -577,10 +599,22 @@ export function setElementIntent(model, elementId, input) {
     ]
   });
   assertValidStructuralIntent(nextRoot, model.elements, roofGeometryForCurrentIntents(model, nextRoot));
-  return result({ ...model, structuralIntent: nextRoot }, [target.id]);
+  const previousIntent = elementIntentFor(root, target.id);
+  const nextIntent = elementIntentFor(nextRoot, target.id);
+  if (sameCanonicalValue(previousIntent, nextIntent)) return result(model, []);
+  const nextModel = maybeTrace(
+    { ...model, structuralIntent: nextRoot },
+    options,
+    {
+      operation: 'set',
+      targetType: 'element',
+      changes: [{ targetId: target.id, previousIntent, nextIntent }]
+    }
+  );
+  return result(nextModel, [target.id]);
 }
 
-export function removeElementIntent(model, elementId) {
+export function removeElementIntent(model, elementId, options = {}) {
   requireModel(model);
   const root = assertValidStructuralIntent(
     currentRoot(model),
@@ -593,7 +627,231 @@ export function removeElementIntent(model, elementId) {
     ...root,
     elementIntents: root.elementIntents.filter((intent) => !hasSameId(intent.elementId, elementId))
   });
-  return result({ ...model, structuralIntent: nextRoot }, [existing.elementId]);
+  const nextModel = maybeTrace(
+    { ...model, structuralIntent: nextRoot },
+    options,
+    {
+      operation: 'remove',
+      targetType: 'element',
+      changes: [{ targetId: existing.elementId, previousIntent: existing, nextIntent: null }]
+    }
+  );
+  return result(nextModel, [existing.elementId]);
+}
+
+
+function canonicalBatchTargets(elementIds) {
+  if (!Array.isArray(elementIds) || elementIds.length === 0) {
+    throw new StructuralIntentError('SI-BATCH-TARGETS-EMPTY', 'La asignación masiva requiere al menos un objetivo.');
+  }
+  const seen = new Set();
+  const duplicates = [];
+  for (const elementId of elementIds) {
+    const key = idKey(elementId);
+    if (seen.has(key)) duplicates.push(elementId);
+    seen.add(key);
+  }
+  if (duplicates.length > 0) {
+    throw new StructuralIntentError(
+      'SI-BATCH-DUPLICATE-TARGET',
+      'La selección masiva contiene objetivos duplicados.',
+      duplicates.map((elementId) => ({
+        path: 'elementIds',
+        code: 'SI-BATCH-DUPLICATE-TARGET',
+        elementId
+      }))
+    );
+  }
+  return [...elementIds].sort(compareIds);
+}
+
+function validateExpectedPrevious(expectedPrevious, targetIds, root) {
+  if (expectedPrevious === undefined) return;
+  if (!Array.isArray(expectedPrevious)) {
+    throw new StructuralIntentError('SI-BATCH-PREVIEW-INVALID', 'expectedPrevious debe ser un arreglo.');
+  }
+  const expected = new Map();
+  for (const entry of expectedPrevious) {
+    if (!isRecord(entry) || !/^[a-f0-9]{64}$/.test(entry.fingerprint)) {
+      throw new StructuralIntentError('SI-BATCH-PREVIEW-INVALID', 'Cada fingerprint esperado debe ser SHA-256 hexadecimal.');
+    }
+    const key = idKey(entry.elementId);
+    if (expected.has(key)) {
+      throw new StructuralIntentError('SI-BATCH-PREVIEW-INVALID', 'expectedPrevious contiene objetivos duplicados.');
+    }
+    expected.set(key, entry.fingerprint);
+  }
+  const stale = [];
+  for (const elementId of targetIds) {
+    const key = idKey(elementId);
+    const current = elementIntentFor(root, elementId);
+    const actual = fingerprintStructuralIntentTarget('element', elementId, current);
+    if (!expected.has(key) || expected.get(key) !== actual) {
+      stale.push({ elementId, expected: expected.get(key) ?? null, actual });
+    }
+  }
+  if (stale.length > 0 || expected.size !== targetIds.length) {
+    throw new StructuralIntentError(
+      'SI-BATCH-PREVIEW-STALE',
+      'La previsualización quedó obsoleta; recargue los valores antes de confirmar.',
+      stale
+    );
+  }
+}
+
+function buildBatchCandidate(elementId, input, previousIntent) {
+  if (!isRecord(input)) {
+    throw new StructuralIntentError('SI-BATCH-CANDIDATE-INVALID', 'La declaración masiva debe ser un objeto.');
+  }
+  const allowed = new Set([
+    'participation', 'functions', 'secondaryInteraction', 'notesMode', 'notes'
+  ]);
+  for (const key of Object.keys(input)) {
+    if (!allowed.has(key)) {
+      throw new StructuralIntentError('SI-BATCH-CANDIDATE-INVALID', `El campo ${key} no pertenece al contrato masivo.`);
+    }
+  }
+  const notesMode = input.notesMode ?? 'preserve';
+  if (!['preserve', 'replace'].includes(notesMode)) {
+    throw new StructuralIntentError('SI-BATCH-CANDIDATE-INVALID', 'notesMode debe ser preserve o replace.');
+  }
+  if (notesMode === 'replace' && input.notes !== null && typeof input.notes !== 'string') {
+    throw new StructuralIntentError('SI-BATCH-CANDIDATE-INVALID', 'notes debe ser texto o null.');
+  }
+  return buildElementIntent(elementId, {
+    participation: input.participation,
+    functions: input.functions,
+    secondaryInteraction: input.secondaryInteraction,
+    notes: notesMode === 'preserve' ? previousIntent?.notes ?? null : input.notes ?? null
+  });
+}
+
+export function setElementIntentsBatch(model, elementIds, input, options = {}) {
+  requireModel(model);
+  const targetIds = canonicalBatchTargets(elementIds);
+  const targetsById = new Map(model.elements.map((element) => [idKey(element?.id), element]));
+  const missing = targetIds.filter((elementId) => !targetsById.has(idKey(elementId)));
+  if (missing.length > 0) {
+    throw new StructuralIntentError(
+      'SI-BATCH-TARGET-NOT-FOUND',
+      'Uno o más objetivos de la asignación masiva no existen.',
+      missing.map((elementId) => ({ path: 'elementIds', elementId }))
+    );
+  }
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
+  validateExpectedPrevious(options.expectedPrevious, targetIds, root);
+
+  let candidates;
+  try {
+    candidates = targetIds.map((elementId) => {
+      const target = targetsById.get(idKey(elementId));
+      const previousIntent = elementIntentFor(root, target.id);
+      return {
+        elementId: target.id,
+        previousIntent,
+        nextIntent: buildBatchCandidate(target.id, input, previousIntent)
+      };
+    });
+  } catch (error) {
+    if (error instanceof StructuralIntentError && error.code.startsWith('SI-BATCH-')) throw error;
+    throw new StructuralIntentError(
+      'SI-BATCH-CANDIDATE-INVALID',
+      error instanceof Error ? error.message : 'No fue posible construir la declaración masiva.',
+      error?.details || []
+    );
+  }
+
+  const replacementKeys = new Set(candidates.map((entry) => idKey(entry.elementId)));
+  const nextRoot = canonicalizeStructuralIntent({
+    ...root,
+    elementIntents: [
+      ...root.elementIntents.filter((intent) => !replacementKeys.has(idKey(intent.elementId))),
+      ...candidates.map((entry) => entry.nextIntent)
+    ]
+  });
+  try {
+    assertValidStructuralIntent(nextRoot, model.elements, roofGeometryForCurrentIntents(model, nextRoot));
+  } catch (error) {
+    throw new StructuralIntentError(
+      'SI-BATCH-CANDIDATE-INVALID',
+      'La declaración masiva contiene una combinación inválida.',
+      error?.details || []
+    );
+  }
+  const effective = candidates.filter((entry) => (
+    !sameCanonicalValue(entry.previousIntent, elementIntentFor(nextRoot, entry.elementId))
+  )).map((entry) => ({
+    ...entry,
+    nextIntent: elementIntentFor(nextRoot, entry.elementId)
+  }));
+  if (effective.length === 0) return result(model, []);
+  const nextModel = maybeTrace(
+    { ...model, structuralIntent: nextRoot },
+    options,
+    {
+      operation: 'batchSet',
+      targetType: 'element',
+      changes: effective.map((entry) => ({
+        targetId: entry.elementId,
+        previousIntent: entry.previousIntent,
+        nextIntent: entry.nextIntent
+      }))
+    }
+  );
+  return result(nextModel, effective.map((entry) => entry.elementId), {
+    changes: effective
+  });
+}
+
+export function removeElementIntentsBatch(model, elementIds, options = {}) {
+  requireModel(model);
+  const targetIds = canonicalBatchTargets(elementIds);
+  const targetsById = new Map(model.elements.map((element) => [idKey(element?.id), element]));
+  const missing = targetIds.filter((elementId) => !targetsById.has(idKey(elementId)));
+  if (missing.length > 0) {
+    throw new StructuralIntentError(
+      'SI-BATCH-TARGET-NOT-FOUND',
+      'Uno o más objetivos de la eliminación masiva no existen.',
+      missing.map((elementId) => ({ path: 'elementIds', elementId }))
+    );
+  }
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model)
+  );
+  validateExpectedPrevious(options.expectedPrevious, targetIds, root);
+  const effective = targetIds.map((elementId) => ({
+    elementId: targetsById.get(idKey(elementId)).id,
+    previousIntent: elementIntentFor(root, targetsById.get(idKey(elementId)).id)
+  })).filter((entry) => entry.previousIntent !== null);
+  if (effective.length === 0) return result(model, []);
+  const removalKeys = new Set(effective.map((entry) => idKey(entry.elementId)));
+  const nextRoot = canonicalizeStructuralIntent({
+    ...root,
+    elementIntents: root.elementIntents.filter((intent) => !removalKeys.has(idKey(intent.elementId)))
+  });
+  assertValidStructuralIntent(nextRoot, model.elements, roofGeometryForCurrentIntents(model, nextRoot));
+  const nextModel = maybeTrace(
+    { ...model, structuralIntent: nextRoot },
+    options,
+    {
+      operation: 'batchRemove',
+      targetType: 'element',
+      changes: effective.map((entry) => ({
+        targetId: entry.elementId,
+        previousIntent: entry.previousIntent,
+        nextIntent: null
+      }))
+    }
+  );
+  return result(nextModel, effective.map((entry) => entry.elementId), {
+    changes: effective.map((entry) => ({ ...entry, nextIntent: null }))
+  });
 }
 
 export function clearStructuralIntent(model) {
@@ -605,8 +863,15 @@ export function clearStructuralIntent(model) {
   );
   const affectedElementIds = root.elementIntents.map((intent) => intent.elementId);
   const affectedRoofGeometryIds = root.roofIntents.map((intent) => intent.roofGeometryId);
+  const { structuralIntentTrace: ignoredTrace, ...withoutTrace } = model;
+  void ignoredTrace;
+  const hasChanges = affectedElementIds.length > 0
+    || affectedRoofGeometryIds.length > 0
+    || (Array.isArray(model.structuralIntentFindings) && model.structuralIntentFindings.length > 0)
+    || model.structuralIntentTrace !== undefined;
+  if (!hasChanges) return result(model, []);
   return result({
-    ...model,
+    ...withoutTrace,
     structuralIntent: createEmptyStructuralIntent(),
     structuralIntentFindings: []
   }, affectedElementIds, { affectedRoofGeometryIds });
@@ -749,7 +1014,7 @@ function roofGeometryForCurrentIntents(model, root = currentRoot(model)) {
   return ids.map((id) => resolveRoofGeometryForIntent(model, id));
 }
 
-export function setRoofIntent(model, roofGeometryId, input) {
+export function setRoofIntent(model, roofGeometryId, input, options = {}) {
   requireModel(model);
   const roofGeometry = resolveRoofGeometryForIntent(model, roofGeometryId);
   const rootRoofGeometry = roofGeometryForCurrentIntents(model);
@@ -767,12 +1032,24 @@ export function setRoofIntent(model, roofGeometryId, input) {
     roofGeometry
   ];
   assertValidStructuralIntent(nextRoot, model.elements, validationGeometry);
-  return result({ ...model, structuralIntent: nextRoot }, [], {
+  const previousIntent = roofIntentFor(root, roofGeometry.id);
+  const nextIntent = roofIntentFor(nextRoot, roofGeometry.id);
+  if (sameCanonicalValue(previousIntent, nextIntent)) return result(model, []);
+  const nextModel = maybeTrace(
+    { ...model, structuralIntent: nextRoot },
+    options,
+    {
+      operation: 'set',
+      targetType: 'roof',
+      changes: [{ targetId: roofGeometry.id, previousIntent, nextIntent }]
+    }
+  );
+  return result(nextModel, [], {
     affectedRoofGeometryIds: [roofGeometry.id]
   });
 }
 
-export function removeRoofIntent(model, roofGeometryId) {
+export function removeRoofIntent(model, roofGeometryId, options = {}) {
   requireModel(model);
   const rootRoofGeometry = roofGeometryForCurrentIntents(model);
   const root = assertValidStructuralIntent(currentRoot(model), model.elements, rootRoofGeometry);
@@ -788,7 +1065,16 @@ export function removeRoofIntent(model, roofGeometryId) {
     finding?.code !== ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE
     || !hasSameId(finding.roofGeometryId, roofGeometryId)
   ));
-  return result({ ...model, structuralIntent: nextRoot, structuralIntentFindings: findings }, [], {
+  const nextModel = maybeTrace(
+    { ...model, structuralIntent: nextRoot, structuralIntentFindings: findings },
+    options,
+    {
+      operation: 'remove',
+      targetType: 'roof',
+      changes: [{ targetId: existing.roofGeometryId, previousIntent: existing, nextIntent: null }]
+    }
+  );
+  return result(nextModel, [], {
     affectedRoofGeometryIds: [existing.roofGeometryId]
   });
 }

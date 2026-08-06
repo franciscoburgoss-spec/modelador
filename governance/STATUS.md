@@ -3,19 +3,19 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **05-ago-2026**
+Última actualización: **06-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-015-B cerrada; SPEC-015-C pendiente de apertura formal |
+| Etapa | SPEC-015-C cerrada; SPEC-015-D pendiente de apertura formal |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | ninguna |
-| Esfuerzo activo | ninguno |
-| Suite oficial | PASS local: 24/24 gates del validador único SPEC-015-B |
-| Build | PASS local en el validador único; warning heredado de chunk inicial permanece documentado |
-| Cobertura | PASS local; evidencia web: core 93,34 % y store 95,77 % (gates 90 % / 85 %) |
+| Spec activa | Ninguna |
+| Esfuerzo activo | Ninguno |
+| Suite oficial | PASS local: 25/25 gates del validador único SPEC-015-C |
+| Build | PASS local en el validador único SPEC-015-C; warning heredado de chunk inicial permanece documentado |
+| Cobertura | PASS local en el validador único SPEC-015-C; gates core 90 % / store 85 % |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -276,6 +276,13 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   `966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a`. El validador único
   pasó 24/24 gates en el Mac; logs: `artifacts/validation-spec-015-b/20260805-170823`.
   Evidencia: `sessions/close-SPEC-015-B.md`.
+- SPEC-015-C: cerrada con esfuerzo `medium` planificado y efectivo, sin escalamiento. El corte
+  implementa un workspace separado, mutaciones individuales/masivas atómicas, trazabilidad
+  opcional, techumbre por bordes canónicos, accesibilidad e independencia constructiva. FX-008
+  reproduce 4 declaraciones de elemento, 1 cubierta y 4 eventos sin alterar los 81.875 bytes ni el
+  SHA-256 agnóstico. El validador único pasó 25/25 gates en el Mac; logs:
+  `artifacts/validation-spec-015-c/20260806-084630`. Evidencia:
+  `sessions/close-SPEC-015-C.md`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -299,9 +306,8 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   incompatible con una versión futura del compilador. D-040 bloquea actualizaciones sin smoke real;
   renovar runtime o toolchain exige resolver juntos R-009 y este aviso.
 
-## Próximo cierre
+## Próximo corte
 
-No existe una spec activa. La siguiente apertura prevista es SPEC-015-C, mediante su sesión formal
-separada, para implementar la interfaz de declaración sin mezclar propuestas, caminos de carga,
-miembros ni soluciones constructivas. F-009 permanece como baseline conocido y SPEC-08 continúa
-deshabilitada hasta completar R12 sin errores.
+SPEC-015-C está cerrada y no existe una spec activa. SPEC-015-D queda pendiente de apertura formal
+y deberá comenzar con diagnóstico, alcance y gobernanza propios. F-009 permanece como baseline
+conocido y SPEC-08 continúa deshabilitada hasta completar R12 sin errores.

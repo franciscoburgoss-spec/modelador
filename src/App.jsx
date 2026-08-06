@@ -29,6 +29,7 @@ import OsbModulationModal from './components/modals/OsbModulationModal.jsx';
 import OsbNestingModal from './components/modals/OsbNestingModal.jsx';
 import WallTypesModal from './components/modals/WallTypesModal.jsx';
 import ElementInventoryModal from './components/modals/ElementInventoryModal.jsx';
+import StructuralIntentWorkspaceDialog from './components/modals/StructuralIntentWorkspaceDialog.jsx';
 import RoofTrussModal from './components/modals/RoofTrussModal.jsx';
 import RoofPlaneModal from './components/modals/RoofPlaneModal.jsx';
 import FilterPanel from './components/FilterPanel.jsx';
@@ -232,6 +233,10 @@ export default function App({ projectRuntime = null }) {
         onClose={() => setActiveModal(null)}
         onEdit={handleEditRequest}
         canvasSize={canvasSize}
+      />
+      <StructuralIntentWorkspaceDialog
+        open={activeModal === 'structuralIntent'}
+        onClose={() => setActiveModal(null)}
       />
       <RoofTrussModal
         open={activeModal === 'roofTruss' || isModal('roofTruss')}

@@ -392,6 +392,14 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
         <Item onClick={() => onOpenModal('opening')}>+ Puerta / Ventana</Item>
       </Dropdown>
 
+      <Dropdown label="Estructura">
+        <Item onClick={() => onOpenModal('structuralIntent')}>Intención estructural…</Item>
+        <div className="border-t border-[#e4e4e0] my-1" />
+        <Item disabled title="Disponible en SPEC-015-D">Propuestas estructurales…</Item>
+        <Item disabled title="Disponible en SPEC-015-D">Caminos de carga…</Item>
+        <Item disabled title="Disponible en SPEC-015-E">Topología estructural…</Item>
+      </Dropdown>
+
       <Dropdown label="Ver">
         <Item onClick={() => fitToContent(canvasSize.width, canvasSize.height)}>Ajustar a contenido</Item>
         <Item onClick={zoomIn}>Zoom +</Item>

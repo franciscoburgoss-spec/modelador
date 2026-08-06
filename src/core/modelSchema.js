@@ -9,6 +9,10 @@ import {
   validateStructuralIntent,
   validateStructuralIntentFindings
 } from './structuralIntent.js';
+import {
+  canonicalizeStructuralIntentTrace,
+  validateStructuralIntentTrace
+} from './structuralIntentTrace.js';
 
 export const CURRENT_MODEL_VERSION = 3;
 export const LEGACY_MODEL_VERSION = 0;
@@ -306,6 +310,7 @@ export function validateModel(model) {
     validElements ? model.elements : [],
     structuralRoofGeometry
   ));
+  issues.push(...validateStructuralIntentTrace(model.structuralIntentTrace));
 
   if (Array.isArray(model.projectParams)) {
     model.projectParams.forEach((parameter, index) => {
@@ -379,6 +384,13 @@ export function prepareModelImport(input) {
       ? {
           structuralIntentFindings: canonicalizeStructuralIntentFindings(
             model.structuralIntentFindings
+          )
+        }
+      : {}),
+    ...(model.structuralIntentTrace !== undefined
+      ? {
+          structuralIntentTrace: canonicalizeStructuralIntentTrace(
+            model.structuralIntentTrace
           )
         }
       : {})
