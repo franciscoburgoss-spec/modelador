@@ -23,6 +23,11 @@
       "sha256": "588356042e86fd0716ddbe9f6d22bd8e78c2e9b65eb714b3f69b4b4db537e845"
     },
     {
+      "name": "SPEC-015-C-1-identificacion-visual-muros-elementos.md",
+      "bytes": 34820,
+      "sha256": "f55c2439b87caa84d9c04fdb7111bcdc6bf5505979be6b21757a22aab5221812"
+    },
+    {
       "name": "SPEC-015-D-propuestas-y-caminos-carga-candidatos.md",
       "bytes": 8917,
       "sha256": "de86615de5e58b211faa8a489a91eefa25050c9848f7ea99087394db94a05bec"

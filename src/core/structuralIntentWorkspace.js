@@ -16,6 +16,12 @@ import {
   canonicalizeRoofBoundaries
 } from './roofStructuralIntent.js';
 import { fingerprintStructuralIntentTarget } from './structuralIntentTrace.js';
+import {
+  buildStructuralIntentVisualPresentation,
+  buildStructuralIntentVisualPreview,
+  compareVisualFingerprintSnapshot,
+  visualFingerprintSnapshot
+} from './structuralIntentVisualPresentation.js';
 
 export const STRUCTURAL_INTENT_WORKSPACE_TABS = Object.freeze([
   'summary',
@@ -31,7 +37,8 @@ export const STRUCTURAL_INTENT_WORKSPACE_STATES = Object.freeze([
   'declared',
   'undefined',
   'invalid',
-  'brokenReference'
+  'brokenReference',
+  'stale'
 ]);
 
 function isRecord(value) {
@@ -146,6 +153,11 @@ export function buildVisualRoofBoundaries(roofGeometry) {
 export function buildElementIntentDraft(model, elementId) {
   const target = model.elements?.find((element) => sameId(element?.id, elementId));
   const current = elementIntent(model, elementId);
+  const visualPresentation = buildStructuralIntentVisualPresentation(model);
+  const visualTarget = [...visualPresentation.targets, ...visualPresentation.orphans]
+    .find((item) => sameId(item.id, target?.id ?? elementId));
+  const previousIntentFingerprint = fingerprintStructuralIntentTarget('element', target?.id ?? elementId, current);
+  const previousGeometryFingerprint = visualTarget?.geometryFingerprint ?? null;
   return {
     targetExists: !!target,
     elementId: target?.id ?? elementId,
@@ -153,7 +165,13 @@ export function buildElementIntentDraft(model, elementId) {
     functions: current ? [...current.functions] : [],
     secondaryInteraction: current?.secondaryInteraction ?? 'notApplicable',
     notes: current?.notes ?? '',
-    previousFingerprint: fingerprintStructuralIntentTarget('element', target?.id ?? elementId, current),
+    previousFingerprint: previousIntentFingerprint,
+    previousIntentFingerprint,
+    previousGeometryFingerprint,
+    visualSnapshot: visualFingerprintSnapshot(visualPresentation, [target?.id ?? elementId]),
+    visualPreview: buildStructuralIntentVisualPreview(visualPresentation, [target?.id ?? elementId]),
+    lastVisualDescriptor: visualTarget?.descriptor ?? null,
+    visualTarget: visualTarget ?? null,
     state: classifyWorkspaceState({ targetExists: !!target, intent: current }),
     sourceIntent: current
   };
@@ -217,14 +235,32 @@ export function validateElementDraft(model, elementId, draft) {
   }
   const current = elementIntent(model, elementId);
   const actualFingerprint = fingerprintStructuralIntentTarget('element', elementId, current);
-  if (typeof draft?.previousFingerprint === 'string'
-    && draft.previousFingerprint !== actualFingerprint) {
+  const expectedIntentFingerprint = draft?.previousIntentFingerprint ?? draft?.previousFingerprint;
+  if (typeof expectedIntentFingerprint === 'string'
+    && expectedIntentFingerprint !== actualFingerprint) {
     const issues = [{
       path: 'elementId',
       code: 'SI-DRAFT-STALE',
-      message: 'El elemento cambió mientras el borrador estaba abierto.'
+      message: 'La declaración cambió mientras el borrador estaba abierto.'
     }];
     return { ok: false, state: 'brokenReference', issues, fields: mapStructuralIntentIssuesToFields(issues) };
+  }
+  if (Array.isArray(draft?.visualSnapshot)) {
+    const visualPresentation = buildStructuralIntentVisualPresentation(model);
+    const visualReview = compareVisualFingerprintSnapshot(visualPresentation, draft.visualSnapshot);
+    if (!visualReview.ok) {
+      const broken = visualReview.conflicts.some((conflict) => conflict.code === 'SI-VISUAL-TARGET-NOT-FOUND');
+      const issues = visualReview.conflicts.map((conflict) => ({
+        path: 'elementId', code: conflict.code, message: conflict.message
+      }));
+      return {
+        ok: false,
+        state: broken ? 'brokenReference' : 'stale',
+        issues,
+        fields: mapStructuralIntentIssuesToFields(issues),
+        visualReview
+      };
+    }
   }
   try {
     const outcome = setElementIntent(model, elementId, elementDraftInput(draft));
@@ -294,10 +330,14 @@ function groupPrevious(intents) {
 
 export function prepareElementIntentBatch(model, elementIds, input) {
   const selection = [...elementIds].sort(compareStructuralIntentIds);
+  const visualPresentation = buildStructuralIntentVisualPresentation(model);
+  const visualPreview = buildStructuralIntentVisualPreview(visualPresentation, selection);
+  const geometrySnapshot = visualFingerprintSnapshot(visualPresentation, selection);
   const previous = selection.map((elementId) => ({
     elementId,
     intent: elementIntent(model, elementId),
-    fingerprint: fingerprintStructuralIntentTarget('element', elementId, elementIntent(model, elementId))
+    fingerprint: fingerprintStructuralIntentTarget('element', elementId, elementIntent(model, elementId)),
+    geometryFingerprint: geometrySnapshot.find((item) => sameId(item.elementId, elementId))?.geometryFingerprint ?? null
   }));
   const preview = {
     selection,
@@ -306,6 +346,8 @@ export function prepareElementIntentBatch(model, elementIds, input) {
     effectiveChanges: [],
     conflicts: [],
     expectedPrevious: previous.map(({ elementId, fingerprint }) => ({ elementId, fingerprint })),
+    expectedGeometry: geometrySnapshot,
+    visualPreview,
     canConfirm: false
   };
   try {
@@ -317,7 +359,7 @@ export function prepareElementIntentBatch(model, elementIds, input) {
       previousIntent: change.previousIntent,
       nextIntent: change.nextIntent
     }));
-    preview.canConfirm = preview.effectiveChanges.length > 0;
+    preview.canConfirm = preview.effectiveChanges.length > 0 && visualPreview.canUse;
   } catch (error) {
     preview.conflicts = issueList(error);
   }
@@ -326,10 +368,14 @@ export function prepareElementIntentBatch(model, elementIds, input) {
 
 export function prepareElementIntentBatchRemoval(model, elementIds) {
   const selection = [...elementIds].sort(compareStructuralIntentIds);
+  const visualPresentation = buildStructuralIntentVisualPresentation(model);
+  const visualPreview = buildStructuralIntentVisualPreview(visualPresentation, selection);
+  const geometrySnapshot = visualFingerprintSnapshot(visualPresentation, selection);
   const previous = selection.map((elementId) => ({
     elementId,
     intent: elementIntent(model, elementId),
-    fingerprint: fingerprintStructuralIntentTarget('element', elementId, elementIntent(model, elementId))
+    fingerprint: fingerprintStructuralIntentTarget('element', elementId, elementIntent(model, elementId)),
+    geometryFingerprint: geometrySnapshot.find((item) => sameId(item.elementId, elementId))?.geometryFingerprint ?? null
   }));
   const preview = {
     selection,
@@ -338,6 +384,8 @@ export function prepareElementIntentBatchRemoval(model, elementIds) {
     effectiveChanges: [],
     conflicts: [],
     expectedPrevious: previous.map(({ elementId, fingerprint }) => ({ elementId, fingerprint })),
+    expectedGeometry: geometrySnapshot,
+    visualPreview,
     canConfirm: false
   };
   try {
@@ -349,11 +397,39 @@ export function prepareElementIntentBatchRemoval(model, elementIds) {
       previousIntent: change.previousIntent,
       nextIntent: null
     }));
-    preview.canConfirm = preview.effectiveChanges.length > 0;
+    preview.canConfirm = preview.effectiveChanges.length > 0 && visualPreview.canUse;
   } catch (error) {
     preview.conflicts = issueList(error);
   }
   return preview;
+}
+
+export function validatePreparedElementIntentBatch(model, preview) {
+  const visualPresentation = buildStructuralIntentVisualPresentation(model);
+  const visualReview = compareVisualFingerprintSnapshot(visualPresentation, preview?.expectedGeometry || []);
+  if (!visualReview.ok) {
+    return {
+      ok: false,
+      state: visualReview.conflicts.some((conflict) => conflict.code === 'SI-VISUAL-TARGET-NOT-FOUND')
+        ? 'brokenReference'
+        : 'stale',
+      conflicts: visualReview.conflicts,
+      visualReview
+    };
+  }
+  const intentConflicts = (preview?.expectedPrevious || []).filter(({ elementId, fingerprint }) => (
+    fingerprintStructuralIntentTarget('element', elementId, elementIntent(model, elementId)) !== fingerprint
+  )).map(({ elementId }) => ({
+    elementId,
+    code: 'SI-DRAFT-STALE',
+    message: `La declaración del elemento ${String(elementId)} cambió desde la preview.`
+  }));
+  return {
+    ok: intentConflicts.length === 0,
+    state: intentConflicts.length === 0 ? 'declared' : 'stale',
+    conflicts: intentConflicts,
+    visualReview
+  };
 }
 
 export function buildStructuralIntentSummary(model, workspace = null) {
@@ -398,17 +474,42 @@ export function buildPendingIntentItems(model) {
 
 export function buildStructuralIntentWorkspace(model) {
   const geometry = projectAgnosticGeometry(model);
+  const visualPresentation = buildStructuralIntentVisualPresentation(model);
+  const visualByToken = new Map([...visualPresentation.targets, ...visualPresentation.orphans]
+    .map((target) => [target.idToken, target]));
   const elementRows = geometry.elements.map((element) => {
     const intent = elementIntent(model, element.id);
+    const visual = visualByToken.get(structuralIntentIdToken(element.id));
     return {
       id: element.id,
       idToken: structuralIntentIdToken(element.id),
       type: element.type,
       geometry: geometrySummary(element),
+      descriptor: visual?.descriptor ?? null,
+      planGeometry: visual?.planGeometry ?? null,
+      elevationGeometry: visual?.elevationGeometry ?? null,
+      openings: visual?.openings ?? [],
+      bounds: visual?.bounds ?? null,
+      geometryFingerprint: visual?.geometryFingerprint ?? null,
+      visualState: visual?.state ?? 'invalidGeometry',
       intent,
-      state: classifyWorkspaceState({ intent })
+      state: classifyWorkspaceState({ intent, issues: visual?.state === 'invalidGeometry' ? [visual.error] : [] })
     };
-  }).sort((left, right) => compareStructuralIntentIds(left.id, right.id));
+  }).concat(visualPresentation.orphans.map((visual) => ({
+    id: visual.id,
+    idToken: visual.idToken,
+    type: visual.type,
+    geometry: { kind: 'brokenReference' },
+    descriptor: visual.descriptor,
+    planGeometry: null,
+    elevationGeometry: null,
+    openings: [],
+    bounds: null,
+    geometryFingerprint: visual.geometryFingerprint,
+    visualState: visual.state,
+    intent: visual.intent,
+    state: 'brokenReference'
+  }))).sort((left, right) => compareStructuralIntentIds(left.id, right.id));
   const roofRows = geometry.roofGeometry.map((roof) => {
     const intent = roofIntent(model, roof.id);
     return {
@@ -423,6 +524,7 @@ export function buildStructuralIntentWorkspace(model) {
   }).sort((left, right) => compareStructuralIntentIds(left.id, right.id));
   const workspace = {
     geometry,
+    visualPresentation,
     elementRows,
     roofRows,
     pending: buildPendingIntentItems(model),

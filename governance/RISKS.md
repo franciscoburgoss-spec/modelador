@@ -42,3 +42,4 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 - Exposición 20–25: bloquea cualquier release y se revisa en cada sesión.
 - Exposición 12–19: debe tener dueño, spec y gate antes de entrar a release candidate.
 - Exposición menor a 12: puede aceptarse sólo mediante una decisión explícita.
+| R-031 | La identificación visual puede quedar stale, perder borradores o reutilizar la selección global y registrar navegación como decisión | 4 | 5 | 20 | D-058; fingerprints separados, referencias rotas bloqueadas, localizador fuera de `model`, restauración de vista/selección, 22/22 tests enfocados, 10/10 componentes y validador completo PASS | Mitigado |

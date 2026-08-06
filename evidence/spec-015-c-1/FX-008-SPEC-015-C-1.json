@@ -1,0 +1,147 @@
+{
+  "schema": "spec-015-c-1-evidence-v1.0",
+  "sourceFixture": "FX-008/casa-L-completa-v3.json",
+  "sourceGeometry": {
+    "walls": 45,
+    "openings": 43,
+    "foundations": 32,
+    "roofPlanes": 7,
+    "elements": 77
+  },
+  "contract": "structural-intent-visual-presentation-v1.0",
+  "presentationSha256": "7da66c57c35acd3b9dbe043c82430c8105b34b43f2c522096f1a7ef2a5c940a8",
+  "individual": {
+    "targetId": 1784605101040,
+    "descriptor": {
+      "typeLabel": "Muro",
+      "orientation": "X",
+      "axis": {
+        "runAxis": "X",
+        "fromLabel": "7",
+        "toLabel": "11A",
+        "fixedLabel": "C",
+        "nominal": "7→11A @ C",
+        "coordinates": "x=14.500→23.200 · y=2.000"
+      },
+      "levels": {
+        "bottomLabel": "NPT",
+        "topLabel": "FRONTON GENERAL",
+        "nominal": "NPT 450 → FRONTON GENERAL 4.150",
+        "coordinates": "z=450→4.150"
+      },
+      "dimensions": {
+        "length": 8700,
+        "thickness": 101.1,
+        "height": 3700,
+        "openings": 3
+      },
+      "id": 1784605101040,
+      "summary": "Muro X · 7→11A @ C · NPT 450 → FRONTON GENERAL 4.150 · L 8.700 · e 101,1 · h 3.700 · 3 vanos · ID 1784605101040"
+    },
+    "openingIds": [
+      1784605151802,
+      1784605173145,
+      1784605196342
+    ],
+    "mark": "T",
+    "contextIds": [
+      1784754251210,
+      1784756700772,
+      1784819708086,
+      1784607987483,
+      1784754427246,
+      1784756325325
+    ],
+    "bounds": {
+      "xMin": 12749.45,
+      "xMax": 23250.55,
+      "yMin": -50.55,
+      "yMax": 8350.55,
+      "zMin": 450,
+      "zMax": 4150
+    },
+    "fingerprint": [
+      {
+        "elementId": 1784605101040,
+        "geometryFingerprint": "64933027e5d20d0ebbbdb1601c6ac9a43f6ee53c14528905b12eab2249fbe88c",
+        "state": "available"
+      }
+    ]
+  },
+  "batch": {
+    "targetIds": [
+      1784751397992,
+      1784752583321,
+      1784752639636
+    ],
+    "marks": [
+      {
+        "id": 1784751397992,
+        "mark": "S1"
+      },
+      {
+        "id": 1784752583321,
+        "mark": "S2"
+      },
+      {
+        "id": 1784752639636,
+        "mark": "S3"
+      }
+    ],
+    "activeId": 1784751397992,
+    "contextIds": [
+      1784604634483,
+      1784606313849,
+      1784670218571,
+      1784751024158,
+      1784600403613
+    ],
+    "bounds": {
+      "xMin": -50.55,
+      "xMax": 14550.55,
+      "yMin": -50.55,
+      "yMax": 5450.55,
+      "zMin": 450,
+      "zMax": 4150
+    },
+    "fingerprint": [
+      {
+        "elementId": 1784751397992,
+        "geometryFingerprint": "762c36730ba970e288bf1efc12aea8f11759c4e46253e93f0df03c5a2065f8a6",
+        "state": "available"
+      },
+      {
+        "elementId": 1784752583321,
+        "geometryFingerprint": "2f4a50c61fbf0b5333b75edeeeb3fec3397eea96d18ff9d49659c08326b2a628",
+        "state": "available"
+      },
+      {
+        "elementId": 1784752639636,
+        "geometryFingerprint": "757fffec8c41a4b9927cf13aa53690e18983fb2b6d12c59021d47e7de3f6a682",
+        "state": "available"
+      }
+    ]
+  },
+  "locator": {
+    "historyChanges": 0,
+    "traceChanges": 0,
+    "authorityChanges": 0,
+    "globalSelectionPreserved": true,
+    "viewRestored": true,
+    "interactionSequence": [
+      "open",
+      "hover",
+      "request",
+      "activate",
+      "fit",
+      "restore"
+    ]
+  },
+  "prohibitions": {
+    "structuralProposalsEnabled": false,
+    "loadPathsEnabled": false,
+    "topologyEnabled": false,
+    "globalSelectionExpanded": false,
+    "structuralInferencePerformed": false
+  }
+}

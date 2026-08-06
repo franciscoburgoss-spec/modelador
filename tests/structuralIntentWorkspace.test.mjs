@@ -8,6 +8,7 @@ import {
   buildStructuralIntentWorkspace,
   classifyWorkspaceState,
   prepareElementIntentBatch,
+  validatePreparedElementIntentBatch,
   validateElementDraft,
   validateRoofDraft
 } from '../src/core/structuralIntentWorkspace.js';
@@ -96,4 +97,18 @@ test('SPEC-015-C workspace: preview masiva informa cambios y fingerprint esperad
   assert.equal(preview.effectiveChanges.length, 3);
   assert.equal(preview.expectedPrevious.length, 3);
   assert.ok(preview.expectedPrevious.every((item) => /^[a-f0-9]{64}$/.test(item.fingerprint)));
+});
+
+
+test('SPEC-015-C-1 workspace: lote stale bloquea confirmación antes de mutar', () => {
+  const preview = prepareElementIntentBatch(fixture, [1784751397992, 1784752583321, 1784752639636], {
+    participation: 'secondary', functions: ['spaceDivision'], secondaryInteraction: 'solidary',
+    notesMode: 'preserve'
+  });
+  const changed = structuredClone(fixture);
+  changed.elements.find((element) => element.id === 1784752583321).thickness = 120;
+  const review = validatePreparedElementIntentBatch(changed, preview);
+  assert.equal(review.ok, false);
+  assert.equal(review.state, 'stale');
+  assert.equal(review.conflicts[0].code, 'SI-VISUAL-PREVIEW-STALE');
 });

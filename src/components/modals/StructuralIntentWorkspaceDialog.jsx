@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import StructuralIntentVisualPreview from '../StructuralIntentVisualPreview.jsx';
 import { useModelStore } from '../../store/useModelStore.js';
 import {
   STRUCTURAL_INTENT_WORKSPACE_TABS,
@@ -8,9 +9,15 @@ import {
   prepareElementIntentBatch,
   prepareElementIntentBatchRemoval,
   structuralIntentIdToken,
+  validatePreparedElementIntentBatch,
   validateElementDraft,
   validateRoofDraft
 } from '../../core/structuralIntentWorkspace.js';
+import {
+  buildStructuralIntentVisualPreview,
+  compareVisualFingerprintSnapshot,
+  visualFingerprintSnapshot
+} from '../../core/structuralIntentVisualPresentation.js';
 
 const TAB_LABELS = {
   summary: 'Resumen',
@@ -26,7 +33,8 @@ const STATE_LABELS = {
   declared: 'Declarado',
   undefined: 'No definido',
   invalid: 'Inválido',
-  brokenReference: 'Referencia rota'
+  brokenReference: 'Referencia rota',
+  stale: 'Geometría stale'
 };
 
 const PARTICIPATION_LABELS = {
@@ -142,7 +150,7 @@ function DraftComparison({ previous, next }) {
   );
 }
 
-function ElementForm({ draft, setDraft, validation }) {
+function ElementForm({ draft, setDraft, validation, disabled = false }) {
   if (!draft) return <p className="text-sm text-[#6b6b66]">Seleccione un elemento para revisar su declaración.</p>;
   const toggleFunction = (value) => setDraft((current) => ({
     ...current,
@@ -167,6 +175,7 @@ function ElementForm({ draft, setDraft, validation }) {
           aria-invalid={validation?.fields?.participation?.length > 0}
           aria-describedby={validation?.fields?.participation?.length ? 'structural-intent-element-participation-errors' : undefined}
           className="w-full rounded border border-[#d8d8d3] px-2 py-1.5"
+          disabled={disabled}
           value={draft.participation}
           onChange={(event) => setDraft((current) => {
             const participation = event.target.value;
@@ -187,6 +196,7 @@ function ElementForm({ draft, setDraft, validation }) {
         <FieldErrors validation={validation} field="participation" id="structural-intent-element-participation-errors" />
       </label>
       <fieldset
+        disabled={disabled}
         aria-invalid={validation?.fields?.functions?.length > 0}
         aria-describedby={validation?.fields?.functions?.length ? 'structural-intent-element-functions-errors' : undefined}
       >
@@ -212,6 +222,7 @@ function ElementForm({ draft, setDraft, validation }) {
           aria-invalid={validation?.fields?.secondaryInteraction?.length > 0}
           aria-describedby={validation?.fields?.secondaryInteraction?.length ? 'structural-intent-element-secondary-errors' : undefined}
           className="w-full rounded border border-[#d8d8d3] px-2 py-1.5"
+          disabled={disabled}
           value={draft.secondaryInteraction}
           onChange={(event) => setDraft((current) => ({ ...current, secondaryInteraction: event.target.value }))}
         >
@@ -228,6 +239,7 @@ function ElementForm({ draft, setDraft, validation }) {
           aria-invalid={validation?.fields?.notes?.length > 0}
           aria-describedby={validation?.fields?.notes?.length ? 'structural-intent-element-notes-errors' : undefined}
           className="min-h-20 w-full rounded border border-[#d8d8d3] px-2 py-1.5"
+          disabled={disabled}
           value={draft.notes}
           onChange={(event) => setDraft((current) => ({ ...current, notes: event.target.value }))}
         />
@@ -295,7 +307,15 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
   const removeElementIntentsBatch = useModelStore((state) => state.removeElementIntentsBatch);
   const setRoofIntent = useModelStore((state) => state.setRoofIntent);
   const removeRoofIntent = useModelStore((state) => state.removeRoofIntent);
+  const structuralIntentLocator = useModelStore((state) => state.structuralIntentLocator);
+  const openStructuralIntentLocator = useModelStore((state) => state.openStructuralIntentLocator);
+  const setStructuralIntentLocatorActive = useModelStore((state) => state.setStructuralIntentLocatorActive);
+  const setStructuralIntentLocatorHover = useModelStore((state) => state.setStructuralIntentLocatorHover);
+  const clearStructuralIntentLocatorRequest = useModelStore((state) => state.clearStructuralIntentLocatorRequest);
+  const fitStructuralIntentLocator = useModelStore((state) => state.fitStructuralIntentLocator);
+  const closeStructuralIntentLocator = useModelStore((state) => state.closeStructuralIntentLocator);
   const dialogRef = useRef(null);
+  const locatorRef = useRef(null);
   const openerRef = useRef(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [selectedTokens, setSelectedTokens] = useState(() => new Set());
@@ -314,14 +334,29 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
     secondaryInteraction: 'solidary', notesMode: 'preserve', notes: null
   });
   const [unexpectedError, setUnexpectedError] = useState(null);
+  const [batchActiveId, setBatchActiveId] = useState(null);
+  const [visualHoverId, setVisualHoverId] = useState(null);
 
   const workspace = useMemo(() => {
     try {
       return buildStructuralIntentWorkspace(model);
     } catch (error) {
-      return { error, summary: {}, elementRows: [], roofRows: [], pending: [], traceEvents: [], inactiveViews: {} };
+      return { error, summary: {}, elementRows: [], roofRows: [], pending: [], traceEvents: [], inactiveViews: {}, visualPresentation: { targets: [], orphans: [] } };
     }
   }, [model]);
+
+  const selectedIds = useMemo(() => workspace.elementRows
+    .filter((row) => selectedTokens.has(row.idToken))
+    .map((row) => row.id), [workspace.elementRows, selectedTokens]);
+  const visualTargetIds = useMemo(() => (selectedIds.length > 0
+    ? selectedIds
+    : elementId !== null ? [elementId] : []), [selectedIds, elementId]);
+  const elementVisualPreview = useMemo(() => {
+    if (!workspace.visualPresentation || visualTargetIds.length === 0) return null;
+    return buildStructuralIntentVisualPreview(workspace.visualPresentation, visualTargetIds, {
+      activeId: batchActiveId ?? elementId ?? visualTargetIds[0]
+    });
+  }, [workspace.visualPresentation, visualTargetIds, batchActiveId, elementId]);
 
   const setElementDraft = (updater) => {
     setElementDraftState(updater);
@@ -356,11 +391,26 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
     if (!open || !dirty) return;
     if (elementDraft && elementId !== null) {
       const current = buildElementIntentDraft(model, elementId);
-      if (!current.targetExists || current.previousFingerprint !== elementDraft.previousFingerprint) {
+      if (!current.targetExists) {
         setElementValidation({
           ok: false,
           state: 'brokenReference',
-          issues: [{ code: 'SI-DRAFT-STALE', message: 'El modelo cambió mientras el borrador estaba abierto.' }]
+          issues: [{ code: 'SI-VISUAL-TARGET-NOT-FOUND', message: 'El elemento desapareció. Se conserva el último descriptor del borrador.' }],
+          fields: { target: [{ code: 'SI-VISUAL-TARGET-NOT-FOUND', message: 'Recargue la declaración o copie sus notas antes de descartarla.' }] }
+        });
+      } else if (current.previousIntentFingerprint !== elementDraft.previousIntentFingerprint) {
+        setElementValidation({
+          ok: false,
+          state: 'brokenReference',
+          issues: [{ code: 'SI-DRAFT-STALE', message: 'La declaración cambió mientras el borrador estaba abierto.' }],
+          fields: { target: [{ code: 'SI-DRAFT-STALE', message: 'Recargue la declaración antes de continuar.' }] }
+        });
+      } else if (current.previousGeometryFingerprint !== elementDraft.previousGeometryFingerprint) {
+        setElementValidation({
+          ok: false,
+          state: 'stale',
+          issues: [{ code: 'SI-VISUAL-PREVIEW-STALE', message: 'La geometría cambió mientras el borrador estaba abierto.' }],
+          fields: { target: [{ code: 'SI-VISUAL-PREVIEW-STALE', message: 'Recargue la geometría antes de guardar o localizar.' }] }
         });
       }
     }
@@ -376,14 +426,169 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
     }
   }, [model, open, dirty, elementDraft, elementId, roofDraft, roofId]);
 
+  useEffect(() => {
+    const requestedId = structuralIntentLocator.requestedId;
+    if (!open || !structuralIntentLocator.active || requestedId == null) return;
+    clearStructuralIntentLocatorRequest();
+    if (dirty && elementId !== null && structuralIntentIdToken(requestedId) !== structuralIntentIdToken(elementId)) {
+      setElementValidation({
+        ok: false,
+        state: elementValidation?.state || elementDraft?.state || 'declared',
+        issues: [{ code: 'SI-DRAFT-TARGET-CHANGE-BLOCKED', message: 'El borrador actual bloquea el cambio de objetivo desde el viewport.' }],
+        fields: { target: [{ code: 'SI-DRAFT-TARGET-CHANGE-BLOCKED', message: 'Guarde o descarte el borrador antes de activar otro elemento.' }] }
+      });
+      return;
+    }
+    setBatchActiveId(requestedId);
+    setStructuralIntentLocatorActive(requestedId);
+    if (!dirty) {
+      setElementId(requestedId);
+      setElementDraftState(buildElementIntentDraft(model, requestedId));
+      setElementValidation(null);
+    }
+  }, [open, structuralIntentLocator.active, structuralIntentLocator.requestedId, dirty, elementId, elementDraft, elementValidation, model, clearStructuralIntentLocatorRequest, setStructuralIntentLocatorActive]);
+
+  const currentVisualReview = elementDraft?.visualSnapshot
+    ? compareVisualFingerprintSnapshot(workspace.visualPresentation, elementDraft.visualSnapshot)
+    : { ok: true, conflicts: [] };
+  const dirtyBatchIncludesTarget = elementDraft && dirty && elementId !== null && selectedIds.length > 1
+    && selectedIds.some((id) => structuralIntentIdToken(id) === structuralIntentIdToken(elementId));
+  const staleVisual = !currentVisualReview.ok
+    && currentVisualReview.conflicts.some((conflict) => conflict.code === 'SI-VISUAL-PREVIEW-STALE');
+  const displayVisualPreview = elementDraft && dirty
+    ? dirtyBatchIncludesTarget
+      ? {
+          ...elementVisualPreview,
+          selected: (elementVisualPreview?.selected || []).map((target) => (
+            structuralIntentIdToken(target.id) === structuralIntentIdToken(elementId)
+              ? { ...elementDraft.visualTarget, mark: target.mark, active: target.active }
+              : target
+          )),
+          stale: staleVisual
+        }
+      : { ...elementDraft.visualPreview, stale: staleVisual }
+    : elementVisualPreview;
+  const locateTargetIds = dirtyBatchIncludesTarget ? visualTargetIds
+    : elementDraft && dirty && elementId !== null ? [elementId] : visualTargetIds;
+  const elementReferenceBroken = elementDraft?.state === 'brokenReference'
+    || elementValidation?.state === 'brokenReference';
+  const locateBlocked = !displayVisualPreview?.canUse
+    || elementValidation?.state === 'stale'
+    || elementReferenceBroken
+    || !currentVisualReview.ok;
+  const locateBlockedReason = elementValidation?.state === 'stale'
+    ? 'Recargue la geometría antes de localizar.'
+    : elementValidation?.state === 'brokenReference'
+      ? 'La referencia está rota.'
+      : !currentVisualReview.ok ? 'La preview no coincide con la geometría vigente.' : null;
+
+  const activateVisualTarget = (id) => {
+    setBatchActiveId(id);
+    if (structuralIntentLocator.active) setStructuralIntentLocatorActive(id);
+    if (dirty && elementId !== null && structuralIntentIdToken(id) !== structuralIntentIdToken(elementId)) {
+      setConfirmation({ type: 'switchElement', id });
+      return;
+    }
+    setElementId(id);
+    setElementDraftState(buildElementIntentDraft(model, id));
+    setElementValidation(null);
+    setDirty(false);
+  };
+
+  const startLocate = () => {
+    if (!displayVisualPreview || locateBlocked) return;
+    const preview = {
+      ...displayVisualPreview,
+      geometrySnapshot: visualFingerprintSnapshot(workspace.visualPresentation, locateTargetIds)
+    };
+    openStructuralIntentLocator({
+      preview,
+      activeId: batchActiveId ?? elementId ?? preview.activeId,
+      sourceFocusId: 'structural-intent-locate-button'
+    });
+    requestAnimationFrame(() => fitStructuralIntentLocator());
+  };
+
+  const reloadElementGeometry = () => {
+    if (!elementDraft || elementId === null) return;
+    const latestModel = useModelStore.getState().model;
+    const current = buildElementIntentDraft(latestModel, elementId);
+    if (current.previousIntentFingerprint !== elementDraft.previousIntentFingerprint) {
+      setElementValidation({
+        ok: false,
+        state: 'brokenReference',
+        issues: [{ code: 'SI-DRAFT-STALE', message: 'La intención también cambió; no se puede conservar automáticamente el borrador.' }],
+        fields: { target: [{ code: 'SI-DRAFT-STALE', message: 'Recargue la declaración o copie las notas antes de descartarla.' }] }
+      });
+      return;
+    }
+    setElementDraftState({
+      ...elementDraft,
+      targetExists: current.targetExists,
+      previousGeometryFingerprint: current.previousGeometryFingerprint,
+      visualSnapshot: current.visualSnapshot,
+      visualPreview: current.visualPreview,
+      lastVisualDescriptor: current.lastVisualDescriptor,
+      visualTarget: current.visualTarget,
+      state: current.state
+    });
+    setElementValidation(null);
+  };
+
+  const finishLocate = (restoreView) => {
+    const sourceFocusId = structuralIntentLocator.sourceFocusId;
+    closeStructuralIntentLocator({ restoreView });
+    requestAnimationFrame(() => document.getElementById(sourceFocusId)?.focus());
+  };
+
+  useEffect(() => {
+    if (!open || !structuralIntentLocator.active) return;
+    const frame = requestAnimationFrame(() => {
+      locatorRef.current?.querySelector('button:not([disabled])')?.focus();
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [open, structuralIntentLocator.active]);
+
   if (!open) return null;
 
-  const selectedIds = workspace.elementRows
-    .filter((row) => selectedTokens.has(row.idToken))
-    .map((row) => row.id);
+  if (structuralIntentLocator.active) {
+    const activeTarget = structuralIntentLocator.preview?.selected?.find((target) => structuralIntentIdToken(target.id) === structuralIntentIdToken(structuralIntentLocator.activeId));
+    return (
+      <aside
+        ref={locatorRef}
+        role="dialog"
+        aria-modal="false"
+        aria-label="Localizador de intención estructural"
+        className="fixed right-4 top-4 z-50 w-[min(92vw,430px)] rounded-lg border-2 border-[#2f5d50] bg-white p-4 shadow-xl"
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            finishLocate(true);
+          }
+        }}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="font-semibold">Localizando {activeTarget?.mark || 'T'}</h2>
+            <p className="mt-1 text-xs text-[#6b6b66]">{activeTarget?.descriptor?.summary || `ID ${String(structuralIntentLocator.activeId)}`}</p>
+          </div>
+          <span className="rounded border px-2 py-1 text-xs">Vista temporal</span>
+        </div>
+        <p className="mt-3 text-sm">Pase el cursor o haga clic sobre los objetivos marcados en la planta. La selección global del modelo permanece intacta.</p>
+        {elementValidation && !elementValidation.ok && <ErrorSummary validation={elementValidation} />}
+        <div className="mt-4 flex flex-wrap justify-end gap-2">
+          <button className="rounded border px-3 py-1.5 text-sm" onClick={() => fitStructuralIntentLocator()}>Encuadrar</button>
+          <button className="rounded border px-3 py-1.5 text-sm" onClick={() => finishLocate(true)}>Restaurar vista</button>
+          <button className="rounded bg-[#2f5d50] px-3 py-1.5 text-sm text-white" onClick={() => finishLocate(false)}>Conservar vista</button>
+        </div>
+        <div className="sr-only" aria-live="polite">Objetivo activo {activeTarget?.mark || 'T'}, ID {String(structuralIntentLocator.activeId)}.</div>
+      </aside>
+    );
+  }
+
   const visibleRows = workspace.elementRows.filter((row) => (
-    (!filterWallsOnly || row.type === 'wall')
-    && (!search || String(row.id).toLowerCase().includes(search.toLowerCase()))
+    (!filterWallsOnly || row.type === 'wall' || row.state === 'brokenReference')
+    && (!search || `${String(row.id)} ${row.descriptor?.summary || ''}`.toLowerCase().includes(search.toLowerCase()))
   ));
 
   const discardDrafts = () => {
@@ -447,14 +652,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
   };
 
   const openElement = (id) => {
-    if (dirty && id !== elementId) {
-      setConfirmation({ type: 'switchElement', id });
-      return;
-    }
-    setElementId(id);
-    setElementDraftState(buildElementIntentDraft(model, id));
-    setElementValidation(null);
-    setDirty(false);
+    activateVisualTarget(id);
   };
 
   const saveElement = () => {
@@ -543,7 +741,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
   );
 
   const renderElements = () => (
-    <div className="grid min-h-[520px] gap-4 lg:grid-cols-[1.15fr_1fr]">
+    <div className="grid min-h-[520px] gap-4 lg:grid-cols-[1.1fr_1fr]">
       <section className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <input
@@ -551,30 +749,51 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
             className="min-w-48 flex-1 rounded border border-[#d8d8d3] px-2 py-1.5"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Buscar por ID"
+            placeholder="Buscar por ID, eje o coordenada"
           />
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={filterWallsOnly} onChange={(event) => setFilterWallsOnly(event.target.checked)} />
             Sólo muros
           </label>
-          <button className="rounded border px-2 py-1.5 text-sm" onClick={() => setSelectedTokens(new Set(visibleRows.map((row) => row.idToken)))}>Seleccionar visibles</button>
-          <button className="rounded border px-2 py-1.5 text-sm" onClick={() => setSelectedTokens(new Set())}>Limpiar selección</button>
+          <button disabled={dirty} title={dirty ? 'Guarde o descarte el borrador antes de cambiar el lote.' : undefined} className="rounded border px-2 py-1.5 text-sm disabled:opacity-50" onClick={() => { setSelectedTokens(new Set(visibleRows.map((row) => row.idToken))); setBatchActiveId(visibleRows[0]?.id ?? null); }}>Seleccionar visibles</button>
+          <button disabled={dirty} className="rounded border px-2 py-1.5 text-sm disabled:opacity-50" onClick={() => { setSelectedTokens(new Set()); setBatchActiveId(null); }}>Limpiar selección</button>
         </div>
         <div className="max-h-80 overflow-auto rounded border border-[#e4e4e0]">
           <table className="w-full text-left text-sm">
-            <thead className="sticky top-0 bg-[#f7f7f4]"><tr><th className="p-2">Sel.</th><th>ID</th><th>Tipo</th><th>Estado</th><th /></tr></thead>
+            <thead className="sticky top-0 bg-[#f7f7f4]"><tr><th className="p-2">Sel.</th><th>Identificación</th><th>Estado</th><th /></tr></thead>
             <tbody>
-              {visibleRows.map((row) => (
-                <tr key={row.idToken} className="border-t border-[#eeeeea]">
-                  <td className="p-2"><input aria-label={`Seleccionar ${String(row.id)}`} type="checkbox" checked={selectedTokens.has(row.idToken)} onChange={() => setSelectedTokens((current) => {
-                    const next = new Set(current);
-                    if (next.has(row.idToken)) next.delete(row.idToken); else next.add(row.idToken);
-                    return next;
-                  })} /></td>
-                  <td><code>{String(row.id)}</code></td><td>{row.type}</td><td>{STATE_LABELS[row.state]}</td>
-                  <td className="p-1 text-right"><button className="rounded border px-2 py-1" onClick={() => openElement(row.id)}>Editar</button></td>
-                </tr>
-              ))}
+              {visibleRows.map((row) => {
+                const active = elementId !== null && structuralIntentIdToken(elementId) === row.idToken;
+                return (
+                  <tr
+                    key={row.idToken}
+                    aria-current={active ? 'true' : undefined}
+                    className={`border-t border-[#eeeeea] ${active ? 'bg-[#eef4f0]' : ''}`}
+                    onMouseEnter={() => setVisualHoverId(row.id)}
+                    onMouseLeave={() => setVisualHoverId(null)}
+                  >
+                    <td className="p-2"><input
+                      aria-label={`Seleccionar ${String(row.id)}`}
+                      type="checkbox"
+                      disabled={dirty}
+                      checked={selectedTokens.has(row.idToken)}
+                      onChange={() => setSelectedTokens((current) => {
+                        const next = new Set(current);
+                        if (next.has(row.idToken)) next.delete(row.idToken); else next.add(row.idToken);
+                        const ids = workspace.elementRows.filter((item) => next.has(item.idToken)).map((item) => item.id);
+                        setBatchActiveId(ids[0] ?? null);
+                        return next;
+                      })}
+                    /></td>
+                    <td className="max-w-[26rem] py-2 pr-2">
+                      <div className="flex items-center gap-2"><code>{String(row.id)}</code><span className="rounded border px-1.5 py-0.5 text-[10px] uppercase">{row.type}</span></div>
+                      <p className="mt-1 line-clamp-2 text-xs text-[#6b6b66]" title={row.descriptor?.summary}>{row.descriptor?.summary || 'Sin descriptor geométrico.'}</p>
+                    </td>
+                    <td>{STATE_LABELS[row.state]}</td>
+                    <td className="p-1 text-right"><button className="rounded border px-2 py-1" onClick={() => openElement(row.id)}>{active ? 'Abierto' : 'Editar'}</button></td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -599,7 +818,20 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
         )}
       </section>
       <section className="space-y-4 rounded border border-[#e4e4e0] p-4">
-        <ElementForm draft={elementDraft} setDraft={setElementDraft} validation={elementValidation} />
+        <StructuralIntentVisualPreview
+          preview={displayVisualPreview}
+          activeId={batchActiveId ?? elementId}
+          onActivate={activateVisualTarget}
+          hoveredId={visualHoverId}
+          onHover={(id) => { setVisualHoverId(id); setStructuralIntentLocatorHover(id); }}
+          onLocate={startLocate}
+          locateButtonId="structural-intent-locate-button"
+          locateDisabled={locateBlocked}
+          locateDisabledReason={locateBlockedReason}
+          title={selectedIds.length > 0 ? 'Preview del lote' : 'Identificación del elemento'}
+        />
+        {elementValidation?.state === 'stale' && <div className="flex items-center justify-between gap-3 rounded border border-amber-300 bg-amber-50 p-3 text-sm"><span>La preview conserva la geometría con la que se abrió el borrador.</span><button className="rounded border border-amber-500 bg-white px-2 py-1" onClick={reloadElementGeometry}>Recargar geometría</button></div>}
+        <ElementForm draft={elementDraft} setDraft={setElementDraft} validation={elementValidation} disabled={elementReferenceBroken} />
         {elementDraft && dirty && (
           <DraftComparison
             previous={elementDraft.sourceIntent}
@@ -613,9 +845,9 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
         )}
         {elementDraft && (
           <div className="flex flex-wrap justify-end gap-2 border-t pt-3">
-            {elementDraft.sourceIntent && <button className="rounded border border-red-300 px-3 py-1.5 text-red-700" onClick={() => setConfirmation({ type: 'deleteElement' })}>Eliminar declaración</button>}
+            {elementDraft.sourceIntent && <button disabled={elementReferenceBroken} className="rounded border border-red-300 px-3 py-1.5 text-red-700 disabled:opacity-50" onClick={() => setConfirmation({ type: 'deleteElement' })}>Eliminar declaración</button>}
             <button className="rounded border px-3 py-1.5" onClick={() => { setElementDraftState(buildElementIntentDraft(model, elementId)); setElementValidation(null); setDirty(false); }}>Descartar borrador</button>
-            <button className="rounded bg-[#2f5d50] px-3 py-1.5 text-white" onClick={saveElement}>{elementDraft.sourceIntent ? 'Guardar cambios' : 'Declarar'}</button>
+            <button disabled={elementValidation?.state === 'stale' || elementReferenceBroken} className="rounded bg-[#2f5d50] px-3 py-1.5 text-white disabled:cursor-not-allowed disabled:opacity-50" onClick={saveElement}>{elementDraft.sourceIntent ? 'Guardar cambios' : 'Declarar'}</button>
           </div>
         )}
       </section>
@@ -831,13 +1063,14 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
           {unexpectedError && <div role="alert" className="mt-4 rounded border border-red-300 bg-red-50 p-3 text-sm">{unexpectedError.message} <code>{unexpectedError.code}</code></div>}
         </main>
         {confirmation?.type === 'close' && <ConfirmPanel title="¿Descartar cambios no guardados?" onCancel={() => setConfirmation(null)} onConfirm={() => { setConfirmation(null); setDirty(false); onClose(); }} confirmLabel="Descartar y cerrar"><p>El borrador no fue aplicado al proyecto.</p></ConfirmPanel>}
-        {confirmation?.type === 'switchElement' && <ConfirmPanel title="¿Descartar el borrador actual?" onCancel={() => setConfirmation(null)} onConfirm={() => { const id = confirmation.id; setConfirmation(null); setDirty(false); setElementId(id); setElementDraftState(buildElementIntentDraft(model, id)); }} confirmLabel="Descartar"><p>Se abrirá el elemento {String(confirmation.id)}.</p></ConfirmPanel>}
+        {confirmation?.type === 'switchElement' && <ConfirmPanel title="¿Descartar el borrador actual?" onCancel={() => setConfirmation(null)} onConfirm={() => { const id = confirmation.id; setConfirmation(null); setDirty(false); setBatchActiveId(id); setElementId(id); setElementDraftState(buildElementIntentDraft(model, id)); setElementValidation(null); }} confirmLabel="Descartar"><p>Se abrirá el elemento {String(confirmation.id)}.</p></ConfirmPanel>}
         {confirmation?.type === 'switchRoof' && <ConfirmPanel title="¿Descartar el borrador actual?" onCancel={() => setConfirmation(null)} onConfirm={() => { const id = confirmation.id; setConfirmation(null); setDirty(false); setRoofId(id); setRoofDraftState(buildRoofIntentDraft(model, id)); }} confirmLabel="Descartar"><p>Se abrirá la cubierta {String(confirmation.id)}.</p></ConfirmPanel>}
         {confirmation?.type === 'switchTab' && <ConfirmPanel title="¿Descartar el borrador actual?" onCancel={() => setConfirmation(null)} onConfirm={() => { const tab = confirmation.tab; setConfirmation(null); discardDrafts(); setActiveTab(tab); }} confirmLabel="Descartar y cambiar"><p>Se cambiará a {TAB_LABELS[confirmation.tab]} sin aplicar el borrador.</p></ConfirmPanel>}
         {confirmation?.type === 'deleteElement' && <ConfirmPanel title="Eliminar declaración" onCancel={() => setConfirmation(null)} onConfirm={() => {
           const latestModel = useModelStore.getState().model;
           const currentDraft = buildElementIntentDraft(latestModel, elementId);
-          if (currentDraft.previousFingerprint !== elementDraft.previousFingerprint) {
+          if (currentDraft.previousIntentFingerprint !== elementDraft.previousIntentFingerprint
+            || currentDraft.previousGeometryFingerprint !== elementDraft.previousGeometryFingerprint) {
             setConfirmation(null);
             setElementValidation({ ok: false, state: 'brokenReference', issues: [{ code: 'SI-DRAFT-STALE', message: 'El elemento cambió mientras se confirmaba la eliminación.' }], fields: { target: [{ code: 'SI-DRAFT-STALE', message: 'Recargue la declaración antes de eliminar.' }] } });
             return;
@@ -857,10 +1090,19 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
         {(confirmation?.type === 'batchSet' || confirmation?.type === 'batchRemove') && <ConfirmPanel title={confirmation.type === 'batchSet' ? 'Confirmar asignación masiva' : 'Confirmar eliminación masiva'} onCancel={() => setConfirmation(null)} confirmDisabled={!confirmation.preview.canConfirm} onConfirm={() => {
           const preview = confirmation.preview;
           if (!preview.canConfirm) return;
+          const latestModel = useModelStore.getState().model;
+          const batchReview = validatePreparedElementIntentBatch(latestModel, preview);
+          if (!batchReview.ok) {
+            setConfirmation((current) => ({
+              ...current,
+              preview: { ...current.preview, canConfirm: false, conflicts: batchReview.conflicts, stale: batchReview.state === 'stale' }
+            }));
+            return;
+          }
           try {
             if (confirmation.type === 'batchSet') setElementIntentsBatch(preview.selection, batchDraft, { expectedPrevious: preview.expectedPrevious });
             else removeElementIntentsBatch(preview.selection, { expectedPrevious: preview.expectedPrevious });
-            setConfirmation(null); setSelectedTokens(new Set()); setDirty(false);
+            setConfirmation(null); setSelectedTokens(new Set()); setBatchActiveId(null); setDirty(false);
           } catch (error) {
             setConfirmation((current) => ({
               ...current,
@@ -870,7 +1112,13 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
         }} confirmLabel={confirmation.type === 'batchSet'
           ? `Confirmar asignación a ${countLabel(confirmation.preview.selection.length, 'elemento', 'elementos')}`
           : `Confirmar eliminación de ${countLabel(confirmation.preview.selection.length, 'elemento', 'elementos')}`}>
-          <p>{countLabel(confirmation.preview.selection.length, 'seleccionado', 'seleccionados')} · {countLabel(confirmation.preview.effectiveChanges.length, 'cambio efectivo', 'cambios efectivos')}.</p>
+          <StructuralIntentVisualPreview
+            preview={{ ...confirmation.preview.visualPreview, stale: confirmation.preview.stale === true }}
+            activeId={batchActiveId ?? confirmation.preview.visualPreview?.activeId}
+            onActivate={setBatchActiveId}
+            title="Preview masiva verificable"
+          />
+          <p className="mt-3">{countLabel(confirmation.preview.selection.length, 'seleccionado', 'seleccionados')} · {countLabel(confirmation.preview.effectiveChanges.length, 'cambio efectivo', 'cambios efectivos')}.</p>
           <p className="mt-1">Se creará un solo paso de historial y una operación de trazabilidad.</p>
           <h4 className="mt-3 font-semibold">Valores anteriores agrupados</h4>
           <pre className="mt-1 max-h-32 overflow-auto rounded bg-[#f7f7f4] p-2 text-xs">{JSON.stringify(confirmation.preview.previousGroups, null, 2)}</pre>

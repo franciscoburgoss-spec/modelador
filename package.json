@@ -40,7 +40,9 @@
     "smoke:ccx": "node scripts/smoke-ccx.mjs",
     "validate": "npm run format:check && npm run format:rust && npm run lint && npm test && npm run test:rust && npm run tauri:check && npm run test:lab && npm run test:coverage && npm run verify:goldens && npm run audit:dxf && npm run smoke:ccx && npm run build && npm run verify:migration && npm run verify:artifacts && npm run verify:derived && npm run codex:audit && make governance",
     "evidence:spec015c": "node scripts/generate-spec015c-evidence.mjs",
-    "verify:spec015c-independence": "node scripts/check-spec015c-independence.mjs"
+    "verify:spec015c-independence": "node scripts/check-spec015c-independence.mjs",
+    "evidence:spec015c1": "node scripts/generate-spec015c1-evidence.mjs",
+    "verify:spec015c1-independence": "node scripts/check-spec015c1-independence.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "2.0.3",

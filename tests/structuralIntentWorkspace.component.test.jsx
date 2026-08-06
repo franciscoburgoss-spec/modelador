@@ -44,7 +44,15 @@ function resetStore() {
     model: structuredClone(fixture),
     past: [],
     future: [],
-    modelImportFeedback: null
+    modelImportFeedback: null,
+    layout: 'single',
+    view: { scale: 0.04, offsetX: -3000, offsetY: -2000, showAxes: true },
+    viewB: { scale: 0.04, offsetX: -3000, offsetY: -2000, showAxes: true },
+    viewModeB: 'plan',
+    structuralIntentLocator: {
+      active: false, targetIds: [], activeId: null, hoveredId: null,
+      requestedId: null, preview: null, sourceFocusId: null, snapshot: null
+    }
   });
 }
 
@@ -144,4 +152,105 @@ test('SPEC-015-C: cancelar una confirmación masiva produce cero cambios', () =>
   fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }));
   assert.deepEqual(useModelStore.getState().model, before);
   assert.equal(useModelStore.getState().past.length, 0);
+});
+
+
+test('SPEC-015-C-1: muro FX-008 muestra descriptor, planta, elevación y vanos reales', () => {
+  render(<StructuralIntentWorkspaceDialog open onClose={() => {}} />);
+  fireEvent.click(screen.getByRole('tab', { name: 'Muros y elementos' }));
+  fireEvent.change(screen.getByLabelText('Buscar por ID'), { target: { value: '1784605101040' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Editar' }));
+  assert.ok(screen.getByRole('heading', { name: 'Identificación del elemento' }));
+  assert.ok(screen.getAllByText(/Muro X · 7→11A @ C/)
+    .some((element) => /3 vanos/.test(element.textContent)));
+  assert.ok(screen.getByLabelText(/Preview en planta de 1 objetivo/));
+  fireEvent.click(screen.getByRole('button', { name: 'Elevación' }));
+  assert.ok(screen.getByLabelText(/Elevación de Muro X/));
+  assert.equal(document.querySelectorAll('rect[stroke-dasharray="6 3"]').length, 3);
+});
+
+test('SPEC-015-C-1: Localizar conserva selección, historial y trace y puede restaurar vista', async () => {
+  useModelStore.setState((state) => ({
+    model: { ...state.model, selectedElementId: 1784600403613, viewMode: 'elevation-x' },
+    view: { ...state.view, scale: 0.08, offsetX: 111, offsetY: 222 }
+  }));
+  const originalView = structuredClone(useModelStore.getState().view);
+  const originalTrace = structuredClone(useModelStore.getState().model.structuralIntentTrace ?? null);
+  render(<StructuralIntentWorkspaceDialog open onClose={() => {}} />);
+  fireEvent.click(screen.getByRole('tab', { name: 'Muros y elementos' }));
+  fireEvent.change(screen.getByLabelText('Buscar por ID'), { target: { value: '1784605101040' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Editar' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Localizar' }));
+  await act(async () => { await new Promise((resolve) => requestAnimationFrame(resolve)); });
+  assert.ok(screen.getByRole('dialog', { name: 'Localizador de intención estructural' }));
+  const located = useModelStore.getState();
+  assert.equal(located.model.selectedElementId, 1784600403613);
+  assert.equal(located.past.length, 0);
+  assert.deepEqual(located.model.structuralIntentTrace ?? null, originalTrace);
+  assert.equal(located.model.viewMode, 'plan');
+  fireEvent.click(screen.getByRole('button', { name: 'Restaurar vista' }));
+  assert.deepEqual(useModelStore.getState().view, originalView);
+  assert.equal(useModelStore.getState().model.selectedElementId, 1784600403613);
+  assert.ok(screen.getByRole('dialog', { name: 'Intención estructural' }));
+});
+
+test('SPEC-015-C-1: lote real S1…S3 se previsualiza antes de confirmar', () => {
+  render(<StructuralIntentWorkspaceDialog open onClose={() => {}} />);
+  fireEvent.click(screen.getByRole('tab', { name: 'Muros y elementos' }));
+  for (const id of ['1784751397992', '1784752583321', '1784752639636']) {
+    fireEvent.change(screen.getByLabelText('Buscar por ID'), { target: { value: id } });
+    fireEvent.click(screen.getByRole('checkbox', { name: `Seleccionar ${id}` }));
+  }
+  assert.match(screen.getByText(/3 objetivos S1…S3/).textContent, /3 objetivos/);
+  assert.ok(screen.getAllByText('S1').length >= 1);
+  assert.ok(screen.getAllByText('S2').length >= 1);
+  assert.ok(screen.getAllByText('S3').length >= 1);
+  fireEvent.click(screen.getByRole('button', { name: 'Previsualizar asignación' }));
+  assert.ok(screen.getByRole('heading', { name: 'Preview masiva verificable' }));
+});
+
+test('SPEC-015-C-1: geometría stale bloquea Guardar y Localizar hasta recarga explícita', async () => {
+  render(<StructuralIntentWorkspaceDialog open onClose={() => {}} />);
+  fireEvent.click(screen.getByRole('tab', { name: 'Muros y elementos' }));
+  fireEvent.change(screen.getByLabelText('Buscar por ID'), { target: { value: '1784605101040' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Editar' }));
+  fireEvent.change(screen.getByLabelText('Participación prevista'), { target: { value: 'undetermined' } });
+  await act(async () => {
+    useModelStore.setState((state) => ({
+      model: {
+        ...state.model,
+        elements: state.model.elements.map((element) => element.id === 1784605101040
+          ? { ...element, thickness: 120 }
+          : element)
+      }
+    }));
+  });
+  assert.ok(screen.getByText('SI-VISUAL-PREVIEW-STALE'));
+  assert.equal(screen.getByRole('button', { name: 'Declarar' }).disabled, true);
+  assert.equal(screen.getByRole('button', { name: 'Localizar' }).disabled, true);
+  fireEvent.click(screen.getByRole('button', { name: 'Recargar geometría' }));
+  assert.equal(screen.queryByText('SI-VISUAL-PREVIEW-STALE'), null);
+  assert.equal(screen.getByRole('button', { name: 'Declarar' }).disabled, false);
+});
+
+test('SPEC-015-C-1: intención huérfana permanece visible con referencia rota aunque Sólo muros esté activo', () => {
+  useModelStore.setState((state) => ({
+    model: {
+      ...state.model,
+      structuralIntent: {
+        ...state.model.structuralIntent,
+        elementIntents: [...state.model.structuralIntent.elementIntents, {
+          elementId: 'MISSING-015C1', participation: 'undetermined', functions: [],
+          secondaryInteraction: 'notApplicable', notes: null, status: 'declared', source: 'user'
+        }]
+      }
+    }
+  }));
+  render(<StructuralIntentWorkspaceDialog open onClose={() => {}} />);
+  fireEvent.click(screen.getByRole('tab', { name: 'Muros y elementos' }));
+  fireEvent.change(screen.getByLabelText('Buscar por ID'), { target: { value: 'MISSING-015C1' } });
+  assert.ok(screen.getByText('Referencia rota'));
+  fireEvent.click(screen.getByRole('button', { name: 'Editar' }));
+  assert.equal(screen.getByLabelText('Participación prevista').disabled, true);
+  assert.equal(screen.getByRole('button', { name: 'Localizar' }).disabled, true);
 });

@@ -9,13 +9,13 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-015-C cerrada; SPEC-015-D pendiente de apertura formal |
+| Etapa | SPEC-015-C-1 cerrada; SPEC-015-D pendiente de apertura formal |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | Ninguna |
 | Esfuerzo activo | Ninguno |
-| Suite oficial | PASS local: 25/25 gates del validador único SPEC-015-C |
-| Build | PASS local en el validador único SPEC-015-C; warning heredado de chunk inicial permanece documentado |
-| Cobertura | PASS local en el validador único SPEC-015-C; gates core 90 % / store 85 % |
+| Suite oficial | PASS local SPEC-015-C-1: 22/22 enfocados, 10/10 componente y puerta completa; 913 Node, 31 componentes y 9 Rust |
+| Build | PASS local Vite; warning heredado de chunk inicial mayor a 600 kB permanece documentado |
+| Cobertura | PASS local; store 94,97 % líneas / 80,85 % ramas / 95,78 % funciones |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -50,6 +50,7 @@
 | F-011 | `agnostic-geometry-v1.0` expone una autoridad `elements[]` tipada y `roofGeometry[]`; el consumidor contractual de SPEC-14 recupera 45 muros y 43 vanos | `sessions/close-SPEC-006-B.md` |
 | F-012 | `projectRoofPlane` usa la menor coronación colineal compatible, conserva el rechazo de pendiente negativa y no exporta solución constructiva | `sessions/close-SPEC-006-C.md` |
 | F-013 | Cada descarga geométrica exige un informe independiente con biyección y comparación por ruta a 0,001 mm; las diferencias bloquean antes del DOM | `sessions/close-SPEC-006-D.md` |
+| BUG-015-C-001 | Muros y elementos tienen descriptor, preview individual/lote, vanos y localización transitoria sin mutar selección global, historial ni trace | `sessions/close-SPEC-015-C-1.md` |
 
 ## Fases
 
@@ -283,6 +284,14 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   SHA-256 agnóstico. El validador único pasó 25/25 gates en el Mac; logs:
   `artifacts/validation-spec-015-c/20260806-084630`. Evidencia:
   `sessions/close-SPEC-015-C.md`.
+
+- SPEC-015-C-1: cerrada con esfuerzo `high` planificado y efectivo, sin escalamiento. El
+  presentador puro deriva descriptores, planta/elevación, vanos, previews T/S1…Sn y fingerprints
+  desde la geometría agnóstica. El localizador vive fuera de `model` y preserva selección,
+  borrador, historia y trace. FX-008 conserva 45 muros, 43 vanos, 32 fundaciones y 7 cubiertas.
+  El validador v3 pasó 22/22 tests enfocados, 10/10 componente y la puerta completa; logs:
+  `artifacts/validation-spec-015-c-1/20260806-143453`. Evidencia:
+  `sessions/close-SPEC-015-C-1.md`.
 - A-7 y A-8 tienen prioridad por afectar reglas constructivas.
 
 ## Deudas técnicas del baseline
@@ -308,6 +317,7 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo corte
 
-SPEC-015-C está cerrada y no existe una spec activa. SPEC-015-D queda pendiente de apertura formal
-y deberá comenzar con diagnóstico, alcance y gobernanza propios. F-009 permanece como baseline
-conocido y SPEC-08 continúa deshabilitada hasta completar R12 sin errores.
+SPEC-015-C-1 está cerrada y `BUG-015-C-001` resuelto. La siguiente apertura prevista es
+SPEC-015-D, pero permanece pendiente hasta una sesión formal separada. Propuestas estructurales,
+Caminos de carga y Topología continúan deshabilitados. F-009 sigue como baseline conocido y
+SPEC-08 permanece deshabilitada hasta completar R12 sin errores.

@@ -129,7 +129,10 @@
       "path": "src/components/Canvas.jsx",
       "bytes": 44163,
       "sha256": "132345a288e3113ffbb18da0a8b09f143ac9f8c2379223e69852cca8149fec78",
-      "kind": "source"
+      "kind": "source",
+      "workspaceBytes": 48355,
+      "workspaceSha256": "dbe4b66efeda29e80628c94c6255a5b1022d32aacb0cfda03eb554fd321cb24c",
+      "changedBy": "SPEC-015"
     },
     {
       "path": "src/components/FilterPanel.jsx",
@@ -919,8 +922,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 63922,
-      "workspaceSha256": "da768968fcd28ee1745d6586d4620c163701bc7e25f7ce916ffadf9e37c5f87f",
+      "workspaceBytes": 66275,
+      "workspaceSha256": "474fd3d0da71da2ec40b1e4513b70ce9a5502d815c73f65aaf2287abda80f733",
       "changedBy": "SPEC-015"
     },
     {

@@ -57,6 +57,16 @@ import {
   downloadAgnosticGeometry,
   downloadAgnosticGeometryAudit
 } from '../core/agnosticGeometry.js';
+import {
+  EMPTY_STRUCTURAL_INTENT_LOCATOR,
+  clearStructuralIntentLocatorRequestState,
+  closeStructuralIntentLocatorState,
+  fitStructuralIntentLocatorState,
+  openStructuralIntentLocatorState,
+  requestStructuralIntentLocatorTargetState,
+  setStructuralIntentLocatorActiveState,
+  setStructuralIntentLocatorHoverState
+} from '../core/structuralIntentLocator.js';
 
 // Sólo un cambio de posición/elevación reubica geometría; renombrar un eje no invalida nada.
 function maybeGlobalInvalidate(model, patch, field) {
@@ -388,6 +398,47 @@ export const useModelStore = create((set, get) => ({
   past: [],
   future: [],
   modelImportFeedback: null,
+
+  // ---- SPEC-015-C-1: localizador visual transitorio ----
+  // Vive fuera de `model`: no se persiste, no crea historial y no registra trazabilidad.
+  structuralIntentLocator: { ...EMPTY_STRUCTURAL_INTENT_LOCATOR },
+  openStructuralIntentLocator: (payload) => set((s) => {
+    const next = openStructuralIntentLocatorState(s, payload);
+    return next === s ? {} : { structuralIntentLocator: next.structuralIntentLocator };
+  }),
+  setStructuralIntentLocatorActive: (id) => set((s) => {
+    const next = setStructuralIntentLocatorActiveState(s, id);
+    return next === s ? {} : { structuralIntentLocator: next.structuralIntentLocator };
+  }),
+  setStructuralIntentLocatorHover: (id) => set((s) => {
+    const next = setStructuralIntentLocatorHoverState(s, id);
+    return next === s ? {} : { structuralIntentLocator: next.structuralIntentLocator };
+  }),
+  requestStructuralIntentLocatorTarget: (id) => set((s) => {
+    const next = requestStructuralIntentLocatorTargetState(s, id);
+    return next === s ? {} : { structuralIntentLocator: next.structuralIntentLocator };
+  }),
+  clearStructuralIntentLocatorRequest: () => set((s) => {
+    const next = clearStructuralIntentLocatorRequestState(s);
+    return next === s ? {} : { structuralIntentLocator: next.structuralIntentLocator };
+  }),
+  fitStructuralIntentLocator: (canvasW, canvasH) => set((s) => {
+    const size = (canvasW && canvasH) ? { width: canvasW, height: canvasH } : getCanvasSizeFallback();
+    const next = fitStructuralIntentLocatorState(s, size.width, size.height);
+    return next === s ? {} : { model: next.model, view: next.view };
+  }),
+  closeStructuralIntentLocator: (options) => set((s) => {
+    const next = closeStructuralIntentLocatorState(s, options);
+    if (next === s) return {};
+    return {
+      model: next.model,
+      layout: next.layout,
+      view: next.view,
+      viewB: next.viewB,
+      viewModeB: next.viewModeB,
+      structuralIntentLocator: next.structuralIntentLocator
+    };
+  }),
 
   // ---- deshacer / rehacer ----
   undo: () => set((s) => {

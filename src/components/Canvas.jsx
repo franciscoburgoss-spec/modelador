@@ -23,6 +23,10 @@ import { isVisibleAtCurrentLevel, visibleRoofSystems } from '../core/levelVisibi
 import { buildParamsMap, resolveValue } from '../core/projectParams.js';
 import { buildElementsById } from '../core/elementReferences.js';
 import Viewer3D from './Viewer3DLazy.jsx';
+import {
+  hitTestStructuralIntentVisualPreview,
+  structuralIntentVisualPolygons
+} from '../core/structuralIntentVisualHitTest.js';
 
 const PLAN_COLORS = {
   wall: { fill: '#475569', stroke: '#1e2937' },
@@ -68,6 +72,60 @@ function strokeHighlightRect(ctx, ax, ay, bx, by, pad) {
   ctx.strokeRect(x, y, Math.abs(bx - ax) + pad * 2, Math.abs(by - ay) + pad * 2);
 }
 
+function sameVisualId(left, right) {
+  return `${typeof left}:${String(left)}` === `${typeof right}:${String(right)}`;
+}
+
+function drawStructuralIntentVisualTarget(ctx, target, view, canvasH, options = {}) {
+  const polygons = structuralIntentVisualPolygons(target);
+  if (polygons.length === 0) return;
+  const active = options.active === true;
+  const hovered = options.hovered === true;
+  const context = options.context === true;
+  ctx.save();
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.setLineDash(context ? [5, 5] : active ? [] : [10, 5]);
+  ctx.lineWidth = context ? 1.5 : hovered ? 5 : active ? 4 : 3;
+  ctx.strokeStyle = context ? '#6b7280' : hovered ? '#111827' : '#7c3aed';
+  ctx.fillStyle = context ? 'rgba(107,114,128,0.08)' : 'rgba(124,58,237,0.16)';
+  for (const polygon of polygons) {
+    const screen = polygon.map((point) => project(point.x, point.y, 0, 'plan', view, canvasH));
+    ctx.beginPath();
+    screen.forEach((point, index) => index === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y));
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    if (hovered && !context) {
+      ctx.setLineDash([2, 4]);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#ffffff';
+      ctx.stroke();
+    }
+  }
+  if (!context && target.mark) {
+    const allPoints = polygons.flat();
+    const center = {
+      x: allPoints.reduce((sum, point) => sum + point.x, 0) / allPoints.length,
+      y: allPoints.reduce((sum, point) => sum + point.y, 0) / allPoints.length
+    };
+    const screen = project(center.x, center.y, 0, 'plan', view, canvasH);
+    ctx.setLineDash([]);
+    ctx.font = '700 13px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const width = Math.max(26, ctx.measureText(target.mark).width + 12);
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#111827';
+    ctx.lineWidth = 2;
+    ctx.fillRect(screen.x - width / 2, screen.y - 12, width, 24);
+    ctx.strokeRect(screen.x - width / 2, screen.y - 12, width, 24);
+    ctx.fillStyle = '#111827';
+    ctx.fillText(target.mark, screen.x, screen.y);
+  }
+  ctx.restore();
+}
+
 export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuickAddColumn }) {
   const canvasRef = useRef(null);
   const model = useModelStore((s) => s.model);
@@ -84,6 +142,7 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
   const attributeFilter = useModelStore((s) => s.attributeFilter);
   const showGhostLayer = useModelStore((s) => s.showGhostLayer);
   const layout = useModelStore((s) => s.layout);
+  const structuralIntentLocator = useModelStore((s) => s.structuralIntentLocator);
   const goToElevationFromPlan = useModelStore((s) => s.goToElevationFromPlan);
   const legendCollapsed = useModelStore((s) => (panelId === 'a' ? s.legendCollapsedA : s.legendCollapsedB));
   const toggleLegendCollapsed = useModelStore((s) => s.toggleLegendCollapsed);
@@ -124,6 +183,16 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
       const modeCompact = toProjectionMode(vModeStr);
       const flipY = modeCompact !== 'plan';
       const { h, v: vv } = screenToPlane(sx, sy, v, canvasH, flipY);
+
+      const locatorState = useModelStore.getState().structuralIntentLocator;
+      if (panelId === 'a' && modeCompact === 'plan' && locatorState.active) {
+        const targetId = hitTestStructuralIntentVisualPreview(
+          locatorState.preview,
+          { x: h, y: vv },
+          8 / v.scale
+        );
+        useModelStore.getState().setStructuralIntentLocatorHover(targetId);
+      }
 
       // ★ snap tipo OSNAP (endpoint + intersección real, un solo tipo de punto — ver
       // core/snapEngine.js): segmentos cacheados por [model, modo] para no reconstruir en cada
@@ -174,7 +243,10 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
         setHover({ primary: `H: ${shown.h.toFixed(0)} mm   V: ${shown.v.toFixed(0)} mm`, snapX: null, snapY: null, snapScreen });
       }
     };
-    const onLeave = () => setHover(null);
+    const onLeave = () => {
+      setHover(null);
+      if (panelId === 'a') useModelStore.getState().setStructuralIntentLocatorHover(null);
+    };
 
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', onLeave);
@@ -412,6 +484,23 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
       ctx.restore();
     }
 
+    if (mode === 'plan' && panelId === 'a' && structuralIntentLocator.active) {
+      for (const target of structuralIntentLocator.preview?.context || []) {
+        drawStructuralIntentVisualTarget(ctx, target, view, canvasH, { context: true });
+      }
+      for (const target of structuralIntentLocator.preview?.selected || []) {
+        drawStructuralIntentVisualTarget(ctx, target, view, canvasH, {
+          active: sameVisualId(target.id, structuralIntentLocator.activeId),
+          hovered: sameVisualId(target.id, structuralIntentLocator.hoveredId)
+        });
+        for (const opening of target.openings || []) {
+          drawStructuralIntentVisualTarget(ctx, {
+            planGeometry: { polygon: opening.planGeometry?.polygon }, mark: null
+          }, view, canvasH, { context: true });
+        }
+      }
+    }
+
     if (mode === 'plan') drawDimensionsPlan(ctx, model, view, canvasH, elementsById, paramsMap);
     else drawDimensionsElevation(ctx, model, modeStr, view, canvasH, elementsById, paramsMap);
 
@@ -422,7 +511,7 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
     // `legendCollapsed` va acá aunque solo se use en el bloque de leyendas de arriba: sin él,
     // `draw` no se recreaba al colapsar y el useEffect (deps [draw]) no repintaba — el botón
     // cambiaba de color pero la leyenda seguía en pantalla.
-  }, [model, view, viewMode, attributeFilter, showStuds, showGhostLayer, legendCollapsed, roofPlaneDraft, draftCursor, panelId]);
+  }, [model, view, viewMode, attributeFilter, showStuds, showGhostLayer, legendCollapsed, roofPlaneDraft, draftCursor, panelId, structuralIntentLocator]);
 
   useEffect(() => {
     draw();
@@ -463,6 +552,18 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
       if (isNearFirstVertex(roofPlaneDraft, { x: sx, y: sy }, view, canvasH)) { closeRoofPlaneDraft(); return; }
       const pt = snapWorldRef.current;
       if (pt) addRoofPlaneDraftVertex({ x: pt.x, y: pt.y });
+      return;
+    }
+
+    const locatorState = useModelStore.getState().structuralIntentLocator;
+    if (panelId === 'a' && mode === 'plan' && locatorState.active) {
+      const point = screenToPlane(sx, sy, view, canvasH, false);
+      const targetId = hitTestStructuralIntentVisualPreview(
+        locatorState.preview,
+        { x: point.h, y: point.v },
+        8 / view.scale
+      );
+      if (targetId != null) useModelStore.getState().requestStructuralIntentLocatorTarget(targetId);
       return;
     }
 
@@ -595,7 +696,7 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
         setQuickAdd({ x: sx, y: sy, axisX: snapX, axisY: snapY });
       }
     }
-  }, [model, view, viewMode, selectElement, selectRoofSystem, selectRoofPlane, getCanvasHeight, legendCollapsed, showStuds, drafting, roofPlaneDraft, closeRoofPlaneDraft, addRoofPlaneDraftVertex]);
+  }, [model, view, viewMode, selectElement, selectRoofSystem, selectRoofPlane, getCanvasHeight, legendCollapsed, showStuds, drafting, roofPlaneDraft, closeRoofPlaneDraft, addRoofPlaneDraftVertex, panelId]);
 
   // ---- doble click en planta = ir a la elevación (sesión 21, parte B) --------------------
   // Mismo hit-test que handleClick pero solo elementos (sin vanos ni techumbre: el doble click

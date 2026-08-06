@@ -1,0 +1,98 @@
+{
+  "schema": "spec-015-c-1-phase-a-evidence-v1.0",
+  "specId": "SPEC-015-C-1",
+  "phase": "A",
+  "date": "2026-08-06",
+  "status": "approved-2026-08-06",
+  "source": {
+    "fixture": "tests/fixtures/casa-L-completa-v3.json",
+    "geometrySchema": "agnostic-geometry-v1.0",
+    "geometrySha256": "966c0f25bd1b05a525a0432f96a997c8321bd67ef05425ebd0e2df804c97f24a",
+    "authoritySha256": "40b631293d758b36c10c13ed0541920a82381c6a17a3a42bf1749dbb8c7b8841",
+    "counts": {
+      "elements": 77,
+      "walls": 45,
+      "openings": 43,
+      "foundations": 32,
+      "roofs": 7
+    }
+  },
+  "fx008": {
+    "individualTargetId": 1784605101040,
+    "batchIds": [
+      1784751397992,
+      1784752583321,
+      1784752639636
+    ],
+    "individualNeighborIds": [
+      1784754251210,
+      1784756700772,
+      1784819708086,
+      1784607987483,
+      1784754427246,
+      1784756325325
+    ],
+    "batchNeighborIds": [
+      1784604634483,
+      1784606313849,
+      1784670218571,
+      1784751024158,
+      1784600403613
+    ],
+    "zeroEffectsAudit": {
+      "operations": [
+        "navigation:individual",
+        "hover:1784605101040",
+        "activate-local:1784605101040",
+        "batch-toggle:1784751397992",
+        "zoom:in",
+        "zoom:out",
+        "locate-open:1784605101040",
+        "locate-fit",
+        "locate-close:restore"
+      ],
+      "before": {
+        "authoritySha256": "40b631293d758b36c10c13ed0541920a82381c6a17a3a42bf1749dbb8c7b8841",
+        "historyEntries": 0,
+        "traceEntries": 0,
+        "authorityMutations": 0
+      },
+      "after": {
+        "authoritySha256": "40b631293d758b36c10c13ed0541920a82381c6a17a3a42bf1749dbb8c7b8841",
+        "historyEntries": 0,
+        "traceEntries": 0,
+        "authorityMutations": 0
+      },
+      "pass": true,
+      "note": "Las operaciones se ejecutaron sobre estado UI aislado; no invocaron mutadores de autoridad ni withHistory."
+    }
+  },
+  "files": [
+    {
+      "path": "prototypes/SPEC-015-C-1/generate-prototype.mjs",
+      "role": "deterministic isolated prototype generator",
+      "bytes": 37893,
+      "sha256": "ef05c4270d48f4690be062b1fa5dc1470838e8a3bb06b5f4e9cbdca3606739ed"
+    },
+    {
+      "path": "prototypes/SPEC-015-C-1/FX-008-SPEC-015-C-1-data.json",
+      "role": "real geometry and contract evidence",
+      "bytes": 117498,
+      "sha256": "5f5d55e7a3d3f4dc8edb3a8dad9c9aecc83da1faaf85686a86ba5450fa20a628"
+    },
+    {
+      "path": "prototypes/SPEC-015-C-1/FX-008-SPEC-015-C-1-prototipo.html",
+      "role": "interactive isolated macro-to-micro prototype",
+      "bytes": 90442,
+      "sha256": "837cb5cc802a70153fc94e274a8f41c7e637ce76dca5a49ee25d4dd918064a56"
+    }
+  ],
+  "separation": {
+    "productCodeModified": false,
+    "storeModified": false,
+    "reactComponentsModified": false,
+    "implementationTestsModified": false,
+    "persistentSchemaModified": false,
+    "statusModified": false
+  }
+}
