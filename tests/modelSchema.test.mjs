@@ -7,6 +7,9 @@ import {
   prepareModelImport
 } from '../src/core/modelSchema.js';
 import { createEmptyStructuralIntent } from '../src/core/structuralIntent.js';
+import {
+  createEmptyStructuralProposalReviewLog
+} from '../src/core/structuralProposalReviews.js';
 
 function fixture(name) {
   return JSON.parse(fs.readFileSync(
@@ -26,6 +29,10 @@ test('R5-A: migración v0→v1→v2→v3 es secuencial, pura e idempotente', () 
   assert.equal(first.model.roofSystems.length, 1);
   assert.deepEqual(first.model.wallTypes, []);
   assert.deepEqual(first.model.structuralIntent, createEmptyStructuralIntent());
+  assert.deepEqual(
+    first.model.structuralProposalReviews,
+    createEmptyStructuralProposalReviewLog()
+  );
   assert.equal(Object.hasOwn(first.model.elements[0], 'wallTypeId'), false);
   assert.equal(Object.hasOwn(first.model.elements[0], 'role'), false);
   assert.equal(JSON.stringify(v0), original, 'la migración no muta la entrada');
@@ -41,6 +48,10 @@ test('R5-A: fixture v1 conserva defaults, overrides y derivados sin inferir tipo
   assert.deepEqual(result.appliedMigrations, ['1->2', '2->3']);
   assert.equal(result.model.modelVersion, 3);
   assert.deepEqual(result.model.structuralIntent, createEmptyStructuralIntent());
+  assert.deepEqual(
+    result.model.structuralProposalReviews,
+    createEmptyStructuralProposalReviewLog()
+  );
   assert.deepEqual(result.model.wallTypes, []);
   assert.deepEqual(result.model.metalconDefaults, original.metalconDefaults);
   assert.deepEqual(result.model.osbDefaults, original.osbDefaults);

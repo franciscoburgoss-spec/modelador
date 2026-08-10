@@ -115,8 +115,8 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 14101,
-      "workspaceSha256": "d5aabc3c49a40919edae5e83cb918c24cedd82527c7233e59410acf010ccfe57",
+      "workspaceBytes": 14572,
+      "workspaceSha256": "ed21cfcaf855c46762c7a55c97f765b5ec04b819d06b6e6282d67609871c766c",
       "changedBy": "SPEC-015"
     },
     {
@@ -130,8 +130,8 @@
       "bytes": 44163,
       "sha256": "132345a288e3113ffbb18da0a8b09f143ac9f8c2379223e69852cca8149fec78",
       "kind": "source",
-      "workspaceBytes": 48355,
-      "workspaceSha256": "dbe4b66efeda29e80628c94c6255a5b1022d32aacb0cfda03eb554fd321cb24c",
+      "workspaceBytes": 52924,
+      "workspaceSha256": "2b149ae08ff4fd229ee211b67ebd4aa2a11925e0701b19049d34e39657c9e288",
       "changedBy": "SPEC-015"
     },
     {
@@ -145,8 +145,8 @@
       "bytes": 16614,
       "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
       "kind": "source",
-      "workspaceBytes": 22640,
-      "workspaceSha256": "60a94be085d24f28bd3e3a68a36c9f986db1c45b911d197d64e51ce6d6e357b3",
+      "workspaceBytes": 22573,
+      "workspaceSha256": "25a37f02644c910b174107e6bb71c07adac22e037968d93f9ad8cfdc7a9462a5",
       "changedBy": "SPEC-015"
     },
     {
@@ -922,8 +922,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 66275,
-      "workspaceSha256": "474fd3d0da71da2ec40b1e4513b70ce9a5502d815c73f65aaf2287abda80f733",
+      "workspaceBytes": 71752,
+      "workspaceSha256": "973d7807032ca999883ace7c272eef1e7228521843baf6d592f5431a50d66b9f",
       "changedBy": "SPEC-015"
     },
     {

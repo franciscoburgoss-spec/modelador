@@ -112,3 +112,22 @@ test('SPEC-015-C-1 workspace: lote stale bloquea confirmación antes de mutar', 
   assert.equal(review.state, 'stale');
   assert.equal(review.conflicts[0].code, 'SI-VISUAL-PREVIEW-STALE');
 });
+
+test('BUG-015-D-019: techumbre expone descriptor humano, ejes reales y preview localizable sin deformar geometría', () => {
+  const workspace = buildStructuralIntentWorkspace(fixture);
+  const row = workspace.roofRows.find((item) => item.id === 1785030887081);
+  assert.ok(row);
+  assert.equal(row.descriptor.primary, 'Ejes X: 2 · 6 · 7 · Ejes Y: A · B · C');
+  assert.deepEqual(row.planContext.axes.x.map((axis) => axis.label), ['2', '6', '7']);
+  assert.deepEqual(row.planContext.axes.y.map((axis) => axis.label), ['A', 'B', 'C']);
+  assert.deepEqual(
+    row.visualPreview.selected[0].planGeometry.polygon,
+    row.polygon.map(({ x, y }) => ({ x, y }))
+  );
+  assert.equal(row.visualPreview.selected[0].targetType, 'roof');
+  assert.deepEqual(row.visualPreview.targetBounds, {
+    xMin: 3000, xMax: 14500, yMin: 0, yMax: 2000
+  });
+  assert.match(row.descriptor.summary, /Ejes X: 2 · 6 · 7/);
+  assert.doesNotMatch(row.descriptor.primary, /1785030887081/);
+});

@@ -30,6 +30,7 @@ import OsbNestingModal from './components/modals/OsbNestingModal.jsx';
 import WallTypesModal from './components/modals/WallTypesModal.jsx';
 import ElementInventoryModal from './components/modals/ElementInventoryModal.jsx';
 import StructuralIntentWorkspaceDialog from './components/modals/StructuralIntentWorkspaceDialog.jsx';
+import StructuralProposalWorkspaceDialog from './components/modals/StructuralProposalWorkspaceDialog.jsx';
 import RoofTrussModal from './components/modals/RoofTrussModal.jsx';
 import RoofPlaneModal from './components/modals/RoofPlaneModal.jsx';
 import FilterPanel from './components/FilterPanel.jsx';
@@ -235,8 +236,14 @@ export default function App({ projectRuntime = null }) {
         canvasSize={canvasSize}
       />
       <StructuralIntentWorkspaceDialog
-        open={activeModal === 'structuralIntent'}
+        open={activeModal === 'structuralIntent' || isModal('structuralIntent')}
+        initialTab={isModal('structuralIntent') ? activeModal.initialTab : null}
         onClose={() => setActiveModal(null)}
+      />
+      <StructuralProposalWorkspaceDialog
+        open={activeModal === 'structuralProposals'}
+        onClose={() => setActiveModal(null)}
+        onOpenStructuralIntent={() => setActiveModal({ name: 'structuralIntent', initialTab: 'roof' })}
       />
       <RoofTrussModal
         open={activeModal === 'roofTruss' || isModal('roofTruss')}

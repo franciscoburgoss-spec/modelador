@@ -11,8 +11,11 @@ test('SPEC-015-C-1 independencia: presentador, localizador y menús respetan fro
   assert.doesNotMatch(presenter, /^import .*?(wallTypes|metalcon|recognizedStructuralTopology|spec14|three|useModelStore|react)/mi);
   assert.doesNotMatch(locator, /withHistory|appendStructuralIntentTrace|setElementIntent|setRoofIntent/);
   assert.ok(canvas.indexOf("locatorState.active") < canvas.indexOf('selectElement(dimHit)'));
-  assert.match(menu, /<Item disabled title="Disponible en SPEC-015-D">Propuestas estructurales…<\/Item>/);
-  assert.match(menu, /<Item disabled title="Disponible en SPEC-015-D">Caminos de carga…<\/Item>/);
+  assert.match(
+    menu,
+    /<Item onClick=\{\(\) => onOpenModal\('structuralProposals'\)\}>Propuestas y caminos candidatos…<\/Item>/
+  );
+  assert.doesNotMatch(menu, /Disponible en SPEC-015-D/);
   assert.match(menu, /<Item disabled title="Disponible en SPEC-015-E">Topología estructural…<\/Item>/);
 });
 

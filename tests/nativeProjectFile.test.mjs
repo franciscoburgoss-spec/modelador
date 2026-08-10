@@ -10,6 +10,9 @@ import {
 } from '../src/core/nativeProjectFile.js';
 import { ModelImportError } from '../src/core/modelSchema.js';
 import { createEmptyStructuralIntent } from '../src/core/structuralIntent.js';
+import {
+  createEmptyStructuralProposalReviewLog
+} from '../src/core/structuralProposalReviews.js';
 
 function validModel(overrides = {}) {
   return {
@@ -18,6 +21,7 @@ function validModel(overrides = {}) {
     elements: [],
     wallTypes: [],
     structuralIntent: createEmptyStructuralIntent(),
+    structuralProposalReviews: createEmptyStructuralProposalReviewLog(),
     library: {
       wallSections: [],
       columnSections: [],
@@ -128,6 +132,10 @@ test('SPEC-006-A: el roundtrip nativo migra a v3 y conserva edición, Metalcon y
 
   assert.equal(native.modelVersion, 3);
   assert.deepEqual(native.structuralIntent, createEmptyStructuralIntent());
+  assert.deepEqual(
+    native.structuralProposalReviews,
+    createEmptyStructuralProposalReviewLog()
+  );
   assert.deepEqual(nativeWall.studs, sourceWall.studs);
   assert.deepEqual(nativeWall.osbCourses, sourceWall.osbCourses);
   assert.equal(nativeWall.framingStudProfileId, sourceWall.framingStudProfileId);

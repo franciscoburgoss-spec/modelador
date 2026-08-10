@@ -43,3 +43,5 @@ Escala: probabilidad e impacto de 1 a 5. Exposición = probabilidad x impacto.
 - Exposición 12–19: debe tener dueño, spec y gate antes de entrar a release candidate.
 - Exposición menor a 12: puede aceptarse sólo mediante una decisión explícita.
 | R-031 | La identificación visual puede quedar stale, perder borradores o reutilizar la selección global y registrar navegación como decisión | 4 | 5 | 20 | D-058; fingerprints separados, referencias rotas bloqueadas, localizador fuera de `model`, restauración de vista/selección, 22/22 tests enfocados, 10/10 componentes y validador completo PASS | Mitigado |
+
+| R-032 | Propuestas o grafos pueden escribir intención silenciosamente, mezclar gravedad/lateral, aceptar resultados stale o quedar identificables sólo por IDs internos | 4 | 5 | 20 | D-059; motores puros sin store/React/mutadores, fingerprints separados, acceptance adapter explícito, lote homogéneo atómico D-060, review log no autoritativo, pruebas de independencia/reversión y descriptores/localizador SPEC-015-C-1; G2/G4/G6/G7 | En mitigación |

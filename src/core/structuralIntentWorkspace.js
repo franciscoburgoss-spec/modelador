@@ -27,6 +27,7 @@ export const STRUCTURAL_INTENT_WORKSPACE_TABS = Object.freeze([
   'summary',
   'elements',
   'roof',
+  'interfaces',
   'intersections',
   'diaphragms',
   'pending',
@@ -150,6 +151,96 @@ export function buildVisualRoofBoundaries(roofGeometry) {
   });
 }
 
+const ROOF_CONTEXT_AXIS_TOLERANCE = 0.1;
+
+function roofPlanPolygon(roofGeometry) {
+  const polygon = [...(roofGeometry?.surface?.boundary || [])].map((point) => ({
+    x: Number(point.x),
+    y: Number(point.y),
+    z: Number(point.z)
+  }));
+  if (polygon.length > 1 && planPointKey(polygon[0]) === planPointKey(polygon.at(-1))) polygon.pop();
+  return polygon;
+}
+
+function roofPlanBounds(polygon) {
+  if (!Array.isArray(polygon) || polygon.length === 0) return null;
+  return {
+    xMin: Math.min(...polygon.map((point) => point.x)),
+    xMax: Math.max(...polygon.map((point) => point.x)),
+    yMin: Math.min(...polygon.map((point) => point.y)),
+    yMax: Math.max(...polygon.map((point) => point.y))
+  };
+}
+
+function normalizedPlanAxes(entries = []) {
+  return entries.map((entry) => ({
+    id: entry.id,
+    label: entry.label == null || entry.label === '' ? String(entry.id) : String(entry.label),
+    coordinate: Number(entry.position)
+  })).filter((entry) => Number.isFinite(entry.coordinate))
+    .sort((left, right) => left.coordinate - right.coordinate || compareStructuralIntentIds(left.id, right.id));
+}
+
+function axesUsedByPolygon(entries, values) {
+  return entries.filter((entry) => values.some((value) => Math.abs(entry.coordinate - value) <= ROOF_CONTEXT_AXIS_TOLERANCE));
+}
+
+function uniqueCoordinates(points, key) {
+  const values = [];
+  for (const point of points) {
+    const value = Number(point[key]);
+    if (!Number.isFinite(value)) continue;
+    if (!values.some((current) => Math.abs(current - value) <= ROOF_CONTEXT_AXIS_TOLERANCE)) values.push(value);
+  }
+  return values.sort((left, right) => left - right);
+}
+
+function roofAxisPhrase(label, axes) {
+  return `${label}: ${axes.length > 0 ? axes.map((axis) => axis.label).join(' · ') : 'sin coincidencia nominal'}`;
+}
+
+export function buildRoofPlanContext(model, roofGeometry) {
+  const polygon = roofPlanPolygon(roofGeometry);
+  const bounds = roofPlanBounds(polygon);
+  const xAxes = axesUsedByPolygon(normalizedPlanAxes(model.grid?.xAxes), uniqueCoordinates(polygon, 'x'));
+  const yAxes = axesUsedByPolygon(normalizedPlanAxes(model.grid?.yAxes), uniqueCoordinates(polygon, 'y'));
+  const boundaries = buildVisualRoofBoundaries(roofGeometry);
+  const primary = `${roofAxisPhrase('Ejes X', xAxes)} · ${roofAxisPhrase('Ejes Y', yAxes)}`;
+  const summary = `Cubierta · ${primary} · ${boundaries.length} bordes`;
+  const target = {
+    id: roofGeometry.id,
+    idToken: structuralIntentIdToken(roofGeometry.id),
+    type: 'roof',
+    targetType: 'roof',
+    mark: 'R',
+    descriptor: {
+      typeLabel: 'Cubierta',
+      primary,
+      summary,
+      technicalReference: `ID ${String(roofGeometry.id)}`
+    },
+    planGeometry: { kind: 'roof-polygon', polygon: polygon.map(({ x, y }) => ({ x, y })) },
+    openings: [],
+    bounds
+  };
+  return {
+    polygon,
+    bounds,
+    axes: { x: xAxes, y: yAxes },
+    boundaries,
+    descriptor: target.descriptor,
+    visualPreview: {
+      canUse: polygon.length >= 3 && bounds !== null,
+      selected: [target],
+      context: [],
+      activeId: roofGeometry.id,
+      targetBounds: bounds,
+      visibleBounds: bounds
+    }
+  };
+}
+
 export function buildElementIntentDraft(model, elementId) {
   const target = model.elements?.find((element) => sameId(element?.id, elementId));
   const current = elementIntent(model, elementId);
@@ -180,7 +271,8 @@ export function buildElementIntentDraft(model, elementId) {
 export function buildRoofIntentDraft(model, roofGeometryId) {
   const geometry = projectAgnosticGeometry(model).roofGeometry.find((roof) => sameId(roof.id, roofGeometryId));
   const current = roofIntent(model, roofGeometryId);
-  const boundaries = geometry ? buildVisualRoofBoundaries(geometry) : [];
+  const planContext = geometry ? buildRoofPlanContext(model, geometry) : null;
+  const boundaries = planContext?.boundaries || [];
   const currentBoundaries = new Map((current?.boundaryIntents || []).map((item) => [item.boundaryId, item.function]));
   return {
     targetExists: !!geometry,
@@ -197,7 +289,9 @@ export function buildRoofIntentDraft(model, roofGeometryId) {
     previousFingerprint: fingerprintStructuralIntentTarget('roof', geometry?.id ?? roofGeometryId, current),
     state: classifyWorkspaceState({ targetExists: !!geometry, intent: current }),
     sourceIntent: current,
-    polygon: geometry?.surface?.boundary || []
+    polygon: planContext?.polygon || [],
+    planContext,
+    visualPreview: planContext?.visualPreview || null
   };
 }
 
@@ -512,12 +606,16 @@ export function buildStructuralIntentWorkspace(model) {
   }))).sort((left, right) => compareStructuralIntentIds(left.id, right.id));
   const roofRows = geometry.roofGeometry.map((roof) => {
     const intent = roofIntent(model, roof.id);
+    const planContext = buildRoofPlanContext(model, roof);
     return {
       id: roof.id,
       idToken: structuralIntentIdToken(roof.id),
       source: roof.source,
-      polygon: roof.surface.boundary,
-      boundaries: buildVisualRoofBoundaries(roof),
+      polygon: planContext.polygon,
+      boundaries: planContext.boundaries,
+      planContext,
+      descriptor: planContext.descriptor,
+      visualPreview: planContext.visualPreview,
       intent,
       state: classifyWorkspaceState({ intent })
     };

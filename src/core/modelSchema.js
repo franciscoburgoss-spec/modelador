@@ -1,4 +1,4 @@
-import { projectAgnosticRoofGeometry } from './agnosticGeometry.js';
+import { projectAgnosticGeometry, projectAgnosticRoofGeometry } from './agnosticGeometry.js';
 import { hasOwn } from './hasOwn.js';
 import { isValidParamName } from './projectParams.js';
 import { assertValidWallTypes } from './wallTypes.js';
@@ -6,6 +6,7 @@ import {
   canonicalizeStructuralIntent,
   canonicalizeStructuralIntentFindings,
   createEmptyStructuralIntent,
+  migrateStructuralIntentSchema,
   validateStructuralIntent,
   validateStructuralIntentFindings
 } from './structuralIntent.js';
@@ -13,6 +14,11 @@ import {
   canonicalizeStructuralIntentTrace,
   validateStructuralIntentTrace
 } from './structuralIntentTrace.js';
+import {
+  canonicalizeStructuralProposalReviewLog,
+  createEmptyStructuralProposalReviewLog,
+  validateStructuralProposalReviewLog
+} from './structuralProposalReviews.js';
 
 export const CURRENT_MODEL_VERSION = 3;
 export const LEGACY_MODEL_VERSION = 0;
@@ -90,7 +96,8 @@ function migrateV2ToV3(model) {
   return {
     ...model,
     modelVersion: 3,
-    structuralIntent: createEmptyStructuralIntent()
+    structuralIntent: createEmptyStructuralIntent(),
+    structuralProposalReviews: createEmptyStructuralProposalReviewLog()
   };
 }
 
@@ -146,6 +153,10 @@ export function migrateModel(input) {
     version = model.modelVersion;
   }
 
+  model = {
+    ...model,
+    structuralIntent: migrateStructuralIntentSchema(model.structuralIntent)
+  };
   return { model, appliedMigrations };
 }
 
@@ -300,10 +311,25 @@ export function validateModel(model) {
       );
     }
   }
+  let structuralAgnosticGeometry = null;
+  if ((model.structuralIntent?.interfaceIntents?.length || 0) > 0
+    || (model.structuralIntent?.relationIntents?.length || 0) > 0) {
+    try {
+      structuralAgnosticGeometry = projectAgnosticGeometry(model);
+    } catch (error) {
+      addIssue(
+        issues,
+        'structuralIntent.interfaceIntents',
+        error?.code || 'SI-INTERFACE-GEOMETRY-UNRESOLVABLE',
+        error instanceof Error ? error.message : 'La geometría requerida por interfaces no es resoluble.'
+      );
+    }
+  }
   issues.push(...validateStructuralIntent(
     model.structuralIntent,
     validElements ? model.elements : [],
-    structuralRoofGeometry
+    structuralRoofGeometry,
+    structuralAgnosticGeometry
   ));
   issues.push(...validateStructuralIntentFindings(
     model.structuralIntentFindings,
@@ -311,6 +337,7 @@ export function validateModel(model) {
     structuralRoofGeometry
   ));
   issues.push(...validateStructuralIntentTrace(model.structuralIntentTrace));
+  issues.push(...validateStructuralProposalReviewLog(model.structuralProposalReviews));
 
   if (Array.isArray(model.projectParams)) {
     model.projectParams.forEach((parameter, index) => {
@@ -391,6 +418,14 @@ export function prepareModelImport(input) {
       ? {
           structuralIntentTrace: canonicalizeStructuralIntentTrace(
             model.structuralIntentTrace
+          )
+        }
+      : {})
+,
+    ...(model.structuralProposalReviews !== undefined
+      ? {
+          structuralProposalReviews: canonicalizeStructuralProposalReviewLog(
+            model.structuralProposalReviews
           )
         }
       : {})

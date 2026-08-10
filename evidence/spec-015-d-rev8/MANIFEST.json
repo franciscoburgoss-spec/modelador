@@ -1,0 +1,9 @@
+{
+  "schema": "spec-015-d-rev8-evidence-manifest-v1.0",
+  "evidenceSha256": "63aa6d2880c0d8979c5f15cc3f4ba7d8cfbab6fb56a3874322839a73a334b1a6",
+  "files": [
+    "FX-008-SPEC-015-D-REV8.json",
+    "FX-008-SPEC-015-D-REV8.svg",
+    "FX-008-SPEC-015-D-REV8.html"
+  ]
+}

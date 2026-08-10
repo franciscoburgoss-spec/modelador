@@ -31,6 +31,7 @@ import {
 import { LEGACY_PROJECT_STORAGE_KEY } from '../core/legacyProjectMigration.js';
 import { assertValidWallTypes, getWallType } from '../core/wallTypes.js';
 import {
+  applyStructuralInterfaceTransaction as applyStructuralInterfaceTransactionInModel,
   checkStructuralIntentBeforeMerge,
   clearStructuralIntent as clearStructuralIntentInModel,
   createEmptyStructuralIntent,
@@ -40,6 +41,8 @@ import {
   removeElementIntent as removeElementIntentInModel,
   removeElementIntentsBatch as removeElementIntentsBatchInModel,
   removeRoofIntent as removeRoofIntentInModel,
+  removeStructuralInterfaceIntent as removeStructuralInterfaceIntentInModel,
+  removeStructuralRelationIntent as removeStructuralRelationIntentInModel,
   setElementIntent as setElementIntentInModel,
   setElementIntentsBatch as setElementIntentsBatchInModel,
   setRoofIntent as setRoofIntentInModel
@@ -67,6 +70,22 @@ import {
   setStructuralIntentLocatorActiveState,
   setStructuralIntentLocatorHoverState
 } from '../core/structuralIntentLocator.js';
+import {
+  applyStructuralProposalDecision,
+  applyStructuralProposalDecisionBatch
+} from '../core/applyStructuralProposalDecision.js';
+import {
+  createEmptyStructuralProposalReviewLog
+} from '../core/structuralProposalReviews.js';
+import {
+  EMPTY_STRUCTURAL_PROPOSAL_LOCATOR,
+  closeStructuralProposalLocatorState,
+  consumeStructuralProposalLocationState,
+  fitStructuralProposalLocatorState,
+  hoverStructuralProposalLocationState,
+  openStructuralProposalLocatorState,
+  requestStructuralProposalLocationState
+} from '../core/structuralProposalLocator.js';
 
 // Sólo un cambio de posición/elevación reubica geometría; renombrar un eje no invalida nada.
 function maybeGlobalInvalidate(model, patch, field) {
@@ -94,6 +113,8 @@ function mergeLoadedModel(data) {
     structuralIntentFindings: Array.isArray(data.structuralIntentFindings)
       ? data.structuralIntentFindings
       : [],
+    structuralProposalReviews: data.structuralProposalReviews
+      ?? createEmptyStructuralProposalReviewLog(),
     roofSystems: Array.isArray(data.roofSystems) ? data.roofSystems : [],
     roofPlanes: Array.isArray(data.roofPlanes) ? data.roofPlanes : [],
     // ★ Sesión 22: datos de proyecto del cajetín — normalizados para que un modelo guardado
@@ -227,6 +248,7 @@ function emptyModel() {
     wallTypes: [],
     structuralIntent: createEmptyStructuralIntent(),
     structuralIntentFindings: [],
+    structuralProposalReviews: createEmptyStructuralProposalReviewLog(),
     // ★ default de proyecto para modulación OSB (core/osbModulation.js). minPanelWidth tiene
     // piso duro de 200mm (ver setOsbDefaults) — por debajo no hay dónde atornillar borde+interior.
     osbDefaults: { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 5 },
@@ -437,6 +459,43 @@ export const useModelStore = create((set, get) => ({
       viewB: next.viewB,
       viewModeB: next.viewModeB,
       structuralIntentLocator: next.structuralIntentLocator
+    };
+  }),
+
+  // ---- SPEC-015-D: localizador efímero de propuestas y grafos ----
+  // Los IDs se conservan como referencias técnicas; la UI usa descriptor y preview.
+  structuralProposalLocator: { ...EMPTY_STRUCTURAL_PROPOSAL_LOCATOR },
+  openStructuralProposalLocator: (payload) => set((s) => {
+    const next = openStructuralProposalLocatorState(s, payload);
+    return next === s ? {} : { structuralProposalLocator: next.structuralProposalLocator };
+  }),
+  requestStructuralProposalLocation: (entity) => set((s) => {
+    const next = requestStructuralProposalLocationState(s, entity);
+    return next === s ? {} : { structuralProposalLocator: next.structuralProposalLocator };
+  }),
+  hoverStructuralProposalLocation: (entity) => set((s) => {
+    const next = hoverStructuralProposalLocationState(s, entity);
+    return next === s ? {} : { structuralProposalLocator: next.structuralProposalLocator };
+  }),
+  consumeStructuralProposalLocation: () => set((s) => {
+    const next = consumeStructuralProposalLocationState(s);
+    return next === s ? {} : { structuralProposalLocator: next.structuralProposalLocator };
+  }),
+  fitStructuralProposalLocator: (canvasW, canvasH) => set((s) => {
+    const size = (canvasW && canvasH) ? { width: canvasW, height: canvasH } : getCanvasSizeFallback();
+    const next = fitStructuralProposalLocatorState(s, size.width, size.height);
+    return next === s ? {} : { model: next.model, view: next.view };
+  }),
+  closeStructuralProposalLocator: (options) => set((s) => {
+    const next = closeStructuralProposalLocatorState(s, options);
+    if (next === s) return {};
+    return {
+      model: next.model,
+      layout: next.layout,
+      view: next.view,
+      viewB: next.viewB,
+      viewModeB: next.viewModeB,
+      structuralProposalLocator: next.structuralProposalLocator
     };
   }),
 
@@ -1008,6 +1067,44 @@ export const useModelStore = create((set, get) => ({
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
   },
+
+  // ---- interfaces estructurales agnósticas (SPEC-015-D REV8) ----
+  applyStructuralInterfaceTransaction: (transaction) => {
+    let outcome;
+    set((s) => {
+      outcome = applyStructuralInterfaceTransactionInModel(s.model, transaction, { recordUserAction: true });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedInterfaceIds: outcome.affectedInterfaceIds || [],
+      affectedRelationIds: outcome.affectedRelationIds || [],
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
+  removeStructuralInterfaceIntent: (interfaceId) => {
+    let outcome;
+    set((s) => {
+      outcome = removeStructuralInterfaceIntentInModel(s.model, interfaceId, { recordUserAction: true });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedInterfaceIds: outcome.affectedInterfaceIds || [],
+      affectedRelationIds: outcome.affectedRelationIds || [],
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
+  removeStructuralRelationIntent: (relationId) => {
+    let outcome;
+    set((s) => {
+      outcome = removeStructuralRelationIntentInModel(s.model, relationId, { recordUserAction: true });
+      return outcome.model === s.model ? s : withHistory(s, outcome.model);
+    });
+    return {
+      affectedInterfaceIds: outcome.affectedInterfaceIds || [],
+      affectedRelationIds: outcome.affectedRelationIds || [],
+      invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
+    };
+  },
   clearStructuralIntent: () => {
     let outcome;
     set((s) => {
@@ -1019,6 +1116,45 @@ export const useModelStore = create((set, get) => ({
       affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
+  },
+
+  // ---- revisión humana de propuestas (SPEC-015-D) ----
+  // La preparación ocurre fuera del store. Sólo una decisión confirmada llega a este mutador.
+  applyPreparedStructuralProposalDecision: ({
+    structuralProposals,
+    preparedDecision,
+    currentVisualFingerprint = null
+  }) => {
+    let outcome;
+    set((s) => {
+      outcome = applyStructuralProposalDecision({
+        model: s.model,
+        structuralProposals,
+        preparedDecision,
+        confirmed: true,
+        currentVisualFingerprint
+      });
+      return withHistory(s, outcome.model);
+    });
+    return outcome;
+  },
+  applyPreparedStructuralProposalDecisionBatch: ({
+    structuralProposals,
+    preparedDecisions,
+    currentVisualFingerprints = {}
+  }) => {
+    let outcome;
+    set((s) => {
+      outcome = applyStructuralProposalDecisionBatch({
+        model: s.model,
+        structuralProposals,
+        preparedDecisions,
+        confirmed: true,
+        currentVisualFingerprints
+      });
+      return withHistory(s, outcome.model);
+    });
+    return outcome;
   },
   // ---- elementos ----
   addElement: (element) => set((s) => {

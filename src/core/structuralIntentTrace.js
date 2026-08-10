@@ -1,4 +1,5 @@
 import { canonicalizeRoofIntent } from './roofStructuralIntent.js';
+import { canonicalizeInterfaceIntent, canonicalizeRelationIntent } from './structuralInterfaces.js';
 
 export const STRUCTURAL_INTENT_TRACE_SCHEMA = 'structural-intent-trace-v1.0';
 export const STRUCTURAL_INTENT_TRACE_ACTION = 'structuralIntentUpdated';
@@ -8,7 +9,7 @@ export const STRUCTURAL_INTENT_TRACE_OPERATIONS = Object.freeze([
   'batchSet',
   'batchRemove'
 ]);
-export const STRUCTURAL_INTENT_TRACE_TARGET_TYPES = Object.freeze(['element', 'roof']);
+export const STRUCTURAL_INTENT_TRACE_TARGET_TYPES = Object.freeze(['element', 'roof', 'interface', 'relation', 'mixed']);
 export const STRUCTURAL_INTENT_TRACE_CHANGE_KINDS = Object.freeze([
   'created',
   'modified',
@@ -180,6 +181,8 @@ function canonicalTargetIntent(targetType, intent) {
   if (intent === null) return null;
   if (targetType === 'element') return canonicalElementIntent(intent);
   if (targetType === 'roof') return canonicalizeRoofIntent(intent);
+  if (targetType === 'interface') return canonicalizeInterfaceIntent(intent);
+  if (targetType === 'relation') return canonicalizeRelationIntent(intent);
   throw new StructuralIntentTraceError(
     'SI-TRACE-TARGET-TYPE-INVALID',
     `targetType ${String(targetType)} no está permitido.`
@@ -191,7 +194,7 @@ export function createEmptyStructuralIntentTrace() {
 }
 
 export function fingerprintStructuralIntentTarget(targetType, targetId, intentOrNull) {
-  if (!STRUCTURAL_INTENT_TRACE_TARGET_TYPES.includes(targetType)) {
+  if (!STRUCTURAL_INTENT_TRACE_TARGET_TYPES.includes(targetType) || targetType === 'mixed') {
     throw new StructuralIntentTraceError(
       'SI-TRACE-TARGET-TYPE-INVALID',
       `targetType ${String(targetType)} no está permitido.`
@@ -312,7 +315,9 @@ export function validateStructuralIntentTrace(trace) {
       for (const key of Object.keys(change)) {
         if (!CHANGE_KEYS.has(key)) addIssue(issues, `${changePath}.${key}`, 'SI-TRACE-UNKNOWN-FIELD', `El campo ${key} no pertenece al cambio.`);
       }
-      if (change.targetType !== event.targetType) {
+      if (!STRUCTURAL_INTENT_TRACE_TARGET_TYPES.includes(change.targetType) || change.targetType === 'mixed') {
+        addIssue(issues, `${changePath}.targetType`, 'SI-TRACE-TARGET-TYPE-INVALID', 'El tipo del cambio no está permitido.');
+      } else if (event.targetType !== 'mixed' && change.targetType !== event.targetType) {
         addIssue(issues, `${changePath}.targetType`, 'SI-TRACE-TARGET-TYPE-MISMATCH', 'El tipo del cambio debe coincidir con el evento.');
       }
       if (!['number', 'string'].includes(typeof change.targetId) || change.targetId === '') {
@@ -367,19 +372,25 @@ export function appendStructuralIntentUserEvent(model, eventInput) {
     if (!isRecord(change)) {
       throw new StructuralIntentTraceError('SI-TRACE-CHANGE-INVALID', 'Cada cambio debe ser un objeto.');
     }
+    const changeTargetType = targetType === 'mixed' ? change.targetType : targetType;
+    if (!STRUCTURAL_INTENT_TRACE_TARGET_TYPES.includes(changeTargetType) || changeTargetType === 'mixed') {
+      throw new StructuralIntentTraceError('SI-TRACE-TARGET-TYPE-INVALID', 'El cambio debe declarar un targetType concreto.');
+    }
     const previousIntent = change.previousIntent ?? null;
     const nextIntent = change.nextIntent ?? null;
-    const previousFingerprint = fingerprintStructuralIntentTarget(targetType, change.targetId, previousIntent);
-    const nextFingerprint = fingerprintStructuralIntentTarget(targetType, change.targetId, nextIntent);
+    const previousFingerprint = fingerprintStructuralIntentTarget(changeTargetType, change.targetId, previousIntent);
+    const nextFingerprint = fingerprintStructuralIntentTarget(changeTargetType, change.targetId, nextIntent);
     if (previousFingerprint === nextFingerprint) return null;
     return {
-      targetType,
+      targetType: changeTargetType,
       targetId: change.targetId,
       changeKind: previousIntent === null ? 'created' : nextIntent === null ? 'removed' : 'modified',
       previousFingerprint,
       nextFingerprint
     };
-  }).filter(Boolean).sort((left, right) => compareIds(left.targetId, right.targetId));
+  }).filter(Boolean).sort((left, right) => (
+    compareText(left.targetType, right.targetType) || compareIds(left.targetId, right.targetId)
+  ));
   if (effectiveChanges.length === 0) return model;
 
   const currentTrace = model.structuralIntentTrace === undefined

@@ -1,4 +1,16 @@
 import { appendStructuralIntentUserEvent, fingerprintStructuralIntentTarget } from './structuralIntentTrace.js';
+import { projectAgnosticGeometry } from './agnosticGeometry.js';
+import {
+  StructuralInterfaceError,
+  buildInterfaceIntent,
+  buildRelationIntent,
+  canonicalizeInterfaceIntents,
+  canonicalizeRelationIntents,
+  evaluateInterfaceFreshness,
+  evaluateRelationFreshness,
+  validateInterfaceIntents,
+  validateRelationIntents
+} from './structuralInterfaces.js';
 
 import {
   ROOF_BOUNDARY_REVIEW_AFTER_GEOMETRY_CHANGE,
@@ -26,7 +38,8 @@ export {
   intentIdForRoof
 } from './roofStructuralIntent.js';
 
-export const STRUCTURAL_INTENT_SCHEMA = 'structural-intent-v1.0';
+export const LEGACY_STRUCTURAL_INTENT_SCHEMA = 'structural-intent-v1.0';
+export const STRUCTURAL_INTENT_SCHEMA = 'structural-intent-v1.1';
 export const STRUCTURAL_INTENT_SPLIT_REVIEW = 'SI-INTENT-REVIEW-AFTER-SPLIT';
 
 export const ELEMENT_PARTICIPATIONS = Object.freeze([
@@ -75,6 +88,8 @@ const ROOT_COLLECTIONS = Object.freeze([
   'roofIntents',
   'intersectionIntents',
   'supportIntents',
+  'interfaceIntents',
+  'relationIntents',
   'diaphragmIntents',
   'overrides'
 ]);
@@ -186,8 +201,23 @@ export function createEmptyStructuralIntent() {
     roofIntents: [],
     intersectionIntents: [],
     supportIntents: [],
+    interfaceIntents: [],
+    relationIntents: [],
     diaphragmIntents: [],
     overrides: []
+  };
+}
+
+export function migrateStructuralIntentSchema(structuralIntent) {
+  if (structuralIntent === undefined || structuralIntent === null) return createEmptyStructuralIntent();
+  if (!isRecord(structuralIntent)) return structuralIntent;
+  if (structuralIntent.schema === STRUCTURAL_INTENT_SCHEMA) return cloneJson(structuralIntent);
+  if (structuralIntent.schema !== LEGACY_STRUCTURAL_INTENT_SCHEMA) return cloneJson(structuralIntent);
+  return {
+    ...cloneJson(structuralIntent),
+    schema: STRUCTURAL_INTENT_SCHEMA,
+    interfaceIntents: [],
+    relationIntents: []
   };
 }
 
@@ -217,6 +247,12 @@ export function canonicalizeStructuralIntent(structuralIntent) {
     canonical.roofIntents = canonical.roofIntents
       .map((intent) => canonicalizeRoofIntent(intent))
       .sort((a, b) => compareRoofIds(a?.roofGeometryId, b?.roofGeometryId));
+  }
+  if (Array.isArray(canonical.interfaceIntents)) {
+    canonical.interfaceIntents = canonicalizeInterfaceIntents(canonical.interfaceIntents);
+  }
+  if (Array.isArray(canonical.relationIntents)) {
+    canonical.relationIntents = canonicalizeRelationIntents(canonical.relationIntents);
   }
   return canonical;
 }
@@ -365,7 +401,7 @@ function validateElementIntent(intent, index, ids, intentIds, issues) {
   }
 }
 
-export function validateStructuralIntent(structuralIntent, elements = [], roofGeometry = []) {
+export function validateStructuralIntent(structuralIntent, elements = [], roofGeometry = [], agnosticGeometry = null) {
   const issues = [];
   if (!isRecord(structuralIntent)) {
     return [{
@@ -381,7 +417,7 @@ export function validateStructuralIntent(structuralIntent, elements = [], roofGe
         issues,
         `structuralIntent.${key}`,
         'SI-UNKNOWN-ROOT-FIELD',
-        `El campo raíz ${key} no pertenece a structural-intent-v1.0.`
+        `El campo raíz ${key} no pertenece a ${STRUCTURAL_INTENT_SCHEMA}.`
       );
     }
   }
@@ -431,6 +467,17 @@ export function validateStructuralIntent(structuralIntent, elements = [], roofGe
     });
   }
   issues.push(...validateRoofIntents(structuralIntent.roofIntents, roofGeometry));
+  if (Array.isArray(structuralIntent.interfaceIntents)) {
+    issues.push(...validateInterfaceIntents(structuralIntent.interfaceIntents, agnosticGeometry, { allowStale: true }));
+  }
+  if (Array.isArray(structuralIntent.relationIntents)) {
+    issues.push(...validateRelationIntents(
+      structuralIntent.relationIntents,
+      structuralIntent.interfaceIntents,
+      agnosticGeometry,
+      { allowStale: true }
+    ));
+  }
 
   return issues;
 }
@@ -498,15 +545,17 @@ export function validateStructuralIntentFindings(findings, elements = [], roofGe
         }
       });
     }
-    if (!isRecord(finding.originalIntent)) {
-      addIssue(issues, `${path}.originalIntent`, 'SI-EXPECTED-OBJECT', 'Debe conservarse la intención original.');
+    const hasInterfaceEvidence = Array.isArray(finding.originalInterfaceIntents)
+      && finding.originalInterfaceIntents.length > 0;
+    if (!isRecord(finding.originalIntent) && !(finding.originalIntent === null && hasInterfaceEvidence)) {
+      addIssue(issues, `${path}.originalIntent`, 'SI-EXPECTED-OBJECT', 'Debe conservarse la intención original o evidencia de interfaces eliminadas.');
     }
   });
   return issues;
 }
 
-export function assertValidStructuralIntent(structuralIntent, elements = [], roofGeometry = []) {
-  const issues = validateStructuralIntent(structuralIntent, elements, roofGeometry);
+export function assertValidStructuralIntent(structuralIntent, elements = [], roofGeometry = [], agnosticGeometry = null) {
+  const issues = validateStructuralIntent(structuralIntent, elements, roofGeometry, agnosticGeometry);
   if (issues.length > 0) {
     throw new StructuralIntentError(
       'SI-VALIDATION-FAILED',
@@ -524,7 +573,7 @@ function requireModel(model) {
 }
 
 function currentRoot(model) {
-  return model.structuralIntent ?? createEmptyStructuralIntent();
+  return migrateStructuralIntentSchema(model.structuralIntent ?? createEmptyStructuralIntent());
 }
 
 function buildElementIntent(elementId, input) {
@@ -904,14 +953,27 @@ export function reconcileStructuralIntentAfterSplit(
   const originalIntent = originalRoot.elementIntents.find((intent) => (
     hasSameId(intent.elementId, sourceElementId)
   ));
+  const removedInterfaces = originalRoot.interfaceIntents.filter((intent) => (
+    intent.ownerRef?.kind === 'element' && hasSameId(intent.ownerRef.id, sourceElementId)
+  ));
+  const removedInterfaceIds = new Set(removedInterfaces.map((intent) => intent.interfaceId));
+  const removedRelations = originalRoot.relationIntents.filter((relation) => (
+    relation.ports.some((port) => removedInterfaceIds.has(port.interfaceRef))
+    || relation.carrierRegions.some((region) => (
+      region.ownerRef?.kind === 'element' && hasSameId(region.ownerRef.id, sourceElementId)
+    ))
+  ));
+  const removedRelationIds = new Set(removedRelations.map((relation) => relation.relationId));
   const nextRoot = canonicalizeStructuralIntent({
     ...originalRoot,
     elementIntents: originalRoot.elementIntents.filter((intent) => (
       !hasSameId(intent.elementId, sourceElementId)
-    ))
+    )),
+    interfaceIntents: originalRoot.interfaceIntents.filter((intent) => !removedInterfaceIds.has(intent.interfaceId)),
+    relationIntents: originalRoot.relationIntents.filter((relation) => !removedRelationIds.has(relation.relationId))
   });
   assertValidStructuralIntent(nextRoot, nextModel.elements, roofGeometryForCurrentIntents(nextModel, nextRoot));
-  if (!originalIntent) {
+  if (!originalIntent && removedInterfaces.length === 0 && removedRelations.length === 0) {
     return result({ ...nextModel, structuralIntent: nextRoot }, [sourceElementId, ...targetElementIds], {
       finding: null
     });
@@ -925,8 +987,10 @@ export function reconcileStructuralIntentAfterSplit(
     status: 'open',
     sourceElementId,
     targetElementIds: sortedTargets,
-    originalIntent: canonicalElementIntent(originalIntent),
-    message: 'La división eliminó la referencia vigente; ambos tramos requieren una decisión explícita.'
+    originalIntent: originalIntent ? canonicalElementIntent(originalIntent) : null,
+    originalInterfaceIntents: canonicalizeInterfaceIntents(removedInterfaces),
+    originalRelationIntents: canonicalizeRelationIntents(removedRelations),
+    message: 'La división eliminó referencias estructurales vigentes; ambos tramos requieren una decisión explícita y no se reasignan por proximidad.'
   };
   const previousFindings = Array.isArray(originalModel.structuralIntentFindings)
     ? originalModel.structuralIntentFindings
@@ -958,12 +1022,31 @@ export function checkStructuralIntentBeforeMerge(model, elementIds) {
   );
   const requested = new Set((Array.isArray(elementIds) ? elementIds : []).map(idKey));
   const sourceIntents = root.elementIntents.filter((intent) => requested.has(idKey(intent.elementId)));
-  if (sourceIntents.length === 0) return { ok: true, sourceIntents: [] };
+  const sourceInterfaces = root.interfaceIntents.filter((intent) => (
+    intent.ownerRef?.kind === 'element' && requested.has(idKey(intent.ownerRef.id))
+  ));
+  const sourceRegions = root.relationIntents.flatMap((relation) => (
+    relation.carrierRegions.filter((region) => (
+      region.ownerRef?.kind === 'element' && requested.has(idKey(region.ownerRef.id))
+    )).map((region) => ({ relationId: relation.relationId, ownerRef: region.ownerRef }))
+  ));
+  if (sourceIntents.length === 0 && sourceInterfaces.length === 0 && sourceRegions.length === 0) {
+    return { ok: true, sourceIntents: [] };
+  }
   return {
     ok: false,
     code: 'SI-MERGE-INTENT-DECISION-REQUIRED',
-    error: 'La unión requiere resolver explícitamente la intención de los muros de origen.',
-    elementIds: sourceIntents.map((intent) => intent.elementId).sort(compareIds)
+    error: 'La unión requiere resolver explícitamente intención, interfaces y regiones de los muros de origen; REV8 no reasigna por proximidad.',
+    elementIds: [...new Set([
+      ...sourceIntents.map((intent) => intent.elementId),
+      ...sourceInterfaces.map((intent) => intent.ownerRef.id),
+      ...sourceRegions.map((item) => item.ownerRef.id)
+    ].map(idKey))].map((key) => {
+      const match = [...(Array.isArray(elementIds) ? elementIds : [])].find((id) => idKey(id) === key);
+      return match;
+    }).filter((id) => id !== undefined).sort(compareIds),
+    interfaceIds: sourceInterfaces.map((intent) => intent.interfaceId).sort(compareText),
+    relationIds: [...new Set(sourceRegions.map((item) => item.relationId))].sort(compareText)
   };
 }
 
@@ -982,9 +1065,22 @@ export function removeElementAndStructuralReferences(model, elementId) {
     roofGeometryForCurrentIntents(model)
   );
   const nextElements = model.elements.filter((element) => !hasSameId(element?.id, elementId));
+  const removedInterfaces = root.interfaceIntents.filter((intent) => (
+    intent.ownerRef?.kind === 'element' && hasSameId(intent.ownerRef.id, elementId)
+  ));
+  const removedInterfaceIds = new Set(removedInterfaces.map((intent) => intent.interfaceId));
+  const removedRelations = root.relationIntents.filter((relation) => (
+    relation.ports.some((port) => removedInterfaceIds.has(port.interfaceRef))
+    || relation.carrierRegions.some((region) => (
+      region.ownerRef?.kind === 'element' && hasSameId(region.ownerRef.id, elementId)
+    ))
+  ));
+  const removedRelationIds = new Set(removedRelations.map((relation) => relation.relationId));
   const nextRoot = canonicalizeStructuralIntent({
     ...root,
-    elementIntents: root.elementIntents.filter((intent) => !hasSameId(intent.elementId, elementId))
+    elementIntents: root.elementIntents.filter((intent) => !hasSameId(intent.elementId, elementId)),
+    interfaceIntents: root.interfaceIntents.filter((intent) => !removedInterfaceIds.has(intent.interfaceId)),
+    relationIntents: root.relationIntents.filter((relation) => !removedRelationIds.has(relation.relationId))
   });
   assertValidStructuralIntent(
     nextRoot,
@@ -997,12 +1093,27 @@ export function removeElementAndStructuralReferences(model, elementId) {
     !hasSameId(finding?.sourceElementId, elementId)
     && !(finding?.targetElementIds || []).some((targetId) => hasSameId(targetId, elementId))
   ));
-  return result({
+  let nextWithReferencesRemoved = {
     ...model,
     elements: nextElements,
     structuralIntent: nextRoot,
     structuralIntentFindings: findings
-  }, [target.id]);
+  };
+  const traceChanges = [
+    ...removedInterfaces.map((intent) => ({ targetType: 'interface', targetId: intent.interfaceId, previousIntent: intent, nextIntent: null })),
+    ...removedRelations.map((intent) => ({ targetType: 'relation', targetId: intent.relationId, previousIntent: intent, nextIntent: null }))
+  ];
+  if (traceChanges.length > 0) {
+    nextWithReferencesRemoved = appendStructuralIntentUserEvent(nextWithReferencesRemoved, {
+      operation: 'batchRemove',
+      targetType: 'mixed',
+      changes: traceChanges
+    });
+  }
+  return result(nextWithReferencesRemoved, [target.id], {
+    affectedInterfaceIds: removedInterfaces.map((intent) => intent.interfaceId),
+    affectedRelationIds: removedRelations.map((intent) => intent.relationId)
+  });
 }
 
 
@@ -1108,4 +1219,188 @@ export function reconcileStructuralIntentAfterGeometryChange(originalModel, next
     }
     throw error;
   }
+}
+
+function interfaceIntentFor(root, interfaceId) {
+  return root.interfaceIntents.find((intent) => intent.interfaceId === interfaceId) ?? null;
+}
+
+function relationIntentFor(root, relationId) {
+  return root.relationIntents.find((intent) => intent.relationId === relationId) ?? null;
+}
+
+function canonicalInterfaceTransactionInput(input) {
+  if (!isRecord(input)) {
+    throw new StructuralIntentError('SI-INTERFACE-TRANSACTION-INVALID', 'La transacción de interfaces debe ser un objeto.');
+  }
+  return {
+    interfaces: Array.isArray(input.interfaces) ? input.interfaces : [],
+    relations: Array.isArray(input.relations) ? input.relations : [],
+    removeInterfaceIds: Array.isArray(input.removeInterfaceIds) ? input.removeInterfaceIds : [],
+    removeRelationIds: Array.isArray(input.removeRelationIds) ? input.removeRelationIds : []
+  };
+}
+
+function ensureTransactionIdsUnique(values, label) {
+  const seen = new Set();
+  for (const value of values) {
+    if (seen.has(value)) {
+      throw new StructuralIntentError('SI-INTERFACE-TRANSACTION-DUPLICATE', `${label} contiene IDs duplicados.`);
+    }
+    seen.add(value);
+  }
+}
+
+function interfaceTraceChanges(previousRoot, nextRoot) {
+  const changes = [];
+  const previousInterfaces = new Map(previousRoot.interfaceIntents.map((item) => [item.interfaceId, item]));
+  const nextInterfaces = new Map(nextRoot.interfaceIntents.map((item) => [item.interfaceId, item]));
+  for (const id of new Set([...previousInterfaces.keys(), ...nextInterfaces.keys()])) {
+    const previousIntent = previousInterfaces.get(id) ?? null;
+    const nextIntent = nextInterfaces.get(id) ?? null;
+    if (!sameCanonicalValue(previousIntent, nextIntent)) {
+      changes.push({ targetType: 'interface', targetId: id, previousIntent, nextIntent });
+    }
+  }
+  const previousRelations = new Map(previousRoot.relationIntents.map((item) => [item.relationId, item]));
+  const nextRelations = new Map(nextRoot.relationIntents.map((item) => [item.relationId, item]));
+  for (const id of new Set([...previousRelations.keys(), ...nextRelations.keys()])) {
+    const previousIntent = previousRelations.get(id) ?? null;
+    const nextIntent = nextRelations.get(id) ?? null;
+    if (!sameCanonicalValue(previousIntent, nextIntent)) {
+      changes.push({ targetType: 'relation', targetId: id, previousIntent, nextIntent });
+    }
+  }
+  return changes;
+}
+
+export function applyStructuralInterfaceTransaction(model, input, options = {}) {
+  requireModel(model);
+  const transaction = canonicalInterfaceTransactionInput(input);
+  const geometry = projectAgnosticGeometry(model);
+  const root = assertValidStructuralIntent(
+    currentRoot(model),
+    model.elements,
+    roofGeometryForCurrentIntents(model),
+    geometry
+  );
+
+  ensureTransactionIdsUnique(transaction.removeInterfaceIds, 'removeInterfaceIds');
+  ensureTransactionIdsUnique(transaction.removeRelationIds, 'removeRelationIds');
+
+  const builtInterfaces = transaction.interfaces.map((interfaceInput) => {
+    try {
+      return buildInterfaceIntent(geometry, interfaceInput);
+    } catch (error) {
+      if (error instanceof StructuralInterfaceError) {
+        throw new StructuralIntentError(error.code, error.message, error.details);
+      }
+      throw error;
+    }
+  });
+  ensureTransactionIdsUnique(builtInterfaces.map((item) => item.interfaceId), 'interfaces');
+
+  const nextInterfacesById = new Map(root.interfaceIntents.map((item) => [item.interfaceId, item]));
+  for (const interfaceId of transaction.removeInterfaceIds) nextInterfacesById.delete(interfaceId);
+  for (const intent of builtInterfaces) nextInterfacesById.set(intent.interfaceId, intent);
+  const nextInterfaces = canonicalizeInterfaceIntents([...nextInterfacesById.values()]);
+
+  const builtRelations = transaction.relations.map((relationInput) => {
+    try {
+      return buildRelationIntent(geometry, nextInterfaces, relationInput);
+    } catch (error) {
+      if (error instanceof StructuralInterfaceError) {
+        throw new StructuralIntentError(error.code, error.message, error.details);
+      }
+      throw error;
+    }
+  });
+  ensureTransactionIdsUnique(builtRelations.map((item) => item.relationId), 'relations');
+
+  const nextRelationsById = new Map(root.relationIntents.map((item) => [item.relationId, item]));
+  for (const relationId of transaction.removeRelationIds) nextRelationsById.delete(relationId);
+  for (const relation of builtRelations) nextRelationsById.set(relation.relationId, relation);
+
+  for (const interfaceId of transaction.removeInterfaceIds) {
+    for (const [relationId, relation] of nextRelationsById.entries()) {
+      if (relation.ports.some((port) => port.interfaceRef === interfaceId)) nextRelationsById.delete(relationId);
+    }
+  }
+  const nextRelations = canonicalizeRelationIntents([...nextRelationsById.values()]);
+
+  const newlyTouchedInterfaceIds = new Set(builtInterfaces.map((item) => item.interfaceId));
+  for (const relation of builtRelations) {
+    for (const port of relation.ports) {
+      const intent = nextInterfacesById.get(port.interfaceRef);
+      if (!intent) {
+        throw new StructuralIntentError('SI-RELATION-INTERFACE-NOT-FOUND', `La interfaz ${port.interfaceRef} no existe.`);
+      }
+      if (!newlyTouchedInterfaceIds.has(intent.interfaceId)) {
+        const freshness = evaluateInterfaceFreshness(geometry, intent);
+        if (freshness.state !== 'fresh') {
+          throw new StructuralIntentError(
+            'SI-INTERFACE-STALE',
+            'Una interfaz requerida por la relación está obsoleta; debe reconfirmarse antes de mutar.',
+            [{ interfaceId: intent.interfaceId, ...freshness }]
+          );
+        }
+      }
+    }
+  }
+
+  const nextRoot = canonicalizeStructuralIntent({
+    ...root,
+    interfaceIntents: nextInterfaces,
+    relationIntents: nextRelations
+  });
+  assertValidStructuralIntent(
+    nextRoot,
+    model.elements,
+    roofGeometryForCurrentIntents(model, nextRoot),
+    geometry
+  );
+
+  const changes = interfaceTraceChanges(root, nextRoot);
+  if (changes.length === 0) return result(model, [], { affectedInterfaceIds: [], affectedRelationIds: [] });
+
+  let nextModel = { ...model, structuralIntent: nextRoot };
+  if (options.recordUserAction) {
+    nextModel = appendStructuralIntentUserEvent(nextModel, {
+      operation: 'batchSet',
+      targetType: 'mixed',
+      changes
+    });
+  }
+  return result(nextModel, [], {
+    affectedInterfaceIds: changes.filter((change) => change.targetType === 'interface').map((change) => change.targetId),
+    affectedRelationIds: changes.filter((change) => change.targetType === 'relation').map((change) => change.targetId)
+  });
+}
+
+export function removeStructuralRelationIntent(model, relationId, options = {}) {
+  const root = currentRoot(model);
+  if (!relationIntentFor(root, relationId)) return result(model, [], { affectedInterfaceIds: [], affectedRelationIds: [] });
+  return applyStructuralInterfaceTransaction(model, { removeRelationIds: [relationId] }, options);
+}
+
+export function removeStructuralInterfaceIntent(model, interfaceId, options = {}) {
+  const root = currentRoot(model);
+  if (!interfaceIntentFor(root, interfaceId)) return result(model, [], { affectedInterfaceIds: [], affectedRelationIds: [] });
+  return applyStructuralInterfaceTransaction(model, { removeInterfaceIds: [interfaceId] }, options);
+}
+
+export function structuralInterfaceStates(model) {
+  requireModel(model);
+  const root = currentRoot(model);
+  const geometry = projectAgnosticGeometry(model);
+  return {
+    interfaces: root.interfaceIntents.map((intent) => ({
+      interfaceId: intent.interfaceId,
+      ...evaluateInterfaceFreshness(geometry, intent)
+    })),
+    relations: root.relationIntents.map((intent) => ({
+      relationId: intent.relationId,
+      ...evaluateRelationFreshness(geometry, intent, root.interfaceIntents)
+    }))
+  };
 }

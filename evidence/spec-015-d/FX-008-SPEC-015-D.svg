@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" role="img" aria-labelledby="title desc">
+<title id="title">FX-008 — propuestas y caminos candidatos SPEC-015-D</title>
+<desc id="desc">Planta real con 45 muros, 32 fundaciones y 7 cubiertas. Los resaltados son candidatos no verificados.</desc>
+<rect width="100%" height="100%" fill="#fbfbf8"/>
+<rect x="156.37" y="702.63" width="388.57" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="52.63" y="522.54" width="4.73" height="141.91" fill="#d7d7d0" opacity="0.7"/>
+<rect x="55.00" y="662.09" width="489.93" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="55.00" y="520.18" width="432.49" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="544.93" y="635.06" width="293.96" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="194.55" y="522.54" width="4.73" height="141.91" fill="#d7d7d0" opacity="0.7"/>
+<rect x="268.88" y="522.54" width="4.73" height="141.91" fill="#d7d7d0" opacity="0.7"/>
+<rect x="343.22" y="522.54" width="4.73" height="141.91" fill="#d7d7d0" opacity="0.7"/>
+<rect x="154.00" y="664.45" width="4.73" height="40.55" fill="#d7d7d0" opacity="0.7"/>
+<rect x="485.13" y="71.47" width="4.73" height="592.99" fill="#d7d7d0" opacity="0.7"/>
+<rect x="542.57" y="637.42" width="4.73" height="67.58" fill="#d7d7d0" opacity="0.7"/>
+<rect x="487.49" y="69.10" width="209.49" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="836.53" y="424.56" width="4.73" height="212.87" fill="#d7d7d0" opacity="0.7"/>
+<rect x="656.43" y="594.51" width="125.02" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="487.49" y="479.63" width="405.46" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="838.89" y="560.72" width="54.06" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="892.95" y="528.62" width="121.64" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="696.98" y="422.19" width="348.02" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="1042.63" y="150.87" width="4.73" height="273.69" fill="#d7d7d0" opacity="0.7"/>
+<rect x="694.61" y="71.47" width="4.73" height="451.08" fill="#d7d7d0" opacity="0.7"/>
+<rect x="654.07" y="482.00" width="4.73" height="114.88" fill="#d7d7d0" opacity="0.7"/>
+<rect x="779.09" y="424.56" width="4.73" height="172.32" fill="#d7d7d0" opacity="0.7"/>
+<rect x="890.59" y="424.56" width="4.73" height="138.53" fill="#d7d7d0" opacity="0.7"/>
+<rect x="1012.23" y="424.56" width="4.73" height="106.43" fill="#d7d7d0" opacity="0.7"/>
+<rect x="696.98" y="148.51" width="348.02" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="696.98" y="374.89" width="275.38" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="487.49" y="356.30" width="57.44" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="811.86" y="300.55" width="233.14" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<rect x="809.49" y="150.87" width="4.73" height="226.38" fill="#d7d7d0" opacity="0.7"/>
+<rect x="856.80" y="302.92" width="4.73" height="74.33" fill="#d7d7d0" opacity="0.7"/>
+<rect x="969.99" y="302.92" width="4.73" height="121.64" fill="#d7d7d0" opacity="0.7"/>
+<rect x="196.91" y="601.27" width="148.67" height="4.73" fill="#d7d7d0" opacity="0.7"/>
+<polygon points="156.37,705.00 544.93,705.00 544.93,637.42 487.49,637.42 487.49,664.45 156.37,664.45" fill="#dcd6ff" stroke="#6c5ce7" stroke-width="3" opacity="0.62"/>
+<polygon points="55.00,664.45 487.49,664.45 487.49,522.54 55.00,522.54" fill="#dcd6ff" stroke="#6c5ce7" stroke-width="3" opacity="0.62"/>
+<polygon points="487.49,637.42 838.89,637.42 838.89,424.56 696.98,424.56 696.98,482.00 487.49,482.00" fill="#dcd6ff" stroke="#6c5ce7" stroke-width="3" opacity="0.62"/>
+<polygon points="838.89,563.09 892.95,563.09 892.95,530.99 1014.59,530.99 1014.59,424.56 838.89,424.56" fill="#dcd6ff" stroke="#6c5ce7" stroke-width="3" opacity="0.62"/>
+<polygon points="811.86,424.56 1045.00,424.56 1045.00,150.87 811.86,150.87" fill="#ecece7" stroke="#b9b9b1" stroke-width="1" opacity="0.62"/>
+<polygon points="696.98,424.56 811.86,424.56 811.86,150.87 696.98,150.87" fill="#ecece7" stroke="#b9b9b1" stroke-width="1" opacity="0.62"/>
+<polygon points="487.49,482.00 696.98,482.00 696.98,71.47 487.49,71.47" fill="#ecece7" stroke="#b9b9b1" stroke-width="1" opacity="0.62"/>
+<line x1="156.37" y1="705.00" x2="544.93" y2="705.00" stroke="#30302c" stroke-width="2"/>
+<line x1="55.00" y1="664.45" x2="487.49" y2="664.45" stroke="#b23a48" stroke-width="5"/>
+<line x1="544.93" y1="637.42" x2="838.89" y2="637.42" stroke="#30302c" stroke-width="2"/>
+<line x1="196.91" y1="603.63" x2="345.58" y2="603.63" stroke="#30302c" stroke-width="2"/>
+<line x1="656.43" y1="596.88" x2="781.45" y2="596.88" stroke="#30302c" stroke-width="2"/>
+<line x1="838.89" y1="563.09" x2="892.95" y2="563.09" stroke="#30302c" stroke-width="2"/>
+<line x1="892.95" y1="530.99" x2="1014.59" y2="530.99" stroke="#b23a48" stroke-width="5"/>
+<line x1="55.00" y1="522.54" x2="487.49" y2="522.54" stroke="#b23a48" stroke-width="5"/>
+<line x1="487.49" y1="482.00" x2="696.98" y2="482.00" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="424.56" x2="781.45" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="838.89" y1="424.56" x2="1045.00" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="487.49" y1="358.67" x2="521.28" y2="358.67" stroke="#30302c" stroke-width="2"/>
+<line x1="859.16" y1="302.92" x2="1045.00" y2="302.92" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="150.87" x2="811.86" y2="150.87" stroke="#30302c" stroke-width="2"/>
+<line x1="811.86" y1="150.87" x2="1045.00" y2="150.87" stroke="#30302c" stroke-width="2"/>
+<line x1="487.49" y1="71.47" x2="696.98" y2="71.47" stroke="#30302c" stroke-width="2"/>
+<line x1="55.00" y1="664.45" x2="55.00" y2="522.54" stroke="#30302c" stroke-width="2"/>
+<line x1="156.37" y1="705.00" x2="156.37" y2="664.45" stroke="#30302c" stroke-width="2"/>
+<line x1="196.91" y1="664.45" x2="196.91" y2="522.54" stroke="#30302c" stroke-width="2"/>
+<line x1="271.25" y1="664.45" x2="271.25" y2="522.54" stroke="#30302c" stroke-width="2"/>
+<line x1="345.58" y1="664.45" x2="345.58" y2="522.54" stroke="#30302c" stroke-width="2"/>
+<line x1="487.49" y1="664.45" x2="487.49" y2="482.00" stroke="#30302c" stroke-width="2"/>
+<line x1="487.49" y1="482.00" x2="487.49" y2="71.47" stroke="#30302c" stroke-width="2"/>
+<line x1="544.93" y1="705.00" x2="544.93" y2="637.42" stroke="#30302c" stroke-width="2"/>
+<line x1="656.43" y1="596.88" x2="656.43" y2="482.00" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="509.03" x2="696.98" y2="482.00" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="482.00" x2="696.98" y2="358.67" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="231.96" x2="696.98" y2="71.47" stroke="#30302c" stroke-width="2"/>
+<line x1="781.45" y1="596.88" x2="781.45" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="811.86" y1="377.25" x2="811.86" y2="150.87" stroke="#30302c" stroke-width="2"/>
+<line x1="838.89" y1="637.42" x2="838.89" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="859.16" y1="377.25" x2="859.16" y2="302.92" stroke="#30302c" stroke-width="2"/>
+<line x1="972.35" y1="424.56" x2="972.35" y2="302.92" stroke="#30302c" stroke-width="2"/>
+<line x1="1014.59" y1="530.99" x2="1014.59" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="1045.00" y1="424.56" x2="1045.00" y2="150.87" stroke="#30302c" stroke-width="2"/>
+<line x1="838.89" y1="482.00" x2="892.95" y2="482.00" stroke="#30302c" stroke-width="2"/>
+<line x1="811.86" y1="424.56" x2="811.86" y2="377.25" stroke="#30302c" stroke-width="2"/>
+<line x1="781.45" y1="424.56" x2="811.86" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="358.67" x2="696.98" y2="231.96" stroke="#30302c" stroke-width="2"/>
+<line x1="487.49" y1="637.42" x2="544.93" y2="637.42" stroke="#b23a48" stroke-width="5"/>
+<line x1="811.86" y1="424.56" x2="838.89" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="892.95" y1="563.09" x2="892.95" y2="530.99" stroke="#30302c" stroke-width="2"/>
+<line x1="892.95" y1="530.99" x2="892.95" y2="424.56" stroke="#30302c" stroke-width="2"/>
+<line x1="696.98" y1="377.25" x2="811.86" y2="377.25" stroke="#30302c" stroke-width="2"/>
+<line x1="811.86" y1="377.25" x2="972.35" y2="377.25" stroke="#30302c" stroke-width="2"/>
+<g font-family="Arial, sans-serif" font-size="14" fill="#20201d">
+<text x="65" y="35">1. Muro X · 1→6 @ B</text>
+<text x="65" y="53">2. Muro X · 13→15 @ G</text>
+<text x="65" y="71">3. Muro X · 6→7 @ C</text>
+<text x="65" y="89">4. Muro X · 1→6 @ H</text>
+</g><text x="65" y="735" font-family="Arial, sans-serif" font-size="13" fill="#55554f">Candidato ≠ verificado · sin materiales, perfiles ni soluciones constructivas</text></svg>

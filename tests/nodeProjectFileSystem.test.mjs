@@ -40,11 +40,13 @@ function project(sequence) {
   return {
     modelVersion: 3,
     structuralIntent: {
-      schema: 'structural-intent-v1.0',
+      schema: 'structural-intent-v1.1',
       elementIntents: [],
       roofIntents: [],
       intersectionIntents: [],
       supportIntents: [],
+      interfaceIntents: [],
+      relationIntents: [],
       diaphragmIntents: [],
       overrides: []
     },

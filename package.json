@@ -42,7 +42,12 @@
     "evidence:spec015c": "node scripts/generate-spec015c-evidence.mjs",
     "verify:spec015c-independence": "node scripts/check-spec015c-independence.mjs",
     "evidence:spec015c1": "node scripts/generate-spec015c1-evidence.mjs",
-    "verify:spec015c1-independence": "node scripts/check-spec015c1-independence.mjs"
+    "verify:spec015c1-independence": "node scripts/check-spec015c1-independence.mjs",
+    "evidence:spec015d": "node scripts/generate-spec015d-evidence.mjs",
+    "verify:spec015d-independence": "node scripts/check-spec015d-independence.mjs",
+    "evidence:spec015d:rev8": "node scripts/generate-spec015d-rev8-evidence.mjs",
+    "verify:spec015d:rev8": "node scripts/validate-spec015d-rev8.mjs",
+    "verify:spec015d:rev8:full": "node scripts/validate-spec015d-rev8.mjs --full"
   },
   "dependencies": {
     "@tauri-apps/api": "2.0.3",

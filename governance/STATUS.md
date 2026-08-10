@@ -3,19 +3,19 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **06-ago-2026**
+Última actualización: **10-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-015-C-1 cerrada; SPEC-015-D pendiente de apertura formal |
+| Etapa | SPEC-015-D REV8 cerrada tras validación local autoritativa y visual real |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | Ninguna |
 | Esfuerzo activo | Ninguno |
-| Suite oficial | PASS local SPEC-015-C-1: 22/22 enfocados, 10/10 componente y puerta completa; 913 Node, 31 componentes y 9 Rust |
+| Suite oficial | SPEC-015-D REV8 final: focal 90/90; Node 996/996; componentes 49/49; Rust 9/9; lab 35/35; CalculiX 3/3 |
 | Build | PASS local Vite; warning heredado de chunk inicial mayor a 600 kB permanece documentado |
-| Cobertura | PASS local; store 94,97 % líneas / 80,85 % ramas / 95,78 % funciones |
+| Cobertura | PASS: core 92,17 % líneas / 81,10 % ramas / 94,12 % funciones; store 92,35 % / 81,01 % / 93,33 % |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -317,7 +317,9 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo corte
 
-SPEC-015-C-1 está cerrada y `BUG-015-C-001` resuelto. La siguiente apertura prevista es
-SPEC-015-D, pero permanece pendiente hasta una sesión formal separada. Propuestas estructurales,
-Caminos de carga y Topología continúan deshabilitados. F-009 sigue como baseline conocido y
-SPEC-08 permanece deshabilitada hasta completar R12 sin errores.
+SPEC-015-D REV8 quedó cerrada el 10-ago-2026 tras validador integral verde y revisión visual real
+del caso FX-008. Las Correctivas 14–19 cerraron BUG-015-D-028/029/030/031/032/034 y el recálculo
+final conservó cuatro caminos gravitacionales completos hasta fundación, 0 laterales, 0 bloqueos y
+0 estados `verified`. MEJ-015-D-033 queda pendiente como mejora de encuadre no bloqueante. No hay
+spec activa hasta aprobar el siguiente corte. F-009 no cambia y SPEC-08 permanece deshabilitada
+hasta R12.

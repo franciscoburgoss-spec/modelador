@@ -20,6 +20,7 @@ import { drawElevationGrid, ELEVATION_CATEGORY_COLORS } from '../render/elevatio
 import { drawDimensionsPlan, drawDimensionsElevation, hitTestDimensionsPlan, hitTestDimensionsElevation } from '../render/dimensions.js';
 import { getElementElevationCategory, getColumnElevationRect, getBeamElevationRect } from '../core/elevation.js';
 import { isVisibleAtCurrentLevel, visibleRoofSystems } from '../core/levelVisibility.js';
+import { structuralIntentMarkLayout } from '../core/structuralIntentVisualCallout.js';
 import { buildParamsMap, resolveValue } from '../core/projectParams.js';
 import { buildElementsById } from '../core/elementReferences.js';
 import Viewer3D from './Viewer3DLazy.jsx';
@@ -76,6 +77,52 @@ function sameVisualId(left, right) {
   return `${typeof left}:${String(left)}` === `${typeof right}:${String(right)}`;
 }
 
+function structuralProposalLocatorPreview(locator) {
+  if (!locator?.active || !locator.preview) return null;
+  const preview = locator.preview;
+  if (preview.kind === 'proposal-relation') {
+    return {
+      canUse: true,
+      selected: Array.isArray(preview.selected) ? preview.selected : [],
+      context: []
+    };
+  }
+  const polygon = preview.kind === 'roof-planar-polygon'
+    ? preview.polygon
+    : preview.planGeometry?.polygon;
+  if (!Array.isArray(polygon) || polygon.length < 3) return null;
+  return {
+    canUse: true,
+    selected: [{
+      id: `${locator.kind}:${typeof locator.id}:${String(locator.id)}`,
+      mark: locator.kind === 'roof' ? 'R' : 'M',
+      planGeometry: { polygon },
+      openings: preview.openings || []
+    }],
+    context: []
+  };
+}
+
+function drawStructuralProposalRelationEvidence(ctx, preview, view, canvasH) {
+  if (preview?.kind !== 'proposal-relation') return;
+  const drawSegment = (segment, strokeStyle, lineWidth, dash = []) => {
+    if (!segment?.start || !segment?.end) return;
+    const start = project(segment.start.x, segment.start.y, 0, 'plan', view, canvasH);
+    const end = project(segment.end.x, segment.end.y, 0, 'plan', view, canvasH);
+    ctx.save();
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = lineWidth;
+    ctx.setLineDash(dash);
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+    ctx.restore();
+  };
+  drawSegment(preview.boundary, '#b45309', 5, [10, 4]);
+  for (const segment of preview.overlapSegments || []) drawSegment(segment, '#047857', 8);
+}
+
 function drawStructuralIntentVisualTarget(ctx, target, view, canvasH, options = {}) {
   const polygons = structuralIntentVisualPolygons(target);
   if (polygons.length === 0) return;
@@ -89,8 +136,10 @@ function drawStructuralIntentVisualTarget(ctx, target, view, canvasH, options = 
   ctx.lineWidth = context ? 1.5 : hovered ? 5 : active ? 4 : 3;
   ctx.strokeStyle = context ? '#6b7280' : hovered ? '#111827' : '#7c3aed';
   ctx.fillStyle = context ? 'rgba(107,114,128,0.08)' : 'rgba(124,58,237,0.16)';
+  const screenPolygons = [];
   for (const polygon of polygons) {
     const screen = polygon.map((point) => project(point.x, point.y, 0, 'plan', view, canvasH));
+    screenPolygons.push(screen);
     ctx.beginPath();
     screen.forEach((point, index) => index === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y));
     ctx.closePath();
@@ -104,24 +153,37 @@ function drawStructuralIntentVisualTarget(ctx, target, view, canvasH, options = 
     }
   }
   if (!context && target.mark) {
-    const allPoints = polygons.flat();
-    const center = {
-      x: allPoints.reduce((sum, point) => sum + point.x, 0) / allPoints.length,
-      y: allPoints.reduce((sum, point) => sum + point.y, 0) / allPoints.length
-    };
-    const screen = project(center.x, center.y, 0, 'plan', view, canvasH);
     ctx.setLineDash([]);
     ctx.font = '700 13px system-ui, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const width = Math.max(26, ctx.measureText(target.mark).width + 12);
-    ctx.fillStyle = '#ffffff';
-    ctx.strokeStyle = '#111827';
-    ctx.lineWidth = 2;
-    ctx.fillRect(screen.x - width / 2, screen.y - 12, width, 24);
-    ctx.strokeRect(screen.x - width / 2, screen.y - 12, width, 24);
-    ctx.fillStyle = '#111827';
-    ctx.fillText(target.mark, screen.x, screen.y);
+    const faceSegment = target.interfaceLocation?.kind === 'face'
+      && Array.isArray(target.interfaceLocation.faceSegment)
+      ? target.interfaceLocation.faceSegment.map((point) => project(point.x, point.y, 0, 'plan', view, canvasH))
+      : null;
+    const markLayout = structuralIntentMarkLayout({
+      polygon: screenPolygons.flat(),
+      faceSegment,
+      textWidth: ctx.measureText(target.mark).width,
+      interfaceKind: target.interfaceLocation?.kind || null
+    });
+    if (markLayout?.leader) {
+      ctx.strokeStyle = '#111827';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(markLayout.leader.start.x, markLayout.leader.start.y);
+      ctx.lineTo(markLayout.leader.end.x, markLayout.leader.end.y);
+      ctx.stroke();
+    }
+    if (markLayout) {
+      ctx.fillStyle = '#ffffff';
+      ctx.strokeStyle = '#111827';
+      ctx.lineWidth = 2;
+      ctx.fillRect(markLayout.box.x, markLayout.box.y, markLayout.box.width, markLayout.box.height);
+      ctx.strokeRect(markLayout.box.x, markLayout.box.y, markLayout.box.width, markLayout.box.height);
+      ctx.fillStyle = '#111827';
+      ctx.fillText(target.mark, markLayout.anchor.x, markLayout.anchor.y);
+    }
   }
   ctx.restore();
 }
@@ -143,6 +205,7 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
   const showGhostLayer = useModelStore((s) => s.showGhostLayer);
   const layout = useModelStore((s) => s.layout);
   const structuralIntentLocator = useModelStore((s) => s.structuralIntentLocator);
+  const structuralProposalLocator = useModelStore((s) => s.structuralProposalLocator);
   const goToElevationFromPlan = useModelStore((s) => s.goToElevationFromPlan);
   const legendCollapsed = useModelStore((s) => (panelId === 'a' ? s.legendCollapsedA : s.legendCollapsedB));
   const toggleLegendCollapsed = useModelStore((s) => s.toggleLegendCollapsed);
@@ -192,6 +255,19 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
           8 / v.scale
         );
         useModelStore.getState().setStructuralIntentLocatorHover(targetId);
+      }
+
+      const proposalLocatorState = useModelStore.getState().structuralProposalLocator;
+      if (panelId === 'a' && modeCompact === 'plan' && proposalLocatorState.active) {
+        const preview = structuralProposalLocatorPreview(proposalLocatorState);
+        const targetId = hitTestStructuralIntentVisualPreview(
+          preview,
+          { x: h, y: vv },
+          8 / v.scale
+        );
+        useModelStore.getState().hoverStructuralProposalLocation(
+          targetId == null ? null : { kind: proposalLocatorState.kind, id: proposalLocatorState.id }
+        );
       }
 
       // ★ snap tipo OSNAP (endpoint + intersección real, un solo tipo de punto — ver
@@ -485,13 +561,32 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
     }
 
     if (mode === 'plan' && panelId === 'a' && structuralIntentLocator.active) {
-      for (const target of structuralIntentLocator.preview?.context || []) {
-        drawStructuralIntentVisualTarget(ctx, target, view, canvasH, { context: true });
+      if (structuralIntentLocator.preview?.kind === 'proposal-relation') {
+        drawStructuralProposalRelationEvidence(ctx, structuralIntentLocator.preview, view, canvasH);
+      } else {
+        for (const target of structuralIntentLocator.preview?.context || []) {
+          drawStructuralIntentVisualTarget(ctx, target, view, canvasH, { context: true });
+        }
+        for (const target of structuralIntentLocator.preview?.selected || []) {
+          drawStructuralIntentVisualTarget(ctx, target, view, canvasH, {
+            active: sameVisualId(target.id, structuralIntentLocator.activeId),
+            hovered: sameVisualId(target.id, structuralIntentLocator.hoveredId)
+          });
+          for (const opening of target.openings || []) {
+            drawStructuralIntentVisualTarget(ctx, {
+              planGeometry: { polygon: opening.planGeometry?.polygon }, mark: null
+            }, view, canvasH, { context: true });
+          }
+        }
       }
-      for (const target of structuralIntentLocator.preview?.selected || []) {
+    }
+
+    if (mode === 'plan' && panelId === 'a' && structuralProposalLocator.active) {
+      const preview = structuralProposalLocatorPreview(structuralProposalLocator);
+      for (const target of preview?.selected || []) {
         drawStructuralIntentVisualTarget(ctx, target, view, canvasH, {
-          active: sameVisualId(target.id, structuralIntentLocator.activeId),
-          hovered: sameVisualId(target.id, structuralIntentLocator.hoveredId)
+          active: true,
+          hovered: structuralProposalLocator.hovered != null
         });
         for (const opening of target.openings || []) {
           drawStructuralIntentVisualTarget(ctx, {
@@ -499,6 +594,7 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
           }, view, canvasH, { context: true });
         }
       }
+      drawStructuralProposalRelationEvidence(ctx, structuralProposalLocator.preview, view, canvasH);
     }
 
     if (mode === 'plan') drawDimensionsPlan(ctx, model, view, canvasH, elementsById, paramsMap);
@@ -511,7 +607,7 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
     // `legendCollapsed` va acá aunque solo se use en el bloque de leyendas de arriba: sin él,
     // `draw` no se recreaba al colapsar y el useEffect (deps [draw]) no repintaba — el botón
     // cambiaba de color pero la leyenda seguía en pantalla.
-  }, [model, view, viewMode, attributeFilter, showStuds, showGhostLayer, legendCollapsed, roofPlaneDraft, draftCursor, panelId, structuralIntentLocator]);
+  }, [model, view, viewMode, attributeFilter, showStuds, showGhostLayer, legendCollapsed, roofPlaneDraft, draftCursor, panelId, structuralIntentLocator, structuralProposalLocator]);
 
   useEffect(() => {
     draw();
@@ -564,6 +660,23 @@ export default function Canvas({ panelId = 'a', showLocalToolbar = false, onQuic
         8 / view.scale
       );
       if (targetId != null) useModelStore.getState().requestStructuralIntentLocatorTarget(targetId);
+      return;
+    }
+
+    const proposalLocatorState = useModelStore.getState().structuralProposalLocator;
+    if (panelId === 'a' && mode === 'plan' && proposalLocatorState.active) {
+      const point = screenToPlane(sx, sy, view, canvasH, false);
+      const targetId = hitTestStructuralIntentVisualPreview(
+        structuralProposalLocatorPreview(proposalLocatorState),
+        { x: point.h, y: point.v },
+        8 / view.scale
+      );
+      if (targetId != null) {
+        useModelStore.getState().requestStructuralProposalLocation({
+          kind: proposalLocatorState.kind,
+          id: proposalLocatorState.id
+        });
+      }
       return;
     }
 

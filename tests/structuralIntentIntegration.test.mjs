@@ -10,6 +10,9 @@ import {
   createEmptyStructuralIntent,
   setElementIntent
 } from '../src/core/structuralIntent.js';
+import {
+  createEmptyStructuralProposalReviewLog
+} from '../src/core/structuralProposalReviews.js';
 
 async function casaL() {
   return JSON.parse(await readFile(new URL('fixtures/casa-L.json', import.meta.url), 'utf8'));
@@ -31,6 +34,10 @@ test('SPEC-015-A: legacy→v3 conserva el proyecto real y no infiere intención 
   assert.equal(migrated.modelVersion, 3);
   assert.deepEqual(prepared.appliedMigrations, ['0->1', '1->2', '2->3']);
   assert.deepEqual(migrated.structuralIntent, createEmptyStructuralIntent());
+  assert.deepEqual(
+    migrated.structuralProposalReviews,
+    createEmptyStructuralProposalReviewLog()
+  );
   assert.deepEqual(source, sourceClone, 'la migración no muta el fixture legacy');
   assert.deepEqual(migrated.wallTypes, []);
   assert.equal(migrated.structuralIntent.elementIntents.length, 0);

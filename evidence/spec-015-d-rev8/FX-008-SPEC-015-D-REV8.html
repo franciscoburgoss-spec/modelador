@@ -1,0 +1,1392 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SPEC-015-D REV8 · FX-008</title><style>body{font-family:system-ui,sans-serif;margin:0;background:#f3f3ef;color:#252521}main{max-width:1400px;margin:auto;padding:24px}.card{background:white;border:1px solid #ddd;border-radius:12px;padding:18px;margin:14px 0}.tabs button{margin-right:8px;padding:8px 12px}.case{display:none}.case.active{display:block}pre{white-space:pre-wrap;overflow:auto;background:#f7f7f3;padding:12px;border-radius:8px}svg{max-width:100%;height:auto}</style></head><body><main><h1>SPEC-015-D REV8 · evidencia FX-008</h1><p>Datos reales del fixture FX-008. Interfaces y relaciones son intención estructural agnóstica; no crean geometría ni verifican capacidad.</p><div class="card"><svg xmlns="http://www.w3.org/2000/svg" width="1400" height="960" viewBox="0 0 1400 960">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#333"/></marker></defs>
+<rect width="1400" height="960" fill="#fff"/>
+<text x="50" y="52" font-family="sans-serif" font-size="28" font-weight="700">SPEC-015-D REV8 · FX-008 · Interfaces estructurales</text>
+<text x="50" y="82" font-family="sans-serif" font-size="16">Geometría agnóstica intacta · caso gobernante frontón C/6→7 · representación de auditoría, no plano de ejecución.</text>
+
+<g transform="translate(50 125)">
+  <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700">1 · Macro → entidad</text>
+  <rect x="0" y="25" width="610" height="250" rx="12" fill="#fafafa" stroke="#bbb"/>
+  <line x1="80" y1="170" x2="540" y2="170" stroke="#bbb" stroke-width="10"/><text x="85" y="205" font-family="sans-serif" font-size="14">Eje C</text>
+  <line x1="205" y1="70" x2="205" y2="235" stroke="#bbb" stroke-width="8"/><text x="190" y="55" font-family="sans-serif" font-size="14">6</text>
+  <line x1="320" y1="70" x2="320" y2="235" stroke="#bbb" stroke-width="8"/><text x="305" y="55" font-family="sans-serif" font-size="14">7</text>
+  <line x1="540" y1="70" x2="540" y2="235" stroke="#bbb" stroke-width="8"/><text x="518" y="55" font-family="sans-serif" font-size="14">11A</text>
+  <line x1="205" y1="170" x2="320" y2="170" stroke="#235c83" stroke-width="18"/>
+  <text x="215" y="155" font-family="sans-serif" font-size="14" font-weight="700">Frontón 1784819708086</text>
+  <line x1="320" y1="170" x2="540" y2="170" stroke="#7395aa" stroke-width="18"/>
+  <text x="365" y="155" font-family="sans-serif" font-size="14">Muro C/7→11A</text>
+</g>
+
+<g transform="translate(715 125)">
+  <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700">2 · Micro → caras + transferencia corta</text>
+  <rect x="0" y="25" width="635" height="250" rx="12" fill="#fafafa" stroke="#bbb"/>
+  <rect x="205" y="90" width="205" height="92" fill="#e8eef2" stroke="#235c83" stroke-width="3"/>
+  <line x1="205" y1="88" x2="410" y2="88" stroke="#d15a3a" stroke-width="7"/><text x="420" y="92" font-family="sans-serif" font-size="14">face −N · recibe gravity</text>
+  <line x1="205" y1="184" x2="410" y2="184" stroke="#3e8b5b" stroke-width="7"/><text x="420" y="188" font-family="sans-serif" font-size="14">face +N · recibe gravity</text>
+  <line x1="300" y1="45" x2="300" y2="85" stroke="#333" stroke-width="2" marker-end="url(#arr)"/><text x="220" y="42" font-family="sans-serif" font-size="13">cubierta y&lt;C</text>
+  <line x1="300" y1="230" x2="300" y2="188" stroke="#333" stroke-width="2" marker-end="url(#arr)"/><text x="220" y="247" font-family="sans-serif" font-size="13">cubierta y&gt;C</text>
+  <line x1="205" y1="136" x2="125" y2="136" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="410" y1="136" x2="490" y2="136" stroke="#333" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="52" y="130" font-family="sans-serif" font-size="13">endLowS · 6</text><text x="498" y="130" font-family="sans-serif" font-size="13">endHighS · 7</text>
+  <text x="205" y="215" font-family="sans-serif" font-size="13">loadTransfer · gravity · región S 12.800→14.500 / Z 3.250→4.150</text>
+</g>
+
+<g transform="translate(50 455)">
+  <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700">3 · Alternativa continua C/6→11A</text>
+  <rect x="0" y="25" width="1300" height="235" rx="12" fill="#fafafa" stroke="#bbb"/>
+  <line x1="160" y1="135" x2="1120" y2="135" stroke="#235c83" stroke-width="24"/>
+  <line x1="420" y1="80" x2="420" y2="190" stroke="#fff" stroke-width="4" stroke-dasharray="7 6"/>
+  <text x="150" y="68" font-family="sans-serif" font-size="14">6 · S=12.800</text><text x="395" y="68" font-family="sans-serif" font-size="14">7 · S=14.500</text><text x="1080" y="68" font-family="sans-serif" font-size="14">11A · S=23.200</text>
+  <text x="215" y="128" font-family="sans-serif" font-size="14" fill="#fff" font-weight="700">carrierRegion #1 · host frontón</text>
+  <text x="620" y="128" font-family="sans-serif" font-size="14" fill="#fff" font-weight="700">carrierRegion #2 · host C/7→11A</text>
+  <line x1="1120" y1="135" x2="1215" y2="135" stroke="#333" stroke-width="2" marker-end="url(#arr)"/><text x="1060" y="205" font-family="sans-serif" font-size="14">salida endHighS → apoyo 11A sólo si relación declarada</text>
+  <text x="160" y="230" font-family="sans-serif" font-size="14">No split · no merge · no sólido nuevo · no structuralAssembly</text>
+</g>
+
+<g transform="translate(50 775)">
+  <text x="0" y="0" font-family="sans-serif" font-size="20" font-weight="700">4 · Resultado de caminos candidatos</text>
+  <text x="0" y="35" font-family="monospace" font-size="14">Corto: completeCandidate, completeCandidate, completeCandidate, completeCandidate</text>
+  <text x="0" y="62" font-family="monospace" font-size="14">Continuo: completeCandidate, completeCandidate</text>
+  <text x="0" y="89" font-family="monospace" font-size="14">Relación corta: rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c</text>
+  <text x="0" y="116" font-family="monospace" font-size="14">Relación continua: rel:sha256:0a00484f8b7ce2496e97d59af2b6bb39ec92bc646a9fcf9880809913aa470a79</text>
+</g>
+</svg></div><div class="tabs"><button data-case="short">Caso corto C/6→7</button><button data-case="continuous">Continuo C/6→11A</button></div><section id="short" class="case active card"><h2>Caso corto</h2><pre>{
+  &quot;name&quot;: &quot;fronton-C-6-7-short&quot;,
+  &quot;structuralIntentSchema&quot;: &quot;structural-intent-v1.1&quot;,
+  &quot;modelVersion&quot;: 3,
+  &quot;interfaces&quot;: [
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;face&quot;,
+        &quot;side&quot;: &quot;negativeN&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cara del frontón hacia y&lt;C.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;face&quot;,
+        &quot;side&quot;: &quot;positiveN&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cara del frontón hacia y&gt;C.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784753322528
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;face&quot;,
+        &quot;side&quot;: &quot;negativeN&quot;,
+        &quot;sRange&quot;: [
+          1949.45,
+          2050.55
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;9a6401b6622d2030c21013e6fbc75b366857ca99fc5889255c99a9fdc6f61cdd&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Receptor declarado en apoyo 6.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;lowS&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          12800.1
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Extremo 6 del frontón.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;highS&quot;,
+        &quot;sRange&quot;: [
+          14499.9,
+          14500
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Extremo 7 del frontón.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;roofBoundary&quot;,
+        &quot;roofGeometryId&quot;: 1785030887081,
+        &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6&quot;
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;boundary&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;2427b7da85602532ad1f7caf2b0e2305928c0b9fe750044c42dca6701a3fe826&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cubierta y&lt;C entrega acción gravitacional en C/6→7.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;roofBoundary&quot;,
+        &quot;roofGeometryId&quot;: 1785161146258,
+        &quot;boundaryId&quot;: &quot;roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c&quot;
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;boundary&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;c13f17f59b4d5bd7bf144c1a8f12434937fea8713c956f528ef67f090b63e050&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cubierta y&gt;C entrega acción gravitacional en C/6→7.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784754251210
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;highS&quot;,
+        &quot;sRange&quot;: [
+          1999.9,
+          2000
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ae428622ff9db9d392e019f137abc027d7e7ef50e49735be84b4efda5aed998e&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Receptor declarado en apoyo 7.&quot;
+    }
+  ],
+  &quot;relations&quot;: [
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;loadTransfer&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [
+        {
+          &quot;ownerRef&quot;: {
+            &quot;kind&quot;: &quot;element&quot;,
+            &quot;id&quot;: 1784819708086
+          },
+          &quot;sRange&quot;: [
+            12800,
+            14500
+          ],
+          &quot;zRange&quot;: [
+            3250,
+            4150
+          ]
+        }
+      ],
+      &quot;notes&quot;: &quot;Transferencia interna C/6→7 hacia extremos declarados.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;Cubierta sur→cara −N.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:9b4cca46b2fbd8672b1dd96e6f78dd039a2fe7f24287000e3c77eb1391dabd85&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;Extremo 7→apoyo declarado.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:9c9c11938c3701d8a9371f5cb9007cf57b5d7c1a921f0a86ca9e7edcc7f1d728&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;Extremo 6→apoyo declarado.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;Cubierta norte→cara +N.&quot;
+    }
+  ],
+  &quot;gravityPaths&quot;: [
+    {
+      &quot;pathId&quot;: &quot;path:sha256:33ec84c263c7b347959131fc77bea26a6e3cc12f48fec0d7e99e485d4c45fcea&quot;,
+      &quot;candidateState&quot;: &quot;completeCandidate&quot;,
+      &quot;findings&quot;: [],
+      &quot;edgeKinds&quot;: [
+        &quot;declared:support&quot;,
+        &quot;declared:loadTransfer&quot;,
+        &quot;declared:support&quot;,
+        &quot;supportedByFoundation&quot;
+      ]
+    },
+    {
+      &quot;pathId&quot;: &quot;path:sha256:46afa150ae1b24fc16bdf88b461afd8d1b6a5acce298f1169535f7aecfe70612&quot;,
+      &quot;candidateState&quot;: &quot;completeCandidate&quot;,
+      &quot;findings&quot;: [],
+      &quot;edgeKinds&quot;: [
+        &quot;declared:support&quot;,
+        &quot;declared:loadTransfer&quot;,
+        &quot;declared:support&quot;,
+        &quot;supportedByFoundation&quot;
+      ]
+    },
+    {
+      &quot;pathId&quot;: &quot;path:sha256:b0af495c1fef252b3c6e83c19d48d894dbe294c71724d77f0445c4b2ed3567d4&quot;,
+      &quot;candidateState&quot;: &quot;completeCandidate&quot;,
+      &quot;findings&quot;: [],
+      &quot;edgeKinds&quot;: [
+        &quot;declared:support&quot;,
+        &quot;declared:loadTransfer&quot;,
+        &quot;declared:support&quot;,
+        &quot;supportedByFoundation&quot;
+      ]
+    },
+    {
+      &quot;pathId&quot;: &quot;path:sha256:c9d31c2653d23f42fb448270c19144b40145982632af9ee59994f017478c6cdd&quot;,
+      &quot;candidateState&quot;: &quot;completeCandidate&quot;,
+      &quot;findings&quot;: [],
+      &quot;edgeKinds&quot;: [
+        &quot;declared:support&quot;,
+        &quot;declared:loadTransfer&quot;,
+        &quot;declared:support&quot;,
+        &quot;supportedByFoundation&quot;
+      ]
+    }
+  ],
+  &quot;fronton&quot;: {
+    &quot;id&quot;: 1784819708086,
+    &quot;axis&quot;: &quot;C&quot;,
+    &quot;from&quot;: &quot;6&quot;,
+    &quot;to&quot;: &quot;7&quot;,
+    &quot;sRange&quot;: [
+      12800,
+      14500
+    ],
+    &quot;zRange&quot;: [
+      3250,
+      4150
+    ]
+  },
+  &quot;agnosticGeometrySchema&quot;: &quot;agnostic-geometry-v1.0&quot;,
+  &quot;structuralAssemblyPresent&quot;: false
+}</pre></section><section id="continuous" class="case card"><h2>Caso continuo</h2><pre>{
+  &quot;name&quot;: &quot;band-C-6-11A-continuous&quot;,
+  &quot;structuralIntentSchema&quot;: &quot;structural-intent-v1.1&quot;,
+  &quot;modelVersion&quot;: 3,
+  &quot;interfaces&quot;: [
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;face&quot;,
+        &quot;side&quot;: &quot;negativeN&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cara del frontón hacia y&lt;C.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;face&quot;,
+        &quot;side&quot;: &quot;positiveN&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cara del frontón hacia y&gt;C.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:688c5e13a42c2452ccf35c5c21d11f1982c308fa91b008daf45fccb1ef453e4c&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784605101040
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;highS&quot;,
+        &quot;sRange&quot;: [
+          23199.9,
+          23200
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;53b2f876ab0f6a3b839126d074f668353ec3bb1c8998715ffed72b9b940779b4&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Salida continua en 11A.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:7f26863169f7da9963514cd9fcc620cebe53a7e7f7daa08f25b4fd589a4acf0d&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784756700772
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;lowS&quot;,
+        &quot;sRange&quot;: [
+          2000,
+          2000.1
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;eda8b92bec7fc95a349a04106aa0c44f8c70cf90661dc8a2eadcf96bfe1ea7f1&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Receptor declarado en apoyo 11A.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;lowS&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          12800.1
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Extremo 6 del frontón.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;element&quot;,
+        &quot;id&quot;: 1784819708086
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;end&quot;,
+        &quot;end&quot;: &quot;highS&quot;,
+        &quot;sRange&quot;: [
+          14499.9,
+          14500
+        ],
+        &quot;zRange&quot;: [
+          3250,
+          4150
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Extremo 7 del frontón.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;roofBoundary&quot;,
+        &quot;roofGeometryId&quot;: 1785030887081,
+        &quot;boundaryId&quot;: &quot;roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6&quot;
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;boundary&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;2427b7da85602532ad1f7caf2b0e2305928c0b9fe750044c42dca6701a3fe826&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cubierta y&lt;C entrega acción gravitacional en C/6→7.&quot;
+    },
+    {
+      &quot;interfaceId&quot;: &quot;iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493&quot;,
+      &quot;ownerRef&quot;: {
+        &quot;kind&quot;: &quot;roofBoundary&quot;,
+        &quot;roofGeometryId&quot;: 1785161146258,
+        &quot;boundaryId&quot;: &quot;roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c&quot;
+      },
+      &quot;locator&quot;: {
+        &quot;kind&quot;: &quot;boundary&quot;,
+        &quot;sRange&quot;: [
+          12800,
+          14500
+        ]
+      },
+      &quot;hostGeometryFingerprint&quot;: &quot;c13f17f59b4d5bd7bf144c1a8f12434937fea8713c956f528ef67f090b63e050&quot;,
+      &quot;source&quot;: &quot;userDeclared&quot;,
+      &quot;notes&quot;: &quot;Cubierta y&gt;C entrega acción gravitacional en C/6→7.&quot;
+    }
+  ],
+  &quot;relations&quot;: [
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:0a00484f8b7ce2496e97d59af2b6bb39ec92bc646a9fcf9880809913aa470a79&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;loadTransfer&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:688c5e13a42c2452ccf35c5c21d11f1982c308fa91b008daf45fccb1ef453e4c&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [
+        {
+          &quot;ownerRef&quot;: {
+            &quot;kind&quot;: &quot;element&quot;,
+            &quot;id&quot;: 1784605101040
+          },
+          &quot;sRange&quot;: [
+            14500,
+            23200
+          ],
+          &quot;zRange&quot;: [
+            3250,
+            4150
+          ]
+        },
+        {
+          &quot;ownerRef&quot;: {
+            &quot;kind&quot;: &quot;element&quot;,
+            &quot;id&quot;: 1784819708086
+          },
+          &quot;sRange&quot;: [
+            12800,
+            14500
+          ],
+          &quot;zRange&quot;: [
+            3250,
+            4150
+          ]
+        }
+      ],
+      &quot;notes&quot;: &quot;Mecanismo continuo C/6→11A en banda superior.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:2f8b1f76039557620a21b2237a89edef7da49663f25bce55075bfc1b6408204c&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:688c5e13a42c2452ccf35c5c21d11f1982c308fa91b008daf45fccb1ef453e4c&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:7f26863169f7da9963514cd9fcc620cebe53a7e7f7daa08f25b4fd589a4acf0d&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;11A→apoyo declarado.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;Cubierta sur→cara −N.&quot;
+    },
+    {
+      &quot;relationId&quot;: &quot;rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c&quot;,
+      &quot;actionFamily&quot;: &quot;gravity&quot;,
+      &quot;structuralFunction&quot;: &quot;support&quot;,
+      &quot;ports&quot;: [
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493&quot;,
+          &quot;interactionRole&quot;: &quot;delivers&quot;
+        },
+        {
+          &quot;interfaceRef&quot;: &quot;iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27&quot;,
+          &quot;interactionRole&quot;: &quot;receives&quot;
+        }
+      ],
+      &quot;carrierRegions&quot;: [],
+      &quot;notes&quot;: &quot;Cubierta norte→cara +N.&quot;
+    }
+  ],
+  &quot;gravityPaths&quot;: [
+    {
+      &quot;pathId&quot;: &quot;path:sha256:986b77fe30365586d193b7705a46766872f5f2971551bb6b9e4b0ad1247df772&quot;,
+      &quot;candidateState&quot;: &quot;completeCandidate&quot;,
+      &quot;findings&quot;: [],
+      &quot;edgeKinds&quot;: [
+        &quot;declared:support&quot;,
+        &quot;declared:loadTransfer&quot;,
+        &quot;declared:support&quot;,
+        &quot;supportedByFoundation&quot;
+      ]
+    },
+    {
+      &quot;pathId&quot;: &quot;path:sha256:e1b94dd890b484dd766845dfefb1b15ff40deb93860fb7864eb70ae7f1e524b4&quot;,
+      &quot;candidateState&quot;: &quot;completeCandidate&quot;,
+      &quot;findings&quot;: [],
+      &quot;edgeKinds&quot;: [
+        &quot;declared:support&quot;,
+        &quot;declared:loadTransfer&quot;,
+        &quot;declared:support&quot;,
+        &quot;supportedByFoundation&quot;
+      ]
+    }
+  ],
+  &quot;fronton&quot;: {
+    &quot;id&quot;: 1784819708086,
+    &quot;axis&quot;: &quot;C&quot;,
+    &quot;from&quot;: &quot;6&quot;,
+    &quot;to&quot;: &quot;7&quot;,
+    &quot;sRange&quot;: [
+      12800,
+      14500
+    ],
+    &quot;zRange&quot;: [
+      3250,
+      4150
+    ]
+  },
+  &quot;agnosticGeometrySchema&quot;: &quot;agnostic-geometry-v1.0&quot;,
+  &quot;structuralAssemblyPresent&quot;: false
+}</pre></section><script>document.querySelectorAll('[data-case]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.case').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.case).classList.add('active')})</script><script type="application/json" id="evidence-json">{
+  "schema": "spec-015-d-rev8-interface-evidence-v1.0",
+  "caseId": "FX-008",
+  "short": {
+    "name": "fronton-C-6-7-short",
+    "structuralIntentSchema": "structural-intent-v1.1",
+    "modelVersion": 3,
+    "interfaces": [
+      {
+        "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "face",
+          "side": "negativeN",
+          "sRange": [
+            12800,
+            14500
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Cara del frontón hacia y\u003cC."
+      },
+      {
+        "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "face",
+          "side": "positiveN",
+          "sRange": [
+            12800,
+            14500
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Cara del frontón hacia y>C."
+      },
+      {
+        "interfaceId": "iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784753322528
+        },
+        "locator": {
+          "kind": "face",
+          "side": "negativeN",
+          "sRange": [
+            1949.45,
+            2050.55
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "9a6401b6622d2030c21013e6fbc75b366857ca99fc5889255c99a9fdc6f61cdd",
+        "source": "userDeclared",
+        "notes": "Receptor declarado en apoyo 6."
+      },
+      {
+        "interfaceId": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "end",
+          "end": "lowS",
+          "sRange": [
+            12800,
+            12800.1
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Extremo 6 del frontón."
+      },
+      {
+        "interfaceId": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "end",
+          "end": "highS",
+          "sRange": [
+            14499.9,
+            14500
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Extremo 7 del frontón."
+      },
+      {
+        "interfaceId": "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+        "ownerRef": {
+          "kind": "roofBoundary",
+          "roofGeometryId": 1785030887081,
+          "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6"
+        },
+        "locator": {
+          "kind": "boundary",
+          "sRange": [
+            12800,
+            14500
+          ]
+        },
+        "hostGeometryFingerprint": "2427b7da85602532ad1f7caf2b0e2305928c0b9fe750044c42dca6701a3fe826",
+        "source": "userDeclared",
+        "notes": "Cubierta y\u003cC entrega acción gravitacional en C/6→7."
+      },
+      {
+        "interfaceId": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+        "ownerRef": {
+          "kind": "roofBoundary",
+          "roofGeometryId": 1785161146258,
+          "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c"
+        },
+        "locator": {
+          "kind": "boundary",
+          "sRange": [
+            12800,
+            14500
+          ]
+        },
+        "hostGeometryFingerprint": "c13f17f59b4d5bd7bf144c1a8f12434937fea8713c956f528ef67f090b63e050",
+        "source": "userDeclared",
+        "notes": "Cubierta y>C entrega acción gravitacional en C/6→7."
+      },
+      {
+        "interfaceId": "iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784754251210
+        },
+        "locator": {
+          "kind": "end",
+          "end": "highS",
+          "sRange": [
+            1999.9,
+            2000
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ae428622ff9db9d392e019f137abc027d7e7ef50e49735be84b4efda5aed998e",
+        "source": "userDeclared",
+        "notes": "Receptor declarado en apoyo 7."
+      }
+    ],
+    "relations": [
+      {
+        "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+        "actionFamily": "gravity",
+        "structuralFunction": "loadTransfer",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "interactionRole": "receives"
+          },
+          {
+            "interfaceRef": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [
+          {
+            "ownerRef": {
+              "kind": "element",
+              "id": 1784819708086
+            },
+            "sRange": [
+              12800,
+              14500
+            ],
+            "zRange": [
+              3250,
+              4150
+            ]
+          }
+        ],
+        "notes": "Transferencia interna C/6→7 hacia extremos declarados."
+      },
+      {
+        "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "Cubierta sur→cara −N."
+      },
+      {
+        "relationId": "rel:sha256:9b4cca46b2fbd8672b1dd96e6f78dd039a2fe7f24287000e3c77eb1391dabd85",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "Extremo 7→apoyo declarado."
+      },
+      {
+        "relationId": "rel:sha256:9c9c11938c3701d8a9371f5cb9007cf57b5d7c1a921f0a86ca9e7edcc7f1d728",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "Extremo 6→apoyo declarado."
+      },
+      {
+        "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "Cubierta norte→cara +N."
+      }
+    ],
+    "gravityPaths": [
+      {
+        "pathId": "path:sha256:33ec84c263c7b347959131fc77bea26a6e3cc12f48fec0d7e99e485d4c45fcea",
+        "candidateState": "completeCandidate",
+        "findings": [],
+        "edgeKinds": [
+          "declared:support",
+          "declared:loadTransfer",
+          "declared:support",
+          "supportedByFoundation"
+        ]
+      },
+      {
+        "pathId": "path:sha256:46afa150ae1b24fc16bdf88b461afd8d1b6a5acce298f1169535f7aecfe70612",
+        "candidateState": "completeCandidate",
+        "findings": [],
+        "edgeKinds": [
+          "declared:support",
+          "declared:loadTransfer",
+          "declared:support",
+          "supportedByFoundation"
+        ]
+      },
+      {
+        "pathId": "path:sha256:b0af495c1fef252b3c6e83c19d48d894dbe294c71724d77f0445c4b2ed3567d4",
+        "candidateState": "completeCandidate",
+        "findings": [],
+        "edgeKinds": [
+          "declared:support",
+          "declared:loadTransfer",
+          "declared:support",
+          "supportedByFoundation"
+        ]
+      },
+      {
+        "pathId": "path:sha256:c9d31c2653d23f42fb448270c19144b40145982632af9ee59994f017478c6cdd",
+        "candidateState": "completeCandidate",
+        "findings": [],
+        "edgeKinds": [
+          "declared:support",
+          "declared:loadTransfer",
+          "declared:support",
+          "supportedByFoundation"
+        ]
+      }
+    ],
+    "fronton": {
+      "id": 1784819708086,
+      "axis": "C",
+      "from": "6",
+      "to": "7",
+      "sRange": [
+        12800,
+        14500
+      ],
+      "zRange": [
+        3250,
+        4150
+      ]
+    },
+    "agnosticGeometrySchema": "agnostic-geometry-v1.0",
+    "structuralAssemblyPresent": false
+  },
+  "continuous": {
+    "name": "band-C-6-11A-continuous",
+    "structuralIntentSchema": "structural-intent-v1.1",
+    "modelVersion": 3,
+    "interfaces": [
+      {
+        "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "face",
+          "side": "negativeN",
+          "sRange": [
+            12800,
+            14500
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Cara del frontón hacia y\u003cC."
+      },
+      {
+        "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "face",
+          "side": "positiveN",
+          "sRange": [
+            12800,
+            14500
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Cara del frontón hacia y>C."
+      },
+      {
+        "interfaceId": "iface:sha256:688c5e13a42c2452ccf35c5c21d11f1982c308fa91b008daf45fccb1ef453e4c",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784605101040
+        },
+        "locator": {
+          "kind": "end",
+          "end": "highS",
+          "sRange": [
+            23199.9,
+            23200
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "53b2f876ab0f6a3b839126d074f668353ec3bb1c8998715ffed72b9b940779b4",
+        "source": "userDeclared",
+        "notes": "Salida continua en 11A."
+      },
+      {
+        "interfaceId": "iface:sha256:7f26863169f7da9963514cd9fcc620cebe53a7e7f7daa08f25b4fd589a4acf0d",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784756700772
+        },
+        "locator": {
+          "kind": "end",
+          "end": "lowS",
+          "sRange": [
+            2000,
+            2000.1
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "eda8b92bec7fc95a349a04106aa0c44f8c70cf90661dc8a2eadcf96bfe1ea7f1",
+        "source": "userDeclared",
+        "notes": "Receptor declarado en apoyo 11A."
+      },
+      {
+        "interfaceId": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "end",
+          "end": "lowS",
+          "sRange": [
+            12800,
+            12800.1
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Extremo 6 del frontón."
+      },
+      {
+        "interfaceId": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+        "ownerRef": {
+          "kind": "element",
+          "id": 1784819708086
+        },
+        "locator": {
+          "kind": "end",
+          "end": "highS",
+          "sRange": [
+            14499.9,
+            14500
+          ],
+          "zRange": [
+            3250,
+            4150
+          ]
+        },
+        "hostGeometryFingerprint": "ecd6c0616e7d679c2cadaf886a9f6a865f259950ae0427b8081a129bc736b436",
+        "source": "userDeclared",
+        "notes": "Extremo 7 del frontón."
+      },
+      {
+        "interfaceId": "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+        "ownerRef": {
+          "kind": "roofBoundary",
+          "roofGeometryId": 1785030887081,
+          "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6"
+        },
+        "locator": {
+          "kind": "boundary",
+          "sRange": [
+            12800,
+            14500
+          ]
+        },
+        "hostGeometryFingerprint": "2427b7da85602532ad1f7caf2b0e2305928c0b9fe750044c42dca6701a3fe826",
+        "source": "userDeclared",
+        "notes": "Cubierta y\u003cC entrega acción gravitacional en C/6→7."
+      },
+      {
+        "interfaceId": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+        "ownerRef": {
+          "kind": "roofBoundary",
+          "roofGeometryId": 1785161146258,
+          "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c"
+        },
+        "locator": {
+          "kind": "boundary",
+          "sRange": [
+            12800,
+            14500
+          ]
+        },
+        "hostGeometryFingerprint": "c13f17f59b4d5bd7bf144c1a8f12434937fea8713c956f528ef67f090b63e050",
+        "source": "userDeclared",
+        "notes": "Cubierta y>C entrega acción gravitacional en C/6→7."
+      }
+    ],
+    "relations": [
+      {
+        "relationId": "rel:sha256:0a00484f8b7ce2496e97d59af2b6bb39ec92bc646a9fcf9880809913aa470a79",
+        "actionFamily": "gravity",
+        "structuralFunction": "loadTransfer",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:688c5e13a42c2452ccf35c5c21d11f1982c308fa91b008daf45fccb1ef453e4c",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "interactionRole": "receives"
+          },
+          {
+            "interfaceRef": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [
+          {
+            "ownerRef": {
+              "kind": "element",
+              "id": 1784605101040
+            },
+            "sRange": [
+              14500,
+              23200
+            ],
+            "zRange": [
+              3250,
+              4150
+            ]
+          },
+          {
+            "ownerRef": {
+              "kind": "element",
+              "id": 1784819708086
+            },
+            "sRange": [
+              12800,
+              14500
+            ],
+            "zRange": [
+              3250,
+              4150
+            ]
+          }
+        ],
+        "notes": "Mecanismo continuo C/6→11A en banda superior."
+      },
+      {
+        "relationId": "rel:sha256:2f8b1f76039557620a21b2237a89edef7da49663f25bce55075bfc1b6408204c",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:688c5e13a42c2452ccf35c5c21d11f1982c308fa91b008daf45fccb1ef453e4c",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:7f26863169f7da9963514cd9fcc620cebe53a7e7f7daa08f25b4fd589a4acf0d",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "11A→apoyo declarado."
+      },
+      {
+        "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "Cubierta sur→cara −N."
+      },
+      {
+        "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+        "actionFamily": "gravity",
+        "structuralFunction": "support",
+        "ports": [
+          {
+            "interfaceRef": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+            "interactionRole": "delivers"
+          },
+          {
+            "interfaceRef": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+            "interactionRole": "receives"
+          }
+        ],
+        "carrierRegions": [],
+        "notes": "Cubierta norte→cara +N."
+      }
+    ],
+    "gravityPaths": [
+      {
+        "pathId": "path:sha256:986b77fe30365586d193b7705a46766872f5f2971551bb6b9e4b0ad1247df772",
+        "candidateState": "completeCandidate",
+        "findings": [],
+        "edgeKinds": [
+          "declared:support",
+          "declared:loadTransfer",
+          "declared:support",
+          "supportedByFoundation"
+        ]
+      },
+      {
+        "pathId": "path:sha256:e1b94dd890b484dd766845dfefb1b15ff40deb93860fb7864eb70ae7f1e524b4",
+        "candidateState": "completeCandidate",
+        "findings": [],
+        "edgeKinds": [
+          "declared:support",
+          "declared:loadTransfer",
+          "declared:support",
+          "supportedByFoundation"
+        ]
+      }
+    ],
+    "fronton": {
+      "id": 1784819708086,
+      "axis": "C",
+      "from": "6",
+      "to": "7",
+      "sRange": [
+        12800,
+        14500
+      ],
+      "zRange": [
+        3250,
+        4150
+      ]
+    },
+    "agnosticGeometrySchema": "agnostic-geometry-v1.0",
+    "structuralAssemblyPresent": false
+  },
+  "invariants": {
+    "modelVersion": 3,
+    "agnosticGeometrySchema": "agnostic-geometry-v1.0",
+    "structuralIntentSchema": "structural-intent-v1.1",
+    "structuralAssembly": "not-used",
+    "geometryMutation": false
+  },
+  "evidenceSha256": "63aa6d2880c0d8979c5f15cc3f4ba7d8cfbab6fb56a3874322839a73a334b1a6"
+}</script></main></body></html>

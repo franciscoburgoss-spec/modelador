@@ -1,0 +1,20 @@
+{
+  "schema": "spec-015-d-evidence-manifest-v1.0",
+  "files": [
+    {
+      "path": "FX-008-SPEC-015-D.json",
+      "bytes": 127889,
+      "sha256": "4400511d3badaa36973caf77296641fb1ffa3aacebc4e30561976716acf11cef"
+    },
+    {
+      "path": "FX-008-SPEC-015-D.svg",
+      "bytes": 8728,
+      "sha256": "4073808c83189b2cd1783ad7ff986fdb699a1aab53a6aa64788062a921965dfb"
+    },
+    {
+      "path": "FX-008-SPEC-015-D.html",
+      "bytes": 74595,
+      "sha256": "27d39e7657bc819883559de218b51ec91189fdf49e227dc11bf4f98779a5fad3"
+    }
+  ]
+}

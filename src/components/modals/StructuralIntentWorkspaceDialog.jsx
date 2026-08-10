@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import StructuralIntentVisualPreview from '../StructuralIntentVisualPreview.jsx';
+import StructuralInterfacesPanel from '../StructuralInterfacesPanel.jsx';
 import { useModelStore } from '../../store/useModelStore.js';
 import {
   STRUCTURAL_INTENT_WORKSPACE_TABS,
@@ -13,6 +14,8 @@ import {
   validateElementDraft,
   validateRoofDraft
 } from '../../core/structuralIntentWorkspace.js';
+import { StructuralConceptHint } from '../StructuralConceptHelp.jsx';
+import { structuralConceptOptions } from '../../core/structuralConceptGlossary.js';
 import {
   buildStructuralIntentVisualPreview,
   compareVisualFingerprintSnapshot,
@@ -23,6 +26,7 @@ const TAB_LABELS = {
   summary: 'Resumen',
   elements: 'Muros y elementos',
   roof: 'Techumbre',
+  interfaces: 'Interfaces',
   intersections: 'Encuentros',
   diaphragms: 'Diafragmas',
   pending: 'Pendientes',
@@ -62,29 +66,17 @@ const SECONDARY_LABELS = {
   notApplicable: 'No aplicable'
 };
 
-const ROOF_DISTRIBUTION_LABELS = {
-  oneWay: 'Una dirección',
-  twoWay: 'Dos direcciones',
-  local: 'Local',
-  undetermined: 'Indeterminada'
-};
+const ROOF_DISTRIBUTION_LABELS = Object.fromEntries(
+  structuralConceptOptions('roofDistribution').map(({ value, label }) => [value, label])
+);
 
-const DIAPHRAGM_LABELS = {
-  intended: 'Previsto',
-  notIntended: 'No previsto',
-  candidate: 'Candidato',
-  undetermined: 'Indeterminado'
-};
+const DIAPHRAGM_LABELS = Object.fromEntries(
+  structuralConceptOptions('diaphragmBehavior').map(({ value, label }) => [value, label])
+);
 
-const BOUNDARY_LABELS = {
-  gravitySupport: 'Apoyo gravitacional',
-  lateralSupport: 'Apoyo lateral',
-  gravityAndLateralSupport: 'Apoyo gravitacional y lateral',
-  geometricBoundary: 'Límite geométrico',
-  gutterSupport: 'Apoyo de canal',
-  nonStructuralBoundary: 'Límite sin función resistente',
-  undetermined: 'Indeterminado'
-};
+const BOUNDARY_LABELS = Object.fromEntries(
+  structuralConceptOptions('roofBoundary').map(({ value, label }) => [value, label])
+);
 
 function focusableElements(container) {
   if (!container) return [];
@@ -249,33 +241,89 @@ function ElementForm({ draft, setDraft, validation, disabled = false }) {
   );
 }
 
-function RoofPolygon({ polygon, boundaries }) {
+function RoofPolygon({ polygon, boundaries, planContext }) {
   if (!polygon?.length) return null;
-  const xs = polygon.map((point) => point.x);
-  const ys = polygon.map((point) => point.y);
+  const xs = polygon.map((point) => Number(point.x));
+  const ys = polygon.map((point) => Number(point.y));
   const minX = Math.min(...xs); const maxX = Math.max(...xs);
   const minY = Math.min(...ys); const maxY = Math.max(...ys);
-  const width = Math.max(maxX - minX, 1); const height = Math.max(maxY - minY, 1);
+  const spanX = Math.max(maxX - minX, 1); const spanY = Math.max(maxY - minY, 1);
+  const padWorld = Math.max(Math.max(spanX, spanY) * 0.08, 250);
+  const world = {
+    xMin: minX - padWorld, xMax: maxX + padWorld,
+    yMin: minY - padWorld, yMax: maxY + padWorld
+  };
+  const canvas = { x: 56, y: 38, width: 540, height: 260 };
+  const scale = Math.min(
+    canvas.width / Math.max(world.xMax - world.xMin, 1),
+    canvas.height / Math.max(world.yMax - world.yMin, 1)
+  );
+  const usedWidth = (world.xMax - world.xMin) * scale;
+  const usedHeight = (world.yMax - world.yMin) * scale;
+  const slackX = (canvas.width - usedWidth) / 2;
+  const slackY = (canvas.height - usedHeight) / 2;
   const project = (point) => ({
-    x: 20 + ((point.x - minX) / width) * 260,
-    y: 180 - ((point.y - minY) / height) * 150
+    x: canvas.x + slackX + (Number(point.x) - world.xMin) * scale,
+    // Planta del modelador: Y mundo crece hacia abajo en pantalla.
+    y: canvas.y + slackY + (Number(point.y) - world.yMin) * scale
   });
   const points = polygon.map((point) => {
     const projected = project(point);
     return `${projected.x},${projected.y}`;
   }).join(' ');
+  const axisSummary = planContext?.descriptor?.primary || 'sin ejes nominales';
   return (
-    <svg viewBox="0 0 300 200" className="h-52 w-full rounded border border-[#d8d8d3] bg-white" aria-label="Polígono y bordes canónicos de la cubierta">
-      <polygon points={points} fill="#f4f4f0" stroke="#55554f" strokeWidth="2" />
-      {boundaries.map((boundary) => {
-        const start = project(boundary.start); const end = project(boundary.end);
+    <svg
+      viewBox="0 0 640 340"
+      className="h-64 w-full rounded border border-[#d8d8d3] bg-white"
+      role="img"
+      aria-label={`Planta contextual de cubierta. ${axisSummary}. Misma orientación y proporción X/Y que la planta del proyecto.`}
+    >
+      <rect x="0" y="0" width="640" height="340" fill="#ffffff" />
+      {(planContext?.axes?.x || []).map((axis) => {
+        const a = project({ x: axis.coordinate, y: world.yMin });
+        const b = project({ x: axis.coordinate, y: world.yMax });
         return (
-          <g key={boundary.boundaryId}>
-            <line x1={start.x} y1={start.y} x2={end.x} y2={end.y} stroke="#2f5d50" strokeWidth="4" />
-            <text x={(start.x + end.x) / 2} y={(start.y + end.y) / 2 - 5} fontSize="12" textAnchor="middle">{boundary.label}</text>
+          <g key={`x-${String(axis.id)}`}>
+            <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#78909c" strokeWidth="1" strokeDasharray="5 4" />
+            <circle cx={a.x} cy="22" r="11" fill="#ffffff" stroke="#36566f" strokeWidth="1.5" />
+            <text x={a.x} y="26" fontSize="10" fontWeight="700" textAnchor="middle" fill="#263746">{axis.label}</text>
           </g>
         );
       })}
+      {(planContext?.axes?.y || []).map((axis) => {
+        const a = project({ x: world.xMin, y: axis.coordinate });
+        const b = project({ x: world.xMax, y: axis.coordinate });
+        return (
+          <g key={`y-${String(axis.id)}`}>
+            <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#78909c" strokeWidth="1" strokeDasharray="5 4" />
+            <circle cx="24" cy={a.y} r="11" fill="#ffffff" stroke="#36566f" strokeWidth="1.5" />
+            <text x="24" y={a.y + 4} fontSize="10" fontWeight="700" textAnchor="middle" fill="#263746">{axis.label}</text>
+          </g>
+        );
+      })}
+      <polygon points={points} fill="rgba(47,93,80,0.10)" stroke="#55554f" strokeWidth="2" />
+      {boundaries.map((boundary) => {
+        const startPoint = project(boundary.start); const endPoint = project(boundary.end);
+        const dx = endPoint.x - startPoint.x; const dy = endPoint.y - startPoint.y;
+        const length = Math.hypot(dx, dy) || 1;
+        const labelOffsetX = -dy / length * 10;
+        const labelOffsetY = dx / length * 10;
+        return (
+          <g key={boundary.boundaryId}>
+            <line x1={startPoint.x} y1={startPoint.y} x2={endPoint.x} y2={endPoint.y} stroke="#2f5d50" strokeWidth="4" />
+            <text
+              x={(startPoint.x + endPoint.x) / 2 + labelOffsetX}
+              y={(startPoint.y + endPoint.y) / 2 + labelOffsetY + 4}
+              fontSize="12"
+              fontWeight="700"
+              textAnchor="middle"
+              fill="#1f3f36"
+            >{boundary.label}</text>
+          </g>
+        );
+      })}
+      <text x="612" y="326" fontSize="10" textAnchor="end" fill="#6b6b66">Misma orientación X/Y que Planta</text>
     </svg>
   );
 }
@@ -299,7 +347,7 @@ function ConfirmPanel({ title, children, onConfirm, onCancel, confirmLabel = 'Co
   );
 }
 
-export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
+export default function StructuralIntentWorkspaceDialog({ open, onClose, initialTab = null }) {
   const model = useModelStore((state) => state.model);
   const setElementIntent = useModelStore((state) => state.setElementIntent);
   const removeElementIntent = useModelStore((state) => state.removeElementIntent);
@@ -336,6 +384,10 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
   const [unexpectedError, setUnexpectedError] = useState(null);
   const [batchActiveId, setBatchActiveId] = useState(null);
   const [visualHoverId, setVisualHoverId] = useState(null);
+
+  useEffect(() => {
+    if (open && initialTab && STRUCTURAL_INTENT_WORKSPACE_TABS.includes(initialTab)) setActiveTab(initialTab);
+  }, [initialTab, open]);
 
   const workspace = useMemo(() => {
     try {
@@ -429,7 +481,14 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
   useEffect(() => {
     const requestedId = structuralIntentLocator.requestedId;
     if (!open || !structuralIntentLocator.active || requestedId == null) return;
+    const requestedTarget = structuralIntentLocator.preview?.selected?.find((target) => (
+      structuralIntentIdToken(target.id) === structuralIntentIdToken(requestedId)
+    ));
     clearStructuralIntentLocatorRequest();
+    if (requestedTarget?.targetType === 'roof') {
+      setStructuralIntentLocatorActive(requestedId);
+      return;
+    }
     if (dirty && elementId !== null && structuralIntentIdToken(requestedId) !== structuralIntentIdToken(elementId)) {
       setElementValidation({
         ok: false,
@@ -446,7 +505,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
       setElementDraftState(buildElementIntentDraft(model, requestedId));
       setElementValidation(null);
     }
-  }, [open, structuralIntentLocator.active, structuralIntentLocator.requestedId, dirty, elementId, elementDraft, elementValidation, model, clearStructuralIntentLocatorRequest, setStructuralIntentLocatorActive]);
+  }, [open, structuralIntentLocator.active, structuralIntentLocator.requestedId, structuralIntentLocator.preview, dirty, elementId, elementDraft, elementValidation, model, clearStructuralIntentLocatorRequest, setStructuralIntentLocatorActive]);
 
   const currentVisualReview = elementDraft?.visualSnapshot
     ? compareVisualFingerprintSnapshot(workspace.visualPresentation, elementDraft.visualSnapshot)
@@ -509,6 +568,18 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
     requestAnimationFrame(() => fitStructuralIntentLocator());
   };
 
+
+  const roofLocateBlocked = !roofDraft?.visualPreview?.canUse || roofValidation?.state === 'brokenReference';
+  const startLocateRoof = () => {
+    if (roofLocateBlocked || !roofDraft?.visualPreview) return;
+    openStructuralIntentLocator({
+      preview: roofDraft.visualPreview,
+      activeId: roofDraft.roofGeometryId,
+      sourceFocusId: 'structural-intent-roof-locate-button'
+    });
+    requestAnimationFrame(() => fitStructuralIntentLocator());
+  };
+
   const reloadElementGeometry = () => {
     if (!elementDraft || elementId === null) return;
     const latestModel = useModelStore.getState().model;
@@ -551,7 +622,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
 
   if (!open) return null;
 
-  if (structuralIntentLocator.active) {
+  const structuralIntentLocatorDialog = structuralIntentLocator.active ? (() => {
     const activeTarget = structuralIntentLocator.preview?.selected?.find((target) => structuralIntentIdToken(target.id) === structuralIntentIdToken(structuralIntentLocator.activeId));
     return (
       <aside
@@ -569,13 +640,13 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <h2 className="font-semibold">Localizando {activeTarget?.mark || 'T'}</h2>
+            <h2 className="font-semibold">{activeTarget?.targetType === 'roof' ? 'Localizando cubierta' : `Localizando ${activeTarget?.mark || 'T'}`}</h2>
             <p className="mt-1 text-xs text-[#6b6b66]">{activeTarget?.descriptor?.summary || `ID ${String(structuralIntentLocator.activeId)}`}</p>
           </div>
           <span className="rounded border px-2 py-1 text-xs">Vista temporal</span>
         </div>
         <p className="mt-3 text-sm">Pase el cursor o haga clic sobre los objetivos marcados en la planta. La selección global del modelo permanece intacta.</p>
-        {elementValidation && !elementValidation.ok && <ErrorSummary validation={elementValidation} />}
+        {activeTarget?.targetType !== 'roof' && elementValidation && !elementValidation.ok && <ErrorSummary validation={elementValidation} />}
         <div className="mt-4 flex flex-wrap justify-end gap-2">
           <button className="rounded border px-3 py-1.5 text-sm" onClick={() => fitStructuralIntentLocator()}>Encuadrar</button>
           <button className="rounded border px-3 py-1.5 text-sm" onClick={() => finishLocate(true)}>Restaurar vista</button>
@@ -584,7 +655,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
         <div className="sr-only" aria-live="polite">Objetivo activo {activeTarget?.mark || 'T'}, ID {String(structuralIntentLocator.activeId)}.</div>
       </aside>
     );
-  }
+  })() : null;
 
   const visibleRows = workspace.elementRows.filter((row) => (
     (!filterWallsOnly || row.type === 'wall' || row.state === 'brokenReference')
@@ -859,20 +930,50 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
       <section className="rounded border border-[#e4e4e0]">
         <h3 className="border-b p-3 font-semibold">Cubiertas ({workspace.roofRows.length})</h3>
         <div className="max-h-[460px] overflow-auto">
-          {workspace.roofRows.map((row) => (
-            <button key={row.idToken} className="flex w-full items-center justify-between border-b p-3 text-left hover:bg-[#f7f7f4]" onClick={() => openRoof(row.id)}>
-              <span><code>{String(row.id)}</code><span className="block text-xs text-[#6b6b66]">{row.boundaries.length} bordes</span></span>
-              {stateBadge(row.state)}
-            </button>
-          ))}
+          {workspace.roofRows.map((row) => {
+            const active = roofId !== null && structuralIntentIdToken(roofId) === row.idToken;
+            return (
+              <button
+                key={row.idToken}
+                aria-current={active ? 'true' : undefined}
+                aria-label={`Abrir cubierta. ${row.descriptor?.summary || String(row.id)}`}
+                className={`flex w-full items-start justify-between gap-3 border-b p-3 text-left hover:bg-[#f7f7f4] ${active ? 'bg-[#eef4f0]' : ''}`}
+                onClick={() => openRoof(row.id)}
+              >
+                <span className="min-w-0">
+                  <strong className="block text-sm font-medium">{row.descriptor?.primary || `Cubierta ${String(row.id)}`}</strong>
+                  <span className="mt-1 block text-xs text-[#6b6b66]">{row.boundaries.length} bordes · referencia técnica <code>{String(row.id)}</code></span>
+                </span>
+                {stateBadge(row.state)}
+              </button>
+            );
+          })}
         </div>
       </section>
       <section className="space-y-4 rounded border border-[#e4e4e0] p-4">
         {!roofDraft ? <p className="text-sm text-[#6b6b66]">Seleccione una cubierta.</p> : (
           <>
-            <div className="flex items-center justify-between"><h3 className="font-semibold">Cubierta {String(roofDraft.roofGeometryId)}</h3>{stateBadge(roofValidation?.state || roofDraft.state)}</div>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 className="font-semibold">Cubierta · {roofDraft.planContext?.descriptor?.primary || 'sin descriptor geométrico'}</h3>
+                <p className="mt-1 text-xs text-[#6b6b66]">Referencia técnica <code>{String(roofDraft.roofGeometryId)}</code></p>
+              </div>
+              <div className="flex items-center gap-2">
+                {stateBadge(roofValidation?.state || roofDraft.state)}
+                <button
+                  id="structural-intent-roof-locate-button"
+                  className="rounded border border-[#2f5d50] px-3 py-1.5 text-sm text-[#23483e] disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={roofLocateBlocked}
+                  title={roofLocateBlocked ? 'La cubierta no tiene una geometría localizable vigente.' : 'Mostrar esta cubierta en la planta real del proyecto.'}
+                  onClick={startLocateRoof}
+                >Localizar cubierta</button>
+              </div>
+            </div>
             <ErrorSummary validation={roofValidation} />
-            <RoofPolygon polygon={roofDraft.polygon} boundaries={roofDraft.boundaryIntents} />
+            <RoofPolygon polygon={roofDraft.polygon} boundaries={roofDraft.boundaryIntents} planContext={roofDraft.planContext} />
+            <p className="rounded border border-[#e4e4e0] bg-[#fafaf7] p-2 text-xs text-[#5c5c57]">
+              El preview conserva la orientación y proporción X/Y de Planta. Sólo se dibujan los ejes nominales que intervienen en los vértices del faldón; B1…Bn mantienen su borde canónico.
+            </p>
             <div className="grid gap-3 md:grid-cols-2">
               <label className="text-sm">Distribución
                 <select
@@ -892,6 +993,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
                   })}
                 >{Object.entries(ROOF_DISTRIBUTION_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
                 <FieldErrors validation={roofValidation} field="loadDistribution" id="structural-intent-roof-distribution-errors" />
+                <StructuralConceptHint scope="roofDistribution" value={roofDraft.loadDistribution} compact />
               </label>
               <label className="text-sm">Comportamiento de diafragma
                 <select
@@ -903,6 +1005,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
                   onChange={(event) => setRoofDraft((current) => ({ ...current, diaphragmBehavior: event.target.value }))}
                 >{Object.entries(DIAPHRAGM_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
                 <FieldErrors validation={roofValidation} field="diaphragmBehavior" id="structural-intent-roof-diaphragm-errors" />
+                <StructuralConceptHint scope="diaphragmBehavior" value={roofDraft.diaphragmBehavior} compact />
               </label>
               {(roofDraft.loadDistribution === 'oneWay' || roofDraft.loadDistribution === 'twoWay') && <label className="text-sm">Dirección primaria
                 <select
@@ -933,17 +1036,20 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
                 <div key={boundary.boundaryId} className="grid gap-2 rounded border p-2 md:grid-cols-[3rem_1fr_1.3fr] md:items-center">
                   <strong>{boundary.label}</strong>
                   <code className="truncate text-xs" title={boundary.boundaryId}>{boundary.boundaryId}</code>
-                  <select
-                    aria-label={`Función ${boundary.label}`}
-                    aria-invalid={validationHasField(roofValidation, 'boundaryIntents')}
-                    aria-describedby={validationHasField(roofValidation, 'boundaryIntents') ? 'structural-intent-roof-boundary-errors' : undefined}
-                    className="rounded border px-2 py-1.5 text-sm"
-                    value={boundary.function}
-                    onChange={(event) => setRoofDraft((current) => ({
-                      ...current,
-                      boundaryIntents: current.boundaryIntents.map((item, itemIndex) => itemIndex === index ? { ...item, function: event.target.value } : item)
-                    }))}
-                  >{Object.entries(BOUNDARY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
+                  <div>
+                    <select
+                      aria-label={`Función ${boundary.label}`}
+                      aria-invalid={validationHasField(roofValidation, 'boundaryIntents')}
+                      aria-describedby={validationHasField(roofValidation, 'boundaryIntents') ? 'structural-intent-roof-boundary-errors' : undefined}
+                      className="w-full rounded border px-2 py-1.5 text-sm"
+                      value={boundary.function}
+                      onChange={(event) => setRoofDraft((current) => ({
+                        ...current,
+                        boundaryIntents: current.boundaryIntents.map((item, itemIndex) => itemIndex === index ? { ...item, function: event.target.value } : item)
+                      }))}
+                    >{Object.entries(BOUNDARY_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
+                    <StructuralConceptHint scope="roofBoundary" value={boundary.function} compact />
+                  </div>
                 </div>
               ))}
               <FieldErrors validation={roofValidation} field="boundaryIntents" id="structural-intent-roof-boundary-errors" />
@@ -1023,6 +1129,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
     summary: renderSummary,
     elements: renderElements,
     roof: renderRoof,
+    interfaces: () => <StructuralInterfacesPanel workspace={workspace} />,
     intersections: () => renderInactive('intersections'),
     diaphragms: () => renderInactive('diaphragms'),
     pending: renderPending,
@@ -1030,7 +1137,13 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4" onMouseDown={(event) => { if (event.target === event.currentTarget) requestClose(); }}>
+    <>
+      {structuralIntentLocatorDialog}
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4"
+        style={structuralIntentLocator.active ? { display: 'none' } : undefined}
+        onMouseDown={(event) => { if (event.target === event.currentTarget) requestClose(); }}
+      >
       <div
         ref={dialogRef}
         role="dialog"
@@ -1128,6 +1241,7 @@ export default function StructuralIntentWorkspaceDialog({ open, onClose }) {
           <ul className="mt-2 list-disc pl-5">{confirmation.preview.selection.map((id) => <li key={structuralIntentIdToken(id)}><code>{String(id)}</code></li>)}</ul>
         </ConfirmPanel>}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

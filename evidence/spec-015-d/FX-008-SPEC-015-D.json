@@ -1,0 +1,3995 @@
+{
+  "counts": {
+    "foundations": 32,
+    "openings": 43,
+    "roofs": 7,
+    "walls": 45
+  },
+  "generatedFrom": "tests/fixtures/casa-L-completa-v3.json",
+  "graphs": {
+    "gravity": {
+      "edges": [
+        {
+          "edgeId": "edge:sha256:3aacea6922b4f7146a8bdc8ce0a34990602e8b1b5805ec88eea6efc35969c07c",
+          "fromNodeId": "node:sha256:64a1d503fe56c3fd7596190cf68cdccdc6ba371f116be1944f5439294b8b1440",
+          "graph": "gravity",
+          "kind": "supportedByFoundation",
+          "overlapMm": 12800,
+          "overlapRange": [
+            0,
+            12800
+          ],
+          "toNodeId": "node:sha256:6801aefac06fd437dd74104ee9f5b20863b8bb01eefd57f1534390ce5f969a6f"
+        },
+        {
+          "edgeId": "edge:sha256:402a5b2cc02d32e74273f260ffb9b2a7791e71a551fe8b31d28bf7499d9c1722",
+          "fromNodeId": "node:sha256:3a55466aca947c086bbc9349448d68433c999b79c51a09e7cabe813fd27e6cee",
+          "graph": "gravity",
+          "kind": "supportedByFoundation",
+          "overlapMm": 8700,
+          "overlapRange": [
+            14500,
+            23200
+          ],
+          "toNodeId": "node:sha256:851dd767f7d7768005785e8f0307aeee4060a6dbcd3a336acd98c42fca3636e3"
+        },
+        {
+          "edgeId": "edge:sha256:4fe263ee74b32ad3bacde37c2d70d53cdef96d78b1bca869f6515d174c377288",
+          "fromNodeId": "node:sha256:25d50c9c6159c920003b782762708eb4e3e86b028451f7c3bf56ada2de159aab",
+          "graph": "gravity",
+          "kind": "roofBoundaryToReceiver",
+          "overlapMm": 9800,
+          "proposalId": "proposal:sha256:786f96fdd1990ca8c5e486ab8131f2289d3d3c6a95bc1f27f03171070fdb1493",
+          "toNodeId": "node:sha256:64a1d503fe56c3fd7596190cf68cdccdc6ba371f116be1944f5439294b8b1440"
+        },
+        {
+          "edgeId": "edge:sha256:6776377e0d171f81ac43bd8984611e715136f19e16fea23039f2327e6c5c4f9e",
+          "fromNodeId": "node:sha256:6d47bafcacccc3bd808bad39f86bbc7ce9d1583cf47bdb855ab44f7ab6dd1c84",
+          "graph": "gravity",
+          "kind": "supportedByFoundation",
+          "overlapMm": 12800,
+          "overlapRange": [
+            0,
+            12800
+          ],
+          "toNodeId": "node:sha256:e0813da7ec75ae449d7e15540ce6f4f9cb62590dd3b7a38a373e6347c8f8306a"
+        },
+        {
+          "edgeId": "edge:sha256:8642ed916e54beddb38c4147541b2e22b70ed81a383ff673bfc18df01cad49f7",
+          "fromNodeId": "node:sha256:0fc1a662a3d3301ed1b2133ebff75302141da55dc5fcb84028525d4741683fa9",
+          "graph": "gravity",
+          "kind": "roofBoundaryToReceiver",
+          "overlapMm": 1700,
+          "proposalId": "proposal:sha256:7dee0ae652679d01471da7b5fd63e9c3e11ebcc8043e5941ff57140805a87256",
+          "toNodeId": "node:sha256:7557c352fece527de84ae18898978ff5ba0e1732c0b83f612f729f5bc9096a41"
+        },
+        {
+          "edgeId": "edge:sha256:aa06ddaf0e6d82886625ea2bc5a83031bf433bec2a15d8fc76eff151f48ea70b",
+          "fromNodeId": "node:sha256:0fc1a662a3d3301ed1b2133ebff75302141da55dc5fcb84028525d4741683fa9",
+          "graph": "gravity",
+          "kind": "roofBoundaryToReceiver",
+          "overlapMm": 8700,
+          "proposalId": "proposal:sha256:fbb2784d5e07193c9e9686a8ac00bf86dc1f263b0046c2f6e11b1240af3bd597",
+          "toNodeId": "node:sha256:3a55466aca947c086bbc9349448d68433c999b79c51a09e7cabe813fd27e6cee"
+        },
+        {
+          "edgeId": "edge:sha256:c893693c05e9deb4164a866515412c1c79e2ba43f9d67ee148f27541e0ed80e1",
+          "fromNodeId": "node:sha256:1fcec1766bf72234e2922cd3aa3e2fee845706bfe8512e5e5505b69576457849",
+          "graph": "gravity",
+          "kind": "roofBoundaryToReceiver",
+          "overlapMm": 3600,
+          "proposalId": "proposal:sha256:7ddf46a414b946e3432ebc436c07a7820afdccd472772377db84a4f108efc8e8",
+          "toNodeId": "node:sha256:79aafc1a30bfc2d167313c32116f8bb32e292bbd8d8330b05c7a2e34f14c4477"
+        },
+        {
+          "edgeId": "edge:sha256:de8e04878f7f1cbb5f4714a5d96739d76bff3e9203b72802a6e2532ec4ffb4a2",
+          "fromNodeId": "node:sha256:79aafc1a30bfc2d167313c32116f8bb32e292bbd8d8330b05c7a2e34f14c4477",
+          "graph": "gravity",
+          "kind": "supportedByFoundation",
+          "overlapMm": 3600,
+          "overlapRange": [
+            24800,
+            28400
+          ],
+          "toNodeId": "node:sha256:b9c1588c303d4af0614631a58a8d77f62bdb4cc2f1d61ff1c260142b2677661a"
+        },
+        {
+          "edgeId": "edge:sha256:fa69c6d876ffa866bfd953e3625276a8c8c0aa62b918475fdfb93b61a1f67828",
+          "fromNodeId": "node:sha256:d7839d75fbe50f171d6a8ccfdfe16c58b73f2603f1ffc26924b6eeae512fafb8",
+          "graph": "gravity",
+          "kind": "roofBoundaryToReceiver",
+          "overlapMm": 12800,
+          "proposalId": "proposal:sha256:c57a0a4c3eb31375afe87190e0ee4a6b4c569313e8ca6ac300887a6d67a2436f",
+          "toNodeId": "node:sha256:6d47bafcacccc3bd808bad39f86bbc7ce9d1583cf47bdb855ab44f7ab6dd1c84"
+        }
+      ],
+      "graphType": "gravity",
+      "nodes": [
+        {
+          "ariaLabel": "Fuente gravitacional de cubierta. Faldón poligonal 6–11A entre C–J. Pendiente J→C · 10.400 × 6.300 mm. Referencia técnica 1785161146258.",
+          "entity": {
+            "ariaLabel": "Faldón poligonal 6–11A entre C–J. Pendiente J→C · 10.400 × 6.300 mm. Referencia técnica 1785161146258.",
+            "entityId": 1785161146258,
+            "entityType": "roof",
+            "locate": {
+              "id": 1785161146258,
+              "kind": "roof"
+            },
+            "preview": {
+              "bounds": {
+                "maxX": 23200,
+                "maxY": 8300,
+                "maxZ": 3950,
+                "minX": 12800,
+                "minY": 2000,
+                "minZ": 3650,
+                "points": [
+                  {
+                    "x": 12800,
+                    "y": 2000,
+                    "z": 3650
+                  },
+                  {
+                    "x": 23200,
+                    "y": 2000,
+                    "z": 3650
+                  },
+                  {
+                    "x": 23200,
+                    "y": 8300,
+                    "z": 3950
+                  },
+                  {
+                    "x": 19000,
+                    "y": 8300,
+                    "z": 3950
+                  },
+                  {
+                    "x": 19000,
+                    "y": 6600,
+                    "z": 3869.048
+                  },
+                  {
+                    "x": 12800,
+                    "y": 6600,
+                    "z": 3869.048
+                  }
+                ]
+              },
+              "kind": "roof-planar-polygon",
+              "polygon": [
+                {
+                  "x": 12800,
+                  "y": 2000,
+                  "z": 3650
+                },
+                {
+                  "x": 23200,
+                  "y": 2000,
+                  "z": 3650
+                },
+                {
+                  "x": 23200,
+                  "y": 8300,
+                  "z": 3950
+                },
+                {
+                  "x": 19000,
+                  "y": 8300,
+                  "z": 3950
+                },
+                {
+                  "x": 19000,
+                  "y": 6600,
+                  "z": 3869.048
+                },
+                {
+                  "x": 12800,
+                  "y": 6600,
+                  "z": 3869.048
+                }
+              ]
+            },
+            "subtitle": "Pendiente J→C · 10.400 × 6.300 mm",
+            "technicalReference": {
+              "roofGeometryId": 1785161146258
+            },
+            "title": "Faldón poligonal 6–11A entre C–J",
+            "visualFingerprint": "22a4d9964416194d93a6dceffc18c7f728bc51cc2ebe2d27a38790b8c2923404"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:0fc1a662a3d3301ed1b2133ebff75302141da55dc5fcb84028525d4741683fa9",
+          "role": "roofSource",
+          "roleLabel": "Fuente gravitacional de cubierta",
+          "subtitle": "Fuente gravitacional de cubierta · Pendiente J→C · 10.400 × 6.300 mm",
+          "technicalReference": {
+            "nodeId": "node:sha256:0fc1a662a3d3301ed1b2133ebff75302141da55dc5fcb84028525d4741683fa9",
+            "roofGeometryId": 1785161146258
+          },
+          "title": "Faldón poligonal 6–11A entre C–J"
+        },
+        {
+          "ariaLabel": "Fuente gravitacional de cubierta. Faldón poligonal 11A–15 entre F–J. Pendiente 11A→15 · 5.200 × 4.100 mm. Referencia técnica 1785161198226.",
+          "entity": {
+            "ariaLabel": "Faldón poligonal 11A–15 entre F–J. Pendiente 11A→15 · 5.200 × 4.100 mm. Referencia técnica 1785161198226.",
+            "entityId": 1785161198226,
+            "entityType": "roof",
+            "locate": {
+              "id": 1785161198226,
+              "kind": "roof"
+            },
+            "preview": {
+              "bounds": {
+                "maxX": 28400,
+                "maxY": 8300,
+                "maxZ": 3950,
+                "minX": 23200,
+                "minY": 4200,
+                "minZ": 3650,
+                "points": [
+                  {
+                    "x": 23200,
+                    "y": 4200,
+                    "z": 3950
+                  },
+                  {
+                    "x": 24800,
+                    "y": 4200,
+                    "z": 3857.692
+                  },
+                  {
+                    "x": 24800,
+                    "y": 5150,
+                    "z": 3857.692
+                  },
+                  {
+                    "x": 28400,
+                    "y": 5150,
+                    "z": 3650
+                  },
+                  {
+                    "x": 28400,
+                    "y": 8300,
+                    "z": 3650
+                  },
+                  {
+                    "x": 23200,
+                    "y": 8300,
+                    "z": 3950
+                  }
+                ]
+              },
+              "kind": "roof-planar-polygon",
+              "polygon": [
+                {
+                  "x": 23200,
+                  "y": 4200,
+                  "z": 3950
+                },
+                {
+                  "x": 24800,
+                  "y": 4200,
+                  "z": 3857.692
+                },
+                {
+                  "x": 24800,
+                  "y": 5150,
+                  "z": 3857.692
+                },
+                {
+                  "x": 28400,
+                  "y": 5150,
+                  "z": 3650
+                },
+                {
+                  "x": 28400,
+                  "y": 8300,
+                  "z": 3650
+                },
+                {
+                  "x": 23200,
+                  "y": 8300,
+                  "z": 3950
+                }
+              ]
+            },
+            "subtitle": "Pendiente 11A→15 · 5.200 × 4.100 mm",
+            "technicalReference": {
+              "roofGeometryId": 1785161198226
+            },
+            "title": "Faldón poligonal 11A–15 entre F–J",
+            "visualFingerprint": "fa93c0833aaf3ea27684bb64e3c02cdf40607a33ebd17ba29eabfb68fec61d8f"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:1fcec1766bf72234e2922cd3aa3e2fee845706bfe8512e5e5505b69576457849",
+          "role": "roofSource",
+          "roleLabel": "Fuente gravitacional de cubierta",
+          "subtitle": "Fuente gravitacional de cubierta · Pendiente 11A→15 · 5.200 × 4.100 mm",
+          "technicalReference": {
+            "nodeId": "node:sha256:1fcec1766bf72234e2922cd3aa3e2fee845706bfe8512e5e5505b69576457849",
+            "roofGeometryId": 1785161198226
+          },
+          "title": "Faldón poligonal 11A–15 entre F–J"
+        },
+        {
+          "ariaLabel": "Fuente gravitacional de cubierta. Faldón poligonal 2–7 entre A–C. Pendiente 13.650→8.750 · 11.500 × 2.000 mm. Referencia técnica 1785030887081.",
+          "entity": {
+            "ariaLabel": "Faldón poligonal 2–7 entre A–C. Pendiente 13.650→8.750 · 11.500 × 2.000 mm. Referencia técnica 1785030887081.",
+            "entityId": 1785030887081,
+            "entityType": "roof",
+            "locate": {
+              "id": 1785030887081,
+              "kind": "roof"
+            },
+            "preview": {
+              "bounds": {
+                "maxX": 14500,
+                "maxY": 2000,
+                "maxZ": 3950,
+                "minX": 3000,
+                "minY": 0,
+                "minZ": 3650,
+                "points": [
+                  {
+                    "x": 3000,
+                    "y": 0,
+                    "z": 3650
+                  },
+                  {
+                    "x": 14500,
+                    "y": 0,
+                    "z": 3650
+                  },
+                  {
+                    "x": 14500,
+                    "y": 2000,
+                    "z": 3950
+                  },
+                  {
+                    "x": 12800,
+                    "y": 2000,
+                    "z": 3950
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1200,
+                    "z": 3830
+                  },
+                  {
+                    "x": 3000,
+                    "y": 1200,
+                    "z": 3830
+                  }
+                ]
+              },
+              "kind": "roof-planar-polygon",
+              "polygon": [
+                {
+                  "x": 3000,
+                  "y": 0,
+                  "z": 3650
+                },
+                {
+                  "x": 14500,
+                  "y": 0,
+                  "z": 3650
+                },
+                {
+                  "x": 14500,
+                  "y": 2000,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 2000,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 1200,
+                  "z": 3830
+                },
+                {
+                  "x": 3000,
+                  "y": 1200,
+                  "z": 3830
+                }
+              ]
+            },
+            "subtitle": "Pendiente 13.650→8.750 · 11.500 × 2.000 mm",
+            "technicalReference": {
+              "roofGeometryId": 1785030887081
+            },
+            "title": "Faldón poligonal 2–7 entre A–C",
+            "visualFingerprint": "1effcbe855939977dba971cd0b0c7cc6aa0ddbe379c5a63da2cb69b6feaa65b3"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:25d50c9c6159c920003b782762708eb4e3e86b028451f7c3bf56ada2de159aab",
+          "role": "roofSource",
+          "roleLabel": "Fuente gravitacional de cubierta",
+          "subtitle": "Fuente gravitacional de cubierta · Pendiente 13.650→8.750 · 11.500 × 2.000 mm",
+          "technicalReference": {
+            "nodeId": "node:sha256:25d50c9c6159c920003b782762708eb4e3e86b028451f7c3bf56ada2de159aab",
+            "roofGeometryId": 1785030887081
+          },
+          "title": "Faldón poligonal 2–7 entre A–C"
+        },
+        {
+          "ariaLabel": "Receptor gravitacional candidato. Muro X · 7→11A @ C. NPT 450 → FRONTON GENERAL 4.150 · L 8.700 mm · 3 vanos. Referencia técnica 1784605101040.",
+          "entity": {
+            "ariaLabel": "Muro X · 7→11A @ C. NPT 450 → FRONTON GENERAL 4.150 · L 8.700 mm · 3 vanos. Referencia técnica 1784605101040.",
+            "entityId": 1784605101040,
+            "entityType": "wall",
+            "locate": {
+              "id": 1784605101040,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 23250.55,
+                "xMin": 14449.45,
+                "yMax": 2050.55,
+                "yMin": 1949.45,
+                "zMax": 4150,
+                "zMin": 450
+              },
+              "elevationGeometry": {
+                "axis": "X",
+                "kind": "wall-elevation",
+                "openings": [
+                  {
+                    "id": 1784605151802,
+                    "kind": "door",
+                    "s0": 700,
+                    "s1": 2500,
+                    "z0": 450,
+                    "z1": 3150
+                  },
+                  {
+                    "id": 1784605173145,
+                    "kind": "window",
+                    "s0": 3500,
+                    "s1": 5200,
+                    "z0": 1350,
+                    "z1": 3150
+                  },
+                  {
+                    "id": 1784605196342,
+                    "kind": "door",
+                    "s0": 6200,
+                    "s1": 8000,
+                    "z0": 450,
+                    "z1": 3150
+                  }
+                ],
+                "rect": {
+                  "s0": 0,
+                  "s1": 8700,
+                  "z0": 450,
+                  "z1": 4150
+                }
+              },
+              "openings": [
+                {
+                  "height": 2700,
+                  "hostWallId": 1784605101040,
+                  "id": 1784605151802,
+                  "kind": "door",
+                  "localS0": 700,
+                  "localS1": 2500,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 15200,
+                        "y": 2050.55
+                      },
+                      {
+                        "x": 17000,
+                        "y": 2050.55
+                      },
+                      {
+                        "x": 17000,
+                        "y": 1949.45
+                      },
+                      {
+                        "x": 15200,
+                        "y": 1949.45
+                      }
+                    ]
+                  },
+                  "width": 1800,
+                  "z0": 450,
+                  "z1": 3150
+                },
+                {
+                  "height": 1800,
+                  "hostWallId": 1784605101040,
+                  "id": 1784605173145,
+                  "kind": "window",
+                  "localS0": 3500,
+                  "localS1": 5200,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 18000,
+                        "y": 2050.55
+                      },
+                      {
+                        "x": 19700,
+                        "y": 2050.55
+                      },
+                      {
+                        "x": 19700,
+                        "y": 1949.45
+                      },
+                      {
+                        "x": 18000,
+                        "y": 1949.45
+                      }
+                    ]
+                  },
+                  "width": 1700,
+                  "z0": 1350,
+                  "z1": 3150
+                },
+                {
+                  "height": 2700,
+                  "hostWallId": 1784605101040,
+                  "id": 1784605196342,
+                  "kind": "door",
+                  "localS0": 6200,
+                  "localS1": 8000,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 20700,
+                        "y": 2050.55
+                      },
+                      {
+                        "x": 22500,
+                        "y": 2050.55
+                      },
+                      {
+                        "x": 22500,
+                        "y": 1949.45
+                      },
+                      {
+                        "x": 20700,
+                        "y": 1949.45
+                      }
+                    ]
+                  },
+                  "width": 1800,
+                  "z0": 450,
+                  "z1": 3150
+                }
+              ],
+              "planGeometry": {
+                "centerline": [
+                  {
+                    "x": 14500,
+                    "y": 2000
+                  },
+                  {
+                    "x": 23200,
+                    "y": 2000
+                  }
+                ],
+                "kind": "oriented-polygon",
+                "polygon": [
+                  {
+                    "x": 14500,
+                    "y": 2050.55
+                  },
+                  {
+                    "x": 23200,
+                    "y": 2050.55
+                  },
+                  {
+                    "x": 23200,
+                    "y": 1949.45
+                  },
+                  {
+                    "x": 14500,
+                    "y": 1949.45
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 8.700 mm · 3 vanos",
+            "technicalReference": {
+              "elementId": 1784605101040
+            },
+            "title": "Muro X · 7→11A @ C",
+            "visualFingerprint": "64933027e5d20d0ebbbdb1601c6ac9a43f6ee53c14528905b12eab2249fbe88c"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:3a55466aca947c086bbc9349448d68433c999b79c51a09e7cabe813fd27e6cee",
+          "role": "receiverWall",
+          "roleLabel": "Receptor gravitacional candidato",
+          "subtitle": "Receptor gravitacional candidato · NPT 450 → FRONTON GENERAL 4.150 · L 8.700 mm · 3 vanos",
+          "technicalReference": {
+            "elementId": 1784605101040,
+            "nodeId": "node:sha256:3a55466aca947c086bbc9349448d68433c999b79c51a09e7cabe813fd27e6cee"
+          },
+          "title": "Muro X · 7→11A @ C"
+        },
+        {
+          "ariaLabel": "Receptor gravitacional candidato. Muro X · 1→6 @ B. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos. Referencia técnica 1784604634483.",
+          "entity": {
+            "ariaLabel": "Muro X · 1→6 @ B. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos. Referencia técnica 1784604634483.",
+            "entityId": 1784604634483,
+            "entityType": "wall",
+            "locate": {
+              "id": 1784604634483,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 12850.55,
+                "xMin": -50.55,
+                "yMax": 1250.55,
+                "yMin": 1149.45,
+                "zMax": 4150,
+                "zMin": 450
+              },
+              "elevationGeometry": {
+                "axis": "X",
+                "kind": "wall-elevation",
+                "openings": [
+                  {
+                    "id": 1784604771014,
+                    "kind": "door",
+                    "s0": 3355,
+                    "s1": 4155,
+                    "z0": 450,
+                    "z1": 2650
+                  },
+                  {
+                    "id": 1784604806833,
+                    "kind": "door",
+                    "s0": 8645,
+                    "s1": 9445,
+                    "z0": 450,
+                    "z1": 2650
+                  }
+                ],
+                "rect": {
+                  "s0": 0,
+                  "s1": 12800,
+                  "z0": 450,
+                  "z1": 4150
+                }
+              },
+              "openings": [
+                {
+                  "height": 2200,
+                  "hostWallId": 1784604634483,
+                  "id": 1784604771014,
+                  "kind": "door",
+                  "localS0": 3355,
+                  "localS1": 4155,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 3355,
+                        "y": 1250.55
+                      },
+                      {
+                        "x": 4155,
+                        "y": 1250.55
+                      },
+                      {
+                        "x": 4155,
+                        "y": 1149.45
+                      },
+                      {
+                        "x": 3355,
+                        "y": 1149.45
+                      }
+                    ]
+                  },
+                  "width": 800,
+                  "z0": 450,
+                  "z1": 2650
+                },
+                {
+                  "height": 2200,
+                  "hostWallId": 1784604634483,
+                  "id": 1784604806833,
+                  "kind": "door",
+                  "localS0": 8645,
+                  "localS1": 9445,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 8645,
+                        "y": 1250.55
+                      },
+                      {
+                        "x": 9445,
+                        "y": 1250.55
+                      },
+                      {
+                        "x": 9445,
+                        "y": 1149.45
+                      },
+                      {
+                        "x": 8645,
+                        "y": 1149.45
+                      }
+                    ]
+                  },
+                  "width": 800,
+                  "z0": 450,
+                  "z1": 2650
+                }
+              ],
+              "planGeometry": {
+                "centerline": [
+                  {
+                    "x": 0,
+                    "y": 1200
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1200
+                  }
+                ],
+                "kind": "oriented-polygon",
+                "polygon": [
+                  {
+                    "x": 0,
+                    "y": 1250.55
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1250.55
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1149.45
+                  },
+                  {
+                    "x": 0,
+                    "y": 1149.45
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos",
+            "technicalReference": {
+              "elementId": 1784604634483
+            },
+            "title": "Muro X · 1→6 @ B",
+            "visualFingerprint": "8947222edd30e7be0ec9a2839da9c7a85f92e8ec26efac9dd321cb90b0f35a3a"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:64a1d503fe56c3fd7596190cf68cdccdc6ba371f116be1944f5439294b8b1440",
+          "role": "receiverWall",
+          "roleLabel": "Receptor gravitacional candidato",
+          "subtitle": "Receptor gravitacional candidato · NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos",
+          "technicalReference": {
+            "elementId": 1784604634483,
+            "nodeId": "node:sha256:64a1d503fe56c3fd7596190cf68cdccdc6ba371f116be1944f5439294b8b1440"
+          },
+          "title": "Muro X · 1→6 @ B"
+        },
+        {
+          "ariaLabel": "Base geométrica candidata. Fundación corrida · x=0→14.500 · y=1.000→1.400. z=-650→450. Referencia técnica 1784817889908.",
+          "entity": {
+            "ariaLabel": "Fundación corrida · x=0→14.500 · y=1.000→1.400. z=-650→450. Referencia técnica 1784817889908.",
+            "entityId": 1784817889908,
+            "entityType": "foundation",
+            "locate": {
+              "id": 1784817889908,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 14500,
+                "xMin": 0,
+                "yMax": 1400,
+                "yMin": 1000,
+                "zMax": 450,
+                "zMin": -650
+              },
+              "elevationGeometry": {
+                "kind": "foundation-elevation",
+                "solids": [
+                  {
+                    "rect": {
+                      "s0": 0,
+                      "s1": 14500,
+                      "z0": -600,
+                      "z1": 0
+                    },
+                    "role": "cimiento"
+                  },
+                  {
+                    "rect": {
+                      "s0": 0,
+                      "s1": 14500,
+                      "z0": -650,
+                      "z1": -600
+                    },
+                    "role": "emplantillado"
+                  },
+                  {
+                    "rect": {
+                      "s0": 0,
+                      "s1": 14500,
+                      "z0": 0,
+                      "z1": 450
+                    },
+                    "role": "sobrecimiento"
+                  }
+                ]
+              },
+              "openings": [],
+              "planGeometry": {
+                "kind": "foundation-solids",
+                "solids": [
+                  {
+                    "polygon": [
+                      {
+                        "x": 0,
+                        "y": 1000
+                      },
+                      {
+                        "x": 14500,
+                        "y": 1000
+                      },
+                      {
+                        "x": 14500,
+                        "y": 1400
+                      },
+                      {
+                        "x": 0,
+                        "y": 1400
+                      }
+                    ],
+                    "role": "cimiento"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 0,
+                        "y": 1000
+                      },
+                      {
+                        "x": 14500,
+                        "y": 1000
+                      },
+                      {
+                        "x": 14500,
+                        "y": 1400
+                      },
+                      {
+                        "x": 0,
+                        "y": 1400
+                      }
+                    ],
+                    "role": "emplantillado"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 0,
+                        "y": 1130
+                      },
+                      {
+                        "x": 14500,
+                        "y": 1130
+                      },
+                      {
+                        "x": 14500,
+                        "y": 1270
+                      },
+                      {
+                        "x": 0,
+                        "y": 1270
+                      }
+                    ],
+                    "role": "sobrecimiento"
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "z=-650→450",
+            "technicalReference": {
+              "elementId": 1784817889908
+            },
+            "title": "Fundación corrida · x=0→14.500 · y=1.000→1.400",
+            "visualFingerprint": "63ead5d67dd7d1f1e59ce42ce439e163b9ca63c8b61cf7f1f4a0ae3d62ef6103"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:6801aefac06fd437dd74104ee9f5b20863b8bb01eefd57f1534390ce5f969a6f",
+          "role": "foundationBase",
+          "roleLabel": "Base geométrica candidata",
+          "subtitle": "Base geométrica candidata · z=-650→450",
+          "technicalReference": {
+            "elementId": 1784817889908,
+            "nodeId": "node:sha256:6801aefac06fd437dd74104ee9f5b20863b8bb01eefd57f1534390ce5f969a6f"
+          },
+          "title": "Fundación corrida · x=0→14.500 · y=1.000→1.400"
+        },
+        {
+          "ariaLabel": "Receptor gravitacional candidato. Muro X · 1→6 @ H. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos. Referencia técnica 1784670218571.",
+          "entity": {
+            "ariaLabel": "Muro X · 1→6 @ H. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos. Referencia técnica 1784670218571.",
+            "entityId": 1784670218571,
+            "entityType": "wall",
+            "locate": {
+              "id": 1784670218571,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 12850.55,
+                "xMin": -50.55,
+                "yMax": 5450.55,
+                "yMin": 5349.45,
+                "zMax": 4150,
+                "zMin": 450
+              },
+              "elevationGeometry": {
+                "axis": "X",
+                "kind": "wall-elevation",
+                "openings": [
+                  {
+                    "id": 1784670297732,
+                    "kind": "door",
+                    "s0": 800,
+                    "s1": 2800,
+                    "z0": 450,
+                    "z1": 3150
+                  },
+                  {
+                    "id": 1784670387562,
+                    "kind": "window",
+                    "s0": 5100,
+                    "s1": 5700,
+                    "z0": 1350,
+                    "z1": 3150
+                  },
+                  {
+                    "id": 1784670415115,
+                    "kind": "window",
+                    "s0": 7400,
+                    "s1": 8000,
+                    "z0": 1350,
+                    "z1": 3150
+                  },
+                  {
+                    "id": 1784670455067,
+                    "kind": "door",
+                    "s0": 10050,
+                    "s1": 12050,
+                    "z0": 450,
+                    "z1": 3150
+                  }
+                ],
+                "rect": {
+                  "s0": 0,
+                  "s1": 12800,
+                  "z0": 450,
+                  "z1": 4150
+                }
+              },
+              "openings": [
+                {
+                  "height": 2700,
+                  "hostWallId": 1784670218571,
+                  "id": 1784670297732,
+                  "kind": "door",
+                  "localS0": 800,
+                  "localS1": 2800,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 800,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 2800,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 2800,
+                        "y": 5349.45
+                      },
+                      {
+                        "x": 800,
+                        "y": 5349.45
+                      }
+                    ]
+                  },
+                  "width": 2000,
+                  "z0": 450,
+                  "z1": 3150
+                },
+                {
+                  "height": 1800,
+                  "hostWallId": 1784670218571,
+                  "id": 1784670387562,
+                  "kind": "window",
+                  "localS0": 5100,
+                  "localS1": 5700,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 5100,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 5700,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 5700,
+                        "y": 5349.45
+                      },
+                      {
+                        "x": 5100,
+                        "y": 5349.45
+                      }
+                    ]
+                  },
+                  "width": 600,
+                  "z0": 1350,
+                  "z1": 3150
+                },
+                {
+                  "height": 1800,
+                  "hostWallId": 1784670218571,
+                  "id": 1784670415115,
+                  "kind": "window",
+                  "localS0": 7400,
+                  "localS1": 8000,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 7400,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 8000,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 8000,
+                        "y": 5349.45
+                      },
+                      {
+                        "x": 7400,
+                        "y": 5349.45
+                      }
+                    ]
+                  },
+                  "width": 600,
+                  "z0": 1350,
+                  "z1": 3150
+                },
+                {
+                  "height": 2700,
+                  "hostWallId": 1784670218571,
+                  "id": 1784670455067,
+                  "kind": "door",
+                  "localS0": 10050,
+                  "localS1": 12050,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 10050,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 12050,
+                        "y": 5450.55
+                      },
+                      {
+                        "x": 12050,
+                        "y": 5349.45
+                      },
+                      {
+                        "x": 10050,
+                        "y": 5349.45
+                      }
+                    ]
+                  },
+                  "width": 2000,
+                  "z0": 450,
+                  "z1": 3150
+                }
+              ],
+              "planGeometry": {
+                "centerline": [
+                  {
+                    "x": 0,
+                    "y": 5400
+                  },
+                  {
+                    "x": 12800,
+                    "y": 5400
+                  }
+                ],
+                "kind": "oriented-polygon",
+                "polygon": [
+                  {
+                    "x": 0,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 12800,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 12800,
+                    "y": 5349.45
+                  },
+                  {
+                    "x": 0,
+                    "y": 5349.45
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos",
+            "technicalReference": {
+              "elementId": 1784670218571
+            },
+            "title": "Muro X · 1→6 @ H",
+            "visualFingerprint": "7cff413445b653505df48d46af89dbb1dda13563d522432194db6f985ad423ab"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:6d47bafcacccc3bd808bad39f86bbc7ce9d1583cf47bdb855ab44f7ab6dd1c84",
+          "role": "receiverWall",
+          "roleLabel": "Receptor gravitacional candidato",
+          "subtitle": "Receptor gravitacional candidato · NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos",
+          "technicalReference": {
+            "elementId": 1784670218571,
+            "nodeId": "node:sha256:6d47bafcacccc3bd808bad39f86bbc7ce9d1583cf47bdb855ab44f7ab6dd1c84"
+          },
+          "title": "Muro X · 1→6 @ H"
+        },
+        {
+          "ariaLabel": "Receptor gravitacional candidato. Muro X · 6→7 @ C. CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos. Referencia técnica 1784819708086.",
+          "entity": {
+            "ariaLabel": "Muro X · 6→7 @ C. CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos. Referencia técnica 1784819708086.",
+            "entityId": 1784819708086,
+            "entityType": "wall",
+            "locate": {
+              "id": 1784819708086,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 14550.55,
+                "xMin": 12749.45,
+                "yMax": 2050.55,
+                "yMin": 1949.45,
+                "zMax": 4150,
+                "zMin": 3250
+              },
+              "elevationGeometry": {
+                "axis": "X",
+                "kind": "wall-elevation",
+                "openings": [],
+                "rect": {
+                  "s0": 0,
+                  "s1": 1700,
+                  "z0": 3250,
+                  "z1": 4150
+                }
+              },
+              "openings": [],
+              "planGeometry": {
+                "centerline": [
+                  {
+                    "x": 12800,
+                    "y": 2000
+                  },
+                  {
+                    "x": 14500,
+                    "y": 2000
+                  }
+                ],
+                "kind": "oriented-polygon",
+                "polygon": [
+                  {
+                    "x": 12800,
+                    "y": 2050.55
+                  },
+                  {
+                    "x": 14500,
+                    "y": 2050.55
+                  },
+                  {
+                    "x": 14500,
+                    "y": 1949.45
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1949.45
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos",
+            "technicalReference": {
+              "elementId": 1784819708086
+            },
+            "title": "Muro X · 6→7 @ C",
+            "visualFingerprint": "d19fabdb31b041e8845163437b0ec727d35e9314e72ec16759cbe11e5a6da720"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:7557c352fece527de84ae18898978ff5ba0e1732c0b83f612f729f5bc9096a41",
+          "role": "receiverWall",
+          "roleLabel": "Receptor gravitacional candidato",
+          "subtitle": "Receptor gravitacional candidato · CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos",
+          "technicalReference": {
+            "elementId": 1784819708086,
+            "nodeId": "node:sha256:7557c352fece527de84ae18898978ff5ba0e1732c0b83f612f729f5bc9096a41"
+          },
+          "title": "Muro X · 6→7 @ C"
+        },
+        {
+          "ariaLabel": "Receptor gravitacional candidato. Muro X · 13→15 @ G. NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano. Referencia técnica 1784669652371.",
+          "entity": {
+            "ariaLabel": "Muro X · 13→15 @ G. NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano. Referencia técnica 1784669652371.",
+            "entityId": 1784669652371,
+            "entityType": "wall",
+            "locate": {
+              "id": 1784669652371,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 28450.55,
+                "xMin": 24749.45,
+                "yMax": 5200.55,
+                "yMin": 5099.45,
+                "zMax": 4150,
+                "zMin": 450
+              },
+              "elevationGeometry": {
+                "axis": "X",
+                "kind": "wall-elevation",
+                "openings": [
+                  {
+                    "id": 1784669702153,
+                    "kind": "window",
+                    "s0": 1150,
+                    "s1": 2450,
+                    "z0": 1350,
+                    "z1": 3150
+                  }
+                ],
+                "rect": {
+                  "s0": 0,
+                  "s1": 3600,
+                  "z0": 450,
+                  "z1": 4150
+                }
+              },
+              "openings": [
+                {
+                  "height": 1800,
+                  "hostWallId": 1784669652371,
+                  "id": 1784669702153,
+                  "kind": "window",
+                  "localS0": 1150,
+                  "localS1": 2450,
+                  "planGeometry": {
+                    "polygon": [
+                      {
+                        "x": 25950,
+                        "y": 5200.55
+                      },
+                      {
+                        "x": 27250,
+                        "y": 5200.55
+                      },
+                      {
+                        "x": 27250,
+                        "y": 5099.45
+                      },
+                      {
+                        "x": 25950,
+                        "y": 5099.45
+                      }
+                    ]
+                  },
+                  "width": 1300,
+                  "z0": 1350,
+                  "z1": 3150
+                }
+              ],
+              "planGeometry": {
+                "centerline": [
+                  {
+                    "x": 24800,
+                    "y": 5150
+                  },
+                  {
+                    "x": 28400,
+                    "y": 5150
+                  }
+                ],
+                "kind": "oriented-polygon",
+                "polygon": [
+                  {
+                    "x": 24800,
+                    "y": 5200.55
+                  },
+                  {
+                    "x": 28400,
+                    "y": 5200.55
+                  },
+                  {
+                    "x": 28400,
+                    "y": 5099.45
+                  },
+                  {
+                    "x": 24800,
+                    "y": 5099.45
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano",
+            "technicalReference": {
+              "elementId": 1784669652371
+            },
+            "title": "Muro X · 13→15 @ G",
+            "visualFingerprint": "6bf31952932df538ead5a97ad7c592b4fe64a0a37fdcd8eaac94633313023932"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:79aafc1a30bfc2d167313c32116f8bb32e292bbd8d8330b05c7a2e34f14c4477",
+          "role": "receiverWall",
+          "roleLabel": "Receptor gravitacional candidato",
+          "subtitle": "Receptor gravitacional candidato · NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano",
+          "technicalReference": {
+            "elementId": 1784669652371,
+            "nodeId": "node:sha256:79aafc1a30bfc2d167313c32116f8bb32e292bbd8d8330b05c7a2e34f14c4477"
+          },
+          "title": "Muro X · 13→15 @ G"
+        },
+        {
+          "ariaLabel": "Base geométrica candidata. Fundación corrida · x=14.500→23.200 · y=1.800→2.200. z=-650→450. Referencia técnica 1784919947050.",
+          "entity": {
+            "ariaLabel": "Fundación corrida · x=14.500→23.200 · y=1.800→2.200. z=-650→450. Referencia técnica 1784919947050.",
+            "entityId": 1784919947050,
+            "entityType": "foundation",
+            "locate": {
+              "id": 1784919947050,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 23200,
+                "xMin": 14500,
+                "yMax": 2200,
+                "yMin": 1800,
+                "zMax": 450,
+                "zMin": -650
+              },
+              "elevationGeometry": {
+                "kind": "foundation-elevation",
+                "solids": [
+                  {
+                    "rect": {
+                      "s0": 14500,
+                      "s1": 23200,
+                      "z0": -600,
+                      "z1": 0
+                    },
+                    "role": "cimiento"
+                  },
+                  {
+                    "rect": {
+                      "s0": 14500,
+                      "s1": 23200,
+                      "z0": -650,
+                      "z1": -600
+                    },
+                    "role": "emplantillado"
+                  },
+                  {
+                    "rect": {
+                      "s0": 14500,
+                      "s1": 23200,
+                      "z0": 0,
+                      "z1": 450
+                    },
+                    "role": "sobrecimiento"
+                  }
+                ]
+              },
+              "openings": [],
+              "planGeometry": {
+                "kind": "foundation-solids",
+                "solids": [
+                  {
+                    "polygon": [
+                      {
+                        "x": 14500,
+                        "y": 1800
+                      },
+                      {
+                        "x": 23200,
+                        "y": 1800
+                      },
+                      {
+                        "x": 23200,
+                        "y": 2200
+                      },
+                      {
+                        "x": 14500,
+                        "y": 2200
+                      }
+                    ],
+                    "role": "cimiento"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 14500,
+                        "y": 1800
+                      },
+                      {
+                        "x": 23200,
+                        "y": 1800
+                      },
+                      {
+                        "x": 23200,
+                        "y": 2200
+                      },
+                      {
+                        "x": 14500,
+                        "y": 2200
+                      }
+                    ],
+                    "role": "emplantillado"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 14500,
+                        "y": 1930
+                      },
+                      {
+                        "x": 23200,
+                        "y": 1930
+                      },
+                      {
+                        "x": 23200,
+                        "y": 2070
+                      },
+                      {
+                        "x": 14500,
+                        "y": 2070
+                      }
+                    ],
+                    "role": "sobrecimiento"
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "z=-650→450",
+            "technicalReference": {
+              "elementId": 1784919947050
+            },
+            "title": "Fundación corrida · x=14.500→23.200 · y=1.800→2.200",
+            "visualFingerprint": "b348d3ddc459882b0c6a678abeac66b7c42f9d8a94172653809ce348d7841fde"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:851dd767f7d7768005785e8f0307aeee4060a6dbcd3a336acd98c42fca3636e3",
+          "role": "foundationBase",
+          "roleLabel": "Base geométrica candidata",
+          "subtitle": "Base geométrica candidata · z=-650→450",
+          "technicalReference": {
+            "elementId": 1784919947050,
+            "nodeId": "node:sha256:851dd767f7d7768005785e8f0307aeee4060a6dbcd3a336acd98c42fca3636e3"
+          },
+          "title": "Fundación corrida · x=14.500→23.200 · y=1.800→2.200"
+        },
+        {
+          "ariaLabel": "Base geométrica candidata. Fundación corrida · x=24.800→28.400 · y=4.900→5.400. z=-650→450. Referencia técnica 1784920974026.",
+          "entity": {
+            "ariaLabel": "Fundación corrida · x=24.800→28.400 · y=4.900→5.400. z=-650→450. Referencia técnica 1784920974026.",
+            "entityId": 1784920974026,
+            "entityType": "foundation",
+            "locate": {
+              "id": 1784920974026,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 28400,
+                "xMin": 24800,
+                "yMax": 5400,
+                "yMin": 4900,
+                "zMax": 450,
+                "zMin": -650
+              },
+              "elevationGeometry": {
+                "kind": "foundation-elevation",
+                "solids": [
+                  {
+                    "rect": {
+                      "s0": 24800,
+                      "s1": 28400,
+                      "z0": -600,
+                      "z1": 0
+                    },
+                    "role": "cimiento"
+                  },
+                  {
+                    "rect": {
+                      "s0": 24800,
+                      "s1": 28400,
+                      "z0": -650,
+                      "z1": -600
+                    },
+                    "role": "emplantillado"
+                  },
+                  {
+                    "rect": {
+                      "s0": 24800,
+                      "s1": 28400,
+                      "z0": 0,
+                      "z1": 450
+                    },
+                    "role": "sobrecimiento"
+                  }
+                ]
+              },
+              "openings": [],
+              "planGeometry": {
+                "kind": "foundation-solids",
+                "solids": [
+                  {
+                    "polygon": [
+                      {
+                        "x": 24800,
+                        "y": 4950
+                      },
+                      {
+                        "x": 28400,
+                        "y": 4950
+                      },
+                      {
+                        "x": 28400,
+                        "y": 5350
+                      },
+                      {
+                        "x": 24800,
+                        "y": 5350
+                      }
+                    ],
+                    "role": "cimiento"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 24800,
+                        "y": 4900
+                      },
+                      {
+                        "x": 28400,
+                        "y": 4900
+                      },
+                      {
+                        "x": 28400,
+                        "y": 5400
+                      },
+                      {
+                        "x": 24800,
+                        "y": 5400
+                      }
+                    ],
+                    "role": "emplantillado"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 24800,
+                        "y": 5080
+                      },
+                      {
+                        "x": 28400,
+                        "y": 5080
+                      },
+                      {
+                        "x": 28400,
+                        "y": 5220
+                      },
+                      {
+                        "x": 24800,
+                        "y": 5220
+                      }
+                    ],
+                    "role": "sobrecimiento"
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "z=-650→450",
+            "technicalReference": {
+              "elementId": 1784920974026
+            },
+            "title": "Fundación corrida · x=24.800→28.400 · y=4.900→5.400",
+            "visualFingerprint": "5a8d6955d71e30578441d9f643424bd67b7e40a7434339e931d42c2c9cc8ee7c"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:b9c1588c303d4af0614631a58a8d77f62bdb4cc2f1d61ff1c260142b2677661a",
+          "role": "foundationBase",
+          "roleLabel": "Base geométrica candidata",
+          "subtitle": "Base geométrica candidata · z=-650→450",
+          "technicalReference": {
+            "elementId": 1784920974026,
+            "nodeId": "node:sha256:b9c1588c303d4af0614631a58a8d77f62bdb4cc2f1d61ff1c260142b2677661a"
+          },
+          "title": "Fundación corrida · x=24.800→28.400 · y=4.900→5.400"
+        },
+        {
+          "ariaLabel": "Fuente gravitacional de cubierta. Faldón rectangular 1–6 entre B–H. Pendiente B→H · 12.800 × 4.200 mm. Referencia técnica 1785158713616.",
+          "entity": {
+            "ariaLabel": "Faldón rectangular 1–6 entre B–H. Pendiente B→H · 12.800 × 4.200 mm. Referencia técnica 1785158713616.",
+            "entityId": 1785158713616,
+            "entityType": "roof",
+            "locate": {
+              "id": 1785158713616,
+              "kind": "roof"
+            },
+            "preview": {
+              "bounds": {
+                "maxX": 12800,
+                "maxY": 5400,
+                "maxZ": 3950,
+                "minX": 0,
+                "minY": 1200,
+                "minZ": 3650,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1200,
+                    "z": 3950
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1200,
+                    "z": 3950
+                  },
+                  {
+                    "x": 12800,
+                    "y": 5400,
+                    "z": 3650
+                  },
+                  {
+                    "x": 0,
+                    "y": 5400,
+                    "z": 3650
+                  }
+                ]
+              },
+              "kind": "roof-planar-polygon",
+              "polygon": [
+                {
+                  "x": 0,
+                  "y": 1200,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 1200,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 5400,
+                  "z": 3650
+                },
+                {
+                  "x": 0,
+                  "y": 5400,
+                  "z": 3650
+                }
+              ]
+            },
+            "subtitle": "Pendiente B→H · 12.800 × 4.200 mm",
+            "technicalReference": {
+              "roofGeometryId": 1785158713616
+            },
+            "title": "Faldón rectangular 1–6 entre B–H",
+            "visualFingerprint": "89755dc1ef63d70ac45199bc29b9c65ed9f9dee5817255b31789d5b0200703b9"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:d7839d75fbe50f171d6a8ccfdfe16c58b73f2603f1ffc26924b6eeae512fafb8",
+          "role": "roofSource",
+          "roleLabel": "Fuente gravitacional de cubierta",
+          "subtitle": "Fuente gravitacional de cubierta · Pendiente B→H · 12.800 × 4.200 mm",
+          "technicalReference": {
+            "nodeId": "node:sha256:d7839d75fbe50f171d6a8ccfdfe16c58b73f2603f1ffc26924b6eeae512fafb8",
+            "roofGeometryId": 1785158713616
+          },
+          "title": "Faldón rectangular 1–6 entre B–H"
+        },
+        {
+          "ariaLabel": "Base geométrica candidata. Fundación corrida · x=0→12.800 · y=5.200→5.600. z=-650→450. Referencia técnica 1784817948237.",
+          "entity": {
+            "ariaLabel": "Fundación corrida · x=0→12.800 · y=5.200→5.600. z=-650→450. Referencia técnica 1784817948237.",
+            "entityId": 1784817948237,
+            "entityType": "foundation",
+            "locate": {
+              "id": 1784817948237,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 12800,
+                "xMin": 0,
+                "yMax": 5600,
+                "yMin": 5200,
+                "zMax": 450,
+                "zMin": -650
+              },
+              "elevationGeometry": {
+                "kind": "foundation-elevation",
+                "solids": [
+                  {
+                    "rect": {
+                      "s0": 0,
+                      "s1": 12800,
+                      "z0": -600,
+                      "z1": 0
+                    },
+                    "role": "cimiento"
+                  },
+                  {
+                    "rect": {
+                      "s0": 0,
+                      "s1": 12800,
+                      "z0": -650,
+                      "z1": -600
+                    },
+                    "role": "emplantillado"
+                  },
+                  {
+                    "rect": {
+                      "s0": 0,
+                      "s1": 12800,
+                      "z0": 0,
+                      "z1": 450
+                    },
+                    "role": "sobrecimiento"
+                  }
+                ]
+              },
+              "openings": [],
+              "planGeometry": {
+                "kind": "foundation-solids",
+                "solids": [
+                  {
+                    "polygon": [
+                      {
+                        "x": 0,
+                        "y": 5200
+                      },
+                      {
+                        "x": 12800,
+                        "y": 5200
+                      },
+                      {
+                        "x": 12800,
+                        "y": 5600
+                      },
+                      {
+                        "x": 0,
+                        "y": 5600
+                      }
+                    ],
+                    "role": "cimiento"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 0,
+                        "y": 5200
+                      },
+                      {
+                        "x": 12800,
+                        "y": 5200
+                      },
+                      {
+                        "x": 12800,
+                        "y": 5600
+                      },
+                      {
+                        "x": 0,
+                        "y": 5600
+                      }
+                    ],
+                    "role": "emplantillado"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 0,
+                        "y": 5330
+                      },
+                      {
+                        "x": 12800,
+                        "y": 5330
+                      },
+                      {
+                        "x": 12800,
+                        "y": 5470
+                      },
+                      {
+                        "x": 0,
+                        "y": 5470
+                      }
+                    ],
+                    "role": "sobrecimiento"
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "z=-650→450",
+            "technicalReference": {
+              "elementId": 1784817948237
+            },
+            "title": "Fundación corrida · x=0→12.800 · y=5.200→5.600",
+            "visualFingerprint": "7b253cde88e67b0fe33c79e3df13c0b8518f4a2d172470200852569201979f8f"
+          },
+          "graph": "gravity",
+          "nodeId": "node:sha256:e0813da7ec75ae449d7e15540ce6f4f9cb62590dd3b7a38a373e6347c8f8306a",
+          "role": "foundationBase",
+          "roleLabel": "Base geométrica candidata",
+          "subtitle": "Base geométrica candidata · z=-650→450",
+          "technicalReference": {
+            "elementId": 1784817948237,
+            "nodeId": "node:sha256:e0813da7ec75ae449d7e15540ce6f4f9cb62590dd3b7a38a373e6347c8f8306a"
+          },
+          "title": "Fundación corrida · x=0→12.800 · y=5.200→5.600"
+        }
+      ],
+      "paths": [
+        {
+          "ariaLabel": "Camino gravitacional candidato. Estado completeCandidate. 0 hallazgos. Referencia técnica path:sha256:4c274d90f116f9c1fe5ca18929cb7b0ea3bae1d22b031324635f5a2faa60cc88.",
+          "candidateState": "completeCandidate",
+          "confidence": "candidate",
+          "edgeIds": [
+            "edge:sha256:c893693c05e9deb4164a866515412c1c79e2ba43f9d67ee148f27541e0ed80e1",
+            "edge:sha256:de8e04878f7f1cbb5f4714a5d96739d76bff3e9203b72802a6e2532ec4ffb4a2"
+          ],
+          "findings": [],
+          "graph": "gravity",
+          "limitations": [
+            "No verifica capacidad, rigidez, conexión, anclaje, resistencia ni deformaciones."
+          ],
+          "pathId": "path:sha256:4c274d90f116f9c1fe5ca18929cb7b0ea3bae1d22b031324635f5a2faa60cc88",
+          "sourceRefs": {
+            "proposalId": "proposal:sha256:7ddf46a414b946e3432ebc436c07a7820afdccd472772377db84a4f108efc8e8",
+            "roofGeometryId": 1785161198226,
+            "targetElementId": 1784669652371
+          },
+          "summary": "G↓ gravedad · completeCandidate · 2 tramos"
+        },
+        {
+          "ariaLabel": "Camino gravitacional candidato. Estado completeCandidate. 0 hallazgos. Referencia técnica path:sha256:56d78ecebacba29b0f7b720cf5bda2c13c67075979974dfaec123de56280767c.",
+          "candidateState": "completeCandidate",
+          "confidence": "candidate",
+          "edgeIds": [
+            "edge:sha256:4fe263ee74b32ad3bacde37c2d70d53cdef96d78b1bca869f6515d174c377288",
+            "edge:sha256:3aacea6922b4f7146a8bdc8ce0a34990602e8b1b5805ec88eea6efc35969c07c"
+          ],
+          "findings": [],
+          "graph": "gravity",
+          "limitations": [
+            "No verifica capacidad, rigidez, conexión, anclaje, resistencia ni deformaciones."
+          ],
+          "pathId": "path:sha256:56d78ecebacba29b0f7b720cf5bda2c13c67075979974dfaec123de56280767c",
+          "sourceRefs": {
+            "proposalId": "proposal:sha256:786f96fdd1990ca8c5e486ab8131f2289d3d3c6a95bc1f27f03171070fdb1493",
+            "roofGeometryId": 1785030887081,
+            "targetElementId": 1784604634483
+          },
+          "summary": "G↓ gravedad · completeCandidate · 2 tramos"
+        },
+        {
+          "ariaLabel": "Camino gravitacional candidato. Estado completeCandidate. 0 hallazgos. Referencia técnica path:sha256:d04435fe60b146e965d3d8eec204ed40c1c1680b80d414d3085baf9f855e10a0.",
+          "candidateState": "completeCandidate",
+          "confidence": "candidate",
+          "edgeIds": [
+            "edge:sha256:aa06ddaf0e6d82886625ea2bc5a83031bf433bec2a15d8fc76eff151f48ea70b",
+            "edge:sha256:402a5b2cc02d32e74273f260ffb9b2a7791e71a551fe8b31d28bf7499d9c1722"
+          ],
+          "findings": [],
+          "graph": "gravity",
+          "limitations": [
+            "No verifica capacidad, rigidez, conexión, anclaje, resistencia ni deformaciones."
+          ],
+          "pathId": "path:sha256:d04435fe60b146e965d3d8eec204ed40c1c1680b80d414d3085baf9f855e10a0",
+          "sourceRefs": {
+            "proposalId": "proposal:sha256:fbb2784d5e07193c9e9686a8ac00bf86dc1f263b0046c2f6e11b1240af3bd597",
+            "roofGeometryId": 1785161146258,
+            "targetElementId": 1784605101040
+          },
+          "summary": "G↓ gravedad · completeCandidate · 2 tramos"
+        },
+        {
+          "ariaLabel": "Camino gravitacional candidato. Estado incompleteCandidate. 1 hallazgo. Referencia técnica path:sha256:daa531cb28f25c37e754532c9f5983df787ece63beb888336dca806f6c6fef82.",
+          "candidateState": "incompleteCandidate",
+          "confidence": "candidate",
+          "edgeIds": [
+            "edge:sha256:8642ed916e54beddb38c4147541b2e22b70ed81a383ff673bfc18df01cad49f7"
+          ],
+          "findings": [
+            "SI-VERTICAL-SUPPORT-UNRESOLVED"
+          ],
+          "graph": "gravity",
+          "limitations": [
+            "No verifica capacidad, rigidez, conexión, anclaje, resistencia ni deformaciones."
+          ],
+          "pathId": "path:sha256:daa531cb28f25c37e754532c9f5983df787ece63beb888336dca806f6c6fef82",
+          "sourceRefs": {
+            "proposalId": "proposal:sha256:7dee0ae652679d01471da7b5fd63e9c3e11ebcc8043e5941ff57140805a87256",
+            "roofGeometryId": 1785161146258,
+            "targetElementId": 1784819708086
+          },
+          "summary": "G↓ gravedad · incompleteCandidate · 1 tramo"
+        },
+        {
+          "ariaLabel": "Camino gravitacional candidato. Estado completeCandidate. 0 hallazgos. Referencia técnica path:sha256:ef900d4c856c89303b2fcd241af8daaf9ba6a8ddd00ebfd9deeffd163f133e9f.",
+          "candidateState": "completeCandidate",
+          "confidence": "candidate",
+          "edgeIds": [
+            "edge:sha256:fa69c6d876ffa866bfd953e3625276a8c8c0aa62b918475fdfb93b61a1f67828",
+            "edge:sha256:6776377e0d171f81ac43bd8984611e715136f19e16fea23039f2327e6c5c4f9e"
+          ],
+          "findings": [],
+          "graph": "gravity",
+          "limitations": [
+            "No verifica capacidad, rigidez, conexión, anclaje, resistencia ni deformaciones."
+          ],
+          "pathId": "path:sha256:ef900d4c856c89303b2fcd241af8daaf9ba6a8ddd00ebfd9deeffd163f133e9f",
+          "sourceRefs": {
+            "proposalId": "proposal:sha256:c57a0a4c3eb31375afe87190e0ee4a6b4c569313e8ca6ac300887a6d67a2436f",
+            "roofGeometryId": 1785158713616,
+            "targetElementId": 1784670218571
+          },
+          "summary": "G↓ gravedad · completeCandidate · 2 tramos"
+        }
+      ]
+    },
+    "lateral": {
+      "edges": [
+        {
+          "edgeId": "edge:sha256:15969c42c0d31e2a15c888d26f08d08e10a320c48e5dfb06893c07a41ab1c737",
+          "fromNodeId": "node:sha256:e7ffe8275c5f424d63e82cf09eedeb977c6e2dc9b7e76da9b318e81fef65491c",
+          "graph": "lateral",
+          "kind": "wallToBaseCandidate",
+          "overlapMm": 4400,
+          "toNodeId": "node:sha256:a54e1615778c4e46d2f120b035d1d6013326617e5b71f4349d5e6e591a9285db"
+        },
+        {
+          "edgeId": "edge:sha256:93dd4a82f9104b75ef61b16068efe77fb15fe347230c7a255f9ac9300de11dac",
+          "fromNodeId": "node:sha256:18b866d7eedb578ee15382a4bf1cf2ec0a948b919ce3828a133be2457c27dfda",
+          "gapMm": 571.429,
+          "graph": "lateral",
+          "kind": "unresolvedVerticalTransfer",
+          "toNodeId": "node:sha256:e7ffe8275c5f424d63e82cf09eedeb977c6e2dc9b7e76da9b318e81fef65491c"
+        }
+      ],
+      "graphType": "lateral",
+      "nodes": [
+        {
+          "ariaLabel": "Fuente lateral de diafragma previsto. Faldón rectangular 1–6 entre B–H. Pendiente B→H · 12.800 × 4.200 mm. Referencia técnica 1785158713616.",
+          "entity": {
+            "ariaLabel": "Faldón rectangular 1–6 entre B–H. Pendiente B→H · 12.800 × 4.200 mm. Referencia técnica 1785158713616.",
+            "entityId": 1785158713616,
+            "entityType": "roof",
+            "locate": {
+              "id": 1785158713616,
+              "kind": "roof"
+            },
+            "preview": {
+              "bounds": {
+                "maxX": 12800,
+                "maxY": 5400,
+                "maxZ": 3950,
+                "minX": 0,
+                "minY": 1200,
+                "minZ": 3650,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 1200,
+                    "z": 3950
+                  },
+                  {
+                    "x": 12800,
+                    "y": 1200,
+                    "z": 3950
+                  },
+                  {
+                    "x": 12800,
+                    "y": 5400,
+                    "z": 3650
+                  },
+                  {
+                    "x": 0,
+                    "y": 5400,
+                    "z": 3650
+                  }
+                ]
+              },
+              "kind": "roof-planar-polygon",
+              "polygon": [
+                {
+                  "x": 0,
+                  "y": 1200,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 1200,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 5400,
+                  "z": 3650
+                },
+                {
+                  "x": 0,
+                  "y": 5400,
+                  "z": 3650
+                }
+              ]
+            },
+            "subtitle": "Pendiente B→H · 12.800 × 4.200 mm",
+            "technicalReference": {
+              "roofGeometryId": 1785158713616
+            },
+            "title": "Faldón rectangular 1–6 entre B–H",
+            "visualFingerprint": "89755dc1ef63d70ac45199bc29b9c65ed9f9dee5817255b31789d5b0200703b9"
+          },
+          "graph": "lateral",
+          "nodeId": "node:sha256:18b866d7eedb578ee15382a4bf1cf2ec0a948b919ce3828a133be2457c27dfda",
+          "role": "diaphragmSource",
+          "roleLabel": "Fuente lateral de diafragma previsto",
+          "subtitle": "Fuente lateral de diafragma previsto · Pendiente B→H · 12.800 × 4.200 mm",
+          "technicalReference": {
+            "nodeId": "node:sha256:18b866d7eedb578ee15382a4bf1cf2ec0a948b919ce3828a133be2457c27dfda",
+            "roofGeometryId": 1785158713616
+          },
+          "title": "Faldón rectangular 1–6 entre B–H"
+        },
+        {
+          "ariaLabel": "Base geométrica candidata. Fundación corrida · x=4.200→8.600 · y=2.750→3.250. z=-650→450. Referencia técnica 1784923263309.",
+          "entity": {
+            "ariaLabel": "Fundación corrida · x=4.200→8.600 · y=2.750→3.250. z=-650→450. Referencia técnica 1784923263309.",
+            "entityId": 1784923263309,
+            "entityType": "foundation",
+            "locate": {
+              "id": 1784923263309,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 8600,
+                "xMin": 4200,
+                "yMax": 3250,
+                "yMin": 2750,
+                "zMax": 450,
+                "zMin": -650
+              },
+              "elevationGeometry": {
+                "kind": "foundation-elevation",
+                "solids": [
+                  {
+                    "rect": {
+                      "s0": 4200,
+                      "s1": 8600,
+                      "z0": -600,
+                      "z1": 0
+                    },
+                    "role": "cimiento"
+                  },
+                  {
+                    "rect": {
+                      "s0": 4200,
+                      "s1": 8600,
+                      "z0": -650,
+                      "z1": -600
+                    },
+                    "role": "emplantillado"
+                  },
+                  {
+                    "rect": {
+                      "s0": 4200,
+                      "s1": 8600,
+                      "z0": 0,
+                      "z1": 450
+                    },
+                    "role": "sobrecimiento"
+                  }
+                ]
+              },
+              "openings": [],
+              "planGeometry": {
+                "kind": "foundation-solids",
+                "solids": [
+                  {
+                    "polygon": [
+                      {
+                        "x": 4200,
+                        "y": 2800
+                      },
+                      {
+                        "x": 8600,
+                        "y": 2800
+                      },
+                      {
+                        "x": 8600,
+                        "y": 3200
+                      },
+                      {
+                        "x": 4200,
+                        "y": 3200
+                      }
+                    ],
+                    "role": "cimiento"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 4200,
+                        "y": 2750
+                      },
+                      {
+                        "x": 8600,
+                        "y": 2750
+                      },
+                      {
+                        "x": 8600,
+                        "y": 3250
+                      },
+                      {
+                        "x": 4200,
+                        "y": 3250
+                      }
+                    ],
+                    "role": "emplantillado"
+                  },
+                  {
+                    "polygon": [
+                      {
+                        "x": 4200,
+                        "y": 2930
+                      },
+                      {
+                        "x": 8600,
+                        "y": 2930
+                      },
+                      {
+                        "x": 8600,
+                        "y": 3070
+                      },
+                      {
+                        "x": 4200,
+                        "y": 3070
+                      }
+                    ],
+                    "role": "sobrecimiento"
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "z=-650→450",
+            "technicalReference": {
+              "elementId": 1784923263309
+            },
+            "title": "Fundación corrida · x=4.200→8.600 · y=2.750→3.250",
+            "visualFingerprint": "776329886a3e62191ef336ac54af05d508d3a18e000fad578a7f25fcc104e667"
+          },
+          "graph": "lateral",
+          "nodeId": "node:sha256:a54e1615778c4e46d2f120b035d1d6013326617e5b71f4349d5e6e591a9285db",
+          "role": "foundationBase",
+          "roleLabel": "Base geométrica candidata",
+          "subtitle": "Base geométrica candidata · z=-650→450",
+          "technicalReference": {
+            "elementId": 1784923263309,
+            "nodeId": "node:sha256:a54e1615778c4e46d2f120b035d1d6013326617e5b71f4349d5e6e591a9285db"
+          },
+          "title": "Fundación corrida · x=4.200→8.600 · y=2.750→3.250"
+        },
+        {
+          "ariaLabel": "Destino lateral previsto. Muro X · 3→5 @ C1. NPT 450 → CIELO GENERAL 3.250 · L 4.400 mm · 0 vanos. Referencia técnica 1784606313849.",
+          "entity": {
+            "ariaLabel": "Muro X · 3→5 @ C1. NPT 450 → CIELO GENERAL 3.250 · L 4.400 mm · 0 vanos. Referencia técnica 1784606313849.",
+            "entityId": 1784606313849,
+            "entityType": "wall",
+            "locate": {
+              "id": 1784606313849,
+              "kind": "element"
+            },
+            "preview": {
+              "bounds": {
+                "xMax": 8650.55,
+                "xMin": 4149.45,
+                "yMax": 3050.55,
+                "yMin": 2949.45,
+                "zMax": 3250,
+                "zMin": 450
+              },
+              "elevationGeometry": {
+                "axis": "X",
+                "kind": "wall-elevation",
+                "openings": [],
+                "rect": {
+                  "s0": 0,
+                  "s1": 4400,
+                  "z0": 450,
+                  "z1": 3250
+                }
+              },
+              "openings": [],
+              "planGeometry": {
+                "centerline": [
+                  {
+                    "x": 4200,
+                    "y": 3000
+                  },
+                  {
+                    "x": 8600,
+                    "y": 3000
+                  }
+                ],
+                "kind": "oriented-polygon",
+                "polygon": [
+                  {
+                    "x": 4200,
+                    "y": 3050.55
+                  },
+                  {
+                    "x": 8600,
+                    "y": 3050.55
+                  },
+                  {
+                    "x": 8600,
+                    "y": 2949.45
+                  },
+                  {
+                    "x": 4200,
+                    "y": 2949.45
+                  }
+                ]
+              }
+            },
+            "state": "available",
+            "subtitle": "NPT 450 → CIELO GENERAL 3.250 · L 4.400 mm · 0 vanos",
+            "technicalReference": {
+              "elementId": 1784606313849
+            },
+            "title": "Muro X · 3→5 @ C1",
+            "visualFingerprint": "84f35c2353a33536086255f0f4febc2e4401113acaeff6da2bc95da3736d02dc"
+          },
+          "graph": "lateral",
+          "nodeId": "node:sha256:e7ffe8275c5f424d63e82cf09eedeb977c6e2dc9b7e76da9b318e81fef65491c",
+          "role": "resistantWallDestination",
+          "roleLabel": "Destino lateral previsto",
+          "subtitle": "Destino lateral previsto · NPT 450 → CIELO GENERAL 3.250 · L 4.400 mm · 0 vanos",
+          "technicalReference": {
+            "elementId": 1784606313849,
+            "nodeId": "node:sha256:e7ffe8275c5f424d63e82cf09eedeb977c6e2dc9b7e76da9b318e81fef65491c"
+          },
+          "title": "Muro X · 3→5 @ C1"
+        }
+      ],
+      "paths": [
+        {
+          "ariaLabel": "Camino lateral candidato. Estado incompleteCandidate. 1 hallazgo. Referencia técnica path:sha256:6baec8998b1c6f1a80cae66e5394f827526bc33038da3a969508a15c99f5563f.",
+          "candidateState": "incompleteCandidate",
+          "confidence": "candidate",
+          "edgeIds": [
+            "edge:sha256:93dd4a82f9104b75ef61b16068efe77fb15fe347230c7a255f9ac9300de11dac",
+            "edge:sha256:15969c42c0d31e2a15c888d26f08d08e10a320c48e5dfb06893c07a41ab1c737"
+          ],
+          "findings": [
+            "SI-LATERAL-TRANSFER-REQUIRED"
+          ],
+          "graph": "lateral",
+          "limitations": [
+            "No verifica capacidad, rigidez, conexión, anclaje, resistencia ni deformaciones."
+          ],
+          "pathId": "path:sha256:6baec8998b1c6f1a80cae66e5394f827526bc33038da3a969508a15c99f5563f",
+          "sourceRefs": {
+            "direction": "x",
+            "roofGeometryId": 1785158713616,
+            "targetElementId": 1784606313849
+          },
+          "summary": "L→ lateral · incompleteCandidate · 2 tramos"
+        }
+      ]
+    }
+  },
+  "invariants": {
+    "constructiveTerms": [],
+    "falseCeilingNodes": 0,
+    "gravityAndLateralSeparated": true,
+    "noVerifiedState": true,
+    "structuralIntentUnchangedByGeneration": true
+  },
+  "proposals": [
+    {
+      "ariaLabel": "Propuesta candidate. Faldón poligonal 2–7 entre A–C. Pendiente 13.650→8.750 · 11.500 × 2.000 mm. Referencia técnica 1785030887081. Objetivo: Muro X · 1→6 @ B. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos. Referencia técnica 1784604634483.",
+      "candidateState": "candidate",
+      "proposalId": "proposal:sha256:786f96fdd1990ca8c5e486ab8131f2289d3d3c6a95bc1f27f03171070fdb1493",
+      "relation": {
+        "boundary": {
+          "end": {
+            "x": 12800,
+            "y": 1200,
+            "z": 3830
+          },
+          "start": {
+            "x": 3000,
+            "y": 1200,
+            "z": 3830
+          }
+        },
+        "bounds": {
+          "xMax": 14500,
+          "xMin": -50.55,
+          "yMax": 2000,
+          "yMin": 0
+        },
+        "kind": "proposal-relation",
+        "locatorLabel": "Faldón poligonal 2–7 entre A–C ↔ Muro X · 1→6 @ B",
+        "overlapSegments": [
+          {
+            "end": {
+              "x": 12800,
+              "y": 1200
+            },
+            "start": {
+              "x": 3000,
+              "y": 1200
+            }
+          }
+        ],
+        "selected": [
+          {
+            "id": "roof:number:1785030887081",
+            "mark": "ORIGEN",
+            "openings": [],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 3000,
+                  "y": 0,
+                  "z": 3650
+                },
+                {
+                  "x": 14500,
+                  "y": 0,
+                  "z": 3650
+                },
+                {
+                  "x": 14500,
+                  "y": 2000,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 2000,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 1200,
+                  "z": 3830
+                },
+                {
+                  "x": 3000,
+                  "y": 1200,
+                  "z": 3830
+                }
+              ]
+            },
+            "role": "source"
+          },
+          {
+            "id": "element:number:1784604634483",
+            "mark": "OBJETIVO",
+            "openings": [
+              {
+                "height": 2200,
+                "hostWallId": 1784604634483,
+                "id": 1784604771014,
+                "kind": "door",
+                "localS0": 3355,
+                "localS1": 4155,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 3355,
+                      "y": 1250.55
+                    },
+                    {
+                      "x": 4155,
+                      "y": 1250.55
+                    },
+                    {
+                      "x": 4155,
+                      "y": 1149.45
+                    },
+                    {
+                      "x": 3355,
+                      "y": 1149.45
+                    }
+                  ]
+                },
+                "width": 800,
+                "z0": 450,
+                "z1": 2650
+              },
+              {
+                "height": 2200,
+                "hostWallId": 1784604634483,
+                "id": 1784604806833,
+                "kind": "door",
+                "localS0": 8645,
+                "localS1": 9445,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 8645,
+                      "y": 1250.55
+                    },
+                    {
+                      "x": 9445,
+                      "y": 1250.55
+                    },
+                    {
+                      "x": 9445,
+                      "y": 1149.45
+                    },
+                    {
+                      "x": 8645,
+                      "y": 1149.45
+                    }
+                  ]
+                },
+                "width": 800,
+                "z0": 450,
+                "z1": 2650
+              }
+            ],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 0,
+                  "y": 1250.55
+                },
+                {
+                  "x": 12800,
+                  "y": 1250.55
+                },
+                {
+                  "x": 12800,
+                  "y": 1149.45
+                },
+                {
+                  "x": 0,
+                  "y": 1149.45
+                }
+              ]
+            },
+            "role": "target"
+          }
+        ]
+      },
+      "source": {
+        "ariaLabel": "Faldón poligonal 2–7 entre A–C. Pendiente 13.650→8.750 · 11.500 × 2.000 mm. Referencia técnica 1785030887081.",
+        "entityId": 1785030887081,
+        "entityType": "roof",
+        "locate": {
+          "id": 1785030887081,
+          "kind": "roof"
+        },
+        "preview": {
+          "bounds": {
+            "maxX": 14500,
+            "maxY": 2000,
+            "maxZ": 3950,
+            "minX": 3000,
+            "minY": 0,
+            "minZ": 3650,
+            "points": [
+              {
+                "x": 3000,
+                "y": 0,
+                "z": 3650
+              },
+              {
+                "x": 14500,
+                "y": 0,
+                "z": 3650
+              },
+              {
+                "x": 14500,
+                "y": 2000,
+                "z": 3950
+              },
+              {
+                "x": 12800,
+                "y": 2000,
+                "z": 3950
+              },
+              {
+                "x": 12800,
+                "y": 1200,
+                "z": 3830
+              },
+              {
+                "x": 3000,
+                "y": 1200,
+                "z": 3830
+              }
+            ]
+          },
+          "kind": "roof-planar-polygon",
+          "polygon": [
+            {
+              "x": 3000,
+              "y": 0,
+              "z": 3650
+            },
+            {
+              "x": 14500,
+              "y": 0,
+              "z": 3650
+            },
+            {
+              "x": 14500,
+              "y": 2000,
+              "z": 3950
+            },
+            {
+              "x": 12800,
+              "y": 2000,
+              "z": 3950
+            },
+            {
+              "x": 12800,
+              "y": 1200,
+              "z": 3830
+            },
+            {
+              "x": 3000,
+              "y": 1200,
+              "z": 3830
+            }
+          ]
+        },
+        "subtitle": "Pendiente 13.650→8.750 · 11.500 × 2.000 mm",
+        "technicalReference": {
+          "roofGeometryId": 1785030887081
+        },
+        "title": "Faldón poligonal 2–7 entre A–C",
+        "visualFingerprint": "1effcbe855939977dba971cd0b0c7cc6aa0ddbe379c5a63da2cb69b6feaa65b3"
+      },
+      "subtitle": "Faldón poligonal 2–7 entre A–C → NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos",
+      "target": {
+        "ariaLabel": "Muro X · 1→6 @ B. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos. Referencia técnica 1784604634483.",
+        "entityId": 1784604634483,
+        "entityType": "wall",
+        "locate": {
+          "id": 1784604634483,
+          "kind": "element"
+        },
+        "preview": {
+          "bounds": {
+            "xMax": 12850.55,
+            "xMin": -50.55,
+            "yMax": 1250.55,
+            "yMin": 1149.45,
+            "zMax": 4150,
+            "zMin": 450
+          },
+          "elevationGeometry": {
+            "axis": "X",
+            "kind": "wall-elevation",
+            "openings": [
+              {
+                "id": 1784604771014,
+                "kind": "door",
+                "s0": 3355,
+                "s1": 4155,
+                "z0": 450,
+                "z1": 2650
+              },
+              {
+                "id": 1784604806833,
+                "kind": "door",
+                "s0": 8645,
+                "s1": 9445,
+                "z0": 450,
+                "z1": 2650
+              }
+            ],
+            "rect": {
+              "s0": 0,
+              "s1": 12800,
+              "z0": 450,
+              "z1": 4150
+            }
+          },
+          "openings": [
+            {
+              "height": 2200,
+              "hostWallId": 1784604634483,
+              "id": 1784604771014,
+              "kind": "door",
+              "localS0": 3355,
+              "localS1": 4155,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 3355,
+                    "y": 1250.55
+                  },
+                  {
+                    "x": 4155,
+                    "y": 1250.55
+                  },
+                  {
+                    "x": 4155,
+                    "y": 1149.45
+                  },
+                  {
+                    "x": 3355,
+                    "y": 1149.45
+                  }
+                ]
+              },
+              "width": 800,
+              "z0": 450,
+              "z1": 2650
+            },
+            {
+              "height": 2200,
+              "hostWallId": 1784604634483,
+              "id": 1784604806833,
+              "kind": "door",
+              "localS0": 8645,
+              "localS1": 9445,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 8645,
+                    "y": 1250.55
+                  },
+                  {
+                    "x": 9445,
+                    "y": 1250.55
+                  },
+                  {
+                    "x": 9445,
+                    "y": 1149.45
+                  },
+                  {
+                    "x": 8645,
+                    "y": 1149.45
+                  }
+                ]
+              },
+              "width": 800,
+              "z0": 450,
+              "z1": 2650
+            }
+          ],
+          "planGeometry": {
+            "centerline": [
+              {
+                "x": 0,
+                "y": 1200
+              },
+              {
+                "x": 12800,
+                "y": 1200
+              }
+            ],
+            "kind": "oriented-polygon",
+            "polygon": [
+              {
+                "x": 0,
+                "y": 1250.55
+              },
+              {
+                "x": 12800,
+                "y": 1250.55
+              },
+              {
+                "x": 12800,
+                "y": 1149.45
+              },
+              {
+                "x": 0,
+                "y": 1149.45
+              }
+            ]
+          }
+        },
+        "state": "available",
+        "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 2 vanos",
+        "technicalReference": {
+          "elementId": 1784604634483
+        },
+        "title": "Muro X · 1→6 @ B",
+        "visualFingerprint": "8947222edd30e7be0ec9a2839da9c7a85f92e8ec26efac9dd321cb90b0f35a3a"
+      },
+      "technicalReference": {
+        "boundaryId": "roof:1785030887081:edge:157f41ab51bcafae76ec4cccc56b73b788eca64e77f659883b4c496f66fd67de",
+        "proposalId": "proposal:sha256:786f96fdd1990ca8c5e486ab8131f2289d3d3c6a95bc1f27f03171070fdb1493",
+        "targetId": 1784604634483
+      },
+      "title": "Apoyo gravitacional candidato · Muro X · 1→6 @ B",
+      "visualFingerprint": "938c4e309cdeb74c187ef46b588d13bad40f5f42b7316b750d422aaf0927806f"
+    },
+    {
+      "ariaLabel": "Propuesta candidate. Faldón poligonal 11A–15 entre F–J. Pendiente 11A→15 · 5.200 × 4.100 mm. Referencia técnica 1785161198226. Objetivo: Muro X · 13→15 @ G. NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano. Referencia técnica 1784669652371.",
+      "candidateState": "candidate",
+      "proposalId": "proposal:sha256:7ddf46a414b946e3432ebc436c07a7820afdccd472772377db84a4f108efc8e8",
+      "relation": {
+        "boundary": {
+          "end": {
+            "x": 28400,
+            "y": 5150,
+            "z": 3650
+          },
+          "start": {
+            "x": 24800,
+            "y": 5150,
+            "z": 3857.692
+          }
+        },
+        "bounds": {
+          "xMax": 28450.55,
+          "xMin": 23200,
+          "yMax": 8300,
+          "yMin": 4200
+        },
+        "kind": "proposal-relation",
+        "locatorLabel": "Faldón poligonal 11A–15 entre F–J ↔ Muro X · 13→15 @ G",
+        "overlapSegments": [
+          {
+            "end": {
+              "x": 28400,
+              "y": 5150
+            },
+            "start": {
+              "x": 24800,
+              "y": 5150
+            }
+          }
+        ],
+        "selected": [
+          {
+            "id": "roof:number:1785161198226",
+            "mark": "ORIGEN",
+            "openings": [],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 23200,
+                  "y": 4200,
+                  "z": 3950
+                },
+                {
+                  "x": 24800,
+                  "y": 4200,
+                  "z": 3857.692
+                },
+                {
+                  "x": 24800,
+                  "y": 5150,
+                  "z": 3857.692
+                },
+                {
+                  "x": 28400,
+                  "y": 5150,
+                  "z": 3650
+                },
+                {
+                  "x": 28400,
+                  "y": 8300,
+                  "z": 3650
+                },
+                {
+                  "x": 23200,
+                  "y": 8300,
+                  "z": 3950
+                }
+              ]
+            },
+            "role": "source"
+          },
+          {
+            "id": "element:number:1784669652371",
+            "mark": "OBJETIVO",
+            "openings": [
+              {
+                "height": 1800,
+                "hostWallId": 1784669652371,
+                "id": 1784669702153,
+                "kind": "window",
+                "localS0": 1150,
+                "localS1": 2450,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 25950,
+                      "y": 5200.55
+                    },
+                    {
+                      "x": 27250,
+                      "y": 5200.55
+                    },
+                    {
+                      "x": 27250,
+                      "y": 5099.45
+                    },
+                    {
+                      "x": 25950,
+                      "y": 5099.45
+                    }
+                  ]
+                },
+                "width": 1300,
+                "z0": 1350,
+                "z1": 3150
+              }
+            ],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 24800,
+                  "y": 5200.55
+                },
+                {
+                  "x": 28400,
+                  "y": 5200.55
+                },
+                {
+                  "x": 28400,
+                  "y": 5099.45
+                },
+                {
+                  "x": 24800,
+                  "y": 5099.45
+                }
+              ]
+            },
+            "role": "target"
+          }
+        ]
+      },
+      "source": {
+        "ariaLabel": "Faldón poligonal 11A–15 entre F–J. Pendiente 11A→15 · 5.200 × 4.100 mm. Referencia técnica 1785161198226.",
+        "entityId": 1785161198226,
+        "entityType": "roof",
+        "locate": {
+          "id": 1785161198226,
+          "kind": "roof"
+        },
+        "preview": {
+          "bounds": {
+            "maxX": 28400,
+            "maxY": 8300,
+            "maxZ": 3950,
+            "minX": 23200,
+            "minY": 4200,
+            "minZ": 3650,
+            "points": [
+              {
+                "x": 23200,
+                "y": 4200,
+                "z": 3950
+              },
+              {
+                "x": 24800,
+                "y": 4200,
+                "z": 3857.692
+              },
+              {
+                "x": 24800,
+                "y": 5150,
+                "z": 3857.692
+              },
+              {
+                "x": 28400,
+                "y": 5150,
+                "z": 3650
+              },
+              {
+                "x": 28400,
+                "y": 8300,
+                "z": 3650
+              },
+              {
+                "x": 23200,
+                "y": 8300,
+                "z": 3950
+              }
+            ]
+          },
+          "kind": "roof-planar-polygon",
+          "polygon": [
+            {
+              "x": 23200,
+              "y": 4200,
+              "z": 3950
+            },
+            {
+              "x": 24800,
+              "y": 4200,
+              "z": 3857.692
+            },
+            {
+              "x": 24800,
+              "y": 5150,
+              "z": 3857.692
+            },
+            {
+              "x": 28400,
+              "y": 5150,
+              "z": 3650
+            },
+            {
+              "x": 28400,
+              "y": 8300,
+              "z": 3650
+            },
+            {
+              "x": 23200,
+              "y": 8300,
+              "z": 3950
+            }
+          ]
+        },
+        "subtitle": "Pendiente 11A→15 · 5.200 × 4.100 mm",
+        "technicalReference": {
+          "roofGeometryId": 1785161198226
+        },
+        "title": "Faldón poligonal 11A–15 entre F–J",
+        "visualFingerprint": "fa93c0833aaf3ea27684bb64e3c02cdf40607a33ebd17ba29eabfb68fec61d8f"
+      },
+      "subtitle": "Faldón poligonal 11A–15 entre F–J → NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano",
+      "target": {
+        "ariaLabel": "Muro X · 13→15 @ G. NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano. Referencia técnica 1784669652371.",
+        "entityId": 1784669652371,
+        "entityType": "wall",
+        "locate": {
+          "id": 1784669652371,
+          "kind": "element"
+        },
+        "preview": {
+          "bounds": {
+            "xMax": 28450.55,
+            "xMin": 24749.45,
+            "yMax": 5200.55,
+            "yMin": 5099.45,
+            "zMax": 4150,
+            "zMin": 450
+          },
+          "elevationGeometry": {
+            "axis": "X",
+            "kind": "wall-elevation",
+            "openings": [
+              {
+                "id": 1784669702153,
+                "kind": "window",
+                "s0": 1150,
+                "s1": 2450,
+                "z0": 1350,
+                "z1": 3150
+              }
+            ],
+            "rect": {
+              "s0": 0,
+              "s1": 3600,
+              "z0": 450,
+              "z1": 4150
+            }
+          },
+          "openings": [
+            {
+              "height": 1800,
+              "hostWallId": 1784669652371,
+              "id": 1784669702153,
+              "kind": "window",
+              "localS0": 1150,
+              "localS1": 2450,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 25950,
+                    "y": 5200.55
+                  },
+                  {
+                    "x": 27250,
+                    "y": 5200.55
+                  },
+                  {
+                    "x": 27250,
+                    "y": 5099.45
+                  },
+                  {
+                    "x": 25950,
+                    "y": 5099.45
+                  }
+                ]
+              },
+              "width": 1300,
+              "z0": 1350,
+              "z1": 3150
+            }
+          ],
+          "planGeometry": {
+            "centerline": [
+              {
+                "x": 24800,
+                "y": 5150
+              },
+              {
+                "x": 28400,
+                "y": 5150
+              }
+            ],
+            "kind": "oriented-polygon",
+            "polygon": [
+              {
+                "x": 24800,
+                "y": 5200.55
+              },
+              {
+                "x": 28400,
+                "y": 5200.55
+              },
+              {
+                "x": 28400,
+                "y": 5099.45
+              },
+              {
+                "x": 24800,
+                "y": 5099.45
+              }
+            ]
+          }
+        },
+        "state": "available",
+        "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 3.600 mm · 1 vano",
+        "technicalReference": {
+          "elementId": 1784669652371
+        },
+        "title": "Muro X · 13→15 @ G",
+        "visualFingerprint": "6bf31952932df538ead5a97ad7c592b4fe64a0a37fdcd8eaac94633313023932"
+      },
+      "technicalReference": {
+        "boundaryId": "roof:1785161198226:edge:38450000b828521f2e1a32a36d0bb48108c6abe5c85524c0e11b0bd6fc05df2b",
+        "proposalId": "proposal:sha256:7ddf46a414b946e3432ebc436c07a7820afdccd472772377db84a4f108efc8e8",
+        "targetId": 1784669652371
+      },
+      "title": "Apoyo gravitacional candidato · Muro X · 13→15 @ G",
+      "visualFingerprint": "df549e64397ad3d6b78d3246f027c4e69f36b78fc71702f05565aa63168fc55b"
+    },
+    {
+      "ariaLabel": "Propuesta candidate. Faldón poligonal 6–11A entre C–J. Pendiente J→C · 10.400 × 6.300 mm. Referencia técnica 1785161146258. Objetivo: Muro X · 6→7 @ C. CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos. Referencia técnica 1784819708086.",
+      "candidateState": "candidate",
+      "proposalId": "proposal:sha256:7dee0ae652679d01471da7b5fd63e9c3e11ebcc8043e5941ff57140805a87256",
+      "relation": {
+        "boundary": {
+          "end": {
+            "x": 23200,
+            "y": 2000,
+            "z": 3650
+          },
+          "start": {
+            "x": 12800,
+            "y": 2000,
+            "z": 3650
+          }
+        },
+        "bounds": {
+          "xMax": 23200,
+          "xMin": 12749.45,
+          "yMax": 8300,
+          "yMin": 1949.45
+        },
+        "kind": "proposal-relation",
+        "locatorLabel": "Faldón poligonal 6–11A entre C–J ↔ Muro X · 6→7 @ C",
+        "overlapSegments": [
+          {
+            "end": {
+              "x": 14500,
+              "y": 2000
+            },
+            "start": {
+              "x": 12800,
+              "y": 2000
+            }
+          }
+        ],
+        "selected": [
+          {
+            "id": "roof:number:1785161146258",
+            "mark": "ORIGEN",
+            "openings": [],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 12800,
+                  "y": 2000,
+                  "z": 3650
+                },
+                {
+                  "x": 23200,
+                  "y": 2000,
+                  "z": 3650
+                },
+                {
+                  "x": 23200,
+                  "y": 8300,
+                  "z": 3950
+                },
+                {
+                  "x": 19000,
+                  "y": 8300,
+                  "z": 3950
+                },
+                {
+                  "x": 19000,
+                  "y": 6600,
+                  "z": 3869.048
+                },
+                {
+                  "x": 12800,
+                  "y": 6600,
+                  "z": 3869.048
+                }
+              ]
+            },
+            "role": "source"
+          },
+          {
+            "id": "element:number:1784819708086",
+            "mark": "OBJETIVO",
+            "openings": [],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 12800,
+                  "y": 2050.55
+                },
+                {
+                  "x": 14500,
+                  "y": 2050.55
+                },
+                {
+                  "x": 14500,
+                  "y": 1949.45
+                },
+                {
+                  "x": 12800,
+                  "y": 1949.45
+                }
+              ]
+            },
+            "role": "target"
+          }
+        ]
+      },
+      "source": {
+        "ariaLabel": "Faldón poligonal 6–11A entre C–J. Pendiente J→C · 10.400 × 6.300 mm. Referencia técnica 1785161146258.",
+        "entityId": 1785161146258,
+        "entityType": "roof",
+        "locate": {
+          "id": 1785161146258,
+          "kind": "roof"
+        },
+        "preview": {
+          "bounds": {
+            "maxX": 23200,
+            "maxY": 8300,
+            "maxZ": 3950,
+            "minX": 12800,
+            "minY": 2000,
+            "minZ": 3650,
+            "points": [
+              {
+                "x": 12800,
+                "y": 2000,
+                "z": 3650
+              },
+              {
+                "x": 23200,
+                "y": 2000,
+                "z": 3650
+              },
+              {
+                "x": 23200,
+                "y": 8300,
+                "z": 3950
+              },
+              {
+                "x": 19000,
+                "y": 8300,
+                "z": 3950
+              },
+              {
+                "x": 19000,
+                "y": 6600,
+                "z": 3869.048
+              },
+              {
+                "x": 12800,
+                "y": 6600,
+                "z": 3869.048
+              }
+            ]
+          },
+          "kind": "roof-planar-polygon",
+          "polygon": [
+            {
+              "x": 12800,
+              "y": 2000,
+              "z": 3650
+            },
+            {
+              "x": 23200,
+              "y": 2000,
+              "z": 3650
+            },
+            {
+              "x": 23200,
+              "y": 8300,
+              "z": 3950
+            },
+            {
+              "x": 19000,
+              "y": 8300,
+              "z": 3950
+            },
+            {
+              "x": 19000,
+              "y": 6600,
+              "z": 3869.048
+            },
+            {
+              "x": 12800,
+              "y": 6600,
+              "z": 3869.048
+            }
+          ]
+        },
+        "subtitle": "Pendiente J→C · 10.400 × 6.300 mm",
+        "technicalReference": {
+          "roofGeometryId": 1785161146258
+        },
+        "title": "Faldón poligonal 6–11A entre C–J",
+        "visualFingerprint": "22a4d9964416194d93a6dceffc18c7f728bc51cc2ebe2d27a38790b8c2923404"
+      },
+      "subtitle": "Faldón poligonal 6–11A entre C–J → CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos",
+      "target": {
+        "ariaLabel": "Muro X · 6→7 @ C. CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos. Referencia técnica 1784819708086.",
+        "entityId": 1784819708086,
+        "entityType": "wall",
+        "locate": {
+          "id": 1784819708086,
+          "kind": "element"
+        },
+        "preview": {
+          "bounds": {
+            "xMax": 14550.55,
+            "xMin": 12749.45,
+            "yMax": 2050.55,
+            "yMin": 1949.45,
+            "zMax": 4150,
+            "zMin": 3250
+          },
+          "elevationGeometry": {
+            "axis": "X",
+            "kind": "wall-elevation",
+            "openings": [],
+            "rect": {
+              "s0": 0,
+              "s1": 1700,
+              "z0": 3250,
+              "z1": 4150
+            }
+          },
+          "openings": [],
+          "planGeometry": {
+            "centerline": [
+              {
+                "x": 12800,
+                "y": 2000
+              },
+              {
+                "x": 14500,
+                "y": 2000
+              }
+            ],
+            "kind": "oriented-polygon",
+            "polygon": [
+              {
+                "x": 12800,
+                "y": 2050.55
+              },
+              {
+                "x": 14500,
+                "y": 2050.55
+              },
+              {
+                "x": 14500,
+                "y": 1949.45
+              },
+              {
+                "x": 12800,
+                "y": 1949.45
+              }
+            ]
+          }
+        },
+        "state": "available",
+        "subtitle": "CIELO GENERAL 3.250 → FRONTON GENERAL 4.150 · L 1.700 mm · 0 vanos",
+        "technicalReference": {
+          "elementId": 1784819708086
+        },
+        "title": "Muro X · 6→7 @ C",
+        "visualFingerprint": "d19fabdb31b041e8845163437b0ec727d35e9314e72ec16759cbe11e5a6da720"
+      },
+      "technicalReference": {
+        "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c",
+        "proposalId": "proposal:sha256:7dee0ae652679d01471da7b5fd63e9c3e11ebcc8043e5941ff57140805a87256",
+        "targetId": 1784819708086
+      },
+      "title": "Apoyo gravitacional candidato · Muro X · 6→7 @ C",
+      "visualFingerprint": "a19d6161318c0975c26e98e5d816549893d774f6730589c4bc65665f6be0adc3"
+    },
+    {
+      "ariaLabel": "Propuesta candidate. Faldón rectangular 1–6 entre B–H. Pendiente B→H · 12.800 × 4.200 mm. Referencia técnica 1785158713616. Objetivo: Muro X · 1→6 @ H. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos. Referencia técnica 1784670218571.",
+      "candidateState": "candidate",
+      "proposalId": "proposal:sha256:c57a0a4c3eb31375afe87190e0ee4a6b4c569313e8ca6ac300887a6d67a2436f",
+      "relation": {
+        "boundary": {
+          "end": {
+            "x": 12800,
+            "y": 5400,
+            "z": 3650
+          },
+          "start": {
+            "x": 0,
+            "y": 5400,
+            "z": 3650
+          }
+        },
+        "bounds": {
+          "xMax": 12850.55,
+          "xMin": -50.55,
+          "yMax": 5450.55,
+          "yMin": 1200
+        },
+        "kind": "proposal-relation",
+        "locatorLabel": "Faldón rectangular 1–6 entre B–H ↔ Muro X · 1→6 @ H",
+        "overlapSegments": [
+          {
+            "end": {
+              "x": 12800,
+              "y": 5400
+            },
+            "start": {
+              "x": 0,
+              "y": 5400
+            }
+          }
+        ],
+        "selected": [
+          {
+            "id": "roof:number:1785158713616",
+            "mark": "ORIGEN",
+            "openings": [],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 0,
+                  "y": 1200,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 1200,
+                  "z": 3950
+                },
+                {
+                  "x": 12800,
+                  "y": 5400,
+                  "z": 3650
+                },
+                {
+                  "x": 0,
+                  "y": 5400,
+                  "z": 3650
+                }
+              ]
+            },
+            "role": "source"
+          },
+          {
+            "id": "element:number:1784670218571",
+            "mark": "OBJETIVO",
+            "openings": [
+              {
+                "height": 2700,
+                "hostWallId": 1784670218571,
+                "id": 1784670297732,
+                "kind": "door",
+                "localS0": 800,
+                "localS1": 2800,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 800,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 2800,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 2800,
+                      "y": 5349.45
+                    },
+                    {
+                      "x": 800,
+                      "y": 5349.45
+                    }
+                  ]
+                },
+                "width": 2000,
+                "z0": 450,
+                "z1": 3150
+              },
+              {
+                "height": 1800,
+                "hostWallId": 1784670218571,
+                "id": 1784670387562,
+                "kind": "window",
+                "localS0": 5100,
+                "localS1": 5700,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 5100,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 5700,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 5700,
+                      "y": 5349.45
+                    },
+                    {
+                      "x": 5100,
+                      "y": 5349.45
+                    }
+                  ]
+                },
+                "width": 600,
+                "z0": 1350,
+                "z1": 3150
+              },
+              {
+                "height": 1800,
+                "hostWallId": 1784670218571,
+                "id": 1784670415115,
+                "kind": "window",
+                "localS0": 7400,
+                "localS1": 8000,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 7400,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 8000,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 8000,
+                      "y": 5349.45
+                    },
+                    {
+                      "x": 7400,
+                      "y": 5349.45
+                    }
+                  ]
+                },
+                "width": 600,
+                "z0": 1350,
+                "z1": 3150
+              },
+              {
+                "height": 2700,
+                "hostWallId": 1784670218571,
+                "id": 1784670455067,
+                "kind": "door",
+                "localS0": 10050,
+                "localS1": 12050,
+                "planGeometry": {
+                  "polygon": [
+                    {
+                      "x": 10050,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 12050,
+                      "y": 5450.55
+                    },
+                    {
+                      "x": 12050,
+                      "y": 5349.45
+                    },
+                    {
+                      "x": 10050,
+                      "y": 5349.45
+                    }
+                  ]
+                },
+                "width": 2000,
+                "z0": 450,
+                "z1": 3150
+              }
+            ],
+            "planGeometry": {
+              "polygon": [
+                {
+                  "x": 0,
+                  "y": 5450.55
+                },
+                {
+                  "x": 12800,
+                  "y": 5450.55
+                },
+                {
+                  "x": 12800,
+                  "y": 5349.45
+                },
+                {
+                  "x": 0,
+                  "y": 5349.45
+                }
+              ]
+            },
+            "role": "target"
+          }
+        ]
+      },
+      "source": {
+        "ariaLabel": "Faldón rectangular 1–6 entre B–H. Pendiente B→H · 12.800 × 4.200 mm. Referencia técnica 1785158713616.",
+        "entityId": 1785158713616,
+        "entityType": "roof",
+        "locate": {
+          "id": 1785158713616,
+          "kind": "roof"
+        },
+        "preview": {
+          "bounds": {
+            "maxX": 12800,
+            "maxY": 5400,
+            "maxZ": 3950,
+            "minX": 0,
+            "minY": 1200,
+            "minZ": 3650,
+            "points": [
+              {
+                "x": 0,
+                "y": 1200,
+                "z": 3950
+              },
+              {
+                "x": 12800,
+                "y": 1200,
+                "z": 3950
+              },
+              {
+                "x": 12800,
+                "y": 5400,
+                "z": 3650
+              },
+              {
+                "x": 0,
+                "y": 5400,
+                "z": 3650
+              }
+            ]
+          },
+          "kind": "roof-planar-polygon",
+          "polygon": [
+            {
+              "x": 0,
+              "y": 1200,
+              "z": 3950
+            },
+            {
+              "x": 12800,
+              "y": 1200,
+              "z": 3950
+            },
+            {
+              "x": 12800,
+              "y": 5400,
+              "z": 3650
+            },
+            {
+              "x": 0,
+              "y": 5400,
+              "z": 3650
+            }
+          ]
+        },
+        "subtitle": "Pendiente B→H · 12.800 × 4.200 mm",
+        "technicalReference": {
+          "roofGeometryId": 1785158713616
+        },
+        "title": "Faldón rectangular 1–6 entre B–H",
+        "visualFingerprint": "89755dc1ef63d70ac45199bc29b9c65ed9f9dee5817255b31789d5b0200703b9"
+      },
+      "subtitle": "Faldón rectangular 1–6 entre B–H → NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos",
+      "target": {
+        "ariaLabel": "Muro X · 1→6 @ H. NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos. Referencia técnica 1784670218571.",
+        "entityId": 1784670218571,
+        "entityType": "wall",
+        "locate": {
+          "id": 1784670218571,
+          "kind": "element"
+        },
+        "preview": {
+          "bounds": {
+            "xMax": 12850.55,
+            "xMin": -50.55,
+            "yMax": 5450.55,
+            "yMin": 5349.45,
+            "zMax": 4150,
+            "zMin": 450
+          },
+          "elevationGeometry": {
+            "axis": "X",
+            "kind": "wall-elevation",
+            "openings": [
+              {
+                "id": 1784670297732,
+                "kind": "door",
+                "s0": 800,
+                "s1": 2800,
+                "z0": 450,
+                "z1": 3150
+              },
+              {
+                "id": 1784670387562,
+                "kind": "window",
+                "s0": 5100,
+                "s1": 5700,
+                "z0": 1350,
+                "z1": 3150
+              },
+              {
+                "id": 1784670415115,
+                "kind": "window",
+                "s0": 7400,
+                "s1": 8000,
+                "z0": 1350,
+                "z1": 3150
+              },
+              {
+                "id": 1784670455067,
+                "kind": "door",
+                "s0": 10050,
+                "s1": 12050,
+                "z0": 450,
+                "z1": 3150
+              }
+            ],
+            "rect": {
+              "s0": 0,
+              "s1": 12800,
+              "z0": 450,
+              "z1": 4150
+            }
+          },
+          "openings": [
+            {
+              "height": 2700,
+              "hostWallId": 1784670218571,
+              "id": 1784670297732,
+              "kind": "door",
+              "localS0": 800,
+              "localS1": 2800,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 800,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 2800,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 2800,
+                    "y": 5349.45
+                  },
+                  {
+                    "x": 800,
+                    "y": 5349.45
+                  }
+                ]
+              },
+              "width": 2000,
+              "z0": 450,
+              "z1": 3150
+            },
+            {
+              "height": 1800,
+              "hostWallId": 1784670218571,
+              "id": 1784670387562,
+              "kind": "window",
+              "localS0": 5100,
+              "localS1": 5700,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 5100,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 5700,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 5700,
+                    "y": 5349.45
+                  },
+                  {
+                    "x": 5100,
+                    "y": 5349.45
+                  }
+                ]
+              },
+              "width": 600,
+              "z0": 1350,
+              "z1": 3150
+            },
+            {
+              "height": 1800,
+              "hostWallId": 1784670218571,
+              "id": 1784670415115,
+              "kind": "window",
+              "localS0": 7400,
+              "localS1": 8000,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 7400,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 8000,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 8000,
+                    "y": 5349.45
+                  },
+                  {
+                    "x": 7400,
+                    "y": 5349.45
+                  }
+                ]
+              },
+              "width": 600,
+              "z0": 1350,
+              "z1": 3150
+            },
+            {
+              "height": 2700,
+              "hostWallId": 1784670218571,
+              "id": 1784670455067,
+              "kind": "door",
+              "localS0": 10050,
+              "localS1": 12050,
+              "planGeometry": {
+                "polygon": [
+                  {
+                    "x": 10050,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 12050,
+                    "y": 5450.55
+                  },
+                  {
+                    "x": 12050,
+                    "y": 5349.45
+                  },
+                  {
+                    "x": 10050,
+                    "y": 5349.45
+                  }
+                ]
+              },
+              "width": 2000,
+              "z0": 450,
+              "z1": 3150
+            }
+          ],
+          "planGeometry": {
+            "centerline": [
+              {
+                "x": 0,
+                "y": 5400
+              },
+              {
+                "x": 12800,
+                "y": 5400
+              }
+            ],
+            "kind": "oriented-polygon",
+            "polygon": [
+              {
+                "x": 0,
+                "y": 5450.55
+              },
+              {
+                "x": 12800,
+                "y": 5450.55
+              },
+              {
+                "x": 12800,
+                "y": 5349.45
+              },
+              {
+                "x": 0,
+                "y": 5349.45
+              }
+            ]
+          }
+        },
+        "state": "available",
+        "subtitle": "NPT 450 → FRONTON GENERAL 4.150 · L 12.800 mm · 4 vanos",
+        "technicalReference": {
+          "elementId": 1784670218571
+        },
+        "title": "Muro X · 1→6 @ H",
+        "visualFingerprint": "7cff413445b653505df48d46af89dbb1dda13563d522432194db6f985ad423ab"
+      },
+      "technicalReference": {
+        "boundaryId": "roof:1785158713616:edge:59e30de4b4cc43931033588423d1514ae4dbd42df493973b906b9a616905346c",
+        "proposalId": "proposal:sha256:c57a0a4c3eb31375afe87190e0ee4a6b4c569313e8ca6ac300887a6d67a2436f",
+        "targetId": 1784670218571
+      },
+      "title": "Apoyo gravitacional candidato · Muro X · 1→6 @ H",
+      "visualFingerprint": "9ac0bc06a824bb72f440d70d2d0adaafbe980ae21518b18acc18c20b934b29fa"
+    }
+  ],
+  "reviewScenarios": [
+    {
+      "after": {
+        "elementId": 1784604634483,
+        "functions": [
+          "gravityResistance",
+          "support"
+        ],
+        "intentId": "intent:element:1784604634483",
+        "notes": null,
+        "participation": "resistant",
+        "secondaryInteraction": "notApplicable",
+        "source": "userDeclared",
+        "status": "declared"
+      },
+      "before": null,
+      "changedIntent": true,
+      "disposition": "accepted",
+      "expectedHistorySteps": 1,
+      "label": "Aceptar",
+      "proposalId": "proposal:sha256:786f96fdd1990ca8c5e486ab8131f2289d3d3c6a95bc1f27f03171070fdb1493",
+      "reviewEvents": 1,
+      "target": "Muro X · 1→6 @ B",
+      "traceEvents": 1
+    },
+    {
+      "after": {
+        "elementId": 1784819708086,
+        "functions": [
+          "gravityResistance",
+          "loadTransfer",
+          "support"
+        ],
+        "intentId": "intent:element:1784819708086",
+        "notes": null,
+        "participation": "resistant",
+        "secondaryInteraction": "notApplicable",
+        "source": "userDeclared",
+        "status": "declared"
+      },
+      "before": null,
+      "changedIntent": true,
+      "disposition": "modifiedAndAccepted",
+      "expectedHistorySteps": 1,
+      "label": "Modificar y aceptar",
+      "proposalId": "proposal:sha256:7dee0ae652679d01471da7b5fd63e9c3e11ebcc8043e5941ff57140805a87256",
+      "reviewEvents": 1,
+      "target": "Muro X · 6→7 @ C",
+      "traceEvents": 1
+    },
+    {
+      "after": null,
+      "before": null,
+      "changedIntent": false,
+      "disposition": "rejected",
+      "expectedHistorySteps": 1,
+      "label": "Rechazar",
+      "proposalId": "proposal:sha256:c57a0a4c3eb31375afe87190e0ee4a6b4c569313e8ca6ac300887a6d67a2436f",
+      "reviewEvents": 1,
+      "target": "Muro X · 1→6 @ H",
+      "traceEvents": 0
+    },
+    {
+      "after": null,
+      "before": null,
+      "changedIntent": false,
+      "disposition": "deferred",
+      "expectedHistorySteps": 1,
+      "label": "Dejar pendiente",
+      "proposalId": "proposal:sha256:7ddf46a414b946e3432ebc436c07a7820afdccd472772377db84a4f108efc8e8",
+      "reviewEvents": 1,
+      "target": "Muro X · 13→15 @ G",
+      "traceEvents": 0
+    }
+  ],
+  "schema": "spec-015-d-fx008-evidence-v1.0",
+  "sourceFingerprints": {
+    "aggregateSha256": "36691a4b4114eb8503985ee4cf50df748086a62027a554333719f2152bcfd70a",
+    "elementIntentSha256": "4ce62ed352ac7582395cc65c4adb928d642bf797a6ebf21df566495e9bce4608",
+    "geometrySha256": "4ac389757d1d1799a6720823fcaa2be1fb3f63d0556c87cfc17faa1bc04f62a0",
+    "roofIntentSha256": "86a970e75ad5f548ebae5bdf828180d9f6f1c1803800d7adcad2ea86c38c6177",
+    "topologySha256": "fa0d69250107bb5dbfb519af7aea67fdf1b2bbf7e3cc542fb97b0166fc8f92f8"
+  },
+  "staleScenario": {
+    "blocked": true,
+    "code": "SI-PROPOSAL-STALE",
+    "message": "La propuesta cambió desde la previsualización.",
+    "reviewEvents": 0
+  }
+}
