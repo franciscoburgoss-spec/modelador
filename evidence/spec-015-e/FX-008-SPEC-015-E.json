@@ -1,0 +1,1362 @@
+{
+  "schema": "spec-015-e-fx008-evidence-v1.2",
+  "sourceFixture": "tests/fixtures/casa-L-completa-v3.json",
+  "sourceBaseline": "main@6d371bd + B1/B2/B3/B3.1/B3.2 working tree",
+  "sourceCounts": {
+    "walls": 45,
+    "openings": 43,
+    "foundations": 32,
+    "roofs": 7,
+    "interfaceIntents": 8,
+    "relationIntents": 5
+  },
+  "closureReference": {
+    "source": "docs/SPEC-015-D_REV8_CIERRE_VALIDACION_2026-08-10.md",
+    "proposals": 0,
+    "gravityPaths": 4,
+    "completeGravityPaths": 4,
+    "lateralPaths": 0,
+    "verified": 0,
+    "reproducibilityNote": "El review state exacto del cierre quedó en persistencia local del navegador y no se reconstruye desde el fixture versionado."
+  },
+  "reproducibleCheckpoint": {
+    "relationGravityPathCount": 4,
+    "gravityStates": [
+      "completeCandidate",
+      "completeCandidate",
+      "completeCandidate",
+      "completeCandidate"
+    ],
+    "lateralPathCount": 0,
+    "lateralStatus": "notDeclared",
+    "verificationState": "notVerified",
+    "allRelationGravityPathsNotVerified": true,
+    "supportedByFoundation": {
+      "count": 3,
+      "certainty": [
+        "candidate"
+      ],
+      "supportEvidence": [
+        "candidateSupportEvidence"
+      ]
+    }
+  },
+  "gravityPaths": [
+    {
+      "key": "g1",
+      "label": "G1",
+      "pathId": "path:sha256:33ec84c263c7b347959131fc77bea26a6e3cc12f48fec0d7e99e485d4c45fcea",
+      "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+      "roofGeometryId": 1785161146258,
+      "candidateState": "completeCandidate",
+      "verificationState": "notVerified",
+      "findings": [],
+      "display": {
+        "source": "Faldón poligonal 6–11A entre C–J · B1 · S 12800→14500",
+        "transfer": "Muro X · 6→7 @ C · Cara +N → Muro X · 6→7 @ C · Extremo S mín.",
+        "receiver": "Muro Y · B→I @ 6 · Cara −N",
+        "foundation": "Fundación corrida · eje 6 · B→O"
+      },
+      "edges": [
+        {
+          "edgeId": "edge:sha256:f28ae29127b9478a98d1581ca0df2ad207d38bdec26a3795964a572532907eaa",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Borde de cubierta · Faldón poligonal 6–11A entre C–J · B1 · S 12800→14500",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+              "locator": {
+                "kind": "boundary",
+                "sRange": [
+                  12800,
+                  14500
+                ]
+              },
+              "nodeId": "node:sha256:22dadab599f1d8e9f46c4a825c07fbda6d6279efdbb5545f8f72b92eb127c648",
+              "ownerRef": {
+                "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c",
+                "kind": "roofBoundary",
+                "roofGeometryId": 1785161146258
+              }
+            }
+          },
+          "to": {
+            "title": "Cara +N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "positiveN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:43c5cc9798119a49b959ad48182796be0f14c6c9c00821b9c398b423635f8fbf",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:caac1b1176c1bbccded8f8178f9d84a2567e265716dc7bcc2f35fe9190343425",
+          "kind": "declared:loadTransfer",
+          "structuralFunction": "loadTransfer",
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "relationTitle": "Transferencia de acciones · Gravitacional",
+          "from": {
+            "title": "Cara +N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "positiveN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:43c5cc9798119a49b959ad48182796be0f14c6c9c00821b9c398b423635f8fbf",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Extremo S mínimo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+              "locator": {
+                "end": "lowS",
+                "kind": "end",
+                "sRange": [
+                  12800,
+                  12800.1
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:2bca7c64b2f674170dd788e61f5315837bd02d43eba6477a8a0d0a6baa58c4b9",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:12c9c10dfcf539d9f2655265cdca9cb1c048297effda65274d233a9f767af0d4",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:9c9c11938c3701d8a9371f5cb9007cf57b5d7c1a921f0a86ca9e7edcc7f1d728",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Extremo S mínimo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+              "locator": {
+                "end": "lowS",
+                "kind": "end",
+                "sRange": [
+                  12800,
+                  12800.1
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:2bca7c64b2f674170dd788e61f5315837bd02d43eba6477a8a0d0a6baa58c4b9",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Cara −N · Muro Y · B→I @ 6",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  1949.45,
+                  2050.55
+                ],
+                "side": "negativeN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:97457a802960d7b6cb4785dfcc6f93f3311e08b95018a37802391be4c3d584f0",
+              "ownerRef": {
+                "id": 1784753322528,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:9281821fe1f29c12f2fd5170b9d5c1e1b3ae53b80a6fc63fca1d59c873fa1a28",
+          "kind": "supportedByFoundation",
+          "structuralFunction": null,
+          "relationId": null,
+          "relationTitle": null,
+          "from": {
+            "title": "Muro Y · B→I @ 6",
+            "roleLabel": "Receptor gravitacional candidato",
+            "technicalReference": {
+              "elementId": 1784753322528,
+              "nodeId": "node:sha256:e611761b4ee22c12083e85ddd61245b04536a046d165a7e2037ecc6a4df91410"
+            }
+          },
+          "to": {
+            "title": "Fundación corrida · x=12.600→13.000 · y=1.200→18.750",
+            "roleLabel": "Base geométrica candidata",
+            "technicalReference": {
+              "elementId": 1784920271828,
+              "nodeId": "node:sha256:31668564bbb7106b772c0fc836229b80bc1899be31f942ca759ad27b32cce0a0"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "g2",
+      "label": "G2",
+      "pathId": "path:sha256:46afa150ae1b24fc16bdf88b461afd8d1b6a5acce298f1169535f7aecfe70612",
+      "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+      "roofGeometryId": 1785030887081,
+      "candidateState": "completeCandidate",
+      "verificationState": "notVerified",
+      "findings": [],
+      "display": {
+        "source": "Faldón poligonal 2–7 entre A–C · B3",
+        "transfer": "Muro X · 6→7 @ C · Cara −N → Muro X · 6→7 @ C · Extremo S máx.",
+        "receiver": "Muro Y · A→C @ 7 · Extremo S máx.",
+        "foundation": "Fundación corrida · eje 7 · A→C"
+      },
+      "edges": [
+        {
+          "edgeId": "edge:sha256:9ec66ab15ccbe26c01722ff09fa9990bd83d70661aeed7a90ee42c7a5367203c",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Borde de cubierta · Faldón poligonal 2–7 entre A–C · B3",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+              "locator": {
+                "kind": "boundary",
+                "sRange": [
+                  12800,
+                  14500
+                ]
+              },
+              "nodeId": "node:sha256:66141a2fbab678bd777c5543ad284dc26cd9889bbe623f520afd83d858c0a865",
+              "ownerRef": {
+                "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6",
+                "kind": "roofBoundary",
+                "roofGeometryId": 1785030887081
+              }
+            }
+          },
+          "to": {
+            "title": "Cara −N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "negativeN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:31db2f0beaeff68b88e6648f666bc5e1ea4a4412db033974cdaa748d794b607b",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:140272a2618dc227e999584e0b5432c34ef3e60ceebc459e4e416f78873a9589",
+          "kind": "declared:loadTransfer",
+          "structuralFunction": "loadTransfer",
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "relationTitle": "Transferencia de acciones · Gravitacional",
+          "from": {
+            "title": "Cara −N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "negativeN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:31db2f0beaeff68b88e6648f666bc5e1ea4a4412db033974cdaa748d794b607b",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Extremo S máximo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+              "locator": {
+                "end": "highS",
+                "kind": "end",
+                "sRange": [
+                  14499.9,
+                  14500
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:5fd130a417284f39aef8f91ceb42c78ea49ce2030cc27abdc1c72565e3450e02",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:a94a9f3b92876668b652c3bddd41516602f56ae1f397c6124c71547e12a4603e",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:9b4cca46b2fbd8672b1dd96e6f78dd039a2fe7f24287000e3c77eb1391dabd85",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Extremo S máximo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+              "locator": {
+                "end": "highS",
+                "kind": "end",
+                "sRange": [
+                  14499.9,
+                  14500
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:5fd130a417284f39aef8f91ceb42c78ea49ce2030cc27abdc1c72565e3450e02",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Extremo S máximo · Muro Y · A→C @ 7",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60",
+              "locator": {
+                "end": "highS",
+                "kind": "end",
+                "sRange": [
+                  1999.9,
+                  2000
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:21537f2d58297a68e7aaad3f46be59122fee323c94640754d1ba1fd6d33f5e07",
+              "ownerRef": {
+                "id": 1784754251210,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:a1c7164aa2f254f10c73b8e8f568f00bc7fc42032346120769a1389717662e3d",
+          "kind": "supportedByFoundation",
+          "structuralFunction": null,
+          "relationId": null,
+          "relationTitle": null,
+          "from": {
+            "title": "Muro Y · A→C @ 7",
+            "roleLabel": "Receptor gravitacional candidato",
+            "technicalReference": {
+              "elementId": 1784754251210,
+              "nodeId": "node:sha256:f70fa860aff51cd21189ffa93ed99addb94065310918a3b20761847007101de3"
+            }
+          },
+          "to": {
+            "title": "Fundación corrida · x=14.300→14.700 · y=0→2.000",
+            "roleLabel": "Base geométrica candidata",
+            "technicalReference": {
+              "elementId": 1784920321065,
+              "nodeId": "node:sha256:c50866700e95b53701f3d88e1c5ac9ef717d85f062f1c313e66f7de6682eb8f9"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "g3",
+      "label": "G3",
+      "pathId": "path:sha256:b0af495c1fef252b3c6e83c19d48d894dbe294c71724d77f0445c4b2ed3567d4",
+      "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+      "roofGeometryId": 1785030887081,
+      "candidateState": "completeCandidate",
+      "verificationState": "notVerified",
+      "findings": [],
+      "display": {
+        "source": "Faldón poligonal 2–7 entre A–C · B3",
+        "transfer": "Muro X · 6→7 @ C · Cara −N → Muro X · 6→7 @ C · Extremo S mín.",
+        "receiver": "Muro Y · B→I @ 6 · Cara −N",
+        "foundation": "Fundación corrida · eje 6 · B→O"
+      },
+      "edges": [
+        {
+          "edgeId": "edge:sha256:9ec66ab15ccbe26c01722ff09fa9990bd83d70661aeed7a90ee42c7a5367203c",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Borde de cubierta · Faldón poligonal 2–7 entre A–C · B3",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+              "locator": {
+                "kind": "boundary",
+                "sRange": [
+                  12800,
+                  14500
+                ]
+              },
+              "nodeId": "node:sha256:66141a2fbab678bd777c5543ad284dc26cd9889bbe623f520afd83d858c0a865",
+              "ownerRef": {
+                "boundaryId": "roof:1785030887081:edge:643e5fdc50f950e985fc8a6edcfc6a7029626d8dc762e9ea372d926b8e483db6",
+                "kind": "roofBoundary",
+                "roofGeometryId": 1785030887081
+              }
+            }
+          },
+          "to": {
+            "title": "Cara −N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "negativeN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:31db2f0beaeff68b88e6648f666bc5e1ea4a4412db033974cdaa748d794b607b",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:08781711f681165da978678c6911f90e517ae9e7e5b21a2fb9d4e5197618b8e0",
+          "kind": "declared:loadTransfer",
+          "structuralFunction": "loadTransfer",
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "relationTitle": "Transferencia de acciones · Gravitacional",
+          "from": {
+            "title": "Cara −N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "negativeN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:31db2f0beaeff68b88e6648f666bc5e1ea4a4412db033974cdaa748d794b607b",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Extremo S mínimo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+              "locator": {
+                "end": "lowS",
+                "kind": "end",
+                "sRange": [
+                  12800,
+                  12800.1
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:2bca7c64b2f674170dd788e61f5315837bd02d43eba6477a8a0d0a6baa58c4b9",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:12c9c10dfcf539d9f2655265cdca9cb1c048297effda65274d233a9f767af0d4",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:9c9c11938c3701d8a9371f5cb9007cf57b5d7c1a921f0a86ca9e7edcc7f1d728",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Extremo S mínimo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+              "locator": {
+                "end": "lowS",
+                "kind": "end",
+                "sRange": [
+                  12800,
+                  12800.1
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:2bca7c64b2f674170dd788e61f5315837bd02d43eba6477a8a0d0a6baa58c4b9",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Cara −N · Muro Y · B→I @ 6",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  1949.45,
+                  2050.55
+                ],
+                "side": "negativeN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:97457a802960d7b6cb4785dfcc6f93f3311e08b95018a37802391be4c3d584f0",
+              "ownerRef": {
+                "id": 1784753322528,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:9281821fe1f29c12f2fd5170b9d5c1e1b3ae53b80a6fc63fca1d59c873fa1a28",
+          "kind": "supportedByFoundation",
+          "structuralFunction": null,
+          "relationId": null,
+          "relationTitle": null,
+          "from": {
+            "title": "Muro Y · B→I @ 6",
+            "roleLabel": "Receptor gravitacional candidato",
+            "technicalReference": {
+              "elementId": 1784753322528,
+              "nodeId": "node:sha256:e611761b4ee22c12083e85ddd61245b04536a046d165a7e2037ecc6a4df91410"
+            }
+          },
+          "to": {
+            "title": "Fundación corrida · x=12.600→13.000 · y=1.200→18.750",
+            "roleLabel": "Base geométrica candidata",
+            "technicalReference": {
+              "elementId": 1784920271828,
+              "nodeId": "node:sha256:31668564bbb7106b772c0fc836229b80bc1899be31f942ca759ad27b32cce0a0"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "key": "g4",
+      "label": "G4",
+      "pathId": "path:sha256:c9d31c2653d23f42fb448270c19144b40145982632af9ee59994f017478c6cdd",
+      "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+      "roofGeometryId": 1785161146258,
+      "candidateState": "completeCandidate",
+      "verificationState": "notVerified",
+      "findings": [],
+      "display": {
+        "source": "Faldón poligonal 6–11A entre C–J · B1 · S 12800→14500",
+        "transfer": "Muro X · 6→7 @ C · Cara +N → Muro X · 6→7 @ C · Extremo S máx.",
+        "receiver": "Muro Y · A→C @ 7 · Extremo S máx.",
+        "foundation": "Fundación corrida · eje 7 · A→C"
+      },
+      "edges": [
+        {
+          "edgeId": "edge:sha256:f28ae29127b9478a98d1581ca0df2ad207d38bdec26a3795964a572532907eaa",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Borde de cubierta · Faldón poligonal 6–11A entre C–J · B1 · S 12800→14500",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+              "locator": {
+                "kind": "boundary",
+                "sRange": [
+                  12800,
+                  14500
+                ]
+              },
+              "nodeId": "node:sha256:22dadab599f1d8e9f46c4a825c07fbda6d6279efdbb5545f8f72b92eb127c648",
+              "ownerRef": {
+                "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c",
+                "kind": "roofBoundary",
+                "roofGeometryId": 1785161146258
+              }
+            }
+          },
+          "to": {
+            "title": "Cara +N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "positiveN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:43c5cc9798119a49b959ad48182796be0f14c6c9c00821b9c398b423635f8fbf",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:9530d3365676e295da9cab06841e61ebf58ec54c409cdd5b09d19fcdae74df81",
+          "kind": "declared:loadTransfer",
+          "structuralFunction": "loadTransfer",
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "relationTitle": "Transferencia de acciones · Gravitacional",
+          "from": {
+            "title": "Cara +N · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+              "locator": {
+                "kind": "face",
+                "sRange": [
+                  12800,
+                  14500
+                ],
+                "side": "positiveN",
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:43c5cc9798119a49b959ad48182796be0f14c6c9c00821b9c398b423635f8fbf",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Extremo S máximo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+              "locator": {
+                "end": "highS",
+                "kind": "end",
+                "sRange": [
+                  14499.9,
+                  14500
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:5fd130a417284f39aef8f91ceb42c78ea49ce2030cc27abdc1c72565e3450e02",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:a94a9f3b92876668b652c3bddd41516602f56ae1f397c6124c71547e12a4603e",
+          "kind": "declared:support",
+          "structuralFunction": "support",
+          "relationId": "rel:sha256:9b4cca46b2fbd8672b1dd96e6f78dd039a2fe7f24287000e3c77eb1391dabd85",
+          "relationTitle": "Apoyo / interacción · Gravitacional",
+          "from": {
+            "title": "Extremo S máximo · Muro X · 6→7 @ C",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+              "locator": {
+                "end": "highS",
+                "kind": "end",
+                "sRange": [
+                  14499.9,
+                  14500
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:5fd130a417284f39aef8f91ceb42c78ea49ce2030cc27abdc1c72565e3450e02",
+              "ownerRef": {
+                "id": 1784819708086,
+                "kind": "element"
+              }
+            }
+          },
+          "to": {
+            "title": "Extremo S máximo · Muro Y · A→C @ 7",
+            "roleLabel": "Interfaz estructural declarada",
+            "technicalReference": {
+              "interfaceId": "iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60",
+              "locator": {
+                "end": "highS",
+                "kind": "end",
+                "sRange": [
+                  1999.9,
+                  2000
+                ],
+                "zRange": [
+                  3250,
+                  4150
+                ]
+              },
+              "nodeId": "node:sha256:21537f2d58297a68e7aaad3f46be59122fee323c94640754d1ba1fd6d33f5e07",
+              "ownerRef": {
+                "id": 1784754251210,
+                "kind": "element"
+              }
+            }
+          }
+        },
+        {
+          "edgeId": "edge:sha256:a1c7164aa2f254f10c73b8e8f568f00bc7fc42032346120769a1389717662e3d",
+          "kind": "supportedByFoundation",
+          "structuralFunction": null,
+          "relationId": null,
+          "relationTitle": null,
+          "from": {
+            "title": "Muro Y · A→C @ 7",
+            "roleLabel": "Receptor gravitacional candidato",
+            "technicalReference": {
+              "elementId": 1784754251210,
+              "nodeId": "node:sha256:f70fa860aff51cd21189ffa93ed99addb94065310918a3b20761847007101de3"
+            }
+          },
+          "to": {
+            "title": "Fundación corrida · x=14.300→14.700 · y=0→2.000",
+            "roleLabel": "Base geométrica candidata",
+            "technicalReference": {
+              "elementId": 1784920321065,
+              "nodeId": "node:sha256:c50866700e95b53701f3d88e1c5ac9ef717d85f062f1c313e66f7de6682eb8f9"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "visualReview": {
+    "corrective": "B3.2",
+    "bugCodes": [
+      "BUG-015-E-003",
+      "BUG-015-E-004",
+      "BUG-015-E-005",
+      "BUG-015-E-006",
+      "BUG-015-E-007",
+      "BUG-015-E-010",
+      "BUG-015-E-011"
+    ],
+    "geometryPreservedUnderFocus": true,
+    "partialRegionsUseExplicitNotToScaleInsets": true,
+    "humanDescriptorsPrimary": true,
+    "gravityPathsInspectable": [
+      "G1",
+      "G2",
+      "G3",
+      "G4"
+    ],
+    "endpointEnvelopeNotPhysicalLength": true
+  },
+  "b1": {
+    "roofGeometryId": 1785161146258,
+    "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c",
+    "interfaceId": "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+    "physicalSRange": [
+      12800,
+      23200
+    ],
+    "physicalLengthMm": 10400,
+    "interactionSRange": [
+      12800,
+      14500
+    ],
+    "interactionLengthMm": 1700,
+    "physicalSegment": {
+      "start": {
+        "x": 12800,
+        "y": 2000,
+        "z": 3650
+      },
+      "end": {
+        "x": 23200,
+        "y": 2000,
+        "z": 3650
+      }
+    },
+    "interactionSegment": {
+      "start": {
+        "x": 12800,
+        "y": 2000,
+        "z": 3650
+      },
+      "end": {
+        "x": 14500,
+        "y": 2000,
+        "z": 3650
+      }
+    },
+    "topologyProjection": {
+      "actionFamily": "gravity",
+      "interactionLocator": {
+        "kind": "boundary",
+        "sRange": [
+          12800,
+          14500
+        ]
+      },
+      "physicalBoundary": {
+        "boundaryId": "roof:1785161146258:edge:bab5d814565d49996597bfe157d6cbb3f0b41a3d61c2953ffc1e99b21df3b29c",
+        "physicalSRange": [
+          12800,
+          23200
+        ]
+      },
+      "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+      "roofGeometryId": 1785161146258,
+      "structuralFunction": "support",
+      "verificationState": "notVerified"
+    }
+  },
+  "regions": {
+    "fronton": {
+      "activeOpenings": [],
+      "candidateEvidenceRefs": [],
+      "declaredFunctions": [],
+      "declaredInteractions": [
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "receives",
+          "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "sourceRefs": [
+            "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+            "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+            "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+            "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27"
+          ],
+          "structuralFunction": "loadTransfer"
+        },
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "receives",
+          "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "sourceRefs": [
+            "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+            "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+            "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+            "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27"
+          ],
+          "structuralFunction": "loadTransfer"
+        },
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "carrier",
+          "interfaceId": null,
+          "relationId": "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+          "sourceRefs": [
+            "rel:sha256:0ada02daa4b9c3277bf127a088535b3e234a4ff751fca1a7acf2d599594aef9c",
+            "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+            "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+            "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+            "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27"
+          ],
+          "structuralFunction": "loadTransfer"
+        },
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "receives",
+          "interfaceId": "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d",
+          "relationId": "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+          "sourceRefs": [
+            "rel:sha256:7ad2f1abd605ca181aab41a28592236432ef1c4d9668879d53be28dff3615b37",
+            "iface:sha256:c947dabe57e980967d0c9b6abba3297f9dc19c1e1ad760eed8b38fcba787402c",
+            "iface:sha256:32481ccb2ad9bf3d77eea814424e37de09a6c92913794340506ee546f8eed40d"
+          ],
+          "structuralFunction": "support"
+        },
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "receives",
+          "interfaceId": "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27",
+          "relationId": "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+          "sourceRefs": [
+            "rel:sha256:c12feab51ac7d46dc69e319ab0c7ce595ba388003813b1a5f2a9ea3dbdc6984c",
+            "iface:sha256:db60ba9dd5b8c32bc2513294aee9d7feedbb065efe43a216db047f73b328a493",
+            "iface:sha256:49a74193165992e7d12b61d72e9a465efc34509c73a30dbf9bec9a6b5019fa27"
+          ],
+          "structuralFunction": "support"
+        }
+      ],
+      "longitudinalLocation": {
+        "kind": "range",
+        "sRange": [
+          12800,
+          14500
+        ]
+      },
+      "ownerRef": {
+        "id": 1784819708086,
+        "kind": "element"
+      },
+      "regionId": "sr-region:sha256:7f3e1a4f05adf944b23446350fdf09617f17cbd4cc6502a6a598f8a0fcd7382b",
+      "requirementRefs": [
+        "sr-requirement:sha256:09b6a4daf06360dce2b6d02bf51d2b6b63a950fae49086bf628b6e70e857c04f",
+        "sr-requirement:sha256:598ce6352df929eb0893c315eb2e3f90c7f3f8d51f3bb1f6b5b6319f8cf446f6",
+        "sr-requirement:sha256:a78e8cc91e398a961d874229b1da38816a957c70bb71a743e23984a8b100411a"
+      ],
+      "topologicalBoundaries": [
+        {
+          "nodeId": "node|wall:n:1784819708086|localS:0.000",
+          "nodeType": "wallEnd"
+        },
+        {
+          "nodeId": "node|wall:n:1784819708086|localS:1700.000",
+          "nodeType": "wallEnd"
+        }
+      ],
+      "verificationState": "notVerified",
+      "zBands": [
+        {
+          "state": "wallBOnly",
+          "z0": 450,
+          "z1": 3250
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 3250,
+          "z1": 4150
+        },
+        {
+          "state": "wallBOnly",
+          "z0": 450,
+          "z1": 3250
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 3250,
+          "z1": 4150
+        }
+      ],
+      "zRange": [
+        3250,
+        4150
+      ]
+    },
+    "c6": {
+      "activeOpenings": [],
+      "candidateEvidenceRefs": [],
+      "declaredFunctions": [],
+      "declaredInteractions": [
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "receives",
+          "interfaceId": "iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb",
+          "relationId": "rel:sha256:9c9c11938c3701d8a9371f5cb9007cf57b5d7c1a921f0a86ca9e7edcc7f1d728",
+          "sourceRefs": [
+            "rel:sha256:9c9c11938c3701d8a9371f5cb9007cf57b5d7c1a921f0a86ca9e7edcc7f1d728",
+            "iface:sha256:8b804f709a69535c6deb591a4ead48a02a8c9ade2b5b527fe8f0109b8469df40",
+            "iface:sha256:84bab43064c362ecab14eb361c0178ec8ed03d8a15e16c8d0c2ca4f1194991cb"
+          ],
+          "structuralFunction": "support"
+        }
+      ],
+      "longitudinalLocation": {
+        "kind": "range",
+        "sRange": [
+          1949.45,
+          2050.55
+        ]
+      },
+      "ownerRef": {
+        "id": 1784753322528,
+        "kind": "element"
+      },
+      "regionId": "sr-region:sha256:b2964a16525297a0181b77bfac80e590a191dde8fa330b2c715cf0fec035252f",
+      "requirementRefs": [
+        "sr-requirement:sha256:2abaa4e7d869893ef779e664702e720a6cb4c48a494c62cc8cea215d1831d92b"
+      ],
+      "topologicalBoundaries": [],
+      "verificationState": "notVerified",
+      "zBands": [
+        {
+          "state": "intersectionActive",
+          "z0": 450,
+          "z1": 4150
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 450,
+          "z1": 4150
+        },
+        {
+          "state": "wallAOnly",
+          "z0": 4150,
+          "z1": 4750
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 450,
+          "z1": 4150
+        },
+        {
+          "state": "wallBOnly",
+          "z0": 450,
+          "z1": 3250
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 3250,
+          "z1": 4150
+        }
+      ],
+      "zRange": [
+        3250,
+        4150
+      ]
+    },
+    "c7": {
+      "activeOpenings": [],
+      "candidateEvidenceRefs": [],
+      "declaredFunctions": [],
+      "declaredInteractions": [
+        {
+          "actionFamily": "gravity",
+          "interactionRole": "receives",
+          "interfaceId": "iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60",
+          "relationId": "rel:sha256:9b4cca46b2fbd8672b1dd96e6f78dd039a2fe7f24287000e3c77eb1391dabd85",
+          "sourceRefs": [
+            "rel:sha256:9b4cca46b2fbd8672b1dd96e6f78dd039a2fe7f24287000e3c77eb1391dabd85",
+            "iface:sha256:c11bfeb901eebd56e2b60444976416b9738b1a944e0804ac41ef9eaa4203d668",
+            "iface:sha256:ecb7baf53c9686eee1ad66e21babeda0f6bbb4a1f02cefdb977878bb6a700b60"
+          ],
+          "structuralFunction": "support"
+        }
+      ],
+      "longitudinalLocation": {
+        "anchorS": 2000,
+        "end": "highS",
+        "kind": "end",
+        "localizationEnvelope": [
+          1999.9,
+          2000
+        ]
+      },
+      "ownerRef": {
+        "id": 1784754251210,
+        "kind": "element"
+      },
+      "regionId": "sr-region:sha256:0c4689a91f6fc728caeae888bad5c8950f8b103d61ac9292087849805cf36ac1",
+      "requirementRefs": [
+        "sr-requirement:sha256:ba5fa480ee3f5d32a77465dea28c2ad589d36b06cb8d1bd3a2feed144f2d0b19"
+      ],
+      "topologicalBoundaries": [
+        {
+          "nodeId": "node|wall:n:1784754251210|localS:2000.000",
+          "nodeType": "wallEnd"
+        }
+      ],
+      "verificationState": "notVerified",
+      "zBands": [
+        {
+          "state": "intersectionActive",
+          "z0": 450,
+          "z1": 4150
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 450,
+          "z1": 4150
+        },
+        {
+          "state": "wallBOnly",
+          "z0": 450,
+          "z1": 3250
+        },
+        {
+          "state": "intersectionActive",
+          "z0": 3250,
+          "z1": 4150
+        }
+      ],
+      "zRange": [
+        3250,
+        4150
+      ]
+    }
+  },
+  "lateralScenario": {
+    "roofGeometryId": 1785158713616,
+    "wallElementId": 1784606313849,
+    "roofHuman": {
+      "title": "Faldón rectangular 1–6 entre B–H",
+      "subtitle": "Pendiente B→H · 12.800 × 4.200 mm",
+      "technicalReference": {
+        "roofGeometryId": 1785158713616
+      }
+    },
+    "wallHuman": {
+      "title": "Muro X · 3→5 @ C1",
+      "subtitle": "NPT 450 → CIELO GENERAL 3.250 · L 4.400 mm · 0 vanos",
+      "technicalReference": {
+        "elementId": 1784606313849
+      }
+    },
+    "pathId": "path:sha256:6baec8998b1c6f1a80cae66e5394f827526bc33038da3a969508a15c99f5563f",
+    "candidateState": "incompleteCandidate",
+    "findingCodes": [
+      "SI-LATERAL-TRANSFER-REQUIRED"
+    ],
+    "gapMm": 571.429,
+    "roofZ": 3821.429,
+    "wallTopZ": 3250,
+    "requirementId": "sr-requirement:sha256:21de80893e8e17b8c329316343ce6a7eb5e4e79441e434badd4a198e4a8a2331",
+    "requirementCode": "SR-LOAD-TRANSFER-REQUIRED",
+    "verificationState": "notVerified",
+    "eligibleForConstructiveSolutions": false
+  },
+  "traceability": {
+    "pipeline": [
+      "agnostic-geometry-v1.0",
+      "R0-R5",
+      "structural-intent-v1.1",
+      "interfaces-relations-REV8",
+      "candidate-load-paths-v1.0",
+      "R11-regions",
+      "R10-requirements",
+      "R12-audit"
+    ],
+    "sourceFingerprints": {
+      "aggregateSha256": "e01a8872f2a7f3ae004befbb98b725e3e04a3608ed62a0b8d5b4b3218ef1114b",
+      "candidateLoadPathsSha256": "3bd79712c5b91a8535eed7fd05e18b8c4bbf616ccccc8a7d44495fd9d9c165d8",
+      "diaphragmIntentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "elementIntentsSha256": "9205344e54b1abd19522f37ad35e1f122d1efecdc87be8d2a76b77edc0e0efed",
+      "geometrySha256": "4ac389757d1d1799a6720823fcaa2be1fb3f63d0556c87cfc17faa1bc04f62a0",
+      "interfaceIntentsSha256": "f07195237de3859a2d274585b3dd00af012c82b50b02d12c47bdf1471f2e5e9d",
+      "intersectionIntentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "overridesSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "proposalReviewLogSha256": "91d38f7368eb92c6f7ccc0e3c972d5ded52f39f93648ae58ad6a2ad752c314e8",
+      "proposalSetSha256": "144a5f3d59e3169550407d9500dc5dc358d9487cf7ca26239dba1e47f888c07e",
+      "relationIntentsSha256": "c0ef2461f132c9457183c2f9905a0e2415a1aba0083b1255f8dfc3113e14a104",
+      "roofIntentsSha256": "652b54c293d088b0231cc6ac37e3d59201856e81796b992fc4ad6eebdc7b6428",
+      "structuralIntentSha256": "47d23e0047949db7764a690fffeeb57250fec51cb3b7e887010d7f252f635700",
+      "supportIntentsSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "topologyR0R5Sha256": "fa0d69250107bb5dbfb519af7aea67fdf1b2bbf7e3cc542fb97b0166fc8f92f8"
+    },
+    "requirementRefsResolve": true
+  },
+  "locator": {
+    "targetIds": [
+      1784819708086,
+      1784753322528,
+      1784754251210
+    ],
+    "historyChanges": 0,
+    "traceChanges": 0,
+    "structuralIntentChanges": 0,
+    "globalSelectionPreserved": true,
+    "viewRestored": true,
+    "sequence": [
+      "open",
+      "hover",
+      "request",
+      "activate",
+      "fit",
+      "restore"
+    ]
+  },
+  "hashes": {
+    "requirements": "8e90c9c91d82fef82ea503a5924dac7631b9dd31b42f4b7b0b0ce3f5e89ef467",
+    "topology": "0d5688f2b0797a32ab400f461375b94b25b96736a49591f79fe5b674b3c51027"
+  },
+  "prohibitions": {
+    "geometryMutation": false,
+    "persistedR6R12": false,
+    "constructiveMemberSelected": false,
+    "profileSelected": false,
+    "materialSelected": false,
+    "connectionSelected": false,
+    "verifiedStateCreated": false
+  },
+  "blockingDecisions": [
+    {
+      "code": "SR-ROOF-INTENT-INCOMPLETE",
+      "decisionId": "sr-decision:sha256:116daec10e27cba1675d759e27a28baf587aa754c5d89127d4bcdb07dffcbb5a",
+      "scope": {
+        "roofGeometryId": 1785161146258
+      },
+      "sourceRefs": [
+        "roof:1785161146258"
+      ]
+    },
+    {
+      "code": "SR-ROOF-INTENT-INCOMPLETE",
+      "decisionId": "sr-decision:sha256:58cfd43295704fa003d9f6c2d3fa33e25ee643485f996e7268ed3329f1bedf3d",
+      "scope": {
+        "roofGeometryId": 1785161198226
+      },
+      "sourceRefs": [
+        "roof:1785161198226"
+      ]
+    },
+    {
+      "code": "SR-ROOF-INTENT-INCOMPLETE",
+      "decisionId": "sr-decision:sha256:96d6b268c833f6691602105647f8efa9df62bf053e0caad6432b58c9fe78c709",
+      "scope": {
+        "roofGeometryId": 1785161662029
+      },
+      "sourceRefs": [
+        "roof:1785161662029"
+      ]
+    },
+    {
+      "code": "SR-ROOF-INTENT-INCOMPLETE",
+      "decisionId": "sr-decision:sha256:c5ae351cee4de73e5a1ddddacf74397ebee0297e28f6e07921ed9733fa5f4e4d",
+      "scope": {
+        "roofGeometryId": 1785161396221
+      },
+      "sourceRefs": [
+        "roof:1785161396221"
+      ]
+    },
+    {
+      "code": "SR-ROOF-INTENT-INCOMPLETE",
+      "decisionId": "sr-decision:sha256:ec0bff3cfcaa40a15c83575168da2309a43f36dee63de2f328575e0bcb4404ec",
+      "scope": {
+        "roofGeometryId": 1785161271814
+      },
+      "sourceRefs": [
+        "roof:1785161271814"
+      ]
+    }
+  ],
+  "eligibility": {
+    "eligibleForConstructiveSolutions": false,
+    "reasonCodes": [
+      "SR-ROOF-INTENT-INCOMPLETE"
+    ]
+  },
+  "eligibilityExplanation": {
+    "blockingDecisionCount": 5,
+    "text": "Elegibilidad global bloqueada: 5 decisiones; SR-ROOF-INTENT-INCOMPLETE indica cobertura de intención de techumbre incompleta. El requisito lateral sigue siendo descriptivo, no verificado."
+  },
+  "evidenceSha256": "e30e71382c880101bc3c3f39efc9d4710646378e2b1a5fc28d4cc5823c1c3883"
+}

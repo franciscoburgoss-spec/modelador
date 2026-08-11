@@ -125,6 +125,33 @@ for (const filename of await readdir(path.join(root, 'specs'))) {
   errors.push(...validateSpecDocumentContract(filename, content));
 }
 
+try {
+  const manifest = JSON.parse(await readFile(path.join(root, 'specs/MANIFEST.json'), 'utf8'));
+  if (!Array.isArray(manifest.files)) {
+    errors.push('specs/MANIFEST.json: files debe ser un arreglo');
+  } else {
+    const names = new Set();
+    for (const [index, entry] of manifest.files.entries()) {
+      const prefix = `specs/MANIFEST.json files[${index}]`;
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+        errors.push(`${prefix}: la entrada debe ser un objeto`);
+        continue;
+      }
+      if (typeof entry.name !== 'string' || entry.name.length === 0) {
+        errors.push(`${prefix}: falta name`);
+        continue;
+      }
+      if (names.has(entry.name)) errors.push(`${prefix}: name duplicado ${entry.name}`);
+      names.add(entry.name);
+      if (!Number.isInteger(entry.bytes) || entry.bytes < 0) errors.push(`${prefix}: bytes inválido`);
+      if (typeof entry.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(entry.sha256)) errors.push(`${prefix}: sha256 inválido`);
+      if (!(await exists(path.posix.join('specs', entry.name)))) errors.push(`${prefix}: archivo inexistente ${entry.name}`);
+    }
+  }
+} catch (error) {
+  errors.push(`specs/MANIFEST.json: ${error.message}`);
+}
+
 if (errors.length > 0) {
   console.error(`Gobernanza inválida (${errors.length}):`);
   for (const error of errors) console.error(`- ${error}`);

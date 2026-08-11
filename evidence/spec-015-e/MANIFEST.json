@@ -1,0 +1,21 @@
+{
+  "schema": "spec-015-e-evidence-manifest-v1.0",
+  "evidenceSha256": "e30e71382c880101bc3c3f39efc9d4710646378e2b1a5fc28d4cc5823c1c3883",
+  "files": [
+    {
+      "path": "FX-008-SPEC-015-E.json",
+      "bytes": 49810,
+      "sha256": "05e403566a6c63c21b0b0d3e0eda7855bbcb5c8112e10ea074b8f9bc7c7ce8d0"
+    },
+    {
+      "path": "FX-008-SPEC-015-E.svg",
+      "bytes": 22904,
+      "sha256": "2b3f54dae82fb24b01f0138bbff7c2a199c0884cd65fb6646a5db7a4a1ffce7a"
+    },
+    {
+      "path": "FX-008-SPEC-015-E.html",
+      "bytes": 141856,
+      "sha256": "319a62961a59d79b7505d55ddba083716cddbc7a12f268de34a54c8ebf5228f8"
+    }
+  ]
+}

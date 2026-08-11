@@ -3,19 +3,19 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **10-ago-2026**
+Última actualización: **11-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-015-D REV8 cerrada tras validación local autoritativa y visual real |
+| Etapa | SPEC-015-E cerrada tras validación integral y revisión visual real FX-008 |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | Ninguna |
 | Esfuerzo activo | Ninguno |
-| Suite oficial | SPEC-015-D REV8 final: focal 90/90; Node 996/996; componentes 49/49; Rust 9/9; lab 35/35; CalculiX 3/3 |
+| Suite oficial | SPEC-015-E final: focal 27/27; Node 1023/1023; componentes 49/49; Rust 9/9; lab 35/35; CalculiX 3/3 |
 | Build | PASS local Vite; warning heredado de chunk inicial mayor a 600 kB permanece documentado |
-| Cobertura | PASS: core 92,17 % líneas / 81,10 % ramas / 94,12 % funciones; store 92,35 % / 81,01 % / 93,33 % |
+| Cobertura | PASS: core 92,30 % líneas / 80,76 % ramas / 94,15 % funciones; store 92,35 % / 81,01 % / 93,33 % |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -317,9 +317,12 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo corte
 
-SPEC-015-D REV8 quedó cerrada el 10-ago-2026 tras validador integral verde y revisión visual real
-del caso FX-008. Las Correctivas 14–19 cerraron BUG-015-D-028/029/030/031/032/034 y el recálculo
-final conservó cuatro caminos gravitacionales completos hasta fundación, 0 laterales, 0 bloqueos y
-0 estados `verified`. MEJ-015-D-033 queda pendiente como mejora de encuadre no bloqueante. No hay
-spec activa hasta aprobar el siguiente corte. F-009 no cambia y SPEC-08 permanece deshabilitada
-hasta R12.
+SPEC-015-E quedó cerrada el 11-ago-2026 sobre `main@6d371bd` tras implementar y auditar el núcleo
+puro R6–R12, validar la evidencia real FX-008 y cerrar las correctivas B3.1, B3.2 y B3.2.1. La
+evidencia conserva cuatro caminos gravitacionales `completeCandidate`, 0 estados `verified` y el
+escenario lateral explícito mantiene el gap 571,429 mm como requisito de transferencia. C/7 queda
+modelado como extremo `highS` en S=2.000 mm y su envolvente de 0,1 mm permanece sólo como evidencia
+de localización, no como longitud física. R12 quedó auditado sin introducir solución constructiva.
+No hay spec activa; cualquier habilitación de SPEC-08 o apertura de SPEC-016 requiere un corte
+explícito posterior. F-009 no cambia. Git de escritura sigue prohibido hasta autorización explícita
+del usuario.
