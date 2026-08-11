@@ -1,0 +1,19 @@
+# Configuración local conservadora para Modelador Propio.
+# Codex carga la configuración de proyecto sólo cuando el proyecto está marcado como confiable.
+
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+approvals_reviewer = "user"
+web_search = "disabled"
+
+[sandbox_workspace_write]
+network_access = false
+
+[[hooks.PreToolUse]]
+matcher = "^Bash$"
+
+[[hooks.PreToolUse.hooks]]
+type = "command"
+command = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/pre_tool_use_policy.py"'
+timeout = 10
+statusMessage = "Verificando política Modelador Propio"

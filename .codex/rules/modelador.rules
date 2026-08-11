@@ -1,0 +1,34 @@
+# Reglas adicionales de protección. Se aplican a solicitudes para ejecutar fuera del sandbox.
+
+prefix_rule(
+    pattern = ["git", ["add", "commit", "push", "pull", "merge", "rebase", "reset", "clean", "checkout", "restore", "switch", "tag", "stash", "cherry-pick", "revert", "am", "apply"]],
+    decision = "forbidden",
+    justification = "Codex no ejecuta Git de escritura; el usuario debe ejecutar manualmente el comando después de autorizar el gate.",
+    match = [
+        "git add .",
+        "git commit -m prueba",
+        "git push origin main",
+        "git reset --hard HEAD~1",
+        "git clean -fd",
+    ],
+)
+
+prefix_rule(
+    pattern = ["npm", ["i", "install", "uninstall", "remove", "rm", "update", "up", "ci"]],
+    decision = "forbidden",
+    justification = "Codex no ejecuta mutaciones de dependencias; el usuario debe ejecutar manualmente el comando después de autorizar el gate.",
+    match = [
+        "npm install foo",
+        "npm uninstall foo",
+    ],
+)
+
+prefix_rule(
+    pattern = ["npx"],
+    decision = "forbidden",
+    justification = "Codex no ejecuta npx; el usuario debe ejecutar manualmente el comando después de autorizar el gate.",
+    match = [
+        "npx eslint .",
+        "npx some-new-tool",
+    ],
+)
