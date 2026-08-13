@@ -77,6 +77,7 @@ import {
 import {
   createEmptyStructuralProposalReviewLog
 } from '../core/structuralProposalReviews.js';
+import { createEmptyConstructiveSolutions } from '../core/constructiveSolutionScenarios.js';
 import {
   EMPTY_STRUCTURAL_PROPOSAL_LOCATOR,
   closeStructuralProposalLocatorState,
@@ -115,6 +116,7 @@ function mergeLoadedModel(data) {
       : [],
     structuralProposalReviews: data.structuralProposalReviews
       ?? createEmptyStructuralProposalReviewLog(),
+    constructiveSolutions: data.constructiveSolutions ?? createEmptyConstructiveSolutions(),
     roofSystems: Array.isArray(data.roofSystems) ? data.roofSystems : [],
     roofPlanes: Array.isArray(data.roofPlanes) ? data.roofPlanes : [],
     // ★ Sesión 22: datos de proyecto del cajetín — normalizados para que un modelo guardado
@@ -249,6 +251,7 @@ function emptyModel() {
     structuralIntent: createEmptyStructuralIntent(),
     structuralIntentFindings: [],
     structuralProposalReviews: createEmptyStructuralProposalReviewLog(),
+    constructiveSolutions: createEmptyConstructiveSolutions(),
     // ★ default de proyecto para modulación OSB (core/osbModulation.js). minPanelWidth tiene
     // piso duro de 200mm (ver setOsbDefaults) — por debajo no hay dónde atornillar borde+interior.
     osbDefaults: { panelWidth: 1220, panelHeight: 2440, minPanelWidth: 200, gap: 5 },

@@ -1,6 +1,14 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { integrateStructuralRequirements } from '../src/core/structuralRequirements.js';
+import {
+  buildStructuralRequirements,
+  buildStructuralRequirementsWithReferenceResolutionContext,
+  integrateStructuralRequirements
+} from '../src/core/structuralRequirements.js';
+import {
+  STRUCTURAL_REFERENCE_DOMAINS,
+  structuralRequirementsFingerprint
+} from '../src/core/structuralReferenceResolutionContext.js';
 import { buildFx008Rev8Short, FX008_FRONTON_C_6_7, FX008_ROOF_NORTH } from './helpers/spec015dRev8.mjs';
 
 function inputFrom(context) {
@@ -82,6 +90,73 @@ test('SPEC-015-E B2: misma entrada produce deepEqual y SHA idéntico', async () 
   assert.deepEqual(a, b);
   assert.equal(a.requirements.canonicalSha256, b.requirements.canonicalSha256);
   assert.equal(a.topology.canonicalSha256, b.topology.canonicalSha256);
+});
+
+test('BUG-016-A-006: integrate conserva su shape histórico y el contexto queda en la API compañera', async () => {
+  const context = await buildFx008Rev8Short({ declareEndpointSupports: true });
+  const input = inputFrom(context);
+  const integrated = integrateStructuralRequirements(input);
+  const companion = buildStructuralRequirementsWithReferenceResolutionContext(structuredClone(input));
+  assert.deepEqual(Object.keys(integrated).sort(), ['requirements', 'topology']);
+  assert.equal(Object.hasOwn(integrated, 'referenceResolutionContext'), false);
+  assert.deepEqual(
+    Object.keys(companion).sort(),
+    ['referenceResolutionContext', 'structuralRequirements']
+  );
+  assert.deepEqual(companion.structuralRequirements, integrated.requirements);
+});
+
+test('BUG-016-A-005: structural-requirements-v1.0 público queda deepEqual e idéntico canónicamente', async () => {
+  const context = await buildFx008Rev8Short({ declareEndpointSupports: true });
+  const input = inputFrom(context);
+  const legacyPublic = buildStructuralRequirements(input);
+  const companion = buildStructuralRequirementsWithReferenceResolutionContext(structuredClone(input));
+  assert.deepEqual(companion.structuralRequirements, legacyPublic);
+  assert.equal(companion.structuralRequirements.canonicalSha256, legacyPublic.canonicalSha256);
+  assert.equal(
+    companion.referenceResolutionContext.sourceRequirementsSha256,
+    structuralRequirementsFingerprint(legacyPublic)
+  );
+});
+
+test('BUG-016-A-005: contexto compañero conserva shape, edge→path exacto y notVerified', async () => {
+  const context = await buildFx008Rev8Short({ declareEndpointSupports: true });
+  const result = buildStructuralRequirementsWithReferenceResolutionContext(inputFrom(context));
+  assert.equal(result.referenceResolutionContext.schema, 'structural-reference-resolution-context-v1.0');
+  assert.match(result.referenceResolutionContext.sourceRequirementsSha256, /^[a-f0-9]{64}$/);
+  assert.match(result.referenceResolutionContext.canonicalSha256, /^[a-f0-9]{64}$/);
+  assert.ok(result.referenceResolutionContext.referenceBindings.every((item) => (
+    item.occurrenceId && item.origin && item.from?.domain && item.to?.domain
+      && Object.hasOwn(item, 'legacyValue') && Array.isArray(item.provenance)
+  )));
+  assert.ok(result.referenceResolutionContext.provenanceRelations.some((item) => (
+    item.kind === 'candidateEdgeMemberOfPath'
+      && item.from.domain === STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_EDGE
+      && item.to.domain === STRUCTURAL_REFERENCE_DOMAINS.PATH
+  )));
+  assert.equal(result.structuralRequirements.verification.state, 'notVerified');
+});
+
+test('BUG-016-A-007 reversión H1: contexto declara el schema explícito del requirements fuente', async () => {
+  const context = await buildFx008Rev8Short({ declareEndpointSupports: true });
+  const result = buildStructuralRequirementsWithReferenceResolutionContext(inputFrom(context));
+  assert.equal(
+    result.referenceResolutionContext.schema,
+    'structural-reference-resolution-context-v1.0'
+  );
+  assert.equal(
+    result.referenceResolutionContext.sourceSchema,
+    'structural-requirements-v1.0'
+  );
+  assert.deepEqual(Object.keys(result.referenceResolutionContext).sort(), [
+    'canonicalSha256',
+    'provenanceRelations',
+    'referenceBindings',
+    'schema',
+    'sourceRequirementsSha256',
+    'sourceSchema',
+    'targets'
+  ]);
 });
 
 test('SPEC-015-E B2: relación stale bloquea su ámbito y no cae a fallback geométrico', async () => {

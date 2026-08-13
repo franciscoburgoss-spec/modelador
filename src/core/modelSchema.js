@@ -19,8 +19,13 @@ import {
   createEmptyStructuralProposalReviewLog,
   validateStructuralProposalReviewLog
 } from './structuralProposalReviews.js';
+import {
+  canonicalizeConstructiveSolutions,
+  createEmptyConstructiveSolutions,
+  validateConstructiveSolutions
+} from './constructiveSolutionScenarios.js';
 
-export const CURRENT_MODEL_VERSION = 3;
+export const CURRENT_MODEL_VERSION = 4;
 export const LEGACY_MODEL_VERSION = 0;
 
 export class ModelImportError extends Error {
@@ -101,10 +106,32 @@ function migrateV2ToV3(model) {
   };
 }
 
+export function migrateV3ToV4(model) {
+  if (!isRecord(model) || (model.modelVersion !== 3 && model.modelVersion !== 4)) {
+    throw new ModelImportError(
+      'INVALID_V3_TO_V4_SOURCE_VERSION',
+      'La migración directa v3→v4 sólo admite modelVersion 3 o una entrada v4 ya migrada.'
+    );
+  }
+  if (model.modelVersion === 4) return cloneJsonValue(model);
+  if (hasOwn(model, 'constructiveSolutions')) {
+    throw new ModelImportError(
+      'V3_CONSTRUCTIVE_SOLUTIONS_COLLISION',
+      'Un modelo v3 no puede declarar constructiveSolutions antes de la migración.'
+    );
+  }
+  return {
+    ...cloneJsonValue(model),
+    modelVersion: 4,
+    constructiveSolutions: createEmptyConstructiveSolutions()
+  };
+}
+
 const MIGRATIONS = new Map([
   [0, migrateV0ToV1],
   [1, migrateV1ToV2],
-  [2, migrateV2ToV3]
+  [2, migrateV2ToV3],
+  [3, migrateV3ToV4]
 ]);
 
 function declaredVersion(model) {
@@ -338,6 +365,7 @@ export function validateModel(model) {
   ));
   issues.push(...validateStructuralIntentTrace(model.structuralIntentTrace));
   issues.push(...validateStructuralProposalReviewLog(model.structuralProposalReviews));
+  issues.push(...validateConstructiveSolutions(model.constructiveSolutions));
 
   if (Array.isArray(model.projectParams)) {
     model.projectParams.forEach((parameter, index) => {
@@ -420,15 +448,15 @@ export function prepareModelImport(input) {
             model.structuralIntentTrace
           )
         }
-      : {})
-,
+      : {}),
     ...(model.structuralProposalReviews !== undefined
       ? {
           structuralProposalReviews: canonicalizeStructuralProposalReviewLog(
             model.structuralProposalReviews
           )
         }
-      : {})
+      : {}),
+    constructiveSolutions: canonicalizeConstructiveSolutions(model.constructiveSolutions)
   };
   return {
     model: canonicalModel,

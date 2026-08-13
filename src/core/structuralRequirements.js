@@ -21,6 +21,10 @@ import {
   canonicalizeStructuralProposalReviewLog,
   createEmptyStructuralProposalReviewLog
 } from './structuralProposalReviews.js';
+import {
+  STRUCTURAL_REFERENCE_DOMAINS,
+  createStructuralReferenceResolutionContext
+} from './structuralReferenceResolutionContext.js';
 
 export const STRUCTURAL_REQUIREMENTS_SCHEMA = 'structural-requirements-v1.0';
 export const STRUCTURAL_REQUIREMENTS_SPEC_VERSION = 'SPEC-015-E-v1.0';
@@ -77,6 +81,49 @@ function ownerSortToken(ownerRef) {
 
 function sourceRefs(...values) {
   return [...new Set(values.flat().filter((value) => value !== null && value !== undefined).map(String))].sort(compareText);
+}
+
+function resolutionRef(domain, value) {
+  return { domain, value };
+}
+
+function resolutionOrigin(entityType, entityId, field, identity = {}) {
+  return { entityType, entityId, field, ...identity };
+}
+
+function addResolutionTarget(capture, ref, origin) {
+  if (!ref || (typeof ref.value !== 'string' && !Number.isFinite(ref.value))) return;
+  capture.targets.push({ ...clone(ref), origin: clone(origin) });
+}
+
+function addResolutionBinding(capture, { origin, from, legacyValue, to, provenance = [] }) {
+  const occurrenceId = semanticId('sr-ref-occurrence', {
+    origin,
+    from,
+    legacyValue,
+    to
+  });
+  capture.referenceBindings.push({
+    occurrenceId,
+    origin: clone(origin),
+    from: clone(from),
+    legacyValue,
+    to: clone(to),
+    provenance: clone(provenance)
+  });
+  addResolutionTarget(capture, to, origin);
+}
+
+function addLegacyResolutionBindings(capture, { origin, from, refs }) {
+  for (const ref of refs) {
+    addResolutionBinding(capture, {
+      origin: { ...origin, occurrenceKey: `${ref.domain}|${idToken(ref.value)}` },
+      from,
+      legacyValue: String(ref.value),
+      to: ref,
+      provenance: [{ kind: 'producerTypedReference' }]
+    });
+  }
 }
 
 function requirementId(effect, graph, targetRegionRef, refs) {
@@ -315,7 +362,7 @@ function lateralState(candidateLoadPaths, roofIntents) {
   return declared ? 'candidate' : 'notDeclared';
 }
 
-export function buildStructuralRequirements(input) {
+function buildStructuralRequirementsProduct(input) {
   if (!isRecord(input)) fail('La entrada debe ser un objeto.');
   if (input.geometry?.schema !== 'agnostic-geometry-v1.0') fail('geometry debe usar agnostic-geometry-v1.0.');
   if (input.topology?.schema !== 'recognized-structural-topology-v1.0') fail('topology debe usar recognized-structural-topology-v1.0.');
@@ -338,6 +385,70 @@ export function buildStructuralRequirements(input) {
   const requirements = [];
   const supports = [];
   const transfers = [];
+  const resolutionCapture = {
+    referenceBindings: [],
+    targets: [],
+    provenanceRelations: []
+  };
+
+  for (const intent of input.structuralIntent.elementIntents || []) {
+    addResolutionTarget(
+      resolutionCapture,
+      resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.ELEMENT_INTENT, intent.intentId),
+      resolutionOrigin('elementIntent', intent.intentId, 'intentId')
+    );
+  }
+  for (const iface of interfaceIntents) {
+    addResolutionTarget(
+      resolutionCapture,
+      resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.INTERFACE, iface.interfaceId),
+      resolutionOrigin('interfaceIntent', iface.interfaceId, 'interfaceId')
+    );
+  }
+  for (const relation of relationIntents) {
+    addResolutionTarget(
+      resolutionCapture,
+      resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.RELATION, relation.relationId),
+      resolutionOrigin('relationIntent', relation.relationId, 'relationId')
+    );
+  }
+  for (const graph of ['gravity', 'lateral']) {
+    const graphData = input.candidateLoadPaths[graph] || { nodes: [], edges: [], paths: [] };
+    for (const node of graphData.nodes || []) {
+      addResolutionTarget(
+        resolutionCapture,
+        resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_NODE, node.nodeId),
+        resolutionOrigin('candidatePathNode', node.nodeId, 'nodeId', { graph })
+      );
+    }
+    for (const edge of graphData.edges || []) {
+      addResolutionTarget(
+        resolutionCapture,
+        resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_EDGE, edge.edgeId),
+        resolutionOrigin('candidatePathEdge', edge.edgeId, 'edgeId', { graph })
+      );
+    }
+    for (const path of graphData.paths || []) {
+      addResolutionTarget(
+        resolutionCapture,
+        resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.PATH, path.pathId),
+        resolutionOrigin('candidatePath', path.pathId, 'pathId', { graph })
+      );
+      for (const edgeId of path.edgeIds || []) {
+        const from = resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_EDGE, edgeId);
+        const to = resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.PATH, path.pathId);
+        resolutionCapture.provenanceRelations.push({
+          relationId: semanticId('sr-ref-relation', {
+            kind: 'candidateEdgeMemberOfPath', graph, edgeId, pathId: path.pathId
+          }),
+          kind: 'candidateEdgeMemberOfPath',
+          from,
+          to,
+          origin: { producerType: 'candidateLoadPath', graph, pathId: path.pathId }
+        });
+      }
+    }
+  }
 
   for (const intent of input.structuralIntent.elementIntents || []) addRegion(regionMap, wholeWallRegion(intent.elementId, walls), topology, walls);
   for (const intent of interfaceIntents) addRegion(regionMap, interfaceRegion(intent, walls), topology, walls);
@@ -379,25 +490,51 @@ export function buildStructuralRequirements(input) {
       const iface = interfaceById.get(port.interfaceRef);
       const region = addRegion(regionMap, interfaceRegion(iface, walls), topology, walls);
       if (!region) continue;
-      region.declaredInteractions.push({
+      const interaction = {
         relationId: relation.relationId,
         interfaceId: port.interfaceRef,
         interactionRole: port.interactionRole,
         actionFamily: relation.actionFamily,
         structuralFunction: relation.structuralFunction,
         sourceRefs: refs
+      };
+      region.declaredInteractions.push(interaction);
+      addLegacyResolutionBindings(resolutionCapture, {
+        origin: resolutionOrigin('declaredInteraction', region.regionId, 'sourceRefs', {
+          relationId: interaction.relationId,
+          interfaceId: interaction.interfaceId
+        }),
+        from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.REGION, region.regionId),
+        refs: [
+          resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.RELATION, relation.relationId),
+          ...relation.ports.map((item) => resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.INTERFACE, item.interfaceRef))
+        ]
       });
     }
     for (const carrier of relation.carrierRegions || []) {
       const region = addRegion(regionMap, carrier, topology, walls);
-      if (region) region.declaredInteractions.push({
+      if (region) {
+        const interaction = {
         relationId: relation.relationId,
         interfaceId: null,
         interactionRole: 'carrier',
         actionFamily: relation.actionFamily,
         structuralFunction: relation.structuralFunction,
         sourceRefs: refs
-      });
+        };
+        region.declaredInteractions.push(interaction);
+        addLegacyResolutionBindings(resolutionCapture, {
+          origin: resolutionOrigin('declaredInteraction', region.regionId, 'sourceRefs', {
+            relationId: interaction.relationId,
+            interfaceId: null
+          }),
+          from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.REGION, region.regionId),
+          refs: [
+            resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.RELATION, relation.relationId),
+            ...relation.ports.map((item) => resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.INTERFACE, item.interfaceRef))
+          ]
+        });
+      }
     }
     const effect = STRUCTURAL_FUNCTION_EFFECT[relation.structuralFunction];
     const sourceRegions = [...(relation.carrierRegions || [])].map((region) => addRegion(regionMap, region, topology, walls)).filter(Boolean);
@@ -409,6 +546,14 @@ export function buildStructuralRequirements(input) {
       const id = requirementId(effect, relation.actionFamily, region.regionId, refs);
       requirements.push({ id, code: REQUIREMENT_CODE[effect], kind: effect, graph: relation.actionFamily, targetRegionRef: region.regionId, sourceRefs: refs, verificationState: STRUCTURAL_VERIFICATION_STATE });
       region.requirementRefs.push(id);
+      addLegacyResolutionBindings(resolutionCapture, {
+        origin: resolutionOrigin('requirement', id, 'sourceRefs'),
+        from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.REQUIREMENT, id),
+        refs: [
+          resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.RELATION, relation.relationId),
+          ...relation.ports.map((item) => resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.INTERFACE, item.interfaceRef))
+        ]
+      });
     }
     const record = {
       id: semanticId(relation.structuralFunction === 'support' ? 'sr-support' : 'sr-transfer', { relationId: relation.relationId }),
@@ -422,6 +567,40 @@ export function buildStructuralRequirements(input) {
       verificationState: STRUCTURAL_VERIFICATION_STATE,
       sourceRefs: refs
     };
+    addLegacyResolutionBindings(resolutionCapture, {
+      origin: resolutionOrigin(relation.structuralFunction === 'support' ? 'support' : 'transfer', record.id, 'sourceRefs'),
+      from: resolutionRef(
+        relation.structuralFunction === 'support'
+          ? STRUCTURAL_REFERENCE_DOMAINS.SUPPORT
+          : STRUCTURAL_REFERENCE_DOMAINS.TRANSFER,
+        record.id
+      ),
+      refs: [
+        resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.RELATION, relation.relationId),
+        ...relation.ports.map((item) => resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.INTERFACE, item.interfaceRef))
+      ]
+    });
+    for (const field of ['fromRefs', 'toRefs']) {
+      for (const value of record[field]) {
+        addResolutionBinding(resolutionCapture, {
+          origin: resolutionOrigin(
+            relation.structuralFunction === 'support' ? 'support' : 'transfer',
+            record.id,
+            field,
+            { occurrenceKey: `${STRUCTURAL_REFERENCE_DOMAINS.INTERFACE}|${idToken(value)}` }
+          ),
+          from: resolutionRef(
+            relation.structuralFunction === 'support'
+              ? STRUCTURAL_REFERENCE_DOMAINS.SUPPORT
+              : STRUCTURAL_REFERENCE_DOMAINS.TRANSFER,
+            record.id
+          ),
+          legacyValue: String(value),
+          to: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.INTERFACE, value),
+          provenance: [{ kind: 'declaredRelationEndpoint', relationId: relation.relationId }]
+        });
+      }
+    }
     if (relation.structuralFunction === 'support') supports.push(record);
     else transfers.push(record);
   }
@@ -436,6 +615,11 @@ export function buildStructuralRequirements(input) {
       const id = requirementId(effect, fn === 'inPlaneLateralResistance' ? 'lateral' : 'gravity', region.regionId, refs);
       requirements.push({ id, code: REQUIREMENT_CODE[effect] ?? 'SR-STRUCTURAL-EFFECT-REQUIRED', kind: effect, graph: fn === 'inPlaneLateralResistance' ? 'lateral' : 'gravity', targetRegionRef: region.regionId, sourceRefs: refs, verificationState: STRUCTURAL_VERIFICATION_STATE });
       region.requirementRefs.push(id);
+      addLegacyResolutionBindings(resolutionCapture, {
+        origin: resolutionOrigin('requirement', id, 'sourceRefs'),
+        from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.REQUIREMENT, id),
+        refs: [resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.ELEMENT_INTENT, intent.intentId)]
+      });
     }
   }
 
@@ -444,7 +628,7 @@ export function buildStructuralRequirements(input) {
     const edgeById = new Map((graphData.edges || []).map((edge) => [edge.edgeId, edge]));
     for (const edge of graphData.edges || []) {
       if (edge.kind !== 'supportedByFoundation') continue;
-      supports.push({
+      const support = {
         id: semanticId('sr-support', { graph, edgeId: edge.edgeId }),
         graph,
         structuralFunction: 'support',
@@ -457,7 +641,26 @@ export function buildStructuralRequirements(input) {
         supportEvidence: 'candidateSupportEvidence',
         verificationState: STRUCTURAL_VERIFICATION_STATE,
         sourceRefs: [edge.edgeId]
+      };
+      supports.push(support);
+      addLegacyResolutionBindings(resolutionCapture, {
+        origin: resolutionOrigin('support', support.id, 'sourceRefs'),
+        from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.SUPPORT, support.id),
+        refs: [resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_EDGE, edge.edgeId)]
       });
+      for (const field of ['fromRefs', 'toRefs']) {
+        for (const value of support[field]) {
+          addResolutionBinding(resolutionCapture, {
+            origin: resolutionOrigin('support', support.id, field, {
+              occurrenceKey: `${STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_NODE}|${idToken(value)}`
+            }),
+            from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.SUPPORT, support.id),
+            legacyValue: String(value),
+            to: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_NODE, value),
+            provenance: [{ kind: 'candidatePathEndpoint', edgeId: edge.edgeId }]
+          });
+        }
+      }
     }
     for (const path of graphData.paths || []) {
       if (path.candidateState === 'completeCandidate') continue;
@@ -482,6 +685,14 @@ export function buildStructuralRequirements(input) {
           verificationState: STRUCTURAL_VERIFICATION_STATE
         });
         if (region) region.requirementRefs.push(id);
+        addLegacyResolutionBindings(resolutionCapture, {
+          origin: resolutionOrigin('requirement', id, 'sourceRefs'),
+          from: resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.REQUIREMENT, id),
+          refs: [
+            resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.PATH, path.pathId),
+            resolutionRef(STRUCTURAL_REFERENCE_DOMAINS.CANDIDATE_PATH_EDGE, edge.edgeId)
+          ]
+        });
       }
     }
   }
@@ -569,7 +780,26 @@ export function buildStructuralRequirements(input) {
     verification: { state: STRUCTURAL_VERIFICATION_STATE, verifierRef: null }
   };
   const canonical = canonicalizeValue(draft, topology.config?.roundDecimals ?? 3);
-  return { ...canonical, canonicalSha256: sourceFingerprint(canonical, topology.config?.roundDecimals ?? 3) };
+  const requirementsDocument = {
+    ...canonical,
+    canonicalSha256: sourceFingerprint(canonical, topology.config?.roundDecimals ?? 3)
+  };
+  return {
+    requirements: requirementsDocument,
+    referenceResolutionContext: createStructuralReferenceResolutionContext(
+      requirementsDocument,
+      resolutionCapture
+    )
+  };
+}
+
+export function buildStructuralRequirements(input) {
+  return buildStructuralRequirementsProduct(input).requirements;
+}
+
+export function buildStructuralRequirementsWithReferenceResolutionContext(input) {
+  const { requirements, referenceResolutionContext } = buildStructuralRequirementsProduct(input);
+  return { structuralRequirements: requirements, referenceResolutionContext };
 }
 
 export function completeStructuralTopologyR6R12(input, structuralRequirements = null) {
@@ -621,7 +851,7 @@ export function completeStructuralTopologyR6R12(input, structuralRequirements = 
 }
 
 export function integrateStructuralRequirements(input) {
-  const requirements = buildStructuralRequirements(input);
+  const { requirements } = buildStructuralRequirementsProduct(input);
   const topology = completeStructuralTopologyR6R12(input, requirements);
   return { topology, requirements };
 }

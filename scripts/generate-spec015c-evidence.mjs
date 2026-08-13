@@ -15,8 +15,6 @@ import {
   prepareElementIntentBatch
 } from '../src/core/structuralIntentWorkspace.js';
 import { serializeAgnosticGeometry } from '../src/core/agnosticGeometry.js';
-import { prepareModelImport } from '../src/core/modelSchema.js';
-import { serializeNativeProject } from '../src/core/nativeProjectFile.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURE = path.join(ROOT, 'tests/fixtures/casa-L-completa-v3.json');
@@ -67,6 +65,13 @@ function countGeometry(model, workspace) {
 
 function intentFor(model, elementId) {
   return model.structuralIntent.elementIntents.find((intent) => intent.elementId === elementId) || null;
+}
+
+function roundtripHistoricalSpec015cV3(model) {
+  if (model?.modelVersion !== 3) {
+    throw new Error('La evidencia histórica SPEC-015-C exige explícitamente modelVersion 3.');
+  }
+  return JSON.parse(`${JSON.stringify(model, null, 2)}\n`);
 }
 
 function renderRoofSvg(roofDraft) {
@@ -158,7 +163,7 @@ export async function buildSpec015cEvidence() {
   const finalWorkspace = buildStructuralIntentWorkspace(finalModel);
   const finalRoofDraft = buildRoofIntentDraft(finalModel, TARGETS.roof);
   const agnosticAfter = serializeAgnosticGeometry(finalModel);
-  const reopened = prepareModelImport(JSON.parse(serializeNativeProject(finalModel))).model;
+  const reopened = roundtripHistoricalSpec015cV3(finalModel);
 
   let invalidCode = null;
   try {

@@ -205,8 +205,8 @@ test('SPEC-003-A: FX-004 persiste roofPlanes y deriva dos ledgers reproducibles 
   const model = fx4.prepared.model;
   const plane = model.roofPlanes[0];
 
-  assert.deepEqual(fx4.prepared.appliedMigrations, ['2->3']);
-  assert.equal(model.modelVersion, 3);
+  assert.deepEqual(fx4.prepared.appliedMigrations, ['2->3', '3->4']);
+  assert.equal(model.modelVersion, 4);
   assert.deepEqual(wallProfileSeries(model), [60, 90]);
   assert.equal(model.roofSystems.length, 0, 'no duplica la fuente moderna con sistemas legacy');
   assert.equal(model.roofPlanes.length, 1);

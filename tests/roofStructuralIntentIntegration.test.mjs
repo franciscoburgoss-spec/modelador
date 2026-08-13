@@ -58,7 +58,7 @@ test('SPEC-015-B: intención de cubierta mantiene byte identity y SHA-256 del go
   assert.equal(sha256(after), sha256(before));
 });
 
-test('SPEC-015-B: guardado/reapertura v3 conserva roofIntents canónicos sin migración', async () => {
+test('SPEC-015-B/SPEC-016-A: guardado/reapertura v4 conserva roofIntents canónicos', async () => {
   const model = await loadFx008();
   const [roof] = projectAgnosticRoofGeometry(model, [1785161662029]);
   const edges = canonicalizeRoofBoundaries(roof);
@@ -73,7 +73,7 @@ test('SPEC-015-B: guardado/reapertura v3 conserva roofIntents canónicos sin mig
     ]
   }).model;
   const reopened = prepareModelImport(JSON.parse(serializeNativeProject(declared))).model;
-  assert.equal(reopened.modelVersion, 3);
+  assert.equal(reopened.modelVersion, 4);
   assert.deepEqual(reopened.structuralIntent.roofIntents, declared.structuralIntent.roofIntents);
 });
 
@@ -84,7 +84,7 @@ test('SPEC-015-B: importación legacy/v2 no fabrica intención de cubierta', asy
   delete legacy.structuralIntent;
   delete legacy.structuralIntentFindings;
   const prepared = prepareModelImport(legacy);
-  assert.equal(prepared.model.modelVersion, 3);
+  assert.equal(prepared.model.modelVersion, 4);
   assert.deepEqual(prepared.model.structuralIntent.roofIntents, []);
 });
 

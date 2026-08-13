@@ -1,6 +1,7 @@
 # Serie SPEC-015/016 — Intención estructural y soluciones constructivas
 
-**Estado:** borrador de planificación · 2026-08-04
+**Estado:** SPEC-015 cerrada; SPEC-016-A abierta con B1/B1.1 aprobados y cerrados, B2 aprobado y cerrado por revisión humana tras B2-CLOSE y B3 no autorizado ·
+2026-08-12. SPEC-016-B/C permanecen futuras.
 
 ## Propósito
 

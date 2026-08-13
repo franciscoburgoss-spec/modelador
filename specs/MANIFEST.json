@@ -4,8 +4,8 @@
   "files": [
     {
       "name": "README-SERIE-015-016.md",
-      "bytes": 3745,
-      "sha256": "c647b5eef2cd4d86f1510ef9a10d80dbd5f517e846d26e9dd7a3a99de30da2ad"
+      "bytes": 3832,
+      "sha256": "2139dc9646de5ca6bfb5affabff53ac1b95844243ae88030e4ed856946432d10"
     },
     {
       "name": "SPEC-015-A-contrato-intencion-estructural-agnostica.md",
@@ -39,8 +39,8 @@
     },
     {
       "name": "SPEC-016-A-arquitectura-soluciones-constructivas.md",
-      "bytes": 6218,
-      "sha256": "908f8fa5c4933de77d7b8a29aefbd59e98caa1e6b063e2e50e6d97263bbd3d4f"
+      "bytes": 38595,
+      "sha256": "bbc7333f9f68a46562f45ccdc686e1f1590c882bade3e19b08fa48499cfce835"
     },
     {
       "name": "SPEC-016-B-adaptador-metalcon.md",

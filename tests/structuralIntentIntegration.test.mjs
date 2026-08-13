@@ -25,14 +25,14 @@ async function casaLCompleta() {
   ));
 }
 
-test('SPEC-015-A: legacy→v3 conserva el proyecto real y no infiere intención estructural', async () => {
+test('SPEC-015-A/SPEC-016-A: legacy→v4 conserva el proyecto real y no infiere intención estructural', async () => {
   const source = await casaL();
   const sourceClone = structuredClone(source);
   const prepared = prepareModelImport(source);
   const migrated = prepared.model;
 
-  assert.equal(migrated.modelVersion, 3);
-  assert.deepEqual(prepared.appliedMigrations, ['0->1', '1->2', '2->3']);
+  assert.equal(migrated.modelVersion, 4);
+  assert.deepEqual(prepared.appliedMigrations, ['0->1', '1->2', '2->3', '3->4']);
   assert.deepEqual(migrated.structuralIntent, createEmptyStructuralIntent());
   assert.deepEqual(
     migrated.structuralProposalReviews,
@@ -56,8 +56,8 @@ test('SPEC-015-A: FX-008 conserva 45/43/32/7 y la intención no cambia la geomet
   const prepared = prepareModelImport(await casaLCompleta());
   const model = prepared.model;
 
-  assert.equal(model.modelVersion, 3);
-  assert.deepEqual(prepared.appliedMigrations, []);
+  assert.equal(model.modelVersion, 4);
+  assert.deepEqual(prepared.appliedMigrations, ['3->4']);
   assert.deepEqual(model.structuralIntent, createEmptyStructuralIntent());
 
   const walls = model.elements.filter((element) => element.type === 'wall');

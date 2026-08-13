@@ -49,7 +49,13 @@ test('SPEC-004-A: serializa canónicamente sin mutar y valida antes de escribir'
 
   const content = serializeNativeProject(source);
   assert.equal(content.endsWith('\n'), true);
-  assert.equal(content, `${JSON.stringify(source, null, 2)}\n`);
+  const parsedContent = JSON.parse(content);
+  assert.equal(parsedContent.modelVersion, 4);
+  assert.deepEqual(parsedContent.constructiveSolutions, {
+    schema: 'constructive-solution-scenarios-v1.0',
+    nextScenarioOrdinal: 1,
+    scenarios: []
+  });
   assert.deepEqual(source, original);
 
   const saved = await saveNativeProject(fileSystem, '/projects/casa.modelador.json', source);
@@ -91,7 +97,7 @@ test('SPEC-004-A: abrir prepara un resultado aplicable sólo después de leer y 
   const opened = await openNativeProject(fileSystem, '/projects/nuevo.modelador.json');
   assert.equal(opened.path, '/projects/nuevo.modelador.json');
   assert.equal(opened.prepared.model.projectProbe, 'nuevo');
-  assert.deepEqual(opened.prepared.appliedMigrations, []);
+  assert.deepEqual(opened.prepared.appliedMigrations, ['3->4']);
 });
 
 test('SPEC-004-A: errores del puerto son tipados y el contrato exige ambas operaciones', async () => {
@@ -121,7 +127,7 @@ test('SPEC-004-A: errores del puerto son tipados y el contrato exige ambas opera
   );
 });
 
-test('SPEC-006-A: el roundtrip nativo migra a v3 y conserva edición, Metalcon y OSB', async () => {
+test('SPEC-006-A/SPEC-016-A: el roundtrip nativo migra a v4 y conserva edición, Metalcon y OSB', async () => {
   const source = JSON.parse(await readFile(
     new URL('fixtures/casa-L.json', import.meta.url),
     'utf8'
@@ -130,7 +136,7 @@ test('SPEC-006-A: el roundtrip nativo migra a v3 y conserva edición, Metalcon y
   const sourceWall = source.elements.find((element) => element.type === 'wall');
   const nativeWall = native.elements.find((element) => element.id === sourceWall.id);
 
-  assert.equal(native.modelVersion, 3);
+  assert.equal(native.modelVersion, 4);
   assert.deepEqual(native.structuralIntent, createEmptyStructuralIntent());
   assert.deepEqual(
     native.structuralProposalReviews,

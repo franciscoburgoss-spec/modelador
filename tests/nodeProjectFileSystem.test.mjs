@@ -21,6 +21,7 @@ import {
   saveNativeProject,
   serializeNativeProject
 } from '../src/core/nativeProjectFile.js';
+import { prepareModelImport } from '../src/core/modelSchema.js';
 
 const temporaryDirectories = [];
 
@@ -120,7 +121,7 @@ test('SPEC-004-A: un SIGKILL entre fsync y rename conserva el √∫ltimo archivo v√
   assert.equal(sha256(after), sha256(before));
   assert.deepEqual(
     (await openNativeProject(fileSystem, targetPath)).prepared.model,
-    project(0)
+    prepareModelImport(project(0)).model
   );
 });
 
