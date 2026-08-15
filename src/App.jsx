@@ -31,6 +31,7 @@ import WallTypesModal from './components/modals/WallTypesModal.jsx';
 import ElementInventoryModal from './components/modals/ElementInventoryModal.jsx';
 import StructuralIntentWorkspaceDialog from './components/modals/StructuralIntentWorkspaceDialog.jsx';
 import StructuralProposalWorkspaceDialog from './components/modals/StructuralProposalWorkspaceDialog.jsx';
+import ConstructiveScenariosWorkspaceDialog from './components/modals/ConstructiveScenariosWorkspaceDialog.jsx';
 import RoofTrussModal from './components/modals/RoofTrussModal.jsx';
 import RoofPlaneModal from './components/modals/RoofPlaneModal.jsx';
 import FilterPanel from './components/FilterPanel.jsx';
@@ -244,6 +245,10 @@ export default function App({ projectRuntime = null }) {
         open={activeModal === 'structuralProposals'}
         onClose={() => setActiveModal(null)}
         onOpenStructuralIntent={() => setActiveModal({ name: 'structuralIntent', initialTab: 'roof' })}
+      />
+      <ConstructiveScenariosWorkspaceDialog
+        open={activeModal === 'constructiveScenarios'}
+        onClose={() => setActiveModal(null)}
       />
       <RoofTrussModal
         open={activeModal === 'roofTruss' || isModal('roofTruss')}

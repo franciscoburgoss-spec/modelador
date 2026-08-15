@@ -399,6 +399,10 @@ export default function MenuBar({ onOpenModal, canvasSize, projectRuntime = null
         <Item disabled title="Disponible en SPEC-015-E">Topología estructural…</Item>
       </Dropdown>
 
+      <Dropdown label="Soluciones constructivas">
+        <Item onClick={() => onOpenModal('constructiveScenarios')}>Escenarios…</Item>
+      </Dropdown>
+
       <Dropdown label="Ver">
         <Item onClick={() => fitToContent(canvasSize.width, canvasSize.height)}>Ajustar a contenido</Item>
         <Item onClick={zoomIn}>Zoom +</Item>

@@ -1,6 +1,6 @@
 # SPEC-016-A — Arquitectura de soluciones constructivas y escenarios
 
-**Estado:** abierta · B1/B1.1 aprobados y cerrados · B2 aprobado y cerrado por revisión humana tras B2-CLOSE · B3 no autorizada
+**Estado:** cerrada · 14-ago-2026 · SPEC-016-A-CLOSE aprobado tras auditoría C1–C20 y validación integral verde · SPEC-016-B/C fuera de alcance y no autorizadas
 
 ## Diagnóstico
 
@@ -358,7 +358,7 @@ exacto de otro requirement no desactiva una ruta tipada independiente. La unión
 canónicamente requirements, regiones, owners, source refs tipadas, paths, supports, transfers,
 governing refs, traces y diagnostics; es determinable sólo si todas sus clausuras individuales lo
 son. Los traces son las mismas clausuras individuales usadas por el agregado: ninguna ref válida
-presente en ellos puede omitirse del aggregate ni reconstruirse con otra semántica. B2 queda aprobado y cerrado por revisión humana tras B2-CLOSE; esta aprobación no autoriza B3.
+presente en ellos puede omitirse del aggregate ni reconstruirse con otra semántica. B2 queda aprobado y cerrado por revisión humana tras B2-CLOSE. Ese cierre no autorizó B3 por sí solo; B3 fue posteriormente ratificado y cerrado mediante B3-CLOSE el 14-ago-2026.
 
 ### Cierre humano B2
 
@@ -400,9 +400,9 @@ funcional ni contractual.
 El último output autorizado de B2 es
 `constructive-effective-input-v1.0`.
 
-Adapter, generation, receipt, availability, freshness, coverage funcional y
-cualquier output constructivo posterior pertenecen a B3 o cortes posteriores
-y continúan no autorizados.
+Adapter, generation, receipt, availability, freshness y coverage funcional
+constituyen la frontera B3. Dicha frontera fue posteriormente implementada,
+auditada y ratificada por B3-CLOSE el 14-ago-2026.
 
 El cierre trazable recorre como mínimo:
 
@@ -560,8 +560,8 @@ eligibility ni `excludedBlockingDecisions`, directa o indirectamente. Sólo
 `relevantBlockingDecisionContext` puede atravesar la frontera consumible. Por ello, modificar una
 decisión todavía demostrablemente ajena no cambia el effective input; convertirla en intersectante
 bloquea la proyección. Este schema es el output final de B2, no un
-`constructive-adapter-input-v1.0`; B3 deberá construir la frontera exacta del adapter sin redefinir
-silenciosamente B2.
+`constructive-adapter-input-v1.0`. B3 construye la frontera exacta del adapter sin redefinir
+silenciosamente B2 y quedó ratificada y cerrada por B3-CLOSE el 14-ago-2026.
 
 ## Output constructivo y significado de resolved
 
@@ -788,6 +788,107 @@ Agregar `Soluciones constructivas > Escenarios…`, completamente separado de `E
 - inspeccionar resultados derivados mientras están materializados.
 
 No se diseña Metalcon real, comparación de soluciones ni verificación resistente.
+
+## Cierre humano B3 — B3-CLOSE
+
+La revisión humana del 14-ago-2026 ratifica y consolida el trabajo ya
+implementado en B3. Esta decisión no reescribe D-067: B2 fue efectivamente
+cerrado antes de autorizar B3. La autorización consolidada vigente queda
+registrada posteriormente mediante D-068.
+
+`SPEC-016-A / B3` queda **APROBADO Y CERRADO**.
+
+La frontera cerrada comprende:
+
+- B3.1: `constructive-adapter-input-v1.0`, conservación de la biblioteca
+  efectiva, `effectiveGenerationInputSha256`, subfingerprints y availability;
+- B3.2: generación neutral `constructive-solution-v1.0`, resolutions,
+  unresolved requirements y coverage, siempre con
+  `verificationState=notVerified`;
+- B3.3: receipt persistente operacionalmente coherente, freshness y
+  reconstrucción de estado tras reapertura sin persistir output;
+- runtime neutral productivo con adapter/library canónicos;
+- pipeline explícito B2 → B3.1 → B3.2 → B3.3;
+- mutación histórica y atómica del store que persiste únicamente el receipt;
+- inspección derivada y fail-closed;
+- UI mínima independiente de `Estructura`, incluido scope explícito por
+  requirements vigentes y presentación humana derivada.
+
+Evidencia consolidada previa a esta ratificación:
+
+- B3.1 focal: 21/21 PASS; regresión B1+B2+B3.1: 120/120 PASS;
+- B3.2 focal: 19/19 PASS; regresión acumulada: 139/139 PASS;
+- B3.3 focal: 20/20 PASS; regresión acumulada: 159/159 PASS;
+- runtime neutral + regresión B3.1/B3.2/B3.3: 60/60 PASS;
+- integración/UI afectada posterior a las correctivas: 25/25 PASS;
+- build Vite: PASS;
+- revisión visual humana sobre FX-008: PASS.
+
+FX-008 conserva las semánticas contractuales demostradas:
+
+- escenario A: coverage `partial`, conteos 1/0/1 y `notVerified`;
+- escenario B: coverage `none`, conteos 0/0/2 y `notVerified`;
+- receipt vigente reconstruye `fresh`;
+- un cambio del aggregate efectivo produce `stale`;
+- una inelegibilidad B2 impide B3.1/B3.2/B3.3 y falla cerrada;
+- ninguna generación muta geometría, `structuralIntent` ni requirements.
+
+B3-CLOSE no autoriza:
+
+- perfiles, studs, OSB, materiales o reglas Metalcon reales;
+- SPEC-016-B o SPEC-016-C;
+- verificación resistente o normativa;
+- DXF/INP constructivo;
+- persistencia de `generatedSolution`;
+- conversión de `candidate`, `resolved`, `complete`, `fresh` o `available`
+  en `verified`.
+
+SPEC-016-A permanece abierta hasta ejecutar sus gates integrales, auditar los
+20 criterios de aceptación y aprobar un cierre integral separado.
+
+## Cierre integral — SPEC-016-A-CLOSE
+
+El 14-ago-2026 la revisión humana aprobó explícitamente
+`SPEC-016-A-CLOSE`, registrada por D-069.
+
+La auditoría READ-ONLY de aceptación demostró C1–C19 como PASS y
+C20 quedó habilitado por sus gates pre-cierre. El candidato documental
+autorizado fue sometido posteriormente a `npm run validate` integral y
+terminó con exit code 0.
+
+Evidencia del candidato inmediatamente anterior a este cierre:
+
+- Node: 1212/1212 PASS;
+- componentes: 61/61 PASS;
+- Rust: 9/9 PASS;
+- laboratorio: 35/35 PASS;
+- goldens semánticos: 19 verificados;
+- DXF: 14 archivos, 0 errores, 0 reparaciones y 0 fallas de calidad;
+- CalculiX: 3/3 jobs PASS;
+- build Vite: PASS;
+- migration: 187 archivos y 2 fixtures válidos;
+- artifacts: PASS;
+- contrato derived: 14 exportadores / 14 mutadores PASS;
+- Codex audit: 11 ejecuciones completas, 2 fallidas recuperadas y
+  0 fallidas no recuperadas;
+- governance: 22 archivos, 53 requisitos y 69 decisiones;
+- `git diff --check`: PASS.
+
+Con esa evidencia, los veinte criterios de aceptación de esta SPEC quedan
+satisfechos.
+
+El cierre preserva todas las fronteras de autoridad congeladas:
+geometría agnóstica como autoridad física, `structuralIntent` como
+autoridad humana persistente y requirements/propuestas/candidate paths
+como derivados no autoritativos. La solución generada sigue siendo
+efímera y sólo el receipt se persiste.
+
+`candidate`, `resolved`, `complete`, `fresh` y `available` continúan sin
+equivaler a `verified`; SPEC-016-A sólo admite
+`verificationState=notVerified`.
+
+SPEC-016-B y SPEC-016-C permanecen fuera de alcance y requieren una
+apertura humana independiente.
 
 ## Alternativas descartadas
 

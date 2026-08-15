@@ -115,9 +115,9 @@
       "bytes": 11359,
       "sha256": "2b0d89e322eec9d13d625b7c1ad58c18d262052ad49499b4df2e999913154c54",
       "kind": "source",
-      "workspaceBytes": 14572,
-      "workspaceSha256": "ed21cfcaf855c46762c7a55c97f765b5ec04b819d06b6e6282d67609871c766c",
-      "changedBy": "SPEC-015"
+      "workspaceBytes": 14838,
+      "workspaceSha256": "ca9dbab8115c75d11d75a093b59c9c0aa88fd3ab9e05c7da9b15f8460ceecdc8",
+      "changedBy": "SPEC-016"
     },
     {
       "path": "src/components/AutosaveBanner.jsx",
@@ -145,9 +145,9 @@
       "bytes": 16614,
       "sha256": "6048c2c7cfd71795fda00eda4e9c94059cda0d21923011add73595a6544dc2e2",
       "kind": "source",
-      "workspaceBytes": 22573,
-      "workspaceSha256": "25a37f02644c910b174107e6bb71c07adac22e037968d93f9ad8cfdc7a9462a5",
-      "changedBy": "SPEC-015"
+      "workspaceBytes": 22730,
+      "workspaceSha256": "0d06f9f38a31cc82b99b4386f55890a48d503460ede5fd26a4d968e80af5b104",
+      "changedBy": "SPEC-016"
     },
     {
       "path": "src/components/PropertiesPanel.jsx",
@@ -922,8 +922,8 @@
       "bytes": 42481,
       "sha256": "882ed9014060449d90a98031d4cf7b9da6a924e9fbac89da4ae91e1271650310",
       "kind": "source",
-      "workspaceBytes": 72001,
-      "workspaceSha256": "91b72a0c612b854d40eca19dbf8e35a575600988af292ea4f47eb2a4cee032d3",
+      "workspaceBytes": 74020,
+      "workspaceSha256": "2ca9192c27ce3067a354d371274def62bcf37a090ca2f3e66800978c68a80e83",
       "changedBy": "SPEC-016"
     },
     {

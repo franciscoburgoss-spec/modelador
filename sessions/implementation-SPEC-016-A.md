@@ -1,7 +1,7 @@
 # Sesión de implementación — SPEC-016-A
 
-**Estado:** abierta; B1/B1.1 aprobados y cerrados; B2 aprobado y cerrado por revisión humana tras B2-CLOSE.
-B3 y cortes posteriores no autorizados.
+**Estado:** SPEC-016-A cerrada el 14-ago-2026 mediante SPEC-016-A-CLOSE; B1/B1.1, B2 y B3 cerrados.
+SPEC-016-B/C permanecen fuera de alcance y no autorizadas.
 
 ## Objetivo
 
@@ -693,3 +693,142 @@ El último output autorizado continúa siendo
 `constructive-effective-input-v1.0`.
 
 B3 continúa **NO AUTORIZADO** y este cierre no autoriza Git de escritura.
+
+## Cierre humano B3 — B3-CLOSE
+
+El 14-ago-2026 la revisión humana aprobó explícitamente `B3-CLOSE`.
+
+Esta ratificación consolida los subcortes B3 ya implementados y revisados,
+sin afirmar que D-067 los hubiera autorizado históricamente. D-067 conserva
+su significado original: cerró B2 y exigía una autorización humana separada
+para B3. Esa autorización consolidada se registra ahora como D-068.
+
+B3 queda **APROBADO Y CERRADO** con la siguiente frontera:
+
+- B3.1: adapter input canónico, fingerprint efectivo, subfingerprints y
+  availability;
+- B3.2: solución constructiva neutral derivada, coverage y
+  `verificationState=notVerified`;
+- B3.3: receipt persistente, coherencia operacional, freshness y reapertura;
+- runtime neutral productivo;
+- pipeline B2 → B3.1 → B3.2 → B3.3;
+- store atómico que persiste únicamente receipt;
+- inspección derivada;
+- UI mínima separada de `Estructura`.
+
+Evidencia consolidada:
+
+- B3.1 focal 21/21; acumulada 120/120 PASS;
+- B3.2 focal 19/19; acumulada 139/139 PASS;
+- B3.3 focal 20/20; acumulada 159/159 PASS;
+- runtime neutral y regresión B3: 60/60 PASS;
+- UI afectada: 25/25 PASS;
+- build Vite: PASS;
+- revisión visual humana FX-008: PASS;
+- BUG-016-A-013…039 cerrados.
+
+La ratificación preserva:
+
+- geometría agnóstica como autoridad física;
+- `structuralIntent` como autoridad humana persistente;
+- requirements, propuestas y candidate paths como derivados no autoritativos;
+- `candidate != verified`;
+- `resolved != verified`;
+- `complete != verified`;
+- `fresh != verified`;
+- `verificationState=notVerified`;
+- output constructivo no persistente.
+
+No se autoriza SPEC-016-B/C, Metalcon real, verificación resistente,
+DXF/INP constructivo ni cierre integral automático de SPEC-016-A.
+
+El siguiente paso es ejecutar gates documentales e integrales y auditar los
+20 criterios de aceptación antes de una decisión humana separada de cierre
+integral.
+
+## Autorización de cierre integral — SPEC-016-A-CLOSE
+
+El 14-ago-2026 la revisión humana autorizó explícitamente:
+
+`SPEC-016-A-CLOSE`
+
+La autorización ocurre después de una auditoría READ-ONLY criterio por
+criterio del contrato de aceptación.
+
+### Resultado de auditoría
+
+- C1–C6: PASS.
+  Control focal B1/B2: 99/99 PASS.
+- C7–C15: PASS.
+  Focal B3.1/B3.2/B3.3/runtime: 70/70 PASS.
+- C16: PASS.
+- C17: PASS.
+  `Lifecycle`, `Coverage`, `Freshness`, `Verification` y `Execution`
+  permanecen como las cinco dimensiones contractuales de estado;
+  `Fingerprints` es diagnóstico explicativo adicional y no una sexta
+  autoridad de estado.
+- C18: PASS.
+- C19: PASS.
+  Focal UI/store C16–C17: 18/18 PASS.
+  Focal core C18–C19: 142/142 PASS.
+- C20: gates pre-cierre demostrados; cierre efectivo aún pendiente de
+  verificación post-cierre.
+
+### Evidencia pre-cierre de C20
+
+- persistencia/store: 29/29 PASS;
+- componentes/UI: 14/14 PASS;
+- último `npm run validate` integral: PASS, exit code 0;
+- `npm run verify:migration`: PASS;
+- `npm run format:check`: PASS;
+- `git diff --check`: PASS;
+- `make governance`: PASS;
+- BUG-016-A: 44 registrados, 43 cerrados y sólo BUG-016-A-040 abierto;
+- `sessions/close-SPEC-016-A.md` todavía no existía antes de esta
+  autorización;
+- `HEAD == origin/main ==
+  2a3235d6269059e74339c19c2cd4be947b2d6de9`.
+
+### Alcance de la autorización
+
+La autorización permite exclusivamente completar el cierre documental y
+sus gates finales.
+
+No autoriza:
+
+- SPEC-016-B;
+- SPEC-016-C;
+- adaptador Metalcon real;
+- verificación resistente;
+- DXF/INP constructivo;
+- persistencia de la solución generada;
+- convertir `resolved`, `complete`, `fresh`, `available` o `candidate`
+  en `verified`;
+- Git add, commit o push.
+
+D-069 registra esta autorización sin reescribir D-067 ni D-068.
+
+El cierre se considera efectivo únicamente después de que el estado final
+pase sus gates post-cierre.
+
+### Resultado final de SPEC-016-A-CLOSE
+
+La autorización D-069 fue materializada primero como candidato de cierre.
+Sobre ese candidato se ejecutó nuevamente `npm run validate` integral con
+exit code 0.
+
+La validación confirmó Node 1212/1212, componentes 61/61, Rust 9/9,
+laboratorio 35/35, build, migration, artifacts, derived contract,
+Codex audit y governance verdes.
+
+El cierre documental efectivo:
+
+- cierra BUG-016-A-040;
+- cambia SPEC-016-A a cerrada;
+- deja `Spec activa = Ninguna`;
+- deja `Esfuerzo activo = Ninguno`;
+- marca REQ-DOM-011, REQ-DOM-012 y REQ-UX-005 como `Verificado`;
+- actualiza el manifest de la SPEC por bytes y SHA reales;
+- conserva SPEC-016-B/C fuera de alcance;
+- no modifica producto, tests ni autoridades estructurales;
+- no autoriza Git add, commit o push.

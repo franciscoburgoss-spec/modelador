@@ -77,7 +77,12 @@ import {
 import {
   createEmptyStructuralProposalReviewLog
 } from '../core/structuralProposalReviews.js';
-import { createEmptyConstructiveSolutions } from '../core/constructiveSolutionScenarios.js';
+import {
+  createConstructiveScenario,
+  createEmptyConstructiveSolutions
+} from '../core/constructiveSolutionScenarios.js';
+import { buildNeutralConstructiveRuntime } from '../core/constructiveNeutralRuntime.js';
+import { runConstructiveScenarioGeneration } from '../core/constructiveGenerationPipeline.js';
 import {
   EMPTY_STRUCTURAL_PROPOSAL_LOCATOR,
   closeStructuralProposalLocatorState,
@@ -1119,6 +1124,95 @@ export const useModelStore = create((set, get) => ({
       affectedRoofGeometryIds: outcome.affectedRoofGeometryIds,
       invalidatedStructuralDerivatives: outcome.invalidatedStructuralDerivatives
     };
+  },
+
+  // ---- escenarios constructivos (SPEC-016-A) ----
+  // El scope llega explícitamente desde la decisión del usuario.
+  // Adapter, library y configuración neutral se componen fuera de React.
+  createNeutralConstructiveScenario: ({
+    metadata,
+    scope
+  }) => {
+    let outcome;
+
+    set((s) => {
+      const runtime =
+        buildNeutralConstructiveRuntime();
+
+      outcome =
+        createConstructiveScenario(
+          s.model.constructiveSolutions
+            ?? createEmptyConstructiveSolutions(),
+          {
+            metadata,
+
+            adapterRef:
+              runtime.adapterRef,
+
+            libraryRef:
+              runtime.libraryRef,
+
+            configuration: {
+              schema:
+                'neutral-contract-configuration-v1.0'
+            },
+
+            scope
+          }
+        );
+
+      return withHistory(
+        s,
+        {
+          ...s.model,
+
+          constructiveSolutions:
+            outcome.constructiveSolutions
+        }
+      );
+    });
+
+    return outcome;
+  },
+
+  // ---- generación constructiva (SPEC-016-A) ----
+  // B3.2 permanece efímero; sólo el receipt B3.3 entra al modelo y al historial.
+  generateConstructiveScenario: (scenarioId) => {
+    let outcome;
+
+    set((s) => {
+      const runtime =
+        buildNeutralConstructiveRuntime();
+
+      outcome =
+        runConstructiveScenarioGeneration({
+          model:
+            s.model,
+
+          constructiveSolutions:
+            s.model.constructiveSolutions,
+
+          scenarioId,
+
+          runtime
+        });
+
+      if (!outcome.changed) {
+        return s;
+      }
+
+      return withHistory(
+        s,
+        {
+          ...s.model,
+
+          constructiveSolutions:
+            outcome.constructiveSolutions
+        }
+      );
+    });
+
+    return outcome;
   },
 
   // ---- revisión humana de propuestas (SPEC-015-D) ----

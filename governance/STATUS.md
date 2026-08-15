@@ -3,17 +3,17 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **12-ago-2026**
+Última actualización: **14-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-016-A Fase B; B1/B1.1 aprobados y cerrados; B2 aprobado y cerrado por revisión humana tras B2-CLOSE; B3 no autorizada |
+| Etapa | SPEC-016-A cerrada el 14-ago-2026 mediante SPEC-016-A-CLOSE; B1/B1.1, B2 y B3 cerrados; SPEC-016-B/C permanecen futuras y no autorizadas |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | `SPEC-016-A` — Arquitectura de soluciones constructivas y escenarios |
-| Esfuerzo activo | `high` planificado / `high` efectivo; sin escalamiento |
-| Suite oficial | SPEC-016-A B2-CLOSE: structural requirements 13/13; contexto B2 78/78; corpus combinado 112/112; Node 1126/1126; componentes 49/49; Rust 9/9; lab 35/35; CalculiX 3/3 |
+| Spec activa | Ninguna |
+| Esfuerzo activo | Ninguno |
+| Suite oficial | SPEC-016-A-CLOSE: auditoría C1–C20 PASS; `npm run validate` integral PASS; Node 1212/1212; componentes 61/61; Rust 9/9; laboratorio 35/35; build, migration, artifacts, derived, Codex audit y governance PASS |
 | Build | PASS local Vite; warning heredado de chunk inicial mayor a 600 kB permanece documentado |
 | Cobertura | PASS: core 92,28 % líneas / 80,65 % ramas / 94,24 % funciones; store 92,37 % / 80,68 % / 93,33 % |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
@@ -317,70 +317,6 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
 
 ## Próximo corte
 
-SPEC-016-A se abrió documentalmente el 11-ago-2026 sobre
-`main@6afcb46d127b9db6bc7387555ff2d43fd6e0b2f2`, después de la aprobación humana de su Fase A.
-El contrato congela modelVersion 4, migración v3→v4 sin pérdida legacy, escenarios y assignments con
-allocators deterministas, elegibilidad local fail-closed, effective input allowlist, output no
-persistente, receipt explicable y separación estricta de lifecycle/coverage/freshness/verification/
-execution. `effectiveGenerationInputSha256`, incluido scenarioId, es la única autoridad fresh/stale;
-sus subfingerprints sólo explican cambios. SPEC-016-B/C permanecen fuera de alcance.
+SPEC-016-A quedó cerrada el 14-ago-2026 mediante `SPEC-016-A-CLOSE`, con D-069 y `sessions/close-SPEC-016-A.md` como trazabilidad del cierre. Los veinte criterios de aceptación quedaron demostrados y el candidato de cierre pasó `npm run validate` integral.
 
-El corte B1/B1.1 aprobado implementa modelVersion 4, migración y dominio puro y cerró
-BUG-016-A-001. B2 implementa validación contextual y elegibilidad local fail-closed. La correctiva
-B2.1 / BUG-016-A-002, cerrado el 12-ago-2026, lleva la scope closure a punto fijo y excluye del
-effective input toda decisión demostrablemente ajena, sin store, adapter, generación, freshness ni
-UI. B2.2 / BUG-016-A-003, cerrado el 12-ago-2026, sustituye la heurística textual de referencias
-por extractores allowlist tipados; focal 43/43, regresión estructural 91/91 y `npm run validate`
-PASS. B2.3 / BUG-016-A-004 preserva `domain + value` en la conectividad; focal 54/54, regresión
-estructural 102/102 y `npm run validate` PASS. El BUG queda cerrado el 12-ago-2026.
-B2.4-A confirmó RESULTADO C por resolución insuficiente de refs necesarias. B2.4-C corrigió
-mecánicamente esa frontera mediante un contexto tipado compañero sin cambiar
-`structural-requirements-v1.0`: focales 72/72 y 11/11, regresión estructural 116/116, Node
-1118/1118, componentes 49/49, Rust 9/9, laboratorio 35/35, DXF 14 con 0 errores/0 reparaciones,
-CalculiX 3/3, gobernanza 22/53/65 y `npm run validate` PASS. BUG-016-A-005 queda cerrado técnicamente. La revisión humana B2-CLOSE aprueba y cierra B2. B3 requiere nueva autorización. F-009 no cambia.
-La correctiva B2.4-E / BUG-016-A-007/008/009 añade `sourceSchema`, preserva la identidad exacta
-legacy/typed y define la clausura multi-requirement como unión canónica de clausuras individuales.
-El STOP contractual T13 fue aceptado: la revisión humana corrigió sólo el fixture imposible
-`SAME -> P1/E1` a ocurrencias productoras `SAME -> pathId:SAME/candidatePathEdgeId:SAME`, sin
-debilitar H2 ni la propiedad cross-domain. B2.4-E queda implementada y aprobada dentro del cierre humano B2-CLOSE; B2 queda aprobado y cerrado y B3 continúa no autorizado.
-Git de escritura continúa
-reservado a ejecución manual del usuario.
-
-## Cierre humano SPEC-016-A B2 — 12-ago-2026
-
-B2 queda **APROBADO Y CERRADO** por revisión humana tras B2-CLOSE.
-
-Evidencia consolidada:
-
-- B2.4-C/C.2 aprobados humanamente;
-- B2.4-D READ-ONLY con H1/H2/H3 confirmados;
-- B2.4-E/E.1 aprobados humanamente;
-- B2-CLOSE: 28/28 propiedades obligatorias PASS;
-- structural requirements 13/13;
-- contexto B2 78/78;
-- corpus combinado 112/112;
-- Node 1126/1126;
-- componentes 49/49;
-- Rust 9/9;
-- laboratorio 35/35;
-- `npm run validate`, governance y `git diff --check` PASS;
-- workspace READ-ONLY byte-idéntico BEFORE/AFTER.
-
-La aclaración final FX-008 confirmó que
-`sr-requirement:sha256:21de80893e8e17b8c329316343ce6a7eb5e4e79441e434badd4a198e4a8a2331`
-es `LOAD_TRANSFER_REQUIREMENT` y porta contractualmente el path/edge exactos.
-
-`sr-requirement:sha256:f6ee85b857d00ee783b4bfe3eb2f0c1bb621a0dbe87b14f651cfad12b0767a84`
-es `LATERAL_RESISTANCE_REQUIREMENT`.
-
-`scopeRequirements()` incluye ambos por defecto y `assignment()` usa por
-defecto `LOAD_TRANSFER_REQUIREMENT`. La denominación de `f6ee…7a84` como
-“requirement lateral gobernante” en el resumen B2-CLOSE fue un
-**error de rotulación del informe**, no una desviación del código ni del
-contrato.
-
-El último output autorizado de B2 es
-`constructive-effective-input-v1.0`.
-
-**B3 continúa NO AUTORIZADO.**
-Este cierre no autoriza Git de escritura.
+No hay SPEC activa. SPEC-016-B y SPEC-016-C permanecen futuras y requieren apertura humana explícita e independiente. F-009 no cambia.
