@@ -12,10 +12,6 @@ import {
 } from './constructiveGenerationInput.js';
 
 import {
-  generateNeutralConstructiveSolution
-} from './constructiveSolutionGeneration.js';
-
-import {
   buildConstructiveGenerationReceipt,
   deriveConstructiveGenerationState,
   recordConstructiveGenerationReceipt
@@ -64,6 +60,18 @@ function requireRuntime(runtime) {
     fail(
       'INVALID_RUNTIME',
       'La generación requiere un runtime constructivo explícito.'
+    );
+  }
+}
+
+function requireRuntimeCapabilities(runtime) {
+  if (
+    typeof runtime.generateSolution !== 'function'
+    || typeof runtime.assertValidSolution !== 'function'
+  ) {
+    fail(
+      'INVALID_RUNTIME',
+      'Un runtime disponible debe declarar capacidades constructivas ejecutables.'
     );
   }
 }
@@ -140,10 +148,17 @@ export function runConstructiveScenarioGeneration({
     );
   }
 
+  requireRuntimeCapabilities(runtime);
+
   const ephemeralSolution =
-    generateNeutralConstructiveSolution(
+    runtime.generateSolution(
       adapterInput
     );
+
+  runtime.assertValidSolution(
+    ephemeralSolution,
+    adapterInput
+  );
 
   const receipt =
     buildConstructiveGenerationReceipt({
@@ -154,7 +169,10 @@ export function runConstructiveScenarioGeneration({
 
       structuralRequirements:
         structuralWorkspace
-          .structuralRequirements
+          .structuralRequirements,
+
+      solutionValidator:
+        runtime.assertValidSolution
     });
 
   const recorded =

@@ -18,6 +18,9 @@ const EFFECTIVE_CONSTRUCTIVE_INPUT_SCHEMA =
 const EFFECTIVE_LIBRARY_SCHEMA =
   'constructive-library-context-v1.0';
 
+const EFFECTIVE_LIBRARY_V2_SCHEMA =
+  'constructive-library-context-v2.0';
+
 export class ConstructiveGenerationInputError extends Error {
   constructor(code, message, details = {}) {
     super(message);
@@ -33,6 +36,30 @@ function fail(code, message, details = {}) {
     message,
     details
   );
+}
+
+function finiteJsonValue(value) {
+  if (
+    value === null
+    || typeof value === 'string'
+    || typeof value === 'boolean'
+  ) {
+    return true;
+  }
+
+  if (typeof value === 'number') {
+    return Number.isFinite(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.every(finiteJsonValue);
+  }
+
+  if (isRecord(value)) {
+    return Object.values(value).every(finiteJsonValue);
+  }
+
+  return false;
 }
 
 function requireEffectiveInput(value) {
@@ -87,26 +114,62 @@ function requireEffectiveInput(value) {
 
   const library = value.library;
 
-  if (
-    !exactKeys(
-      library,
-      [
-        'schema',
-        'libraryId',
-        'libraryVersion',
-        'sha256',
-        'componentTypes'
-      ]
+  const isLibraryV1 =
+    library.schema
+      === EFFECTIVE_LIBRARY_SCHEMA;
+
+  const isLibraryV2 =
+    library.schema
+      === EFFECTIVE_LIBRARY_V2_SCHEMA;
+
+  const validLibraryKeys =
+    (
+      isLibraryV1
+      && exactKeys(
+        library,
+        [
+          'schema',
+          'libraryId',
+          'libraryVersion',
+          'sha256',
+          'componentTypes'
+        ]
+      )
     )
-    || library.schema !== EFFECTIVE_LIBRARY_SCHEMA
+    || (
+      isLibraryV2
+      && exactKeys(
+        library,
+        [
+          'schema',
+          'libraryId',
+          'libraryVersion',
+          'sha256',
+          'componentTypes',
+          'adapterPayload'
+        ]
+      )
+    );
+
+  if (
+    !validLibraryKeys
     || !validNonEmptyString(library.libraryId)
     || !validNonEmptyString(library.libraryVersion)
     || !/^[a-f0-9]{64}$/.test(library.sha256 ?? '')
     || !Array.isArray(library.componentTypes)
+    || (
+      isLibraryV2
+      && (
+        !isRecord(library.adapterPayload)
+        || !finiteJsonValue(
+          library.adapterPayload
+        )
+      )
+    )
   ) {
     fail(
       'INVALID_EFFECTIVE_INPUT',
-      'library debe conservar exactamente la selección efectiva proyectada por B2.',
+      'library debe conservar exactamente la selección efectiva proyectada por B2/B1.',
       { path: '$.library' }
     );
   }

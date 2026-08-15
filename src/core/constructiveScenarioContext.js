@@ -17,6 +17,8 @@ export const CONSTRUCTIVE_CONTEXT_EVALUATION_SCHEMA = 'constructive-scenario-con
 export const CONSTRUCTIVE_SCOPE_ELIGIBILITY_SCHEMA = 'constructive-scope-eligibility-v1.0';
 export const CONSTRUCTIVE_SCOPE_CLOSURE_SCHEMA = 'constructive-scope-closure-v1.0';
 export const CONSTRUCTIVE_LIBRARY_CONTEXT_SCHEMA = 'constructive-library-context-v1.0';
+export const CONSTRUCTIVE_LIBRARY_CONTEXT_V2_SCHEMA = 'constructive-library-context-v2.0';
+export const CONSTRUCTIVE_CONFIGURATION_INPUT_REFS_SCHEMA = 'constructive-configuration-input-refs-v1.0';
 export const EFFECTIVE_CONSTRUCTIVE_INPUT_SCHEMA = 'constructive-effective-input-v1.0';
 export const EFFECTIVE_CONSTRUCTIVE_GEOMETRY_SCHEMA = 'effective-constructive-geometry-v1.0';
 export const EFFECTIVE_STRUCTURAL_REQUIREMENTS_SCHEMA = 'effective-structural-requirements-v1.0';
@@ -38,7 +40,9 @@ export const CONSTRUCTIVE_CONTEXT_REASON_CODES = Object.freeze({
   SCOPE_REF_LINK_UNRESOLVED: 'SCOPE_REF_LINK_UNRESOLVED',
   SCOPE_REF_PROVENANCE_MISMATCH: 'SCOPE_REF_PROVENANCE_MISMATCH',
   SCOPE_REF_RESERVED_UNSUPPORTED: 'SCOPE_REF_RESERVED_UNSUPPORTED',
-  SCOPE_REF_CONTEXT_MISMATCH: 'SCOPE_REF_CONTEXT_MISMATCH'
+  SCOPE_REF_CONTEXT_MISMATCH: 'SCOPE_REF_CONTEXT_MISMATCH',
+  CONFIGURATION_INPUT_REFS_INVALID: 'CONFIGURATION_INPUT_REFS_INVALID',
+  CONFIGURATION_INPUT_REF_NOT_RESOLVED: 'CONFIGURATION_INPUT_REF_NOT_RESOLVED'
 });
 
 const REQUIREMENTS_SCHEMA = 'structural-requirements-v1.0';
@@ -884,13 +888,239 @@ export function evaluateConstructiveScopeEligibility(
   });
 }
 
+function validConfigurationInputRefId(value) {
+  return (
+    (typeof value === 'string' && value.length > 0)
+    || Number.isSafeInteger(value)
+  );
+}
+
+function finiteJsonValue(value) {
+  if (
+    value === null
+    || typeof value === 'string'
+    || typeof value === 'boolean'
+  ) {
+    return true;
+  }
+
+  if (typeof value === 'number') {
+    return Number.isFinite(value);
+  }
+
+  if (Array.isArray(value)) {
+    return value.every(finiteJsonValue);
+  }
+
+  if (isRecord(value)) {
+    for (const key of Object.keys(value)) {
+      if (!finiteJsonValue(value[key])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+function inspectConfigurationInputRefs(
+  configuration
+) {
+  const diagnostics = [];
+  const empty = {
+    schema:
+      CONSTRUCTIVE_CONFIGURATION_INPUT_REFS_SCHEMA,
+    elementIds: [],
+    roofGeometryIds: []
+  };
+
+  if (!isRecord(configuration)) {
+    diagnostics.push(
+      diagnostic(
+        CONSTRUCTIVE_CONTEXT_REASON_CODES
+          .CONFIGURATION_INPUT_REFS_INVALID,
+        '$.scenario.configuration'
+      )
+    );
+
+    return {
+      inputRefs: empty,
+      diagnostics
+    };
+  }
+
+  if (!hasOwn(configuration, 'inputRefs')) {
+    return {
+      inputRefs: empty,
+      diagnostics
+    };
+  }
+
+  const inputRefs =
+    configuration.inputRefs;
+
+  const keys =
+    isRecord(inputRefs)
+      ? Object.keys(inputRefs).sort(compareText)
+      : [];
+
+  const expectedKeys = [
+    'elementIds',
+    'roofGeometryIds',
+    'schema'
+  ];
+
+  if (
+    !isRecord(inputRefs)
+    || inputRefs.schema
+      !== CONSTRUCTIVE_CONFIGURATION_INPUT_REFS_SCHEMA
+    || JSON.stringify(keys)
+      !== JSON.stringify(expectedKeys)
+    || !Array.isArray(inputRefs.elementIds)
+    || !Array.isArray(inputRefs.roofGeometryIds)
+  ) {
+    diagnostics.push(
+      diagnostic(
+        CONSTRUCTIVE_CONTEXT_REASON_CODES
+          .CONFIGURATION_INPUT_REFS_INVALID,
+        '$.scenario.configuration.inputRefs'
+      )
+    );
+
+    return {
+      inputRefs: empty,
+      diagnostics
+    };
+  }
+
+  function normalizeIds(values, path) {
+    const result = [];
+    const tokens = new Set();
+
+    values.forEach((value, index) => {
+      if (!validConfigurationInputRefId(value)) {
+        diagnostics.push(
+          diagnostic(
+            CONSTRUCTIVE_CONTEXT_REASON_CODES
+              .CONFIGURATION_INPUT_REFS_INVALID,
+            `${path}[${index}]`,
+            [value]
+          )
+        );
+        return;
+      }
+
+      const token = idToken(value);
+
+      if (tokens.has(token)) {
+        diagnostics.push(
+          diagnostic(
+            CONSTRUCTIVE_CONTEXT_REASON_CODES
+              .CONFIGURATION_INPUT_REFS_INVALID,
+            `${path}[${index}]`,
+            [value]
+          )
+        );
+        return;
+      }
+
+      tokens.add(token);
+      result.push(value);
+    });
+
+    return result.sort(compareIds);
+  }
+
+  return {
+    inputRefs: {
+      schema:
+        CONSTRUCTIVE_CONFIGURATION_INPUT_REFS_SCHEMA,
+      elementIds:
+        normalizeIds(
+          inputRefs.elementIds,
+          '$.scenario.configuration.inputRefs.elementIds'
+        ),
+      roofGeometryIds:
+        normalizeIds(
+          inputRefs.roofGeometryIds,
+          '$.scenario.configuration.inputRefs.roofGeometryIds'
+        )
+    },
+    diagnostics
+  };
+}
+
+export function
+projectConstructiveScenarioConfiguration(
+  configuration
+) {
+  const inspection =
+    inspectConfigurationInputRefs(
+      configuration
+    );
+
+  if (inspection.diagnostics.length > 0) {
+    throw new ConstructiveScenarioContextError(
+      'INVALID_CONFIGURATION_INPUT_REFS',
+      'configuration.inputRefs no cumple el contrato constructivo.',
+      {
+        diagnostics:
+          canonicalDiagnostics(
+            inspection.diagnostics
+          )
+      }
+    );
+  }
+
+  const projected =
+    cloneJson(configuration);
+
+  if (hasOwn(projected, 'inputRefs')) {
+    projected.inputRefs =
+      inspection.inputRefs;
+  }
+
+  return canonicalizeValue(projected);
+}
+
 function validateLibrary(scenario, libraryContext, diagnostics) {
+  const isV1 =
+    libraryContext?.schema
+      === CONSTRUCTIVE_LIBRARY_CONTEXT_SCHEMA;
+
+  const isV2 =
+    libraryContext?.schema
+      === CONSTRUCTIVE_LIBRARY_CONTEXT_V2_SCHEMA;
+
+  const v2Keys =
+    isRecord(libraryContext)
+      ? Object.keys(libraryContext).sort(compareText)
+      : [];
+
+  const expectedV2Keys = [
+    'adapterPayload',
+    'componentTypes',
+    'libraryId',
+    'libraryVersion',
+    'schema',
+    'sha256'
+  ];
+
   if (!isRecord(libraryContext)
-    || libraryContext.schema !== CONSTRUCTIVE_LIBRARY_CONTEXT_SCHEMA
+    || (!isV1 && !isV2)
     || libraryContext.libraryId !== scenario.libraryRef?.libraryId
     || libraryContext.libraryVersion !== scenario.libraryRef?.libraryVersion
     || libraryContext.sha256 !== scenario.libraryRef?.sha256
-    || !Array.isArray(libraryContext.componentTypes)) {
+    || !Array.isArray(libraryContext.componentTypes)
+    || (isV2
+      && (
+        JSON.stringify(v2Keys)
+          !== JSON.stringify(expectedV2Keys)
+        || !isRecord(libraryContext.adapterPayload)
+        || !finiteJsonValue(libraryContext.adapterPayload)
+      ))) {
     diagnostics.push(diagnostic(
       CONSTRUCTIVE_CONTEXT_REASON_CODES.LIBRARY_NOT_AVAILABLE,
       '$.libraryContext',
@@ -898,6 +1128,7 @@ function validateLibrary(scenario, libraryContext, diagnostics) {
     ));
     return;
   }
+
   const componentIds = new Set(libraryContext.componentTypes.map((item) => item?.componentTypeId));
   scenario.assignments.forEach((assignment, index) => {
     if (!componentIds.has(assignment.choiceRef?.componentTypeId)) {
@@ -923,6 +1154,16 @@ export function evaluateConstructiveScenarioContext({
     referenceResolutionContext
   );
   const diagnostics = scopeEligibility.reasonCodes.map((code) => diagnostic(code, '$.scenario.scope'));
+
+  const configurationInspection =
+    inspectConfigurationInputRefs(
+      scenario?.configuration
+    );
+
+  diagnostics.push(
+    ...configurationInspection.diagnostics
+  );
+
   const requirementById = new Map((structuralRequirements?.requirements || []).map((item) => [item.id, item]));
   const regionById = new Map((structuralRequirements?.regions || []).map((item) => [item.regionId, item]));
   const scopeIds = new Set(scopeEligibility.effectiveRequirementIds);
@@ -948,14 +1189,37 @@ export function evaluateConstructiveScenarioContext({
 
   if (geometry?.schema !== GEOMETRY_SCHEMA || !Array.isArray(geometry.elements) || !Array.isArray(geometry.roofGeometry)) {
     diagnostics.push(diagnostic(CONSTRUCTIVE_CONTEXT_REASON_CODES.TARGET_NOT_RESOLVED, '$.geometry'));
-  } else if (scopeEligibility.scopeClosure) {
+  } else {
     const elementTokens = new Set(geometry.elements.map((item) => idToken(item.id)));
     const roofTokens = new Set(geometry.roofGeometry.map((item) => idToken(item.id)));
-    for (const id of scopeEligibility.scopeClosure.governingRefs.elementIds) {
-      if (!elementTokens.has(idToken(id))) diagnostics.push(diagnostic(CONSTRUCTIVE_CONTEXT_REASON_CODES.TARGET_NOT_RESOLVED, '$.geometry.elements', [id]));
+
+    if (scopeEligibility.scopeClosure) {
+      for (const id of scopeEligibility.scopeClosure.governingRefs.elementIds) {
+        if (!elementTokens.has(idToken(id))) diagnostics.push(diagnostic(CONSTRUCTIVE_CONTEXT_REASON_CODES.TARGET_NOT_RESOLVED, '$.geometry.elements', [id]));
+      }
+      for (const id of scopeEligibility.scopeClosure.governingRefs.roofGeometryIds) {
+        if (!roofTokens.has(idToken(id))) diagnostics.push(diagnostic(CONSTRUCTIVE_CONTEXT_REASON_CODES.TARGET_NOT_RESOLVED, '$.geometry.roofGeometry', [id]));
+      }
     }
-    for (const id of scopeEligibility.scopeClosure.governingRefs.roofGeometryIds) {
-      if (!roofTokens.has(idToken(id))) diagnostics.push(diagnostic(CONSTRUCTIVE_CONTEXT_REASON_CODES.TARGET_NOT_RESOLVED, '$.geometry.roofGeometry', [id]));
+
+    for (const id of configurationInspection.inputRefs.elementIds) {
+      if (!elementTokens.has(idToken(id))) {
+        diagnostics.push(diagnostic(
+          CONSTRUCTIVE_CONTEXT_REASON_CODES.CONFIGURATION_INPUT_REF_NOT_RESOLVED,
+          '$.scenario.configuration.inputRefs.elementIds',
+          [id]
+        ));
+      }
+    }
+
+    for (const id of configurationInspection.inputRefs.roofGeometryIds) {
+      if (!roofTokens.has(idToken(id))) {
+        diagnostics.push(diagnostic(
+          CONSTRUCTIVE_CONTEXT_REASON_CODES.CONFIGURATION_INPUT_REF_NOT_RESOLVED,
+          '$.scenario.configuration.inputRefs.roofGeometryIds',
+          [id]
+        ));
+      }
     }
   }
   const canonical = canonicalDiagnostics(diagnostics);
@@ -1059,8 +1323,29 @@ export function projectEffectiveConstructiveInput({
   const pathIds = new Set(closure.pathRefs);
   const supportIds = new Set(closure.supportRefs);
   const transferIds = new Set(closure.transferRefs);
-  const elementTokens = new Set(closure.governingRefs.elementIds.map(idToken));
-  const roofTokens = new Set(closure.governingRefs.roofGeometryIds.map(idToken));
+  const projectedConfiguration =
+    projectConstructiveScenarioConfiguration(
+      scenario.configuration
+    );
+
+  const configurationInputRefs =
+    projectedConfiguration.inputRefs ?? {
+      schema:
+        CONSTRUCTIVE_CONFIGURATION_INPUT_REFS_SCHEMA,
+      elementIds: [],
+      roofGeometryIds: []
+    };
+
+  const elementTokens = new Set([
+    ...closure.governingRefs.elementIds,
+    ...configurationInputRefs.elementIds
+  ].map(idToken));
+
+  const roofTokens = new Set([
+    ...closure.governingRefs.roofGeometryIds,
+    ...configurationInputRefs.roofGeometryIds
+  ].map(idToken));
+
   const selectedComponentTypeIds = new Set(scenario.assignments.map((item) => item.choiceRef.componentTypeId));
   const effectiveGeometry = {
     schema: EFFECTIVE_CONSTRUCTIVE_GEOMETRY_SCHEMA,
@@ -1090,6 +1375,27 @@ export function projectEffectiveConstructiveInput({
       closure: cloneJson(closure)
     }
   };
+  const effectiveLibrary = {
+    schema: libraryContext.schema,
+    libraryId: libraryContext.libraryId,
+    libraryVersion: libraryContext.libraryVersion,
+    sha256: libraryContext.sha256,
+    componentTypes: libraryContext.componentTypes
+      .filter((item) => selectedComponentTypeIds.has(item.componentTypeId))
+      .map((item) => pick(item, ['componentTypeId']))
+      .sort(compareById('componentTypeId'))
+  };
+
+  if (
+    libraryContext.schema
+      === CONSTRUCTIVE_LIBRARY_CONTEXT_V2_SCHEMA
+  ) {
+    effectiveLibrary.adapterPayload =
+      cloneJson(
+        libraryContext.adapterPayload
+      );
+  }
+
   return canonicalizeValue({
     schema: EFFECTIVE_CONSTRUCTIVE_INPUT_SCHEMA,
     scenarioId: scenario.scenarioId,
@@ -1098,18 +1404,9 @@ export function projectEffectiveConstructiveInput({
     scope: scenario.scope.mode === 'requirements'
       ? { mode: 'requirements', requirementIds: uniqueText(scenario.scope.requirementIds) }
       : { mode: 'all' },
-    configuration: cloneJson(scenario.configuration),
+    configuration: projectedConfiguration,
     assignments: cloneJson(scenario.assignments).sort(compareById('assignmentId')),
-    library: {
-      schema: libraryContext.schema,
-      libraryId: libraryContext.libraryId,
-      libraryVersion: libraryContext.libraryVersion,
-      sha256: libraryContext.sha256,
-      componentTypes: libraryContext.componentTypes
-        .filter((item) => selectedComponentTypeIds.has(item.componentTypeId))
-        .map((item) => pick(item, ['componentTypeId']))
-        .sort(compareById('componentTypeId'))
-    },
+    library: effectiveLibrary,
     effectiveGeometry,
     effectiveStructuralRequirements,
   });

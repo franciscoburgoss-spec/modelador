@@ -9,13 +9,13 @@
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-016-A cerrada el 14-ago-2026 mediante SPEC-016-A-CLOSE; B1/B1.1, B2 y B3 cerrados; SPEC-016-B/C permanecen futuras y no autorizadas |
+| Etapa | SPEC-016-A cerrada el 14-ago-2026 mediante SPEC-016-A-CLOSE; SPEC-016-B permanece abierta, B1 está cerrado y B2 es el siguiente corte pendiente; SPEC-016-C permanece bloqueada |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
-| Spec activa | Ninguna |
-| Esfuerzo activo | Ninguno |
-| Suite oficial | SPEC-016-A-CLOSE: auditoría C1–C20 PASS; `npm run validate` integral PASS; Node 1212/1212; componentes 61/61; Rust 9/9; laboratorio 35/35; build, migration, artifacts, derived, Codex audit y governance PASS |
+| Spec activa | `SPEC-016-B` |
+| Esfuerzo activo | `high` planificado / `high` efectivo; sin escalamiento |
+| Suite oficial | SPEC-016-B B1: `npm run validate` integral PASS; Node 1219/1219; componentes 61/61; Rust 9/9; laboratorio 35/35; goldens, DXF audit, CalculiX smoke, build, migration, artifacts, derived, Codex audit y governance PASS |
 | Build | PASS local Vite; warning heredado de chunk inicial mayor a 600 kB permanece documentado |
-| Cobertura | PASS: core 92,28 % líneas / 80,65 % ramas / 94,24 % funciones; store 92,37 % / 80,68 % / 93,33 % |
+| Cobertura | PASS B1: core 91,72 % líneas / 80,63 % ramas / 94,28 % funciones; store 92,77 % / 80,74 % / 93,41 % |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
 | DXF heredados | 40 archivos auditados, 0 errores / 0 reparaciones |
 | DXF R3-B | 14 archivos (`casa-L`: 2 R12 + 12 AC1015), 0 errores / 0 reparaciones |
@@ -315,8 +315,24 @@ Las deudas A-1 a A-10 se conservan en `archive/LEGACY_STATUS.md`. La ejecución 
   incompatible con una versión futura del compilador. D-040 bloquea actualizaciones sin smoke real;
   renovar runtime o toolchain exige resolver juntos R-009 y este aviso.
 
+## SPEC activa
+
+SPEC-016-B — Adaptador Metalcon sobre arquitectura de soluciones constructivas.
+
+Abierta el 15-ago-2026 por autorización humana explícita sobre baseline `fde781c4c95fa66bab2fdb7014839922db1cdb33`.
+
+La Fase A reformulada queda aprobada. D-070 congela Metalcon legacy como referencia histórica y prohíbe migrarlo, sincronizarlo o usarlo como autoridad/input del nuevo adapter.
+
+SPEC-016-B conserva `modelVersion: 4`, las autoridades cerradas por SPEC-015/016-A, output constructivo efímero, receipt persistente y `verificationState=notVerified`.
+
+SPEC-016-C permanece bloqueada.
+
 ## Próximo corte
 
-SPEC-016-A quedó cerrada el 14-ago-2026 mediante `SPEC-016-A-CLOSE`, con D-069 y `sessions/close-SPEC-016-A.md` como trazabilidad del cierre. Los veinte criterios de aceptación quedaron demostrados y el candidato de cierre pasó `npm run validate` integral.
+SPEC-016-B B2 — dominio Metalcon.
 
-No hay SPEC activa. SPEC-016-B y SPEC-016-C permanecen futuras y requieren apertura humana explícita e independiente. F-009 no cambia.
+B1 quedó cerrado el 15-ago-2026: runtime adapter-neutral, refs constructivas explícitas, library context v2 y solution v2, conservando íntegramente el runtime neutral y las regresiones de SPEC-016-A.
+
+B2 permanece pendiente y será el primer corte que incorpore dominio Metalcon nuevo. No existe todavía algoritmo Metalcon nuevo ni consumo del legacy.
+
+SPEC-016-C continúa bloqueada.

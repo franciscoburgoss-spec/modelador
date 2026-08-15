@@ -3,6 +3,15 @@ import {
 } from './constructiveScenarioContext.js';
 
 import {
+  attachConstructiveAdapterRuntimeCapabilities
+} from './constructiveAdapterRuntime.js';
+
+import {
+  assertValidConstructiveSolution,
+  generateNeutralConstructiveSolution
+} from './constructiveSolutionGeneration.js';
+
+import {
   canonicalizeValue,
   cloneJson,
   fingerprint
@@ -104,7 +113,7 @@ export function buildNeutralConstructiveRuntime() {
     ]
   };
 
-  return {
+  const runtime = {
     adapterRef:
       cloneJson(
         adapterRef
@@ -130,4 +139,15 @@ export function buildNeutralConstructiveRuntime() {
         libraryRef
       )
   };
+
+  return attachConstructiveAdapterRuntimeCapabilities(
+    runtime,
+    {
+      generateSolution:
+        generateNeutralConstructiveSolution,
+
+      assertValidSolution:
+        assertValidConstructiveSolution
+    }
+  );
 }

@@ -11,9 +11,13 @@ import {
 } from './constructiveGenerationInput.js';
 
 import {
-  assertValidConstructiveSolution,
-  deriveConstructiveCoverage
-} from './constructiveSolutionGeneration.js';
+  assertValidConstructiveSolutionBySchema,
+  deriveConstructiveCoverageBySchema
+} from './constructiveSolutionContract.js';
+
+import {
+  projectConstructiveScenarioConfiguration
+} from './constructiveScenarioContext.js';
 
 import {
   canonicalizeValue,
@@ -547,17 +551,32 @@ export function
 buildConstructiveGenerationReceipt({
   adapterInput,
   solution,
-  structuralRequirements
+  structuralRequirements,
+  solutionValidator = null
 }) {
   requireAdapterInput(
     adapterInput
   );
 
   try {
-    assertValidConstructiveSolution(
-      solution,
-      adapterInput
-    );
+    if (solutionValidator !== null) {
+      if (typeof solutionValidator !== 'function') {
+        fail(
+          'INVALID_SOLUTION_VALIDATOR',
+          'solutionValidator debe ser una función o null.'
+        );
+      }
+
+      solutionValidator(
+        solution,
+        adapterInput
+      );
+    } else {
+      assertValidConstructiveSolutionBySchema(
+        solution,
+        adapterInput
+      );
+    }
   } catch (error) {
     fail(
       'INVALID_SOLUTION',
@@ -572,7 +591,7 @@ buildConstructiveGenerationReceipt({
   }
 
   const coverage =
-    deriveConstructiveCoverage(
+    deriveConstructiveCoverageBySchema(
       solution
     );
 
@@ -706,7 +725,9 @@ function scenarioProjection(
       scenario.libraryRef,
 
     configuration:
-      scenario.configuration,
+      projectConstructiveScenarioConfiguration(
+        scenario.configuration
+      ),
 
     scope:
       scenario.scope,
@@ -730,7 +751,9 @@ function adapterScenarioProjection(
       adapterInput.libraryRef,
 
     configuration:
-      adapterInput.configuration,
+      projectConstructiveScenarioConfiguration(
+        adapterInput.configuration
+      ),
 
     scope:
       adapterInput.scope,

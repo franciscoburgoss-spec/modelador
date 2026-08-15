@@ -1,257 +1,406 @@
-# SPEC-016-B — Adaptador Metalcon y migración de la solución vigente
+# SPEC-016-B — Adaptador Metalcon sobre arquitectura de soluciones constructivas
 
-**Estado:** borrador de planificación · 2026-08-04
+**Estado:** abierta · 15-ago-2026
+**Esfuerzo planificado:** `high`
+**Baseline de apertura:** `fde781c4c95fa66bab2fdb7014839922db1cdb33`
+**Predecesora obligatoria:** SPEC-016-A cerrada
+**SPEC-016-C:** bloqueada hasta cierre humano, gates y publicación de SPEC-016-B
 
 ## Diagnóstico
 
-Metalcon es actualmente parte del modelo principal:
+SPEC-016-A cerró la arquitectura común de escenarios, frontera efectiva,
+generación efímera, receipts, freshness, coverage y verification.
 
-- `model.wallTypes[]`;
-- `element.wallTypeId`;
-- perfiles;
-- defaults Metalcon y OSB;
-- modulación;
-- capacidad de corte;
-- informes y leyendas.
+La inspección A2-A5 demostró que Metalcon legacy contiene autoridad histórica,
+derivados persistidos y consumidores acoplados que no deben migrarse al nuevo
+dominio. SPEC-016-B desarrolla Metalcon desde cero sobre la frontera cerrada
+por SPEC-015/016-A.
 
-La nueva arquitectura exige que Metalcon sea el primer adaptador de `Soluciones constructivas`,
-consumiendo geometría, intención y requisitos sin definirlos.
 
-La migración debe conservar proyectos existentes y resultados reproducibles. No puede convertir
-MP1, MP2, MP3 o tabique en intención estructural.
+## 1. Objetivo
+
+Implementar desde cero Metalcon como primer adaptador constructivo productivo de la arquitectura cerrada por SPEC-016-A.
+
+El adaptador consume exclusivamente la frontera constructiva efectiva formada por geometría agnóstica efectiva, `structural-requirements-v1.0` efectivos, configuración persistente del escenario, assignments explícitos y biblioteca Metalcon versionada.
+
+Metalcon no define geometría, intención estructural ni requirements.
+
+## 2. Autoridades
+
+La precedencia contractual es:
+
+```text
+agnostic geometry
+        ↓
+structuralIntent
+        ↓
+structural requirements
+        ↓
+constructive scenario
+        ↓
+constructive adapter input
+        ↓
+Metalcon adapter
+        ↓
+constructive solution derivada
+        ↓
+receipt persistente
+```
+
+Son invariantes:
+
+- geometría agnóstica = autoridad física;
+- `structuralIntent` = autoridad humana estructural persistente;
+- requirements = derivados recalculables y `notVerified`;
+- scenario configuration/assignments = autoridad humana constructiva;
+- output del adapter = derivado no persistente;
+- receipt = evidencia persistente de generación;
+- `resolved != verified`;
+- `complete != verified`;
+- `fresh != verified`;
+- `available != verified`.
+
+SPEC-016-B acepta exclusivamente `verificationState=notVerified`.
 
 ## Decisión
 
-Crear el adaptador:
-
-```text
-adapterId = metalcon
-```
-
-y migrar la solución legacy a un escenario inicial:
-
-```text
-Alternativa Metalcon heredada
-```
-
-La migración mueve o proyecta:
-
-```text
-wallTypes
-wallTypeId
-metalconProfiles
-materials OSB
-defaults
-configuraciones constructivas
-```
-
-hacia:
-
-```text
-solutionLibraries.metalcon
-solutionScenarios[scenario:metalcon:legacy]
-```
-
-Durante una etapa de compatibilidad puede mantenerse una vista legacy, pero la autoridad nueva
-queda en el escenario.
-
-## Entrada
-
-El adaptador consume:
-
-- geometría;
-- intención aceptada;
-- requisitos estructurales;
-- biblioteca Metalcon;
-- asignaciones del escenario;
-- configuración específica.
-
-No puede consultar `wallType.role` para definir intención.
-
-## Vocabulario interno
-
-Se mantienen dentro del adaptador:
-
-```text
-MP1
-MP2
-MP3
-tabique
-```
-
-Su significado y reglas deben documentarse como clasificación Metalcon, no como participación
-estructural universal.
-
-## Resolución de requisitos
-
-Cada componente generado debe referenciar:
-
-```json
-{
-  "generatedElementId": "...",
-  "sourceElementId": 1784600403613,
-  "resolvedRequirementIds": ["..."],
-  "systemRole": "MP1",
-  "geometry": {},
-  "materialId": "...",
-  "verificationState": "notVerified"
-}
-```
-
-Un requisito no resuelto permanece explícito.
-
-Ejemplos:
-
-- apoyo gravitacional;
-- resistencia lateral;
-- transferencia sobre vano;
-- continuidad vertical;
-- conexión a fundación;
-- colector;
-- conexión de diafragma;
-- gap entre muro interior y cubierta.
-
-## Techumbre y muros interiores
-
-El adaptador debe tratar el caso real:
-
-- frontones candidatos aceptados como apoyo;
-- orientación resistente de techumbre;
-- muros interiores laterales separados de la cubierta;
-- necesidad de transferencia;
-- prohibición de usar cielo falso como pieza estructural implícita.
-
-Metalcon puede proponer montantes, cerchas, vigas, colectores o conexiones sólo después de recibir
-el requisito correspondiente.
-
-## Migración
-
-### Datos existentes
-
-Crear un escenario por proyecto cuando existan datos Metalcon:
-
-```text
-scenario:metalcon:legacy
-```
-
-### Reglas
-
-1. conservar IDs cuando sea seguro;
-2. conservar tipos y asignaciones;
-3. conservar bibliotecas;
-4. no crear intención;
-5. marcar el escenario stale si sus fuentes estructurales todavía no existen;
-6. permitir revisión antes de regenerar;
-7. no borrar datos legacy hasta demostrar equivalencia.
-
-### Corte de compatibilidad
-
-La retirada de `element.wallTypeId` requiere una SPEC posterior o una fase explícita dentro del
-cierre, después de comparar:
-
-- asignaciones;
-- derivados;
-- informes;
-- invalidación;
-- guardado/reapertura.
-
-## Interfaz
-
-```text
-Soluciones constructivas
-└── Metalcon
-    ├── Escenario activo…
-    ├── Tipos de muro…
-    ├── Perfiles…
-    ├── Placas y revestimientos…
-    ├── Modulación…
-    ├── Verificación…
-    └── Informes…
-```
-
-Estos controles no aparecen bajo `Estructura`.
-
-## Verificación
-
-Distinguir:
-
-```text
-generated
-checked
-verified
-requiresCalculation
-failed
-```
-
-La existencia de un miembro no resuelve automáticamente un requisito.
+Implementar Metalcon como adapter productivo nuevo, sin migración ni
+sincronización con la implementación legacy. Mantener modelVersion 4,
+preservar las autoridades de SPEC-015/016-A y desarrollar los cortes B1-B5
+de forma controlada.
 
 ## Ejecución Codex
 
 - Esfuerzo planificado: `high`
 - Escalamiento xhigh: `prohibido`
-- Motivo: migra una solución productiva, conserva compatibilidad y redirige múltiples consumidores
-  a un adaptador aislado.
+- Motivo: introduce un adapter constructivo productivo nuevo, biblioteca
+  versionada, materialización y trazabilidad sobre las autoridades cerradas
+  por SPEC-015/016-A; el desarrollo exige control alto, pero no justifica
+  superar el techo ordinario `high`.
 
-## Alternativas descartadas
+## 3. Decisión de ruptura limpia con Metalcon legacy
 
-| Alternativa | Motivo |
-|---|---|
-| Convertir MP1 en intención lateral | Infiere decisión desde Metalcon |
-| Reescribir toda la solución de una vez | Aumenta riesgo de regresión |
-| Borrar campos legacy al migrar | Impide demostrar equivalencia |
-| Mantener Metalcon como autoridad global | Bloquea otras materialidades |
-| Resolver gaps con cielo falso | Fabrica una pieza resistente |
+La implementación Metalcon existente queda congelada como referencia histórica.
+
+El nuevo adaptador no migra, proyecta, sincroniza, interpreta ni usa legacy como fallback o expected contractual.
+
+Quedan fuera de la entrada del nuevo adaptador:
+
+- `wallTypes`;
+- `wallTypeId`;
+- `wallRoles` y MP1/MP2/MP3/tabique históricos;
+- `metalconDefaults` legacy;
+- `osbDefaults` legacy;
+- `model.library.metalconProfiles`;
+- `wall.studs`;
+- `wall.headers`;
+- `wall.osbCourses`;
+- `metalconModulation`;
+- `batchModulation`;
+- exportadores y consumidores Metalcon históricos.
+
+Los módulos legacy permanecen físicamente operativos mientras existan consumidores productivos anteriores, pero SPEC-016-B no los modifica salvo que un defecto ajeno bloquee el funcionamiento general y exista un BUG separado autorizado.
+
+No existe criterio de equivalencia pieza a pieza entre legacy y el nuevo adaptador.
+
+## 4. Persistencia
+
+SPEC-016-B conserva `modelVersion: 4` y no modifica la migración v3→v4 cerrada por SPEC-016-A.
+
+Permanecen los contratos persistentes:
+
+- `constructive-solution-scenarios-v1.0`;
+- `constructive-solution-scenario-v1.0`;
+- `constructive-solution-assignment-v1.0`;
+- `constructive-generation-receipt-v1.0`.
+
+Los escenarios continúan usando IDs canónicos secuenciales `scenario:000001`, `scenario:000002`, etc. No existe `scenario:metalcon:legacy`.
+
+## 5. Escenario Metalcon
+
+Un escenario Metalcon se crea sólo mediante una acción explícita y usa:
+
+```json
+{
+  "adapterRef": {
+    "adapterId": "metalcon",
+    "adapterVersion": "1.0.0"
+  }
+}
+```
+
+Su configuración usa `metalcon-scenario-configuration-v1.0`.
+
+## 6. Configuración constructiva y assignments
+
+`scenario.configuration` y `scenario.assignments[]` tienen responsabilidades distintas.
+
+La configuración expresa decisiones constructivas que no requieren por sí mismas un requirement estructural: selección de sistema de muro, perfil, material, panel, separación, parámetros de modulación y otras decisiones constructivas explícitas.
+
+Forma conceptual:
+
+```json
+{
+  "schema": "metalcon-scenario-configuration-v1.0",
+  "inputRefs": {
+    "schema": "constructive-configuration-input-refs-v1.0",
+    "elementIds": []
+  },
+  "constructionSelections": []
+}
+```
+
+`scenario.assignments[]` permanece reservado a elecciones explícitas que responden a requirements o regiones estructurales reales. Nunca se crea un assignment sólo porque un muro tenga una selección constructiva.
+
+## 7. Geometría adicional solicitada por configuración
+
+Un adapter no puede abrir `model.elements` directamente.
+
+La proyección efectiva común se amplía como unión de geometría requerida por structural requirements y geometría solicitada por `configuration.inputRefs`.
+
+El contrato inicial es `constructive-configuration-input-refs-v1.0`.
+
+Una referencia inexistente, ambigua o no resoluble falla cerradamente. No existe fallback geométrico silencioso.
+
+## 8. Biblioteca Metalcon
+
+SPEC-016-B crea una biblioteca Metalcon nueva e independiente del catálogo legacy.
+
+Manifest inicial: `metalcon-library-manifest-v1.0`.
+
+Identidad:
+
+```json
+{
+  "libraryId": "metalcon-library",
+  "libraryVersion": "1.0.0",
+  "sha256": "..."
+}
+```
+
+El hash debe corresponder al manifest canónico real.
+
+El vocabulario usa IDs textuales propios: `metalcon-profile:*`, `metalcon-material:*`, `metalcon-panel:*`, `metalcon-wall-assembly:*`, `metalcon-component:*` y `metalcon-connection:*`. No se reutilizan IDs numéricos históricos.
+
+## 9. Library context productivo
+
+SPEC-016-A conserva `constructive-library-context-v1.0` para el runtime neutral.
+
+SPEC-016-B introduce `constructive-library-context-v2.0` con envolvente genérica:
+
+```json
+{
+  "schema": "constructive-library-context-v2.0",
+  "libraryId": "...",
+  "libraryVersion": "...",
+  "sha256": "...",
+  "componentTypes": [],
+  "adapterPayload": {}
+}
+```
+
+El núcleo común conoce identidad, versión, hash y component types. El adapter interpreta exclusivamente su `adapterPayload`.
+
+## 10. Runtime común
+
+El pipeline deja de invocar directamente al generador neutral.
+
+El runtime explícito entrega como mínimo capacidades equivalentes a:
+
+```text
+runtime.generateSolution(adapterInput)
+runtime.assertValidSolution(solution, adapterInput)
+```
+
+El pipeline común no contiene ramas especiales por material. El runtime neutral de SPEC-016-A permanece como regresión contractual y continúa aceptando su protocolo v1.
+
+## 11. Output productivo
+
+SPEC-016-B introduce `constructive-solution-v2.0` como salida derivada y no persistente.
+
+Forma conceptual:
+
+```json
+{
+  "schema": "constructive-solution-v2.0",
+  "scenarioId": "...",
+  "adapterRef": {},
+  "libraryRef": {},
+  "effectiveGenerationInputSha256": "...",
+  "verificationState": "notVerified",
+  "generatedArtifacts": [],
+  "requirementResolutions": [],
+  "findings": [],
+  "canonicalSha256": "..."
+}
+```
+
+`canonicalSha256` excluye su propia inclusión y representa el payload canónico completo.
+
+## 12. Artefactos constructivos
+
+La envolvente común es independiente del material:
+
+```json
+{
+  "artifactId": "constructive-artifact:sha256:...",
+  "kind": "member",
+  "sourceRefs": [],
+  "requirementRefs": [],
+  "payload": {}
+}
+```
+
+Kinds iniciales: `member`, `connection`, `panel`, `assembly`.
+
+El payload técnico es propiedad del adapter y declara schema propio. Un artefacto nacido sólo desde configuración puede declarar `requirementRefs: []`. Un artefacto que afirma responder a un requirement debe conservar provenance explícita y coherente con un assignment originador.
+
+## 13. Requirement resolutions v2
+
+Se mantienen `resolved`, `partiallyResolved` y `unresolved`.
+
+Una respuesta materializada usa refs a artefactos derivados mediante `constructive-resolution-response-v2.0`.
+
+Reglas:
+
+- `unresolved` → `response=null` y cero assignments originadores;
+- `resolved`/`partiallyResolved` → al menos un assignment originador;
+- todo `artifactRef` debe existir;
+- un artifact no puede adjudicarse un requirement sin provenance;
+- ninguna resolution cambia `verificationState=notVerified`.
+
+## 14. Dominio Metalcon nuevo
+
+La materialización de muros se desarrolla desde cero sobre `effectiveGeometry`.
+
+El dominio podrá generar, según configuración aprobada, solera inferior, solera superior, montantes, jambas, dinteles constructivos, antepechos, refuerzos alrededor de vanos y paneles/revestimientos básicos.
+
+No reutiliza `wall.studs`, `wall.headers` ni `wall.osbCourses`.
+
+## 15. Vanos
+
+Los vanos provienen exclusivamente de geometría efectiva. El adapter puede materializar componentes alrededor del vano, pero nunca modifica el vacío físico ni crea uno nuevo por inferencia.
+
+## 16. Caso real obligatorio — FX-008
+
+FX-008 se usa como proyecto real desde cero, no como fuente de migración.
+
+Caso lateral gobernante:
+
+```text
+gap vertical = 571.429 mm
+→ loadTransferRequired
+```
+
+Sin assignment Metalcon explícito queda `unresolved` y `verificationState=notVerified`.
+
+Con assignment explícito puede producir artefactos trazables y quedar `resolved` o `partiallyResolved` según contrato, siempre `notVerified`.
+
+La existencia de cielo falso, revestimiento u otra pieza no declarada resistente nunca resuelve implícitamente la transferencia.
+
+## 17. Independencia legacy
+
+Los nuevos módulos Metalcon no pueden importar ni leer autoridades legacy.
+
+Debe existir auditoría estática y reversión dinámica: cambiar `wallTypeId`, `wall.studs` o el catálogo Metalcon legacy no puede alterar el mismo adapterInput efectivo, output ni canonicalSha256 del escenario nuevo.
 
 ## Alcance
 
-- Implementar adaptador Metalcon.
-- Crear biblioteca Metalcon en la nueva arquitectura.
-- Migrar tipos y asignaciones.
-- Consumir requisitos agnósticos.
-- Generar componentes y conexiones trazables.
-- Mantener hallazgos no resueltos.
-- Reubicar UI constructiva bajo `Soluciones constructivas`.
-- Validar equivalencia del flujo existente.
-- Aplicar el caso real.
+SPEC-016-B comprende la apertura del protocolo común necesario para adapters
+productivos, el dominio Metalcon nuevo, su materialización, la respuesta
+explícita a requirements y la interfaz/evidencia final, divididos en los
+cortes B1-B5 definidos a continuación.
+
+## 18. Cortes
+
+### B1 — protocolo común
+
+**Estado del corte:** CERRADO — 15-ago-2026.
+
+Runtime adapter-neutral, refs constructivas explícitas, library context v2, solution v2, validadores comunes y compatibilidad completa del runtime neutral v1. Ningún algoritmo Metalcon.
+
+El cierre técnico B1 conserva `modelVersion: 4`, mantiene byte-identical el generador neutral v1, no persiste generated solution, persiste únicamente receipt compatible y conserva `verificationState=notVerified`.
+
+Evidencia B1: protocolo focal 7/7 PASS; suite constructiva 192/192 PASS; Node 1219/1219 PASS; componentes 61/61 PASS; Rust 9/9 PASS; laboratorio 35/35 PASS; `npm run validate` integral PASS; `git diff --check` PASS; ninguna modificación en store, UI, `modelSchema.js` o Metalcon/OSB legacy.
+
+### B2 — dominio Metalcon
+
+**Estado del corte:** PENDIENTE DE IMPLEMENTACIÓN.
+
+Manifest Metalcon, configuración Metalcon, runtime Metalcon, adapter shell, IDs canónicos, hash real de biblioteca y auditoría de independencia legacy.
+
+### B3 — materialización
+
+Tracks, studs, vanos, jambas, headers, sills, paneles básicos, determinismo e IDs estables. No se afirma resolución estructural automática.
+
+### B4 — requirements
+
+Assignments, component types, artefactos, requirement resolutions, caso FX-008 lateral, cielo falso no resistente y `notVerified` obligatorio.
+
+### B5 — UI y evidencia
+
+Interfaz exclusivamente bajo `Soluciones constructivas > Metalcon`, mostrando escenario, biblioteca, configuración, requirements, artefactos, findings, coverage, freshness, verification y receipt sin presentar resolución como verificación.
+
+## 19. Gates mínimos
+
+Cada corte mantiene verdes las regresiones de SPEC-016-A.
+
+Además se exigen según corresponda: independencia legacy, hash de biblioteca y tamper, refs fail-closed, determinismo y permutación, geometría agnóstica byte-identical, `structuralIntent` deep-identical, artifacts deterministas, vanos reales, partición exacta de requirements, `resolved != verified`, FX-008 con gap 571.429 mm, cielo falso no resistente, output no persistente, receipt/reapertura/freshness, accesibilidad en B5, `npm run validate` y governance.
+
+## 20. Corpus adversario obligatorio
+
+1. cambio de `wallTypeId` legacy no altera output nuevo;
+2. cambio de `wall.studs` legacy no altera output nuevo;
+3. cambio de catálogo Metalcon legacy no altera output nuevo;
+4. cambio de configuración Metalcon no altera geometría ni intención;
+5. inputRef inexistente falla cerrado;
+6. perfil nuevo inexistente falla cerrado;
+7. assembly inexistente falla cerrado;
+8. hash de biblioteca falso falla cerrado;
+9. target ambiguo/duplicado no se acepta silenciosamente;
+10. elemento eliminado tras configurar escenario falla cerrado;
+11. requirement sin assignment queda unresolved;
+12. artifact constructivo sin requirement es válido cuando nace de configuración;
+13. artifact que afirma requirement sin assignment originador es inválido;
+14. resolved permanece `notVerified`;
+15. coverage complete permanece `notVerified`;
+16. fresh permanece `notVerified`;
+17. cerrar/reabrir no persiste generatedArtifacts;
+18. regenerar la misma entrada reproduce bytes/hash.
 
 ## Fuera de alcance
 
-- Madera, SIP o albañilería.
-- Comparación entre materiales.
-- Cambiar intención.
-- Modificar geometría base.
-- Declarar conformidad normativa sin verificadores.
-- Retirar inmediatamente todos los campos legacy.
-- Reescribir SPEC-08 completa sin un corte posterior.
+Migración o sincronización Metalcon legacy, retiro del legacy, reutilización de IDs legacy, corrección de defectos legacy no bloqueantes, equivalencia de studs/headers/OSB legacy, reemplazo inmediato de DXF/CalculiX/takeoff legacy, madera, SIP, albañilería, inferencia de intención, verificación resistente automática, conformidad normativa automática y SPEC-016-C.
 
 ## Criterios de aceptación
 
-1. El escenario Metalcon consume los mismos hashes base que otros escenarios.
-2. MP1/MP2/MP3/tabique permanecen exclusivamente en Metalcon.
-3. Migrar un proyecto existente conserva tipos, perfiles, OSB y asignaciones.
-4. La migración no crea ni modifica intenciones.
-5. Cada componente generado referencia requisitos y elementos fuente.
-6. Requisitos no resueltos permanecen visibles.
-7. Un muro interior lateral con gap exige una solución de transferencia explícita.
-8. El cielo falso no se genera como elemento resistente por defecto.
-9. Cambiar Metalcon no invalida intención ni geometría.
-10. La UI constructiva aparece sólo en `Soluciones constructivas > Metalcon`.
-11. Comparación de resultados legacy/nuevo demuestra equivalencia o documenta divergencias.
-12. Prueba de reversión que use `wallType.role` como intención falla.
-13. Gates, build y cierre pasan.
+1. Metalcon funciona sin leer campos ni módulos legacy.
+2. El adapter recibe únicamente la frontera constructiva efectiva.
+3. Geometría adicional sólo entra mediante refs explícitas.
+4. Refs irresolubles fallan cerradamente.
+5. La biblioteca Metalcon tiene identidad, versión y SHA-256 verificable.
+6. Configuración constructiva y assignments estructurales permanecen separados.
+7. Artefactos e IDs son deterministas.
+8. Todo requirement efectivo aparece exactamente una vez en resolutions.
+9. Sin assignment explícito no se fabrica una resolución estructural.
+10. `resolved != verified`.
+11. Toda salida permanece `verificationState=notVerified`.
+12. FX-008 conserva el gap contractual de 571.429 mm.
+13. El cielo falso nunca resuelve implícitamente ese gap.
+14. Cambiar configuración Metalcon no modifica geometría ni `structuralIntent`.
+15. Cambiar legacy no modifica el output Metalcon nuevo.
+16. Generated output no persiste; receipt sí.
+17. Reapertura y regeneración reproducen el output.
+18. Runtime neutral conserva las regresiones de SPEC-016-A.
+19. UI Metalcon vive sólo bajo Soluciones constructivas.
+20. Gates, build, governance y cierre humano pasan.
 
 ## Evidencia
 
-- Fixtures legacy y migrados.
-- Comparación de asignaciones y derivados.
-- Tests de requisitos resueltos/no resueltos.
-- Caso real.
-- Inspección de dependencias.
-- Pruebas UI.
-- Prueba de reversión.
-- Cierre `sessions/close-SPEC-016-B.md`.
+Tests de protocolo común, runtime neutral como regresión, biblioteca/hash/tamper, auditoría estática legacy, corpus adversario, materialización, requirements, evidencia real FX-008, tests UI, sesión de implementación y sesión de cierre.
 
-## Corte sugerido
+## 24. Regla de detención
 
-Detener cuando Metalcon funcione como primer escenario aislado y la migración sea demostrablemente
-segura, sin implementar todavía otros materiales.
+Cada corte B1–B5 se revisa y autoriza de forma controlada.
+
+SPEC-016-C permanece bloqueada hasta que SPEC-016-B tenga cierre humano, gates completos y publicación autorizada.
