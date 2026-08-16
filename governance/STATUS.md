@@ -3,13 +3,13 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **14-ago-2026**
+Última actualización: **16-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-016-A cerrada el 14-ago-2026 mediante SPEC-016-A-CLOSE; SPEC-016-B permanece abierta, B1 está cerrado y B2 es el siguiente corte pendiente; SPEC-016-C permanece bloqueada |
+| Etapa | SPEC-016-B abierta; B1 y B2 cerrados; B3 siguiente corte no iniciado y no autorizado; SPEC-016-C bloqueada |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `SPEC-016-B` |
 | Esfuerzo activo | `high` planificado / `high` efectivo; sin escalamiento |
@@ -325,14 +325,20 @@ La Fase A reformulada queda aprobada. D-070 congela Metalcon legacy como referen
 
 SPEC-016-B conserva `modelVersion: 4`, las autoridades cerradas por SPEC-015/016-A, output constructivo efímero, receipt persistente y `verificationState=notVerified`.
 
+B1 y B2 están cerrados por revisión humana. B3 es el siguiente corte, permanece no iniciado y requiere autorización humana separada.
+
 SPEC-016-C permanece bloqueada.
 
 ## Próximo corte
 
-SPEC-016-B B2 — dominio Metalcon.
+SPEC-016-B B3 — materialización Metalcon.
 
-B1 quedó cerrado el 15-ago-2026: runtime adapter-neutral, refs constructivas explícitas, library context v2 y solution v2, conservando íntegramente el runtime neutral y las regresiones de SPEC-016-A.
+B1 quedó cerrado el 15-ago-2026 y B2 quedó aprobado y cerrado el 16-ago-2026
+mediante `SPEC-016-B / B2-CLOSE`.
 
-B2 permanece pendiente y será el primer corte que incorpore dominio Metalcon nuevo. No existe todavía algoritmo Metalcon nuevo ni consumo del legacy.
+B3 no está iniciado ni autorizado. Su frontera futura comprende materialización
+constructiva determinista de tracks, studs, jambas, headers, sills y paneles
+básicos sin resolver requirements estructurales por inferencia.
 
-SPEC-016-C continúa bloqueada.
+B4 y B5 permanecen posteriores. SPEC-016-B continúa abierta y SPEC-016-C
+continúa bloqueada. Git de escritura requiere autorización humana separada.

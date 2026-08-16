@@ -325,9 +325,48 @@ Evidencia B1: protocolo focal 7/7 PASS; suite constructiva 192/192 PASS; Node 12
 
 ### B2 — dominio Metalcon
 
-**Estado del corte:** PENDIENTE DE IMPLEMENTACIÓN.
+**Estado del corte:** CERRADO — 16-ago-2026 mediante `SPEC-016-B / B2-CLOSE`.
 
 Manifest Metalcon, configuración Metalcon, runtime Metalcon, adapter shell, IDs canónicos, hash real de biblioteca y auditoría de independencia legacy.
+
+B2 materializa exclusivamente el dominio Metalcon nuevo previo a B3:
+
+- `metalcon-library-manifest-v1.0` como fuente única de la biblioteca nueva;
+- `metalcon-library-payload-v1.0` derivado del manifest;
+- IDs textuales namespaced y sin reutilización de IDs históricos;
+- `metalcon-scenario-configuration-v1.0` con `inputRefs` explícitos;
+- configuración constructiva separada de assignments estructurales;
+- runtime `metalcon@1.0.0` compatible con el protocolo común B1;
+- salida v2 efímera y receipt v1 persistente;
+- pre-B3, todo requirement efectivo permanece `unresolved`, sin artefactos y `notVerified`;
+- auditoría estática y reversión dinámica D-070 contra Metalcon legacy.
+
+La biblioteca inicial conserva registros productivos vacíos y
+`componentTypes=[]`; B2 no materializa miembros ni componentes de respuesta
+estructural.
+
+Evidencia B2:
+
+- SHA-256 canónico inicial de la biblioteca:
+  `f90a840bd2a88a2ddd270592ef5e375d4177f345f7eb1d0c6fea608ff65135f0`;
+- biblioteca B2: 8/8 PASS;
+- configuración B2: 7/7 PASS;
+- runtime Metalcon B2: 4/4 PASS;
+- regresión conjunta B1+B2: 26/26 PASS;
+- FX-008 usa explícitamente muro `1784606313849`, cubierta
+  `1785158713616` y gap contractual `571.429 mm`;
+- sin assignment ni `constructionSelections`, la transferencia permanece
+  `unresolved` y `verificationState=notVerified`;
+- generated output no persiste y el receipt sí;
+- BUG-016-B-009 y BUG-016-B-010 cerrados;
+- `npm run validate` pre-cierre: Node 1238/1238, componentes 61/61,
+  Rust 9/9, laboratorio 35/35, goldens 19, DXF 14 con 0 errores /
+  0 reparaciones, CalculiX 3/3, build, migración, artefactos, derivados,
+  auditoría y gobernanza PASS.
+
+B2 no implementa tracks, studs, jambas, headers, sills, paneles, resolución
+estructural mediante assignments ni UI Metalcon. Esas fronteras permanecen
+respectivamente en B3, B4 y B5.
 
 ### B3 — materialización
 

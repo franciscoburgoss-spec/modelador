@@ -1,6 +1,6 @@
 # Serie SPEC-015/016 — Intención estructural y soluciones constructivas
 
-**Estado:** SPEC-015 y SPEC-016-A cerradas. SPEC-016-A cerrada el 14-ago-2026 mediante SPEC-016-A-CLOSE tras auditoría C1–C20 y validación integral PASS. SPEC-016-B/C permanecen futuras y no autorizadas.
+**Estado:** SPEC-015 y SPEC-016-A cerradas. SPEC-016-B está abierta y activa; B1 y B2 están cerrados, B3 es el siguiente corte no iniciado y requiere autorización humana separada. SPEC-016-C permanece bloqueada hasta el cierre humano, gates y publicación de SPEC-016-B.
 
 ## Propósito
 

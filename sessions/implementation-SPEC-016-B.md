@@ -29,9 +29,13 @@ B1 protocolo común; B2 dominio Metalcon; B3 materialización; B4 requirements; 
 
 ## Corte actual
 
-B2 — PENDIENTE DE IMPLEMENTACIÓN.
+B3 — SIGUIENTE CORTE, NO INICIADO Y NO AUTORIZADO.
 
-B1 quedó CERRADO el 15-ago-2026. La SPEC permanece abierta y B2 requiere su propio desarrollo controlado.
+B1 quedó CERRADO el 15-ago-2026 y B2 quedó CERRADO el 16-ago-2026 mediante
+`SPEC-016-B / B2-CLOSE`.
+
+SPEC-016-B permanece abierta. B3 requiere autorización humana separada y
+SPEC-016-C continúa bloqueada.
 
 ## Cierre documental verificado B1
 
@@ -100,3 +104,68 @@ Evidencia:
 - cero cambios en src/ y tests/.
 
 El siguiente trabajo permitido es la inspección READ-ONLY de B1 antes de su implementación mecánica.
+
+## Cierre humano B2 — B2-CLOSE
+
+El 16-ago-2026 la revisión humana aprobó explícitamente:
+
+`SPEC-016-B / B2-CLOSE`
+
+La autorización se produce después de la implementación mecánica de B2, la
+auditoría de alcance y la validación integral pre-cierre.
+
+B2 queda aprobado y cerrado con la siguiente frontera:
+
+- biblioteca Metalcon nueva, versionada y hasheada;
+- configuración Metalcon estricta y fail-closed;
+- refs constructivas explícitas sobre el protocolo B1;
+- runtime Metalcon y adapter shell pre-B3;
+- output `constructive-solution-v2.0` efímero;
+- receipt v1 persistente;
+- requirements pre-B3 exclusivamente `unresolved`;
+- `verificationState=notVerified`;
+- independencia estática y dinámica respecto del Metalcon legacy.
+
+Caso real FX-008 verificado:
+
+- muro lateral: `1784606313849`;
+- cubierta: `1785158713616`;
+- gap: `571.429 mm`;
+- `constructionSelections=[]`;
+- cero assignments;
+- cero artefactos generados;
+- transferencia y resistencia lateral permanecen `unresolved`;
+- output no persistido;
+- receipt persistido.
+
+Evidencia técnica:
+
+- B2.1 biblioteca: 8/8 PASS;
+- B2.2 configuración: 7/7 PASS;
+- B2.3 runtime: 4/4 PASS;
+- regresión B1+B2: 26/26 PASS;
+- `npm run validate`: PASS pre-cierre;
+- Node 1238/1238;
+- componentes 61/61;
+- Rust 9/9;
+- laboratorio 35/35;
+- goldens 19;
+- DXF 14 archivos, 0 errores y 0 reparaciones;
+- CalculiX 3/3;
+- build, migración, artefactos, derivados, auditoría y gobernanza PASS.
+
+BUG-016-B-009 y BUG-016-B-010 quedan cerrados.
+
+BUG-016-B-011 tiene su correctiva documental materializada por este cierre y
+permanece abierto hasta superar los gates documentales post-cierre.
+
+Este cierre no:
+
+- cierra SPEC-016-B;
+- inicia ni autoriza B3;
+- implementa B4 o B5;
+- desbloquea SPEC-016-C;
+- modifica `modelVersion: 4`;
+- convierte `resolved`, `fresh`, `complete` o cualquier resultado en
+  `verified`;
+- autoriza `git add`, commit o push.
