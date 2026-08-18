@@ -18,9 +18,25 @@ import {
 
 const EXPECTED_EMPTY_SHA256 =
   'f90a840bd2a88a2ddd270592ef5e375d4177f345f7eb1d0c6fea608ff65135f0';
+const EMPTY_METALCON_LIBRARY_MANIFEST =
+  canonicalizeMetalconLibraryManifest({
+    schema:
+      METALCON_LIBRARY_MANIFEST_SCHEMA,
+    libraryId:
+      METALCON_LIBRARY_ID,
+    libraryVersion:
+      METALCON_LIBRARY_VERSION,
+    componentTypes: [],
+    profiles: [],
+    materials: [],
+    panels: [],
+    wallAssemblies: [],
+    components: [],
+    connections: []
+  });
 
 test(
-  'SPEC-016-B B2.1: biblioteca Metalcon nace independiente, vacía y con hash canónico reproducible',
+  'SPEC-016-B B2.1: fixture histórico conserva biblioteca vacía y hash canónico reproducible',
   () => {
     assert.equal(
       METALCON_LIBRARY_MANIFEST_SCHEMA,
@@ -38,7 +54,7 @@ test(
     );
 
     assert.deepEqual(
-      METALCON_LIBRARY_MANIFEST,
+      EMPTY_METALCON_LIBRARY_MANIFEST,
       {
         componentTypes: [],
         components: [],
@@ -54,15 +70,17 @@ test(
     );
 
     assert.equal(
-      METALCON_LIBRARY_SHA256,
+      metalconLibraryManifestSha256(
+        EMPTY_METALCON_LIBRARY_MANIFEST
+      ),
       EXPECTED_EMPTY_SHA256
     );
 
     assert.equal(
       assertValidMetalconLibraryManifest(
-        METALCON_LIBRARY_MANIFEST
+        EMPTY_METALCON_LIBRARY_MANIFEST
       ),
-      METALCON_LIBRARY_MANIFEST
+      EMPTY_METALCON_LIBRARY_MANIFEST
     );
   }
 );
@@ -233,11 +251,11 @@ test(
 
 
 test(
-  'SPEC-016-B B2.1c: libraryRef, context v2 y adapterPayload derivan exclusivamente del manifest',
+  'SPEC-016-B B2.1c: fixture histórico vacío deriva libraryRef, context v2 y adapterPayload reproducibles',
   () => {
     const libraryRef =
       buildMetalconLibraryRef(
-        METALCON_LIBRARY_MANIFEST
+        EMPTY_METALCON_LIBRARY_MANIFEST
       );
 
     assert.deepEqual(
@@ -254,7 +272,7 @@ test(
 
     const context =
       buildMetalconLibraryContext(
-        METALCON_LIBRARY_MANIFEST,
+        EMPTY_METALCON_LIBRARY_MANIFEST,
         libraryRef
       );
 
@@ -300,7 +318,7 @@ test(
     assert.equal(
       assertValidMetalconLibraryBinding({
         manifest:
-          METALCON_LIBRARY_MANIFEST,
+          EMPTY_METALCON_LIBRARY_MANIFEST,
         libraryRef,
         libraryContext:
           context

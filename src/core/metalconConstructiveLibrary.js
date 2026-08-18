@@ -9,6 +9,12 @@ import {
   CONSTRUCTIVE_LIBRARY_CONTEXT_V2_SCHEMA
 } from './constructiveScenarioContext.js';
 
+import {
+  METALCON_PRODUCT_MATERIALS,
+  METALCON_PRODUCT_PANELS,
+  METALCON_PRODUCT_PROFILES
+} from './metalconProductCatalog.js';
+
 export const METALCON_LIBRARY_MANIFEST_SCHEMA =
   'metalcon-library-manifest-v1.0';
 
@@ -434,11 +440,14 @@ export const METALCON_LIBRARY_MANIFEST =
 
     componentTypes: [],
 
-    profiles: [],
+    profiles:
+      METALCON_PRODUCT_PROFILES,
 
-    materials: [],
+    materials:
+      METALCON_PRODUCT_MATERIALS,
 
-    panels: [],
+    panels:
+      METALCON_PRODUCT_PANELS,
 
     wallAssemblies: [],
 

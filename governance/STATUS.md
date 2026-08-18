@@ -3,17 +3,17 @@
 > Única fuente de verdad del estado. Los cierres y documentos archivados no declaran qué está
 > abierto. Actualizar al cerrar cada sesión.
 
-Última actualización: **16-ago-2026**
+Última actualización: **17-ago-2026**
 
 ## Línea base
 
 | Campo | Estado |
 |---|---|
-| Etapa | SPEC-016-B abierta; B1 y B2 cerrados; B3 siguiente corte no iniciado y no autorizado; SPEC-016-C bloqueada |
+| Etapa | SPEC-016-B abierta; B1, B2, B3.1a y B3.1b cerrados; B3.2 habilitado sólo para Fase A READ-ONLY mediante D-076, implementación no autorizada; B4/B5 pendientes; SPEC-016-C bloqueada |
 | Código en este repositorio | Baseline migrado; hashes de origen preservados y cambios posteriores registrados |
 | Spec activa | `SPEC-016-B` |
 | Esfuerzo activo | `high` planificado / `high` efectivo; sin escalamiento |
-| Suite oficial | SPEC-016-B B1: `npm run validate` integral PASS; Node 1219/1219; componentes 61/61; Rust 9/9; laboratorio 35/35; goldens, DXF audit, CalculiX smoke, build, migration, artifacts, derived, Codex audit y governance PASS |
+| Suite oficial | SPEC-016-B B3.1b: catálogo 4/4 PASS; puente productivo 1/1 PASS; focal integrada B2/B3.1 26/26 PASS; SPEC-016-B 41/41 PASS; Node 1253/1253; componentes 61/61; build, independencia legacy, diff, format y governance PASS |
 | Build | PASS local Vite; warning heredado de chunk inicial mayor a 600 kB permanece documentado |
 | Cobertura | PASS B1: core 91,72 % líneas / 80,63 % ramas / 94,28 % funciones; store 92,77 % / 80,74 % / 93,41 % |
 | Toolchain de verificación | Node 22.23.2; npm 10.9.9; Rust/Cargo, Tauri, Python/ezdxf y CalculiX ejercitados por los gates locales |
@@ -325,20 +325,35 @@ La Fase A reformulada queda aprobada. D-070 congela Metalcon legacy como referen
 
 SPEC-016-B conserva `modelVersion: 4`, las autoridades cerradas por SPEC-015/016-A, output constructivo efímero, receipt persistente y `verificationState=notVerified`.
 
-B1 y B2 están cerrados por revisión humana. B3 es el siguiente corte, permanece no iniciado y requiere autorización humana separada.
+B1 y B2 están cerrados por revisión humana. La Fase A B3 v1.0 fue aprobada
+el 17-ago-2026 y D-072 autoriza B3 para implementación por subcortes
+controlados. B3.1a quedó cerrado mediante D-074 y B3.1b quedó aprobado y
+cerrado el 17-ago-2026 mediante D-076. D-076 habilita B3.2 exclusivamente
+para Fase A READ-ONLY; su implementación requiere una nueva aprobación humana
+explícita.
 
 SPEC-016-C permanece bloqueada.
 
-## Próximo corte
+## Corte actual
 
-SPEC-016-B B3 — materialización Metalcon.
+SPEC-016-B B3.2 — Fase A READ-ONLY de hosts y frame local.
 
 B1 quedó cerrado el 15-ago-2026 y B2 quedó aprobado y cerrado el 16-ago-2026
 mediante `SPEC-016-B / B2-CLOSE`.
 
-B3 no está iniciado ni autorizado. Su frontera futura comprende materialización
-constructiva determinista de tracks, studs, jambas, headers, sills y paneles
-básicos sin resolver requirements estructurales por inferencia.
+B3 sigue ABIERTO mediante D-072. D-073 subdividió su primer subcorte en
+B3.1a contrato/resolver y B3.1b catálogo productivo real. D-074 cerró B3.1a
+con gates verdes. D-075 aprobó la Fase A de B3.1b y autorizó exclusivamente el
+catálogo productivo inicial exacto 90CA085 + 92C085 + material CINTAC A653 SQ
+Gr 40 G90 + LP OSB APA Protec 11,1 mm. D-076 aprobó y cerró B3.1b tras sus
+gates verdes y habilitó B3.2 exclusivamente para Fase A READ-ONLY. La
+implementación de B3.2 no está autorizada. Su frontera contractual a analizar
+comprende materialización constructiva determinista host-local de tracks,
+studs, wallEnds, jambas, `openingHead`, `openingSill` y `panelCoverage`, sin
+resolver requirements estructurales por inferencia.
+
+Durante B3 permanecen `assignments=[]`, `requirementRefs=[]`, todas las
+resolutions efectivas `unresolved` y `verificationState=notVerified`.
 
 B4 y B5 permanecen posteriores. SPEC-016-B continúa abierta y SPEC-016-C
 continúa bloqueada. Git de escritura requiere autorización humana separada.

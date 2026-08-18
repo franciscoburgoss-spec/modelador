@@ -191,7 +191,8 @@ test(
       runtime.libraryContext
         .adapterPayload
         .profiles,
-      []
+      METALCON_LIBRARY_MANIFEST
+        .profiles
     );
 
     assert.equal(
