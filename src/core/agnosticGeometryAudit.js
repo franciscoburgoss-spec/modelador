@@ -1,6 +1,7 @@
 import { buildElementsById, resolveAxisRef } from './elementReferences.js';
 import { resolveFoundation } from './foundationGeometry.js';
 import { resolveValue } from './projectParams.js';
+import { cloneJson } from './structuralProposalCommon.js';
 
 export const AGNOSTIC_GEOMETRY_AUDIT_SCHEMA = 'agnostic-geometry-audit/v1';
 export const AGNOSTIC_GEOMETRY_AUDIT_FILENAME = 'auditoria-geometria-agnostica.json';
@@ -557,7 +558,7 @@ function normalizeBoundary(points) {
 
 function canonicalEntity(value) {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return value;
-  const copy = structuredClone(value);
+  const copy = cloneJson(value);
   if (Array.isArray(copy.openings)) copy.openings.sort(compareById);
   if (Array.isArray(copy.solids)) copy.solids.sort((a, b) => String(a?.role).localeCompare(String(b?.role)));
   if (Array.isArray(copy.surface?.boundary)) copy.surface.boundary = normalizeBoundary(copy.surface.boundary);

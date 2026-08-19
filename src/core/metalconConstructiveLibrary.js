@@ -1,5 +1,6 @@
 import {
   canonicalizeValue,
+  cloneJson,
   compareText,
   fingerprint,
   isRecord
@@ -395,7 +396,7 @@ canonicalizeMetalconLibraryManifest(
   );
 
   const result =
-    structuredClone(manifest);
+    cloneJson(manifest);
 
   for (
     const {
@@ -528,32 +529,32 @@ function buildMetalconLibraryPayload(
       METALCON_LIBRARY_PAYLOAD_SCHEMA,
 
     profiles:
-      structuredClone(
+      cloneJson(
         canonical.profiles
       ),
 
     materials:
-      structuredClone(
+      cloneJson(
         canonical.materials
       ),
 
     panels:
-      structuredClone(
+      cloneJson(
         canonical.panels
       ),
 
     wallAssemblies:
-      structuredClone(
+      cloneJson(
         canonical.wallAssemblies
       ),
 
     components:
-      structuredClone(
+      cloneJson(
         canonical.components
       ),
 
     connections:
-      structuredClone(
+      cloneJson(
         canonical.connections
       )
   });
@@ -609,7 +610,7 @@ export function buildMetalconLibraryContext(
       libraryRef.sha256,
 
     componentTypes:
-      structuredClone(
+      cloneJson(
         canonical.componentTypes
       ),
 

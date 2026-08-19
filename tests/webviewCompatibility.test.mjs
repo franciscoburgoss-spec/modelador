@@ -94,3 +94,40 @@ test('SPEC-004-D1: rechazo visible no reemplaza una aplicación ya renderizada',
   guard.dispose();
   dom.window.close();
 });
+
+
+test(
+  'SPEC-004-D1 / BUG-016-B-043: producción no depende de structuredClone ausente en el WebView',
+  async () => {
+    const incompatible = [];
+
+    for (
+      const file
+      of await productionJavaScriptFiles()
+    ) {
+      const source =
+        await readFile(
+          file,
+          'utf8'
+        );
+
+      if (
+        source.includes(
+          'structuredClone'
+        )
+      ) {
+        incompatible.push(
+          file.pathname.replace(
+            sourceRoot.pathname,
+            'src/'
+          )
+        );
+      }
+    }
+
+    assert.deepEqual(
+      incompatible,
+      []
+    );
+  }
+);

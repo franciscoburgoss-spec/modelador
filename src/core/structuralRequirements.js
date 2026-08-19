@@ -1,6 +1,7 @@
 import { canonicalizeRoofBoundaries } from './roofStructuralIntent.js';
 import {
   canonicalizeValue,
+  cloneJson,
   compareIds,
   compareText,
   fingerprint,
@@ -54,7 +55,7 @@ function isRecord(value) {
 }
 
 function clone(value) {
-  return structuredClone(value);
+  return cloneJson(value);
 }
 
 function fail(message) {

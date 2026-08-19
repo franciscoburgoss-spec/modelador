@@ -1,4 +1,5 @@
 import {
+  cloneJson,
   isRecord
 } from './structuralProposalCommon.js';
 import { hasOwn } from './hasOwn.js';
@@ -536,5 +537,662 @@ export function inspectMetalconSelectedWallGeometryB32({
 
       return a.localeCompare(b);
     }
+  );
+}
+
+const MATERIALIZATION_TOL_LINEAR_MM_B33 =
+  0.1;
+
+const MATERIALIZATION_MIN_SEGMENT_MM_B33 =
+  0.1;
+
+function canonicalMillimetersB33(
+  value
+) {
+  return Number(
+    value.toFixed(3)
+  );
+}
+
+function machineSlackB33(
+  ...values
+) {
+  const magnitude =
+    values.reduce(
+      (sum, value) =>
+        sum + Math.abs(value),
+      0
+    );
+
+  return (
+    Number.EPSILON
+    * Math.max(
+      1,
+      magnitude
+    )
+    * 8
+  );
+}
+
+function withinLinearToleranceB33(
+  left,
+  right
+) {
+  const distance =
+    Math.abs(
+      left - right
+    );
+
+  if (
+    distance
+      < MATERIALIZATION_TOL_LINEAR_MM_B33
+  ) {
+    return true;
+  }
+
+  return (
+    Math.abs(
+      distance
+      - MATERIALIZATION_TOL_LINEAR_MM_B33
+    )
+    <= machineSlackB33(
+      left,
+      right,
+      MATERIALIZATION_TOL_LINEAR_MM_B33
+    )
+  );
+}
+
+function sameDistanceB33(
+  left,
+  right,
+  ...coordinates
+) {
+  return (
+    Math.abs(
+      left - right
+    )
+    <= machineSlackB33(
+      left,
+      right,
+      ...coordinates
+    )
+  );
+}
+
+function segmentExceedsMinimumB33(
+  zMin,
+  zMax
+) {
+  const length =
+    zMax - zMin;
+
+  const slack =
+    machineSlackB33(
+      zMin,
+      zMax,
+      MATERIALIZATION_MIN_SEGMENT_MM_B33
+    );
+
+  return (
+    length
+    > MATERIALIZATION_MIN_SEGMENT_MM_B33
+      + slack
+  );
+}
+
+function assertVerticalInputB33({
+  frame,
+  openings,
+  studSpacingMm
+}) {
+  if (
+    !isRecord(frame)
+    || !Array.isArray(openings)
+  ) {
+    fail(
+      'INVALID_METALCON_B33_INPUT',
+      'B3.3 requiere frame B3.2 y openings como arreglo.'
+    );
+  }
+
+  if (
+    !Number.isFinite(frame.L)
+    || frame.L <= 0
+    || !Number.isFinite(frame.z0)
+    || !Number.isFinite(frame.z1)
+    || frame.z1 <= frame.z0
+  ) {
+    fail(
+      'INVALID_METALCON_B33_FRAME',
+      'El frame B3.2 no posee L/z0/z1 finitos y válidos.'
+    );
+  }
+
+  if (
+    !Number.isFinite(studSpacingMm)
+    || studSpacingMm <= 0
+  ) {
+    fail(
+      'INVALID_METALCON_B33_SPACING',
+      'B3.3 requiere studSpacingMm finito y estrictamente positivo.'
+    );
+  }
+
+  for (
+    let index = 0;
+    index < openings.length;
+    index += 1
+  ) {
+    const opening =
+      openings[index];
+
+    if (
+      !isRecord(opening)
+      || !Number.isFinite(
+        opening.sMin
+      )
+      || !Number.isFinite(
+        opening.sMax
+      )
+      || !Number.isFinite(
+        opening.zMin
+      )
+      || !Number.isFinite(
+        opening.zMax
+      )
+      || opening.sMin < 0
+      || opening.sMax
+        > frame.L
+      || opening.sMin
+        >= opening.sMax
+      || opening.zMin
+        < frame.z0
+      || opening.zMax
+        > frame.z1
+      || opening.zMin
+        >= opening.zMax
+    ) {
+      fail(
+        'INVALID_METALCON_B33_OPENING',
+        'B3.3 recibió un Oi que no pertenece al dominio geométrico B3.2.',
+        {
+          index,
+          openingId:
+            opening?.openingId
+        }
+      );
+    }
+  }
+}
+
+function buildGridPositionsB33(
+  L,
+  studSpacingMm
+) {
+  const grid = [];
+
+  for (
+    let n = 0;
+    ;
+    n += 1
+  ) {
+    const s =
+      n * studSpacingMm;
+
+    if (!(s < L)) {
+      break;
+    }
+
+    grid.push(s);
+  }
+
+  grid.push(L);
+
+  return grid;
+}
+
+function openingEdgesB33(
+  openings
+) {
+  return [
+    ...new Set(
+      openings.flatMap(
+        (opening) => [
+          opening.sMin,
+          opening.sMax
+        ]
+      )
+    )
+  ].sort(
+    (left, right) =>
+      left - right
+  );
+}
+
+function resolveGridPositionB33(
+  sGrid,
+  edges
+) {
+  const eligible =
+    edges
+      .filter(
+        (sEdge) =>
+          withinLinearToleranceB33(
+            sGrid,
+            sEdge
+          )
+      )
+      .map(
+        (sEdge) => ({
+          sEdge,
+          distance:
+            Math.abs(
+              sGrid - sEdge
+            )
+        })
+      );
+
+  if (eligible.length === 0) {
+    return sGrid;
+  }
+
+  const minimum =
+    Math.min(
+      ...eligible.map(
+        (entry) =>
+          entry.distance
+      )
+    );
+
+  const nearest =
+    eligible.filter(
+      (entry) =>
+        sameDistanceB33(
+          entry.distance,
+          minimum,
+          sGrid,
+          entry.sEdge
+        )
+    );
+
+  if (nearest.length !== 1) {
+    fail(
+      'METALCON_B33_AMBIGUOUS_GRID_EDGE',
+      'Un candidato de grid tiene múltiples bordes autoritativos a distancia mínima exacta.',
+      {
+        sGrid,
+        edges:
+          nearest.map(
+            (entry) =>
+              entry.sEdge
+          )
+      }
+    );
+  }
+
+  return nearest[0].sEdge;
+}
+
+function candidatePositionsB33(
+  frame,
+  openings,
+  studSpacingMm
+) {
+  const edges =
+    openingEdgesB33(
+      openings
+    );
+
+  const effectiveGrid =
+    buildGridPositionsB33(
+      frame.L,
+      studSpacingMm
+    ).map(
+      (sGrid) =>
+        resolveGridPositionB33(
+          sGrid,
+          edges
+        )
+    );
+
+  return [
+    ...new Set([
+      ...effectiveGrid,
+      ...edges,
+      0,
+      frame.L
+    ])
+  ].sort(
+    (left, right) =>
+      left - right
+  );
+}
+
+function subtractOpeningIntervalsB33(
+  frame,
+  openings,
+  s
+) {
+  const intervals =
+    openings
+      .filter(
+        (opening) => (
+          opening.sMin < s
+          && s < opening.sMax
+        )
+      )
+      .map(
+        (opening) => ({
+          zMin:
+            opening.zMin,
+          zMax:
+            opening.zMax
+        })
+      )
+      .sort(
+        (left, right) => (
+          left.zMin
+          - right.zMin
+        )
+      );
+
+  const segments = [];
+  let cursor =
+    frame.z0;
+
+  for (
+    const interval
+    of intervals
+  ) {
+    if (
+      interval.zMin
+      > cursor
+    ) {
+      segments.push({
+        zMin:
+          cursor,
+        zMax:
+          interval.zMin
+      });
+    }
+
+    cursor =
+      Math.max(
+        cursor,
+        interval.zMax
+      );
+  }
+
+  if (
+    cursor < frame.z1
+  ) {
+    segments.push({
+      zMin:
+        cursor,
+      zMax:
+        frame.z1
+    });
+  }
+
+  return segments;
+}
+
+export function buildMetalconVerticalSegmentsB33({
+  frame,
+  openings,
+  studSpacingMm
+}) {
+  assertVerticalInputB33({
+    frame,
+    openings,
+    studSpacingMm
+  });
+
+  const positions =
+    candidatePositionsB33(
+      frame,
+      openings,
+      studSpacingMm
+    );
+
+  const result = [];
+
+  for (
+    const s
+    of positions
+  ) {
+    const segments =
+      subtractOpeningIntervalsB33(
+        frame,
+        openings,
+        s
+      );
+
+    for (
+      const segment
+      of segments
+    ) {
+      if (
+        !segmentExceedsMinimumB33(
+          segment.zMin,
+          segment.zMax
+        )
+      ) {
+        continue;
+      }
+
+      result.push({
+        s:
+          canonicalMillimetersB33(
+            s
+          ),
+        zMin:
+          canonicalMillimetersB33(
+            segment.zMin
+          ),
+        zMax:
+          canonicalMillimetersB33(
+            segment.zMax
+          )
+      });
+    }
+  }
+
+  return result;
+}
+
+function verticalCausesB33(
+  frame,
+  openings,
+  studSpacingMm
+) {
+  const authoritativeEdges =
+    openingEdgesB33(
+      openings
+    );
+
+  const causes = [];
+
+  for (
+    const sGrid
+    of buildGridPositionsB33(
+      frame.L,
+      studSpacingMm
+    )
+  ) {
+    causes.push({
+      role: 'stud',
+      cause: {
+        kind: 'grid',
+        sGrid
+      },
+      s:
+        resolveGridPositionB33(
+          sGrid,
+          authoritativeEdges
+        )
+    });
+  }
+
+  causes.push(
+    {
+      role: 'wallEnd',
+      cause: {
+        kind: 'wallEnd',
+        side: 'start'
+      },
+      s: 0
+    },
+    {
+      role: 'wallEnd',
+      cause: {
+        kind: 'wallEnd',
+        side: 'end'
+      },
+      s: frame.L
+    }
+  );
+
+  for (
+    const opening
+    of openings
+  ) {
+    causes.push(
+      {
+        role: 'jamb',
+        cause: {
+          kind: 'openingEdge',
+          openingId:
+            opening.openingId,
+          edge: 'sMin'
+        },
+        s:
+          opening.sMin
+      },
+      {
+        role: 'jamb',
+        cause: {
+          kind: 'openingEdge',
+          openingId:
+            opening.openingId,
+          edge: 'sMax'
+        },
+        s:
+          opening.sMax
+      }
+    );
+  }
+
+  return causes;
+}
+
+function compareVerticalCandidatesB33(
+  left,
+  right
+) {
+  if (left.s !== right.s) {
+    return left.s - right.s;
+  }
+
+  if (left.zMin !== right.zMin) {
+    return left.zMin - right.zMin;
+  }
+
+  if (left.zMax !== right.zMax) {
+    return left.zMax - right.zMax;
+  }
+
+  const role =
+    left.role.localeCompare(
+      right.role
+    );
+
+  if (role !== 0) {
+    return role;
+  }
+
+  return JSON.stringify(
+    left.cause
+  ).localeCompare(
+    JSON.stringify(
+      right.cause
+    )
+  );
+}
+
+export function buildMetalconVerticalCandidatesB33({
+  frame,
+  openings,
+  studSpacingMm
+}) {
+  assertVerticalInputB33({
+    frame,
+    openings,
+    studSpacingMm
+  });
+
+  const causes =
+    verticalCausesB33(
+      frame,
+      openings,
+      studSpacingMm
+    );
+
+  const candidates = [];
+
+  for (
+    const entry
+    of causes
+  ) {
+    const segments =
+      subtractOpeningIntervalsB33(
+        frame,
+        openings,
+        entry.s
+      );
+
+    for (
+      const segment
+      of segments
+    ) {
+      if (
+        !segmentExceedsMinimumB33(
+          segment.zMin,
+          segment.zMax
+        )
+      ) {
+        continue;
+      }
+
+      candidates.push({
+        role:
+          entry.role,
+
+        cause:
+          cloneJson(
+            entry.cause
+          ),
+
+        s:
+          canonicalMillimetersB33(
+            entry.s
+          ),
+
+        zMin:
+          canonicalMillimetersB33(
+            segment.zMin
+          ),
+
+        zMax:
+          canonicalMillimetersB33(
+            segment.zMax
+          )
+      });
+    }
+  }
+
+  return candidates.sort(
+    compareVerticalCandidatesB33
   );
 }

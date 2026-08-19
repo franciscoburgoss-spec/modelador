@@ -803,7 +803,30 @@ con un único algoritmo:
 
 No existe una modulación independiente de cripples/despuntes.
 
+Conforme D-094, esta familia vertical pertenece a una implementación nueva e
+independiente del generador Metalcon legacy. B3.5 no importa, invoca, adapta,
+traduce ni obtiene defaults o semántica desde el generador histórico. Cualquier
+concepto necesario pertenece al contrato nuevo de SPEC-016-B.
+
+Conforme D-095, B3.5 preserva explícitamente la causa de cada candidato vertical:
+
+- una causa proveniente de `Pgrid` produce rol `stud`;
+- `s=0` y `s=L` producen, cada uno, una causa `wallEnd`;
+- cada borde autoritativo `sMin` o `sMax` de un opening produce una causa `jamb`;
+- un candidato `stud` recortado por el interior de uno o más openings conserva
+  rol `stud`.
+
+La resolución geométrica D-088/D-092 puede hacer que la coordenada efectiva de
+una causa grid coincida con un borde autoritativo, pero no elimina la causa grid
+ni transforma su rol.
+
+Si dos o más causas producen igual geometría lógica, B3.5 conserva candidatos
+separados. B3.5 no deduplica dichos candidatos ni une sus roles o `sourceRefs`.
+
 #### B3.6 Deduplicación y roles verticales
+
+Antes de esta etapa, los candidatos B3.5 permanecen separados por causa conforme
+D-095.
 
 Dentro del mismo host, candidatos con igual geometría lógica, perfil y material
 se deduplican en una sola pieza. Sus roles y `sourceRefs` se unen y ordenan
@@ -987,13 +1010,13 @@ B3 se implementará de forma controlada.
 Mapa explícito de alcance vigente, gobernado por D-077:
 
 ```text
-implementationSubcut=B3.3
-technicalSections=B3.5
-phase=IMPLEMENTATION
-authorizedBy=D-077,D-087,D-093
+implementationSubcut=B3.3b
+technicalSections=B3.6
+phase=READ-ONLY
+authorizedBy=D-077,D-095,D-096
 ```
 
-La numeración de secciones técnicas no define subcortes de implementación. D-093 cierra la Fase A READ-ONLY y habilita B3.3 exclusivamente para IMPLEMENTATION sobre B3.5; no habilita B3.6 ni secciones técnicas posteriores.
+La numeración de secciones técnicas no define subcortes de implementación. D-093 cerró la Fase A READ-ONLY y habilitó B3.3 exclusivamente para IMPLEMENTATION sobre B3.5. D-096 cierra B3.3 y, para resolver la omisión documentada por BUG-016-B-044, asigna exclusivamente la sección técnica B3.6 al nuevo implementation subcut B3.3b en Fase A READ-ONLY. B3.4 y subcortes posteriores continúan bloqueados.
 
 Subcortes:
 
@@ -1003,8 +1026,10 @@ Subcortes:
   aprobado por D-075 y materializado con gates verdes;
 - B3.2 — CERRADO mediante D-087: frame local, openings, tolerancias y
   dominio geométrico;
-- B3.3 — IMPLEMENTATION autorizada mediante D-093 exclusivamente sobre B3.5
-  Retícula maestra vertical; Fase A READ-ONLY cerrada; B3.6+ no autorizado;
+- B3.3 — CERRADO mediante D-096: implementación exclusivamente sobre B3.5
+  Retícula maestra vertical, con gates finales verdes;
+- B3.3b — Fase A READ-ONLY autorizada mediante D-096 exclusivamente sobre
+  B3.6 Deduplicación y roles verticales; implementación no autorizada;
 - B3.4 — familia horizontal;
 - B3.5 — `panelCoverage`;
 - B3.6 — integración runtime y `generatedArtifacts`;

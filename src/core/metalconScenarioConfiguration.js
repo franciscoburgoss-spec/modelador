@@ -4,6 +4,7 @@ import {
 
 import {
   canonicalizeValue,
+  cloneJson,
   compareIds,
   compareText,
   fingerprint,
@@ -498,7 +499,7 @@ canonicalizeMetalconScenarioConfiguration(
       .map(
         (selection) =>
           canonicalizeValue(
-            structuredClone(
+            cloneJson(
               selection
             )
           )

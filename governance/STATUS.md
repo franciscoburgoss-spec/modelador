@@ -331,18 +331,20 @@ controlados. B3.1a quedó cerrado mediante D-074 y B3.1b quedó aprobado y
 cerrado el 17-ago-2026 mediante D-076. B3.2 fue aprobado para implementación
 mediante D-083, mantuvo runtime/generatedArtifacts fuera de alcance mediante
 D-085 y quedó aprobado y cerrado el 19-ago-2026 mediante D-087 tras sus gates
-finales verdes. D-087 habilita B3.3 exclusivamente para Fase A READ-ONLY sobre
-la sección técnica B3.5 Retícula maestra vertical; su implementación requiere
-una nueva aprobación humana explícita.
+finales verdes. D-087 habilitó históricamente B3.3 exclusivamente para Fase A READ-ONLY sobre
+la sección técnica B3.5 Retícula maestra vertical. D-093 cerró esa fase y
+autorizó IMPLEMENTATION exclusivamente sobre B3.5; D-096 aprueba y cierra
+B3.3 y habilita B3.3b sólo para Fase A READ-ONLY sobre la sección técnica B3.6
+Deduplicación y roles verticales.
 
 SPEC-016-C permanece bloqueada.
 
 ## Corte actual
 
-<!-- ACTIVE-SCOPE spec=SPEC-016-B subcut=B3.3 phase=IMPLEMENTATION technicalSections=B3.5 authorizedBy=D-077,D-087,D-093 -->
+<!-- ACTIVE-SCOPE spec=SPEC-016-B subcut=B3.3b phase=READ-ONLY technicalSections=B3.6 authorizedBy=D-077,D-095,D-096 -->
 
 
-SPEC-016-B B3.3 — Fase A READ-ONLY autorizada exclusivamente para analizar y congelar el contrato de B3.5 Retícula maestra vertical; implementación no autorizada.
+SPEC-016-B B3.3b — Fase A READ-ONLY autorizada mediante D-096 exclusivamente para analizar y congelar el contrato de B3.6 Deduplicación y roles verticales; implementación no autorizada. B3.3 quedó aprobado y cerrado mediante D-096.
 
 B1 quedó cerrado el 15-ago-2026 y B2 quedó aprobado y cerrado el 16-ago-2026
 mediante `SPEC-016-B / B2-CLOSE`.

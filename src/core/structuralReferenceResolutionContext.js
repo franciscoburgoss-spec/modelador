@@ -1,5 +1,6 @@
 import {
   canonicalizeValue,
+  cloneJson,
   compareText,
   fingerprint,
   sourceFingerprint
@@ -28,7 +29,7 @@ export const STRUCTURAL_REFERENCE_DOMAINS = Object.freeze({
 });
 
 function clone(value) {
-  return structuredClone(value);
+  return cloneJson(value);
 }
 
 function withoutCanonicalSha256(value) {

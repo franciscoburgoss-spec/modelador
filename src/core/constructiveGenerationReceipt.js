@@ -21,6 +21,7 @@ import {
 
 import {
   canonicalizeValue,
+  cloneJson as cloneJsonCompatible,
   isRecord
 } from './structuralProposalCommon.js';
 
@@ -104,7 +105,7 @@ function fail(
 }
 
 function cloneJson(value) {
-  return structuredClone(value);
+  return cloneJsonCompatible(value);
 }
 
 function sameCanonicalValue(
