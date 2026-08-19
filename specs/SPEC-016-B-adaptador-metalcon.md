@@ -708,15 +708,55 @@ válido. `MATERIALIZATION_TOL_LINEAR_MM`, `MATERIALIZATION_TOL_LEVEL_MM` y
 penetración estrictamente positiva en ambas dimensiones mantiene inválido el
 solape, incluso si es menor o igual que `0.1 mm`.
 
-Cuando una posición derivada de grid cae dentro de tolerancia de un borde
-geométrico, prevalece el borde geométrico y se unifican roles; no se mueve el
+Para una posición derivada de grid `sGrid` y un borde geométrico autoritativo
+`sEdge` se define:
+
+`distance = abs(sGrid - sEdge)`.
+
+Si `distance <= MATERIALIZATION_TOL_LINEAR_MM`, incluyendo exactamente
+`0.1 mm`, prevalece `sEdge` y se unifican las posiciones constructivas
+asociadas. No se promedia, no se mueve el opening y no se crea una tercera
+coordenada.
+
+Si `distance > MATERIALIZATION_TOL_LINEAR_MM`, `sGrid` y `sEdge` permanecen
+como posiciones distintas.
+
+Cuando un mismo `sGrid` queda dentro de tolerancia de múltiples bordes
+geométricos autoritativos distintos, se considera el conjunto:
+
+`E = { sEdge | abs(sGrid - sEdge) <= MATERIALIZATION_TOL_LINEAR_MM }`.
+
+Si existe un único borde de `E` con distancia mínima a `sGrid`, prevalece
+exclusivamente ese borde para el candidato derivado de grid.
+
+Si dos o más bordes autoritativos distintos comparten exactamente la distancia
+mínima, B3 falla cerrado por ambigüedad geométrica. No se decide por orden
+incidental, ID, menor o mayor coordenada, promedio ni desplazamiento del
 opening.
+
+Los demás bordes autoritativos conservan sus propias posiciones candidatas; no
+se fusionan ni eliminan por esta regla.
+
+La comparación ocurre antes del redondeo canónico. Esta regla actúa únicamente
+sobre una posición constructiva derivada de grid y no repara, expande ni vuelve
+válida geometría autoritativa.
 
 #### B3.5 Retícula maestra vertical
 
-Con spacing explícito `d`:
+Con spacing explícito `d`, el índice de retícula pertenece a los enteros no
+negativos:
 
-`Pgrid = { n*d | n*d < L } union { L }`.
+`n ∈ Z, n >= 0`.
+
+Se define:
+
+`Pgrid = { n*d | n ∈ Z, n >= 0, n*d < L } union { L }`.
+
+Por tanto, `s=0` pertenece a `Pgrid` mediante `n=0`; no existen posiciones
+negativas; los múltiplos regulares se calculan directamente como `n*d`; y `L`
+se incorpora exactamente una vez como extremo final.
+
+Si `d == L` o `d > L`, `Pgrid` contiene exactamente `{0,L}`.
 
 La modulación se calcula siempre desde `s=0`; no usa suma acumulativa y nunca
 se reinicia por un vano.
@@ -724,9 +764,37 @@ se reinicia por un vano.
 Las posiciones candidatas verticales son la unión de grid, bordes efectivos de
 openings y extremos `0/L`.
 
-En cada posición B3 sustrae los intervalos Z interiores a los voids. Los
-segmentos positivos resultantes producen miembros verticales y permiten, con
-un único algoritmo:
+Después de canonicalizar previamente las posiciones derivadas de grid conforme
+D-088, para cada posición candidata vertical `s` y cada opening
+`Oi=[sMin,sMax] × [zMin,zMax]` se distingue exactamente entre frontera e
+interior longitudinal:
+
+- sólo `sMin < s && s < sMax` constituye interior longitudinal del opening y
+  hace que se sustraiga su intervalo `[zMin,zMax]`;
+- `s === sMin` o `s === sMax` constituye frontera longitudinal exacta y ese
+  opening no sustrae su intervalo Z en dicha posición;
+- si `sMin === 0` o `sMax === L`, la coincidencia con el extremo del host sigue
+  siendo frontera y no interior.
+
+Esta regla no desplaza, ensancha, contrae ni redefine `Oi`; sólo gobierna la
+materialización constructiva derivada en una posición vertical.
+
+Sea `length` la longitud de cada segmento vertical resultante. La
+materialización aplica exactamente:
+
+- `length <= MATERIALIZATION_MIN_SEGMENT_MM` no produce miembro;
+- `length > MATERIALIZATION_MIN_SEGMENT_MM` produce miembro.
+
+Con el valor vigente `MATERIALIZATION_MIN_SEGMENT_MM = 0.1 mm`, un segmento de
+longitud exactamente `0.1 mm` no se materializa. La comparación ocurre antes
+del redondeo canónico.
+
+Omitir un microsegmento no desplaza, corrige, expande ni contrae ningún opening,
+no modifica geometría autoritativa y no fusiona artificialmente segmentos
+separados.
+
+Los segmentos que superan el umbral producen miembros verticales y permiten,
+con un único algoritmo:
 
 - `stud`;
 - `wallEnd`;
@@ -921,11 +989,11 @@ Mapa explícito de alcance vigente, gobernado por D-077:
 ```text
 implementationSubcut=B3.3
 technicalSections=B3.5
-phase=READ-ONLY
-authorizedBy=D-077,D-087
+phase=IMPLEMENTATION
+authorizedBy=D-077,D-087,D-093
 ```
 
-La numeración de secciones técnicas no define subcortes de implementación. Este mapa habilita B3.3 exclusivamente para Fase A READ-ONLY sobre B3.5; no autoriza su implementación ni habilita B3.6 o secciones técnicas posteriores.
+La numeración de secciones técnicas no define subcortes de implementación. D-093 cierra la Fase A READ-ONLY y habilita B3.3 exclusivamente para IMPLEMENTATION sobre B3.5; no habilita B3.6 ni secciones técnicas posteriores.
 
 Subcortes:
 
@@ -933,9 +1001,10 @@ Subcortes:
   productivos sólo para tests;
 - B3.1b — CERRADO mediante D-076: catálogo productivo real inicial exacto
   aprobado por D-075 y materializado con gates verdes;
-- B3.2 — FASE A READ-ONLY habilitada mediante D-076; implementación no
-  autorizada: frame local, openings, tolerancias y dominio geométrico;
-- B3.3 — familia vertical;
+- B3.2 — CERRADO mediante D-087: frame local, openings, tolerancias y
+  dominio geométrico;
+- B3.3 — IMPLEMENTATION autorizada mediante D-093 exclusivamente sobre B3.5
+  Retícula maestra vertical; Fase A READ-ONLY cerrada; B3.6+ no autorizado;
 - B3.4 — familia horizontal;
 - B3.5 — `panelCoverage`;
 - B3.6 — integración runtime y `generatedArtifacts`;

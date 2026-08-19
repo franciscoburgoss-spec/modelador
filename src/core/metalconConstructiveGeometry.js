@@ -1,6 +1,7 @@
 import {
   isRecord
 } from './structuralProposalCommon.js';
+import { hasOwn } from './hasOwn.js';
 
 export class MetalconConstructiveGeometryError
   extends Error {
@@ -482,7 +483,7 @@ export function inspectMetalconSelectedWallGeometryB32({
         (selection, index) => {
           if (
             !isRecord(selection)
-            || !Object.hasOwn(
+            || !hasOwn(
               selection,
               'elementId'
             )

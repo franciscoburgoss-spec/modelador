@@ -339,7 +339,7 @@ SPEC-016-C permanece bloqueada.
 
 ## Corte actual
 
-<!-- ACTIVE-SCOPE spec=SPEC-016-B subcut=B3.3 phase=READ-ONLY technicalSections=B3.5 authorizedBy=D-077,D-087 -->
+<!-- ACTIVE-SCOPE spec=SPEC-016-B subcut=B3.3 phase=IMPLEMENTATION technicalSections=B3.5 authorizedBy=D-077,D-087,D-093 -->
 
 
 SPEC-016-B B3.3 — Fase A READ-ONLY autorizada exclusivamente para analizar y congelar el contrato de B3.5 Retícula maestra vertical; implementación no autorizada.
