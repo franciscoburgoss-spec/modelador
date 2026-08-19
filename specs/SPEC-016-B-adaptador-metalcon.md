@@ -570,11 +570,56 @@ Cada muro usa un frame local canónico `(s,z)`:
 - si el prisma no permite construir inequívocamente el frame requerido, B3
   falla cerrado.
 
+D-078 congela la elegibilidad geométrica defensiva del host antes de construir
+el frame:
+
+- todas las coordenadas de `start/end` deben ser finitas;
+- un host X exige `start.y === end.y`, `start.z === end.z` y
+  `start.x !== end.x`;
+- un host Y exige `start.x === end.x`, `start.z === end.z` y
+  `start.y !== end.y`;
+- X se canonicaliza ordenando extremos por `x` creciente e Y por `y`
+  creciente; invertir incidentalmente `start/end` produce el mismo frame;
+- prismas diagonales, casi ortogonales, casi nivelados, de longitud plana cero
+  o no finitos fallan cerrado;
+- B3 no promedia, proyecta, hace snapping ni selecciona un eje dominante;
+- estas comparaciones se realizan sobre `effectiveGeometry` antes del
+  redondeo canónico.
+
+Esta regla se limita a hosts WALL y no se extiende automáticamente a
+`opening.void`.
+
+D-084 completa las precondiciones defensivas del host antes de construir el
+frame:
+
+- `host.type === 'wall'`;
+- `host.prism.kind === 'oriented-prism'`;
+- `host.prism.height` debe ser finito y estrictamente mayor que cero;
+- `host.prism.thickness` debe ser finito y estrictamente mayor que cero;
+- después de canonicalizar únicamente la inversión incidental de extremos:
+  - `z0 = canonicalStart.z`;
+  - `z1 = z0 + host.prism.height`;
+  - para X, `L = canonicalEnd.x - canonicalStart.x`;
+  - para Y, `L = canonicalEnd.y - canonicalStart.y`.
+
+Todo incumplimiento falla cerrado antes de construir `M`, validar openings o
+producir geometría derivada. Las tolerancias B3.4 no reparan, aproximan ni
+vuelven válidos `kind`, `height` o `thickness`.
+
+D-081 hace explícita la frontera de dominio: que una geometría
+`agnostic-geometry-v1.0` sea válida o haya sido auditada upstream no implica
+que sea materializable por todos los adaptadores. B3.2 consume deliberadamente
+el subdominio más estricto definido por D-078. Un host válido/auditado upstream
+que no satisfaga esas igualdades exactas falla cerrado en B3.2; no se declara
+inválido upstream ni se proyecta, promedia, ajusta, hace snapping o
+reinterpreta para volverlo elegible.
+
 B3 no materializa todavía vigas, pilares ni reticulados generales.
 
 #### B3.3 Dominio geométrico y openings
 
-En el frame local:
+En el frame local, usando exclusivamente `L`, `z0` y `z1` construidos por
+B3.2:
 
 `M = [0,L] × [z0,z1]`
 
@@ -584,8 +629,57 @@ Cada vano efectivo define un void rectangular `Oi` y la materia conceptual es:
 
 Los openings quitan materia; nunca redefinen ni reinician la modulación.
 
-Un solape 2D inválido entre openings falla cerrado. B3 no repara, fusiona ni
-reinterpreta geometría autoritativa.
+D-082 congela las precondiciones defensivas para convertir un `opening.void`
+en su rectangle local `Oi`. Para cada opening del host:
+
+- `opening.hostWallId === host.id`;
+- `opening.kind` debe ser `door` o `window`;
+- `opening.void.kind === 'oriented-prism'`;
+- `void.start`, `void.end`, `void.thickness` y `void.height` deben contener
+  únicamente números finitos;
+- `void.thickness > 0` y `void.height > 0`;
+- para host X:
+  `void.start.y === void.end.y === host.prism.start.y`,
+  `void.start.z === void.end.z` y `void.start.x !== void.end.x`;
+- para host Y:
+  `void.start.x === void.end.x === host.prism.start.x`,
+  `void.start.z === void.end.z` y `void.start.y !== void.end.y`;
+- `void.thickness === host.prism.thickness`.
+
+Sea `h0` la coordenada longitudinal del origen canónico del host. Se define:
+
+- host X:
+  `sStart = void.start.x - h0`,
+  `sEnd = void.end.x - h0`;
+- host Y:
+  `sStart = void.start.y - h0`,
+  `sEnd = void.end.y - h0`;
+- `sMin = min(sStart,sEnd)`;
+- `sMax = max(sStart,sEnd)`;
+- `zMin = void.start.z`;
+- `zMax = void.start.z + void.height`.
+
+La inversión incidental de `void.start/end` produce el mismo `Oi`; no modifica
+ninguna coordenada. B3.2 no proyecta, promedia, ajusta, hace snapping ni
+corrige espesor para volver elegible un opening.
+
+D-079 y D-080 congelan además la validación geométrica local de los openings:
+
+- cada `Oi=[sMin,sMax] × [zMin,zMax]` debe satisfacer exactamente `Oi ⊆ M`;
+- el contacto exacto con `s=0`, `s=L`, `z=z0` o `z=z1` es válido;
+- cualquier excedencia estrictamente positiva de `Oi` fuera de `M` en `s` o
+  `z` falla cerrado;
+- para dos openings del mismo host:
+  `overlapS = min(s1Max,s2Max) - max(s1Min,s2Min)` y
+  `overlapZ = min(z1Max,z2Max) - max(z1Min,z2Min)`;
+- existe solape 2D inválido únicamente cuando
+  `overlapS > 0 && overlapZ > 0`;
+- el contacto exacto de borde o esquina entre openings es válido;
+- toda comparación ocurre antes del redondeo canónico.
+
+B3 no recorta, mueve, repara, fusiona ni reinterpreta openings y no aplica
+clipping implícito ni importa silenciosamente tolerancias o `minimumOverlap`
+desde SPEC-014.
 
 #### B3.4 Tolerancias
 
@@ -598,6 +692,21 @@ B3 congela como contrato propio:
 
 Se compara antes de redondear. La tolerancia no modifica geometría
 autoritativa.
+
+`MATERIALIZATION_TOL_LINEAR_MM` y `MATERIALIZATION_TOL_LEVEL_MM` no participan
+en la elegibilidad geométrica del host definida en B3.2 y no convierten una
+desigualdad de coordenadas en igualdad.
+
+Estas tolerancias tampoco participan en las precondiciones de `opening.void`
+definidas por D-082: no corrigen eje, coordenada transversal, nivel, espesor,
+longitud ni dimensiones, y no se importa
+`DEFAULT_AGNOSTIC_GEOMETRY_TOLERANCE_MM` como tolerancia B3.2.
+
+Estas tolerancias tampoco expanden `M` ni convierten un opening exterior en
+válido. `MATERIALIZATION_TOL_LINEAR_MM`, `MATERIALIZATION_TOL_LEVEL_MM` y
+`MATERIALIZATION_MIN_SEGMENT_MM` no constituyen umbral de solape: cualquier
+penetración estrictamente positiva en ambas dimensiones mantiene inválido el
+solape, incluso si es menor o igual que `0.1 mm`.
 
 Cuando una posición derivada de grid cae dentro de tolerancia de un borde
 geométrico, prevalece el borde geométrico y se unifican roles; no se mueve el
@@ -805,7 +914,20 @@ implícitamente el gap.
 
 #### B3.14 Subcortes
 
-B3 se implementará de forma controlada:
+B3 se implementará de forma controlada.
+
+Mapa explícito de alcance vigente, gobernado por D-077:
+
+```text
+implementationSubcut=B3.3
+technicalSections=B3.5
+phase=READ-ONLY
+authorizedBy=D-077,D-087
+```
+
+La numeración de secciones técnicas no define subcortes de implementación. Este mapa habilita B3.3 exclusivamente para Fase A READ-ONLY sobre B3.5; no autoriza su implementación ni habilita B3.6 o secciones técnicas posteriores.
+
+Subcortes:
 
 - B3.1a — CERRADO: contrato y resolución estricta de familias con fixtures no
   productivos sólo para tests;

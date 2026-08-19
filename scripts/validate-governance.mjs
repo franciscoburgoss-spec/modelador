@@ -3,6 +3,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { parseAuditLog, validateAuditEvents } from './lib/codex-spec-launcher.mjs';
 import { validateReasoningEffortGovernance } from './lib/reasoning-effort-governance.mjs';
+import { validateScopeLockGovernance } from './lib/scope-lock-governance.mjs';
 import { validateSpecDocumentContract } from './lib/spec-document-contract.mjs';
 
 const root = process.cwd();
@@ -108,6 +109,12 @@ errors.push(...validateReasoningEffortGovernance({
   specs: specEntries,
   specTemplate,
   closeTemplate,
+}));
+
+errors.push(...validateScopeLockGovernance({
+  status,
+  decisions,
+  specs: specEntries,
 }));
 
 try {

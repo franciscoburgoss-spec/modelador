@@ -40,6 +40,8 @@ la insuficiencia de `high` y obtener aprobación explícita del usuario. `max` e
 ## Reglas de alcance
 
 - La spec define qué entra y qué queda fuera.
+- Cuando una spec se implementa por subcortes, el alcance efectivo es la intersección entre el contrato global de la spec, el subcorte explícitamente habilitado y la última autorización humana vigente. La numeración de secciones técnicas no define por sí sola subcortes de implementación.
+- Una sección posterior, deuda o ambigüedad descubierta no amplía el corte activo. Reabrir una decisión vigente requiere contradicción material documentada, BUG registrado y nueva aprobación humana explícita.
 - Una decisión pendiente bloquea la implementación; no se resuelve implícitamente en código.
 - Una deuda descubierta se registra, pero no amplía la sesión.
 - Cambios de formato persistido siempre incluyen migración y fixture de la versión anterior.
